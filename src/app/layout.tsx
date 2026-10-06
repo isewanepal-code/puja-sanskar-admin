@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import { DM_Sans, Noto_Sans_Devanagari } from 'next/font/google';
+
+import { AppProviders } from '@/providers/app-providers';
+
 import './globals.css';
 
 const dmSans = DM_Sans({
@@ -29,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="ne">
       <body className={`${dmSans.variable} ${notoSansDevanagari.variable} antialiased`}>
-        {children}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );
