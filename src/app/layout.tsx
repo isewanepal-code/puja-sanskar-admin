@@ -1,8 +1,7 @@
-import type { Metadata } from 'next';
 import { DM_Sans, Noto_Sans_Devanagari } from 'next/font/google';
 
 import { AppProviders } from '@/providers/app-providers';
-
+import { createMetadata } from '@/lib/seo';
 import './globals.css';
 
 const dmSans = DM_Sans({
@@ -19,10 +18,7 @@ const notoSansDevanagari = Noto_Sans_Devanagari({
   weight: ['400', '500', '600', '700'],
 });
 
-export const metadata: Metadata = {
-  title: 'Puja Sanskar',
-  description: 'Puja Sanskar',
-};
+export const metadata = createMetadata();
 
 export default function RootLayout({
   children,
