@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
+import { clientEnv } from '@/lib/env';
+
 import { ApiError } from './errors';
 import { apiErrorResponseSchema } from './schemas';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000/api/v1';
+const API_BASE_URL = clientEnv.NEXT_PUBLIC_API_URL;
 
 const apiEnvelopeSchema = z.object({
   success: z.boolean(),
