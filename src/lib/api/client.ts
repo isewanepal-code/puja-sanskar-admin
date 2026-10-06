@@ -9,8 +9,14 @@ const apiEnvelopeSchema = z.object({
   success: z.boolean(),
   message: z.string(),
   data: z.unknown().optional(),
-  error: z.string().optional(),
-  errors: z.unknown().optional(),
+  error: z
+    .object({
+      code: z.string(),
+      details: z.array(z.unknown()),
+    })
+    .optional(),
+  path: z.string().optional(),
+  timestamp: z.string().optional(),
 });
 
 type RequestOptions = Omit<RequestInit, 'body'> & {
@@ -27,15 +33,25 @@ export async function apiClient<T extends z.ZodType>(
 ): Promise<z.output<T>> {
   const { body, headers, schema, ...requestInit } = options;
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...requestInit,
-    headers: {
-      Accept: 'application/json',
-      ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
-      ...headers,
-    },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...requestInit,
+      headers: {
+        Accept: 'application/json',
+        ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}),
+        ...headers,
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  } catch (error) {
+    throw new ApiError('Unable to connect to the server.', {
+      status: 0,
+      code: 'NETWORK_ERROR',
+      details: error,
+    });
+  }
 
   let rawPayload: unknown;
 
@@ -44,6 +60,7 @@ export async function apiClient<T extends z.ZodType>(
   } catch {
     throw new ApiError('The server returned an invalid response.', {
       status: response.status,
+      code: 'INVALID_RESPONSE',
     });
   }
 
@@ -52,6 +69,7 @@ export async function apiClient<T extends z.ZodType>(
   if (!envelopeResult.success) {
     throw new ApiError('The server returned an invalid response.', {
       status: response.status,
+      code: 'INVALID_RESPONSE',
       details: envelopeResult.error.issues,
     });
   }
@@ -64,19 +82,21 @@ export async function apiClient<T extends z.ZodType>(
     if (errorResult.success) {
       throw new ApiError(errorResult.data.message, {
         status: response.status,
-        code: errorResult.data.error,
-        details: errorResult.data.errors,
+        code: errorResult.data.error.code,
+        details: errorResult.data.error.details,
       });
     }
 
     throw new ApiError(payload.message, {
       status: response.status,
+      code: 'API_ERROR',
     });
   }
 
   if (!response.ok) {
     throw new ApiError('The request failed.', {
       status: response.status,
+      code: 'HTTP_ERROR',
     });
   }
 
@@ -85,6 +105,7 @@ export async function apiClient<T extends z.ZodType>(
   if (!dataResult.success) {
     throw new ApiError('The server returned invalid data.', {
       status: response.status,
+      code: 'INVALID_DATA',
       details: dataResult.error.issues,
     });
   }

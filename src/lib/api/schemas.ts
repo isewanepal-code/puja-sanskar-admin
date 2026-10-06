@@ -10,8 +10,12 @@ export const apiSuccessResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
 export const apiErrorResponseSchema = z.object({
   success: z.literal(false),
   message: z.string(),
-  error: z.string().optional(),
-  errors: z.unknown().optional(),
+  error: z.object({
+    code: z.string(),
+    details: z.array(z.unknown()),
+  }),
+  path: z.string().optional(),
+  timestamp: z.string().optional(),
 });
 
 export const apiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
