@@ -25,5 +25,8 @@
   },
   "localeSwitcher": {
     "label": "Language"
+  },
+  "theme": {
+    "darkMode": "Dark mode"
   }
 }

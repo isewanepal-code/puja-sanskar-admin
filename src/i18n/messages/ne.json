@@ -25,5 +25,8 @@
   },
   "localeSwitcher": {
     "label": "भाषा"
+  },
+  "theme": {
+    "darkMode": "डार्क मोड"
   }
 }

@@ -3,6 +3,7 @@ import { DM_Sans, Noto_Sans_Devanagari } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
+import { ThemeScript } from '@/components/theme';
 import { routing } from '@/i18n/routing';
 import { resolveLocale } from '@/i18n/server';
 import { createMetadata } from '@/lib/seo';
@@ -39,7 +40,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
   const locale = await resolveLocale(params);
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className={`${dmSans.variable} ${notoSansDevanagari.variable} antialiased`}>
         <NextIntlClientProvider>
           <AppProviders>{children}</AppProviders>
