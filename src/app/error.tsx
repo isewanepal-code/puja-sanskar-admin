@@ -5,12 +5,12 @@ import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ErrorState } from '@/components/feedback';
 
-type GlobalErrorProps = {
+type ErrorProps = {
   error: Error & { digest?: string };
   reset: () => void;
 };
 
-export default function Error({ error, reset }: GlobalErrorProps) {
+export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {
     console.error(error);
   }, [error]);

@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import { buttonVariants } from '@/components/ui/button';
+
 export default function NotFound() {
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
@@ -12,10 +14,7 @@ export default function NotFound() {
           The page you are looking for does not exist or may have been moved.
         </p>
 
-        <Link
-          href="/"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex h-9 items-center justify-center rounded-md px-4 text-sm font-medium transition-colors"
-        >
+        <Link href="/" className={buttonVariants({ size: 'lg' })}>
           Go home
         </Link>
       </div>

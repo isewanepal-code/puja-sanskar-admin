@@ -3,9 +3,7 @@ import type { Metadata } from 'next';
 import { clientEnv } from '@/lib/env';
 import { SEO_DEFAULTS } from './constants';
 
-export function createMetadata(
-  overrides: Metadata = {},
-): Metadata {
+export function createMetadata(overrides: Metadata = {}): Metadata {
   return {
     metadataBase: new URL(clientEnv.NEXT_PUBLIC_SITE_URL),
 

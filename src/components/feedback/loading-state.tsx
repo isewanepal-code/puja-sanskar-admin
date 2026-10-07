@@ -7,16 +7,10 @@ type LoadingStateProps = {
   className?: string;
 };
 
-export function LoadingState({
-  label = 'Loading...',
-  className,
-}: LoadingStateProps) {
+export function LoadingState({ label = 'Loading...', className }: LoadingStateProps) {
   return (
     <div
-      className={cn(
-        'flex min-h-40 flex-col items-center justify-center gap-3',
-        className,
-      )}
+      className={cn('flex min-h-40 flex-col items-center justify-center gap-3', className)}
       role="status"
       aria-live="polite"
     >
