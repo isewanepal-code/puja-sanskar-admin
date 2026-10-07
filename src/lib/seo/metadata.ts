@@ -1,40 +1,53 @@
 import type { Metadata } from 'next';
 
+import { siteConfig } from '@/config/site';
+import { localeMeta } from '@/i18n/locales';
+import type { Locale } from '@/i18n/routing';
 import { clientEnv } from '@/lib/env';
-import { SEO_DEFAULTS } from './constants';
 
-export function createMetadata(overrides: Metadata = {}): Metadata {
+import { getCanonicalUrl, getLanguageAlternates } from './canonical';
+
+type CreateMetadataOptions = {
+  locale: Locale;
+  description: string;
+  title?: string;
+  pathname?: string;
+};
+
+export function createMetadata({
+  locale,
+  description,
+  title,
+  pathname = '/',
+}: CreateMetadataOptions): Metadata {
+  const url = getCanonicalUrl(locale, pathname);
+  const resolvedTitle = title ?? siteConfig.name;
+
   return {
     metadataBase: new URL(clientEnv.NEXT_PUBLIC_SITE_URL),
-
-    title: {
-      default: SEO_DEFAULTS.title,
-      template: `%s | ${SEO_DEFAULTS.name}`,
+    title: title ?? { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
+    description,
+    applicationName: siteConfig.name,
+    alternates: {
+      canonical: url,
+      languages: getLanguageAlternates(pathname),
     },
-
-    description: SEO_DEFAULTS.description,
-
-    applicationName: SEO_DEFAULTS.name,
-
     openGraph: {
-      type: SEO_DEFAULTS.type,
-      locale: SEO_DEFAULTS.locale,
-      siteName: SEO_DEFAULTS.name,
-      title: SEO_DEFAULTS.title,
-      description: SEO_DEFAULTS.description,
+      type: 'website',
+      locale: localeMeta[locale].ogLocale,
+      siteName: siteConfig.name,
+      title: resolvedTitle,
+      description,
+      url,
     },
-
     twitter: {
       card: 'summary_large_image',
-      title: SEO_DEFAULTS.title,
-      description: SEO_DEFAULTS.description,
+      title: resolvedTitle,
+      description,
     },
-
     robots: {
       index: true,
       follow: true,
     },
-
-    ...overrides,
   };
 }

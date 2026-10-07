@@ -1,20 +1,19 @@
 import { AlertCircle } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 
 type ErrorStateProps = {
   title?: string;
   message?: string;
-  action?: React.ReactNode;
+  action?: ReactNode;
   className?: string;
 };
 
-export function ErrorState({
-  title = 'Something went wrong',
-  message = 'We could not complete your request. Please try again.',
-  action,
-  className,
-}: ErrorStateProps) {
+export function ErrorState({ title, message, action, className }: ErrorStateProps) {
+  const t = useTranslations('error');
+
   return (
     <div
       className={cn(
@@ -25,8 +24,8 @@ export function ErrorState({
     >
       <AlertCircle className="size-6" aria-hidden="true" />
       <div className="space-y-1">
-        <h2 className="text-sm font-semibold">{title}</h2>
-        <p className="text-sm text-muted-foreground">{message}</p>
+        <h2 className="text-sm font-semibold">{title ?? t('title')}</h2>
+        <p className="text-sm text-muted-foreground">{message ?? t('requestFailed')}</p>
       </div>
       {action}
     </div>

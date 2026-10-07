@@ -10,6 +10,11 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
+    server: {
+      deps: {
+        inline: ['next-intl'],
+      },
+    },
     restoreMocks: true,
     unstubGlobals: true,
     unstubEnvs: true,

@@ -1,3 +1,2 @@
-export { getCanonicalUrl } from './canonical';
-export { SEO_DEFAULTS } from './constants';
+export { getCanonicalUrl, getLanguageAlternates } from './canonical';
 export { createMetadata } from './metadata';

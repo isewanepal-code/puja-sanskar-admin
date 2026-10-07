@@ -1,9 +1,10 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 
-import { Button } from '@/components/ui/button';
 import { ErrorState } from '@/components/feedback';
+import { Button } from '@/components/ui/button';
 
 type ErrorProps = {
   error: Error & { digest?: string };
@@ -11,6 +12,8 @@ type ErrorProps = {
 };
 
 export default function Error({ error, reset }: ErrorProps) {
+  const t = useTranslations('error');
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -18,9 +21,9 @@ export default function Error({ error, reset }: ErrorProps) {
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
       <ErrorState
-        title="Something went wrong"
-        message="An unexpected error occurred. Please try again."
-        action={<Button onClick={reset}>Try again</Button>}
+        title={t('title')}
+        message={t('description')}
+        action={<Button onClick={reset}>{t('retry')}</Button>}
       />
     </main>
   );

@@ -15,7 +15,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
   }, [error]);
 
   return (
-    <html lang="ne">
+    <html lang="en">
       <body className="flex min-h-screen items-center justify-center px-4">
         <main className="flex max-w-md flex-col items-center gap-4 text-center">
           <h1 className="text-xl font-semibold">Something went wrong</h1>

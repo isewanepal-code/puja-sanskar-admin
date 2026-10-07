@@ -1,6 +1,7 @@
 'use client';
 
 import { Loader2, Pause, Play } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
 import { useAudioPlayer } from '@/hooks/use-audio-player';
@@ -15,6 +16,7 @@ type AudioPlayerProps = {
 };
 
 export function AudioPlayer({ src, title, loop = false, className }: AudioPlayerProps) {
+  const t = useTranslations('audio');
   const { audioRef, isPlaying, isLoading, hasError, currentTime, duration, toggle, seek } =
     useAudioPlayer();
 
@@ -27,7 +29,7 @@ export function AudioPlayer({ src, title, loop = false, className }: AudioPlayer
         variant="outline"
         onClick={toggle}
         disabled={hasError}
-        aria-label={isPlaying ? `Pause ${title}` : `Play ${title}`}
+        aria-label={isPlaying ? t('pause', { title }) : t('play', { title })}
       >
         {isLoading ? (
           <Loader2 className="animate-spin" aria-hidden="true" />
@@ -46,14 +48,17 @@ export function AudioPlayer({ src, title, loop = false, className }: AudioPlayer
         value={currentTime}
         onChange={(event) => seek(Number(event.target.value))}
         disabled={hasError || duration === 0}
-        aria-label={`Seek ${title}`}
-        aria-valuetext={`${formatDuration(currentTime)} of ${formatDuration(duration)}`}
+        aria-label={t('seek', { title })}
+        aria-valuetext={t('progress', {
+          current: formatDuration(currentTime),
+          total: formatDuration(duration),
+        })}
         className="h-1 flex-1 cursor-pointer accent-primary disabled:cursor-not-allowed"
       />
 
       {hasError ? (
         <span role="alert" className="text-xs text-destructive">
-          Audio unavailable
+          {t('unavailable')}
         </span>
       ) : (
         <span className="text-xs text-muted-foreground tabular-nums">
