@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 const isCI = Boolean(process.env.CI);
-const port = Number(process.env.PORT ?? 3000);
+const port = Number(process.env.PORT ?? 3001);
 const baseURL = `http://localhost:${port}`;
 
 export default defineConfig({
@@ -21,7 +21,7 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: isCI ? 'npm run start' : 'npm run dev',
+    command: `npx next ${isCI ? 'start' : 'dev'} --port ${port}`,
     url: baseURL,
     reuseExistingServer: !isCI,
     timeout: 120_000,

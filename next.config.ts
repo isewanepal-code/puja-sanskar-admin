@@ -15,6 +15,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  agentRules: false,
   images: {
     formats: [...mediaConfig.image.formats],
     qualities: [...mediaConfig.image.qualities],

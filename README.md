@@ -1,6 +1,6 @@
 # Puja Sanskar Web
 
-Frontend for Puja Sanskar — puja materials, puja services and packages.
+The Puja Sanskar shop website. It runs on the [Puja Sanskar API](https://github.com/isewanepal-code/puja-sanskar-api); the admin panel is a separate app.
 
 ## Tech Stack
 
@@ -28,14 +28,14 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). `npm ci` also installs the Git hooks.
+Start the API first (it listens on port 3000), then open [http://localhost:3001](http://localhost:3001). `npm ci` also installs the Git hooks.
 
 ## Environment Variables
 
 | Variable               | Description          | Default                        |
 | ---------------------- | -------------------- | ------------------------------ |
-| `NEXT_PUBLIC_API_URL`  | Backend API base URL | `http://localhost:4000/api/v1` |
-| `NEXT_PUBLIC_SITE_URL` | Public website URL   | `http://localhost:3000`        |
+| `NEXT_PUBLIC_API_URL`  | Backend API base URL | `http://localhost:3000/api/v1` |
+| `NEXT_PUBLIC_SITE_URL` | Public website URL   | `http://localhost:3001`        |
 
 Public variables are validated in `src/lib/env/client.ts`, server-only variables in `src/lib/env/server.ts` (import it directly; it is not re-exported, so it can never reach the client bundle). Add new variables to the schema and to `.env.example`.
 
