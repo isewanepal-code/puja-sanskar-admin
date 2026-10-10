@@ -138,6 +138,10 @@ Call `notFound()` before any `await` that suspends, otherwise the response strea
 - **Tests** are colocated as `*.test.ts(x)` and import `render` from `@/test/render`, which provides translations (English), the query client and a `user` instance.
 - **UI primitives** are added with `npx shadcn add <component>`.
 
+## Engineering Standards
+
+How the website and the admin panel are built: [docs/architecture/engineering-standards.md](docs/architecture/engineering-standards.md).
+
 ## Git Workflow
 
 - `main` — production
