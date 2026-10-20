@@ -12,16 +12,16 @@ vi.mock('@/i18n/navigation', () => ({
 }));
 
 describe('LocaleSwitcher', () => {
-  it('shows the active locale', () => {
+  it('offers the other language', () => {
     render(<LocaleSwitcher />);
 
-    expect(screen.getByRole('combobox', { name: 'Language' })).toHaveValue('en');
+    expect(screen.getByRole('button', { name: 'नेपालीमा हेर्नुहोस्' })).toHaveTextContent('ने');
   });
 
-  it('keeps the current path when switching locale', async () => {
+  it('keeps the current path when switching language', async () => {
     const { user } = render(<LocaleSwitcher />);
 
-    await user.selectOptions(screen.getByRole('combobox', { name: 'Language' }), 'ne');
+    await user.click(screen.getByRole('button', { name: 'नेपालीमा हेर्नुहोस्' }));
 
     expect(replace).toHaveBeenCalledWith('/pujas', { locale: 'ne' });
   });

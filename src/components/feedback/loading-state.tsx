@@ -1,26 +1,27 @@
-'use client';
-
-import { Loader2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { cn } from '@/lib/utils';
 
 type LoadingStateProps = {
   label?: string;
+  // Placeholder cards that hold the layout while a grid loads.
+  cards?: number;
   className?: string;
 };
 
-export function LoadingState({ label, className }: LoadingStateProps) {
+export function LoadingState({ label, cards = 0, className }: LoadingStateProps) {
   const t = useTranslations('common');
 
   return (
     <div
-      className={cn('flex min-h-40 flex-col items-center justify-center gap-3', className)}
+      className={cn(cards > 0 ? 'grid-products grid' : 'empty', className)}
       role="status"
       aria-live="polite"
     >
-      <Loader2 className="size-6 animate-spin" aria-hidden="true" />
-      <span className="text-sm text-muted-foreground">{label ?? t('loading')}</span>
+      <span className={cards > 0 ? 'sr-only' : 'muted'}>{label ?? t('loading')}</span>
+      {Array.from({ length: cards }, (_, i) => (
+        <div key={i} className="skeleton sk-card" aria-hidden="true" />
+      ))}
     </div>
   );
 }

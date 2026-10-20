@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { DM_Sans, Noto_Sans_Devanagari } from 'next/font/google';
+import { Noto_Sans_Devanagari, Noto_Serif_Devanagari } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
@@ -11,18 +11,19 @@ import { AppProviders } from '@/providers';
 
 import '../globals.css';
 
-const dmSans = DM_Sans({
-  variable: '--font-dm-sans',
-  subsets: ['latin'],
+// The approved design's type: Noto Sans Devanagari for text, Noto Serif Devanagari for headings.
+const notoSans = Noto_Sans_Devanagari({
+  variable: '--font-noto-sans',
+  subsets: ['devanagari', 'latin'],
   display: 'swap',
   weight: ['400', '500', '600', '700'],
 });
 
-const notoSansDevanagari = Noto_Sans_Devanagari({
-  variable: '--font-noto-devanagari',
-  subsets: ['devanagari'],
+const notoSerif = Noto_Serif_Devanagari({
+  variable: '--font-noto-serif',
+  subsets: ['devanagari', 'latin'],
   display: 'swap',
-  weight: ['400', '500', '600', '700'],
+  weight: ['600', '700'],
 });
 
 export function generateStaticParams() {
@@ -44,7 +45,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
       <head>
         <ThemeScript />
       </head>
-      <body className={`${dmSans.variable} ${notoSansDevanagari.variable} antialiased`}>
+      <body className={`${notoSans.variable} ${notoSerif.variable}`}>
         <NextIntlClientProvider>
           <AppProviders>{children}</AppProviders>
         </NextIntlClientProvider>

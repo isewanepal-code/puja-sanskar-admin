@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { NextIntlClientProvider } from 'next-intl';
 import type { ReactElement, ReactNode } from 'react';
 
+import { Toaster } from '@/components/overlays';
 import messages from '@/i18n/messages/en.json';
 
 function createTestQueryClient() {
@@ -21,7 +22,9 @@ export function render(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'
   function Wrapper({ children }: { children: ReactNode }) {
     return (
       <NextIntlClientProvider locale="en" messages={messages}>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <Toaster>{children}</Toaster>
+        </QueryClientProvider>
       </NextIntlClientProvider>
     );
   }

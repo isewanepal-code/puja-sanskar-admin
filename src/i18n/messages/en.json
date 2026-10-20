@@ -1,15 +1,22 @@
 {
   "metadata": {
-    "description": "Puja Sanskar provides puja materials, puja services, packages, and related religious services."
+    "description": "What each puja needs, how much, and where to buy it. Ready puja kits, samagri and delivery to your door."
   },
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "close": "Close",
+    "keep": "Keep it",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "increase": "Add one",
+    "decrease": "Remove one"
   },
   "error": {
     "title": "Something went wrong",
     "description": "An unexpected error occurred. Please try again.",
     "requestFailed": "We could not complete your request. Please try again.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "reference": "Reference: {id}"
   },
   "notFound": {
     "title": "Page not found",
@@ -24,9 +31,20 @@
     "unavailable": "Audio unavailable"
   },
   "localeSwitcher": {
-    "label": "Language"
+    "label": "Language",
+    "toEnglish": "Switch to English",
+    "toNepali": "नेपालीमा हेर्नुहोस्",
+    "english": "English",
+    "nepali": "नेपाली"
   },
   "theme": {
     "darkMode": "Dark mode"
+  },
+  "nav": {
+    "home": "Home",
+    "breadcrumb": "You are here",
+    "pages": "Pages",
+    "previous": "Previous",
+    "next": "Next"
   }
 }

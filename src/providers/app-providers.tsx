@@ -2,6 +2,8 @@
 
 import type { ReactNode } from 'react';
 
+import { Toaster } from '@/components/overlays';
+
 import { QueryProvider } from './query-provider';
 
 type AppProvidersProps = {
@@ -9,5 +11,9 @@ type AppProvidersProps = {
 };
 
 export function AppProviders({ children }: AppProvidersProps) {
-  return <QueryProvider>{children}</QueryProvider>;
+  return (
+    <QueryProvider>
+      <Toaster>{children}</Toaster>
+    </QueryProvider>
+  );
 }
