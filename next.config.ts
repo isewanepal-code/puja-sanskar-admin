@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 import { mediaConfig } from './src/config/media';
+import { buildEnv } from './src/lib/env/build';
 
 const withNextIntl = createNextIntlPlugin();
 
@@ -19,6 +20,8 @@ const nextConfig: NextConfig = {
   images: {
     formats: [...mediaConfig.image.formats],
     qualities: [...mediaConfig.image.qualities],
+    // The API's WebP renditions; product, kit and festival images all come from there.
+    remotePatterns: [new URL(`${buildEnv.MEDIA_URL.replace(/\/$/, '')}/**`)],
   },
   async headers() {
     return [{ source: '/:path*', headers: securityHeaders }];
