@@ -1,8 +1,9 @@
 # Frontend Engineering Standards
 
-The rules the shop website and the admin panel follow. Both apps start from
-this repository's `setup` branch and keep a copy of this file; a change to it
-goes through a `docs/*` branch and pull request first, then the code.
+The rules the shop website and the admin panel follow. Both apps live in this
+repository: the website on `development`, the admin panel on the long-lived
+`admin` branch. Both keep this file; a change to it goes through a `docs/*`
+branch and pull request first, then the code.
 
 The API has its own standards (`docs/architecture/engineering-standards.md` in
 `puja-sanskar-api`). Business rules live there; this file says how the
@@ -12,13 +13,15 @@ frontends use them.
 
 ## 1. What we are building
 
-| App          | Repository           | Users                  | Address (production) | Local port |
-| ------------ | -------------------- | ---------------------- | -------------------- | ---------- |
-| API          | `puja-sanskar-api`   | Both apps              | `api.<domain>`       | 3000       |
-| Shop website | `puja-sanskar-web`   | Customers, guests, SEO | `<domain>`           | 3001       |
-| Admin panel  | `puja-sanskar-admin` | Staff, by role         | `admin.<domain>`     | 3002       |
+| App          | Repository                         | Users                  | Address (production) | Local port |
+| ------------ | ---------------------------------- | ---------------------- | -------------------- | ---------- |
+| API          | `puja-sanskar-api`                 | Both apps              | `api.<domain>`       | 3000       |
+| Shop website | `puja-sanskar-web`                 | Customers, guests, SEO | `<domain>`           | 3001       |
+| Admin panel  | `puja-sanskar-web`, branch `admin` | Staff, by role         | `admin.<domain>`     | 3002       |
 
-Two apps, not one with an `/admin` area:
+Two apps, not one with an `/admin` area. They share this repository but never
+a build: the `admin` branch is never merged into `development`, and each is
+deployed on its own.
 
 - Staff sessions live on their own origin, so a fault on the public site
   cannot reach them, and the admin can be kept out of search engines and
@@ -109,7 +112,8 @@ src/features/<feature>/
 ```
 
 Website features: `catalogue`, `pujas`, `kits`, `content`, `search`, `cart`,
-`checkout`, `account`, `orders`, `auth`. Admin features follow the admin
+`checkout`, `account`, `orders`, `auth`, `home`, `mantras`, `pandits`,
+`list-requests`, `offers`, `help`. Admin features follow the admin
 screens: `catalogue`, `inventory`, `orders`, `billing`, `customers`,
 `promotions`, `settings`, `reports`, `staff`, `activity`, `storefront`.
 
@@ -217,6 +221,8 @@ results. They are fixed; changing one is an API change first.
 | `/account/orders/:id`                                              | One of the customer's orders             |
 | `/reset-password?token=`                                           | New password, for customers and staff    |
 | `/verify-email?token=`                                             | Email confirmation                       |
+| `/pandits/:slug`                                                   | A pandit partner and their code          |
+| `/lists/:token`                                                    | A list photo request and its cart        |
 
 English pages add `/en` in front; Nepali has no prefix. `GET /sitemap.xml` on
 the website serves the API's sitemap rather than building its own.
@@ -294,6 +300,16 @@ Browser ──(same origin, cookies)──▶ Next route handlers ──(Bearer)
 ---
 
 ## 9. UI
+
+The approved design is `design/site` on the `design/mock` branch (the third
+iteration; `a-card`, `b-patro` and `c-aangan` are earlier options). The website
+looks exactly like it; mock-only notes, sample data and demo buttons are left
+out. Its tokens (sindoor red, gold accent, warm cream surfaces, Noto Sans and
+Noto Serif Devanagari) live in `globals.css`; its component classes live in
+`src/styles/` as a Tailwind `@layer components` so pages keep the mock's
+markup. New UI keeps the same restraint: radii from the tokens, weight 600 for
+emphasis and 700 only for headings and prices, no gradients or shadows beyond
+the tokens'.
 
 | Topic         | Rule                                                                                                        |
 | ------------- | ----------------------------------------------------------------------------------------------------------- |
@@ -375,7 +391,14 @@ Test names describe behaviour: `should show the price the API sends`.
 
 ```text
 development ── feature/<feature> ── PR ──▶ development ── release PR ──▶ main
+admin ── admin/<feature> ── PR ──▶ admin ── release ──▶ admin.<domain>
 ```
+
+- Branches that depend on one not merged yet start from it (stacked) and are
+  merged in order.
+- The admin panel's work starts from `admin` and goes back into `admin`; nothing
+  from it reaches `development`, and the website's foundation reaches `admin`
+  only by merging `development` into it.
 
 - Never commit directly to `main`, `development` or `setup`.
 - One feature per branch and pull request, merged with a merge commit.
@@ -395,7 +418,8 @@ development ── feature/<feature> ── PR ──▶ development ── rele
 
 ## 15. Before the first feature
 
-The foundation needs these once, in `setup`, before any page is built:
+The foundation needs these once, in `chore/api-foundation`, before any page is
+built; the admin panel gets them by merging `development` into `admin`:
 
 | Step         | What                                                                                      |
 | ------------ | ----------------------------------------------------------------------------------------- |
