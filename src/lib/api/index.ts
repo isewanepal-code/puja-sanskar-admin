@@ -1,4 +1,4 @@
-export { apiClient } from './client';
-export { ApiError } from './errors';
-export { apiErrorResponseSchema, apiResponseSchema, apiSuccessResponseSchema } from './schemas';
-export type { ApiErrorResponse, ApiResponse, ApiSuccessResponse } from './types';
+export { browserApi } from './browser';
+export { ApiError, fieldErrors, isApiError, movedSlug, toApiError } from './errors';
+export type { Schema } from './types';
+export { unwrap, unwrapEmpty } from './unwrap';

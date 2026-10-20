@@ -3,6 +3,9 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 
+// Server modules guard against the browser bundle; tests run them directly.
+vi.mock('server-only', () => ({}));
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn((query: string) => ({

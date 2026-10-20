@@ -1,20 +1,6 @@
-export type ApiSuccessResponse<T> = {
-  success: true;
-  message: string;
-  data: T;
-};
+import type { components, paths } from './schema';
 
-export type ApiErrorDetails = {
-  code: string;
-  details: unknown[];
-};
+export type { paths };
 
-export type ApiErrorResponse = {
-  success: false;
-  message: string;
-  error: ApiErrorDetails;
-  path?: string;
-  timestamp?: string;
-};
-
-export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
+// Response and request shapes by their API name: Schema<'ProductDetailResponse'>.
+export type Schema<Name extends keyof components['schemas']> = components['schemas'][Name];
