@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
@@ -8,6 +8,8 @@ import { useToast } from '@/components/overlays';
 import { ActionModal, ResourceScreen, useResourceText } from '@/components/resource';
 import { IconButton } from '@/components/ui/button';
 import { isApiError, request, type Schema } from '@/lib/api';
+
+import { staffBranchesResource, type Branch } from '@/features/branches';
 
 import { resetPasswordResource, usersResource } from '../resources';
 
@@ -20,6 +22,12 @@ export function UsersScreen() {
   const toast = useToast();
   const resource = useMemo(() => usersResource(t), [t]);
   const [resetting, setResetting] = useState<User | null>(null);
+  const [placing, setPlacing] = useState<User | null>(null);
+  const placed = useQuery({
+    queryKey: ['users', 'branches', placing?.id],
+    queryFn: () => request<Branch[]>('GET', `/admin/users/${placing!.id}/branches`),
+    enabled: !!placing,
+  });
 
   const unlock = useMutation({
     mutationFn: (user: User) => request('POST', `/admin/users/${user.id}/unlock`),
@@ -33,6 +41,7 @@ export function UsersScreen() {
         resource={resource}
         rowActions={(row) => (
           <>
+            <IconButton icon="store" label={ta('branches')} onClick={() => setPlacing(row)} />
             <IconButton icon="lock" label={ta('unlock')} onClick={() => unlock.mutate(row)} />
             <IconButton
               icon="refresh"
@@ -49,6 +58,15 @@ export function UsersScreen() {
         submitLabel={ta('resetPassword')}
         doneMessage={ta('passwordReset')}
         onClose={() => setResetting(null)}
+      />
+      <ActionModal
+        resource={placing && placed.data ? staffBranchesResource(placing.id) : null}
+        title={ta('branchesOf', { name: placing?.fullName ?? '' })}
+        description={ta('branchesNote')}
+        submitLabel={tf('save')}
+        doneMessage={tf('saved')}
+        defaults={{ branchIds: (placed.data ?? []).map((b) => b.id) }}
+        onClose={() => setPlacing(null)}
       />
     </>
   );

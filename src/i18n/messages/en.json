@@ -75,7 +75,10 @@
       "settings": "Settings",
       "staff": "Staff",
       "customers": "Customers",
-      "reports": "Reports"
+      "reports": "Reports",
+      "money": "Cash and bank",
+      "purchases": "Purchases",
+      "expenses": "Expenses"
     },
     "changePassword": "Change password",
     "groups": {
@@ -83,11 +86,15 @@
       "sales": "Sales",
       "catalogue": "Pujas and samagri",
       "site": "Website",
-      "admin": "Administration"
+      "admin": "Administration",
+      "accounts": "Accounts"
     },
     "showMenu": "Show the menu",
     "hideMenu": "Hide the menu",
-    "closeMenu": "Close the menu"
+    "closeMenu": "Close the menu",
+    "branch": "Branch",
+    "allBranches": "Every branch",
+    "online": "online"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -636,11 +643,13 @@
         "password": "Password",
         "status": "Status",
         "roles": "Roles",
-        "lastLoginAt": "Last sign-in"
+        "lastLoginAt": "Last sign-in",
+        "branchIds": "Works at"
       },
       "hints": {
         "password": "At least 12 characters; they can change it after signing in.",
-        "roles": "What they may see and do."
+        "roles": "What they may see and do.",
+        "branchIds": "Left empty, the branch serving online orders."
       },
       "roles": {
         "SUPER_ADMIN": "Super admin",
@@ -1551,6 +1560,211 @@
         "CASH_ON_DELIVERY": "Cash on delivery",
         "SOMEONE_ELSE": "Someone else pays"
       }
+    },
+    "branches": {
+      "title": "Branches",
+      "add": "Open a branch",
+      "empty": "No branches yet.",
+      "online": "Online orders",
+      "open": "Open",
+      "closed": "Closed",
+      "onlineMoved": "Online orders now go to this branch",
+      "makeOnline": "Serve online orders from here",
+      "fields": {
+        "code": "Code",
+        "name": "Name",
+        "address": "Address",
+        "phone": "Phone",
+        "billPrefix": "Bill numbers",
+        "staffCount": "Staff",
+        "isActive": "Open"
+      },
+      "hints": {
+        "code": "2 to 6 capitals, such as BNS. It cannot change.",
+        "billPrefix": "Printed before bill numbers, such as BNS-2083/84-000001. Left empty, the branch code."
+      }
+    },
+    "staffBranches": {
+      "title": "Branches",
+      "add": "Set branches",
+      "empty": "No branches.",
+      "fields": {
+        "branchIds": "Works at"
+      }
+    },
+    "moneyAccounts": {
+      "title": "Accounts",
+      "add": "Open an account",
+      "empty": "No accounts.",
+      "open": "Open",
+      "closed": "Closed",
+      "kinds": {
+        "CASH": "Cash drawer",
+        "BANK": "Bank account",
+        "WALLET": "Wallet (QR, eSewa, Khalti)"
+      },
+      "fields": {
+        "branch": "Branch",
+        "kind": "Kind",
+        "name": "Name",
+        "balance": "Balance",
+        "openingBalance": "Opening balance",
+        "isActive": "Open"
+      },
+      "hints": {
+        "openingBalance": "What was in it before the shop started recording here.",
+        "kind": "Accounts are opened at the branch chosen at the top."
+      }
+    },
+    "moneyTransfer": {
+      "title": "Move money",
+      "add": "Move money",
+      "empty": "—",
+      "fields": {
+        "fromAccountId": "From",
+        "toAccountId": "To",
+        "amount": "Amount",
+        "day": "Date",
+        "reference": "Reference",
+        "note": "Note"
+      }
+    },
+    "moneyAdjustment": {
+      "title": "Correct the balance",
+      "add": "Correct",
+      "empty": "—",
+      "fields": {
+        "amount": "Amount",
+        "reason": "Why",
+        "day": "Date"
+      },
+      "hints": {
+        "amount": "Such as 150 to add or -150 to take away."
+      }
+    },
+    "dayClosing": {
+      "title": "Close the day",
+      "add": "Close",
+      "empty": "—",
+      "fields": {
+        "counted": "Counted",
+        "note": "Note"
+      }
+    },
+    "suppliers": {
+      "title": "Suppliers",
+      "add": "Add a supplier",
+      "empty": "No suppliers yet.",
+      "fields": {
+        "code": "Code",
+        "name": "Name",
+        "panNumber": "PAN",
+        "phone": "Phone",
+        "address": "Address",
+        "openingBalance": "Owed before",
+        "owed": "Owed now",
+        "isActive": "Active"
+      },
+      "hints": {
+        "openingBalance": "What the shop owed them before recording here."
+      }
+    },
+    "purchaseBills": {
+      "title": "Bills",
+      "add": "Enter a bill",
+      "empty": "No bills yet.",
+      "statuses": {
+        "DRAFT": "Draft",
+        "POSTED": "Posted"
+      },
+      "fields": {
+        "billDay": "Date",
+        "supplierId": "Supplier",
+        "lines": "Lines",
+        "vatTotal": "VAT",
+        "total": "Total",
+        "status": "Status"
+      }
+    },
+    "supplierPayments": {
+      "title": "Payments",
+      "add": "Pay a supplier",
+      "empty": "No payments yet.",
+      "statuses": {
+        "RECORDED": "Paid",
+        "VOID": "Voided"
+      },
+      "fields": {
+        "day": "Date",
+        "supplierId": "Supplier",
+        "accountId": "Paid from",
+        "amount": "Amount",
+        "reference": "Reference",
+        "note": "Note",
+        "status": "Status"
+      }
+    },
+    "voidSupplierPayment": {
+      "title": "Void",
+      "add": "Void",
+      "empty": "—",
+      "fields": {
+        "reason": "Why"
+      }
+    },
+    "expenseCategories": {
+      "title": "Categories",
+      "add": "Add a category",
+      "empty": "No categories.",
+      "fields": {
+        "name": "Name",
+        "code": "Code",
+        "isActive": "In use"
+      }
+    },
+    "expenses": {
+      "title": "Expenses",
+      "add": "Record an expense",
+      "empty": "No expenses yet.",
+      "statuses": {
+        "RECORDED": "Recorded",
+        "VOID": "Voided"
+      },
+      "fields": {
+        "day": "Date",
+        "categoryId": "Category",
+        "accountId": "Paid from",
+        "amount": "Amount paid",
+        "vatAmount": "VAT in it",
+        "payee": "Paid to",
+        "payeePan": "Their PAN",
+        "reference": "Reference",
+        "note": "Note",
+        "receiptUrl": "Receipt",
+        "status": "Status"
+      },
+      "hints": {
+        "amount": "Everything paid, VAT included.",
+        "vatAmount": "From their VAT bill; it is set against the VAT you collect."
+      }
+    },
+    "voidExpense": {
+      "title": "Void",
+      "add": "Void",
+      "empty": "—",
+      "fields": {
+        "reason": "Why"
+      }
+    },
+    "stockTransfer": {
+      "title": "Send to a branch",
+      "add": "Send",
+      "empty": "—",
+      "fields": {
+        "toBranchId": "To branch",
+        "quantity": "How many",
+        "note": "Note"
+      }
     }
   },
   "catalogue": {
@@ -1592,7 +1806,8 @@
       "deliverySlots": "Delivery times",
       "shop": "Shop",
       "business": "Business profile",
-      "data": "Data"
+      "data": "Data",
+      "branches": "Branches"
     }
   },
   "staffSection": {
@@ -1664,7 +1879,15 @@
     "uploadProductsNote": "Use the downloaded list or the layout: a Products sheet and a Packs sheet. Rows match by code and SKU; new ones are added, a blank cell keeps what is saved. Prices are as sold, VAT included.",
     "uploadStock": "Upload stock from Excel",
     "uploadStockNote": "A Movements sheet: sku, type (PURCHASE, RETURN, DAMAGE or ADJUSTMENT), quantity, and optionally unit_cost, reference and note. All rows are recorded together or none are.",
-    "itemsCount": "Items ({count})"
+    "itemsCount": "Items ({count})",
+    "branches": "Branches",
+    "branchesOf": "Where {name} works",
+    "branchesNote": "Admins see every branch whatever is set here.",
+    "sendToBranch": "Send to another branch",
+    "sendToBranchOf": "Send {name} to another branch",
+    "sendToBranchNote": "Leaves this branch and arrives at the other at its average cost.",
+    "send": "Send",
+    "sent": "Sent"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -1816,7 +2039,9 @@
       "salesBook": "Sales book",
       "vat": "VAT",
       "dayBook": "Day book",
-      "receivables": "Owed"
+      "receivables": "Owed",
+      "profitAndLoss": "Profit and loss",
+      "purchaseBook": "Purchases"
     }
   },
   "reports": {
@@ -1861,7 +2086,20 @@
       "age": "Waiting",
       "days": "{days, plural, one {# day} other {# days}}",
       "orders": "Orders",
-      "outstanding": "Outstanding"
+      "outstanding": "Outstanding",
+      "vatPaid": "VAT paid",
+      "supplier": "Supplier"
+    },
+    "profit": {
+      "line": "Line",
+      "amount": "Amount",
+      "sales": "Sales (without VAT)",
+      "costOfSales": "Cost of goods sold",
+      "grossProfit": "Gross profit",
+      "stockWrittenOff": "Stock damaged or lost",
+      "totalExpenses": "Total expenses",
+      "netProfit": "Net profit",
+      "vatPayable": "VAT to pay"
     }
   },
   "system": {
@@ -1911,5 +2149,101 @@
     "time": "Time",
     "today": "Today",
     "clear": "Clear"
+  },
+  "money": {
+    "title": "Cash and bank",
+    "intro": "Every drawer, bank account and wallet of each branch, with its balance read from payments, supplier payments, expenses and transfers.",
+    "from": "From",
+    "to": "To",
+    "periodNote": "Leave both empty for this fiscal year.",
+    "failed": "The book could not load.",
+    "opening": "Opening balance",
+    "in": "Money in",
+    "out": "Money out",
+    "closing": "Closing balance",
+    "date": "Date",
+    "what": "What",
+    "balance": "Balance",
+    "voided": "voided",
+    "noEntries": "Nothing in this period.",
+    "kinds": {
+      "CUSTOMER_PAYMENT": "Customer payment",
+      "CUSTOMER_REFUND": "Refund to customer",
+      "SUPPLIER_PAYMENT": "Paid to supplier",
+      "EXPENSE": "Expense",
+      "TRANSFER_OUT": "Moved out",
+      "TRANSFER_IN": "Moved in",
+      "ADJUSTMENT": "Adjustment"
+    },
+    "methods": {
+      "CASH": "Cash",
+      "QR": "QR",
+      "ESEWA": "eSewa",
+      "KHALTI": "Khalti",
+      "BANK_TRANSFER": "Bank transfer",
+      "CARD": "Card",
+      "OTHER": "Other"
+    },
+    "methodsTitle": "Payment methods",
+    "methodsNote": "Which account each way of paying goes into at this branch.",
+    "transfer": "Move money",
+    "transferNote": "A bank deposit, or cash sent to another branch: out of one account and into the other together.",
+    "transferred": "Money moved",
+    "book": "Book",
+    "bookOf": "{name}",
+    "bookNote": "Every line in date order with the balance after it.",
+    "closeDay": "Close the day",
+    "closeDayOf": "Close the day: {name}",
+    "closeDayNote": "The book says {balance}. Count what is there; any difference is recorded.",
+    "dayClosed": "Day closed",
+    "adjust": "Correct the balance",
+    "adjustOf": "Correct {name}",
+    "adjustNote": "Positive adds, negative takes away. Say why.",
+    "adjusted": "Balance corrected"
+  },
+  "purchases": {
+    "title": "Purchases",
+    "tabs": {
+      "bills": "Bills",
+      "suppliers": "Suppliers",
+      "payments": "Payments"
+    },
+    "newBill": "Enter a bill",
+    "editBill": "Bill {number}",
+    "billNote": "Goods reach stock only when the bill is posted. Prices are before VAT; VAT left on \"Pack’s rate\" follows the pack.",
+    "totals": "Before VAT {subtotal} · VAT {vat} · Total {total}",
+    "saveDraft": "Save as draft",
+    "drafted": "Bill saved as a draft",
+    "supplier": "Supplier",
+    "billNumber": "Supplier’s bill number",
+    "billDay": "Bill date",
+    "pack": "Pack",
+    "quantity": "Qty",
+    "unitCost": "Unit cost",
+    "vat": "VAT",
+    "amount": "With VAT",
+    "vatAuto": "Pack’s rate",
+    "vatNone": "None",
+    "removeLine": "Remove the line",
+    "addLine": "Add a line",
+    "note": "Note (optional)",
+    "post": "Post into stock",
+    "posted": "Posted: the goods are in stock",
+    "view": "View",
+    "void": "Void",
+    "voidPayment": "Void this payment",
+    "voidNote": "It stays listed as voided and leaves the balance.",
+    "voided": "Voided"
+  },
+  "expensesSection": {
+    "title": "Expenses",
+    "tabs": {
+      "expenses": "Expenses",
+      "categories": "Categories"
+    },
+    "void": "Void",
+    "voidTitle": "Void this expense",
+    "voidNote": "It stays listed as voided and the money returns to the account.",
+    "voided": "Voided"
   }
 }

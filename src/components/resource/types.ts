@@ -91,6 +91,8 @@ export type Resource<T> = {
   listQuery?: Record<string, string>;
   // An Excel download of the list, taking its filters and search.
   exportPath?: string;
+  // When the API takes a different shape than the fields (one line sent as a list…).
+  shapeBody?: (body: Record<string, unknown>) => Record<string, unknown>;
   // A rule across fields, checked before sending; names the field to mark.
   check?: (values: Record<string, unknown>) => { field: string; message: string } | null;
   // A record as its form edits it, when the API nests what the form sends as ids.

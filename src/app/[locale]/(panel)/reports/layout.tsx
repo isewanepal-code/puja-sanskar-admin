@@ -22,6 +22,8 @@ export default async function ReportsLayout({
             { href: routes.vat(), label: t('tabs.vat') },
             { href: routes.dayBook(), label: t('tabs.dayBook') },
             { href: routes.receivables(), label: t('tabs.receivables') },
+            { href: routes.profitAndLoss(), label: t('tabs.profitAndLoss') },
+            { href: routes.purchaseBook(), label: t('tabs.purchaseBook') },
           ]}
         />
       </header>

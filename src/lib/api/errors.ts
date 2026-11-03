@@ -43,7 +43,10 @@ export function toApiError(status: number, body: unknown): ApiError {
     });
   }
   const { message, error, requestId } = parsed.data;
-  return new ApiError(message, { status, code: error.code, details: error.details, requestId });
+  // The API speaks of a header; staff choose the branch at the top of the screen.
+  const shown =
+    error.code === 'BRANCH_REQUIRED' ? 'Choose a branch at the top of the screen first.' : message;
+  return new ApiError(shown, { status, code: error.code, details: error.details, requestId });
 }
 
 // A renamed catalogue page answers 301 with the new slug in the details.

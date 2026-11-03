@@ -1,3 +1,4 @@
+import { branchChoices } from '@/features/branches';
 import type { Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import type { Schema } from '@/lib/api';
@@ -84,6 +85,7 @@ export function usersResource(name: Name): Resource<User> {
         })),
       },
       { name: 'roles', kind: 'multiselect', required: true, options: roleChoices },
+      { name: 'branchIds', kind: 'multiselect', createOnly: true, optionsFrom: branchChoices },
     ],
   };
 }

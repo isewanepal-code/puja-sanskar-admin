@@ -23,6 +23,7 @@ export default async function SettingsLayout({
             { href: routes.deliverySlots(), label: t('tabs.deliverySlots') },
             { href: routes.shopSettings(), label: t('tabs.shop') },
             { href: routes.businessProfile(), label: t('tabs.business') },
+            { href: routes.branches(), label: t('tabs.branches') },
             { href: routes.dataTools(), label: t('tabs.data') },
           ]}
         />

@@ -10,7 +10,7 @@ type Grade = Schema<'ProductGradeResponse'>;
 type Material = Schema<'AdminMaterialResponse'>;
 type Unit = Schema<'UnitResponse'>;
 type TaxClass = Schema<'TaxClassResponse'>;
-type Page<T> = { items: T[] };
+type Page<T> = { items: T[]; meta: { totalPages: number } };
 
 const money = (amount: string | null | undefined) => (amount ? formatMoney(amount, 'en') : '—');
 
@@ -38,6 +38,29 @@ const taxClassChoices = {
       value: tax.id,
       label: `${tax.code} · ${tax.name}`,
     })),
+};
+
+// Every pack of every product, page by page, for picking one in a form.
+export const packChoices = {
+  key: 'packs',
+  load: async (): Promise<Option[]> => {
+    const options: Option[] = [];
+    for (let page = 1; page <= 50; page++) {
+      const { items, meta } = await request<Page<Product>>('GET', '/admin/products', {
+        query: { limit: 100, page },
+      });
+      for (const product of items) {
+        for (const variant of product.variants) {
+          options.push({
+            value: variant.id,
+            label: `${variant.sku} · ${product.nameNe} · ${variant.label}`,
+          });
+        }
+      }
+      if (page >= meta.totalPages) break;
+    }
+    return options;
+  },
 };
 
 export const productChoices = {

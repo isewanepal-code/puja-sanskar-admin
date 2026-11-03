@@ -382,6 +382,123 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/branches': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Every branch, the online one first */
+    get: operations['AdminBranchController_list'];
+    put?: never;
+    /** Open a branch */
+    post: operations['AdminBranchController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/branches/mine': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Open branches the signed-in staff member may work in
+     * @description For the branch switcher; send the chosen code as X-Branch.
+     */
+    get: operations['AdminBranchController_mine'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/branches/current': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The branch this request works in
+     * @description X-Branch when sent, else the only branch the user has, else none; and which branches the user may see.
+     */
+    get: operations['AdminBranchController_current'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/branches/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One branch */
+    get: operations['AdminBranchController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Change or close a branch
+     * @description The branch serving online orders cannot be closed until another takes them.
+     */
+    patch: operations['AdminBranchController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/branches/{id}/online': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Serve website orders from this branch */
+    put: operations['AdminBranchController_makeOnline'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/users/{userId}/branches': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Where a staff member works */
+    get: operations['AdminStaffBranchController_list'];
+    /**
+     * Set where a staff member works
+     * @description Admins see every branch whatever is set here.
+     */
+    put: operations['AdminStaffBranchController_set'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/account/addresses': {
     parameters: {
       query?: never;
@@ -1619,6 +1736,47 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/products/{productId}/branch-packs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * A product's packs as the branch's counter sells them
+     * @description Its own price and whether it is sold there, beside the catalogue.
+     */
+    get: operations['AdminBranchPackController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/products/{productId}/branch-packs/{variantId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set the branch's price for a pack, or stop selling it there
+     * @description Prices are as sold, VAT included. Matching the catalogue removes the branch row.
+     */
+    put: operations['AdminBranchPackController_set'];
+    post?: never;
+    /** Back to the catalogue price and listing at this branch */
+    delete: operations['AdminBranchPackController_reset'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/search/popular': {
     parameters: {
       query?: never;
@@ -1701,8 +1859,8 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * List stock by SKU
-     * @description Lowest stock first. SKUs never stocked are not listed.
+     * List stock by branch and SKU
+     * @description Lowest stock first; the chosen branch, else every branch the user may see. SKUs never stocked are not listed.
      */
     get: operations['AdminStockLevelController_list'];
     put?: never;
@@ -1740,14 +1898,14 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Get a SKU's stock (zero if never stocked) */
+    /** A SKU's stock at the branch (zero if never stocked) */
     get: operations['AdminStockLevelController_get'];
     put?: never;
     post?: never;
     delete?: never;
     options?: never;
     head?: never;
-    /** Set the low-stock threshold */
+    /** Set the branch's low-stock threshold */
     patch: operations['AdminStockLevelController_update'];
     trace?: never;
   };
@@ -1758,7 +1916,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** A SKU's stock ledger, newest first */
+    /** A SKU's stock ledger at the branch, newest first */
     get: operations['AdminStockMovementController_list'];
     put?: never;
     /**
@@ -1766,6 +1924,26 @@ export interface paths {
      * @description Movements are permanent; correct a mistake with an ADJUSTMENT.
      */
     post: operations['AdminStockMovementController_record'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/stock-transfers': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Send stock from this branch to another
+     * @description Every line leaves as TRANSFER_OUT and arrives as TRANSFER_IN at the sender's average cost, all in one transaction; both halves share one reference.
+     */
+    post: operations['AdminStockTransferController_transfer'];
     delete?: never;
     options?: never;
     head?: never;
@@ -4061,7 +4239,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/admin/orders/{id}/message': {
+  '/api/v1/admin/money-accounts': {
     parameters: {
       query?: never;
       header?: never;
@@ -4069,12 +4247,129 @@ export interface paths {
       cookie?: never;
     };
     /**
-     * The order's latest news, ready to send
-     * @description For customers without email updates (guests, counter): open whatsappUrl, viberUrl or smsUrl and send. Signed-in customers are emailed by themselves.
+     * Cash drawers, bank accounts and wallets with their balances
+     * @description The chosen branch, else every branch the user may see.
      */
-    get: operations['AdminOrderMessageController_message'];
+    get: operations['AdminMoneyController_list'];
+    put?: never;
+    /** Open an account at the branch */
+    post: operations['AdminMoneyController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/money-accounts/methods': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Which account each payment method pays into at the branch */
+    get: operations['AdminMoneyController_methods'];
+    /** Send a payment method to another of the branch’s accounts */
+    put: operations['AdminMoneyController_setMethod'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/money-accounts/transfers': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Move money between accounts
+     * @description A bank deposit, or cash sent to another branch; out of one and into the other together.
+     */
+    post: operations['AdminMoneyController_transfer'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/money-accounts/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One account with its balance */
+    get: operations['AdminMoneyController_get'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Rename, set the opening balance or close an account
+     * @description An account still taking a payment method cannot be closed.
+     */
+    patch: operations['AdminMoneyController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/money-accounts/{id}/book': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * An account's cash or bank book
+     * @description Every payment, refund, transfer and adjustment in date order with the running balance; fiscalYear or from/to like the reports.
+     */
+    get: operations['AdminMoneyController_book'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/money-accounts/{id}/adjustments': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Correct the balance, with a reason */
+    post: operations['AdminMoneyController_adjust'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/money-accounts/{id}/closings': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Close the day: count the drawer against the book
+     * @description A difference is recorded as an adjustment that names the count.
+     */
+    post: operations['AdminMoneyController_close'];
     delete?: never;
     options?: never;
     head?: never;
@@ -4133,6 +4428,66 @@ export interface paths {
      * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither.
      */
     get: operations['AdminReportController_exportSalesBook'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/reports/profit-and-loss': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Profit and loss: sales, cost of sales, expenses and the VAT to pay
+     * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither.
+     */
+    get: operations['AdminReportController_profitAndLoss'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/reports/purchase-book': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Purchase book (खरिद खाता): posted supplier bills with the VAT paid
+     * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither.
+     */
+    get: operations['AdminReportController_purchaseBook'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/reports/purchase-book/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Purchase book as Excel
+     * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither.
+     */
+    get: operations['AdminReportController_exportPurchaseBook'];
     put?: never;
     post?: never;
     delete?: never;
@@ -4252,6 +4607,233 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/suppliers': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Suppliers with what the shop owes each */
+    get: operations['AdminSupplierController_list'];
+    put?: never;
+    /** Add a supplier */
+    post: operations['AdminSupplierController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/suppliers/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One supplier */
+    get: operations['AdminSupplierController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Change a supplier */
+    patch: operations['AdminSupplierController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/purchase-bills': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Purchase bills, newest first
+     * @description The chosen branch, else every branch the user may see.
+     */
+    get: operations['AdminPurchaseBillController_list'];
+    put?: never;
+    /**
+     * Enter a supplier's bill as a draft
+     * @description A line's VAT rate defaults to its pack's rate today; nothing reaches stock until it is posted.
+     */
+    post: operations['AdminPurchaseBillController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/purchase-bills/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One purchase bill with its lines */
+    get: operations['AdminPurchaseBillController_get'];
+    /** Change a draft bill, lines and all */
+    put: operations['AdminPurchaseBillController_update'];
+    post?: never;
+    /** Throw away a draft bill */
+    delete: operations['AdminPurchaseBillController_delete'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/purchase-bills/{id}/post': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Post the bill: its goods enter the branch's stock at cost
+     * @description Posted bills are never changed. VAT is left out of the cost when the shop is VAT registered.
+     */
+    post: operations['AdminPurchaseBillController_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/supplier-payments': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Payments to suppliers, newest first */
+    get: operations['AdminSupplierPaymentController_list'];
+    put?: never;
+    /** Pay a supplier out of one of the branch's accounts */
+    post: operations['AdminSupplierPaymentController_pay'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/supplier-payments/{id}/void': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Void a payment entered by mistake (kept on record) */
+    post: operations['AdminSupplierPaymentController_void'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/expense-categories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Expense categories */
+    get: operations['AdminExpenseCategoryController_list'];
+    put?: never;
+    /** Add an expense category */
+    post: operations['AdminExpenseCategoryController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/expense-categories/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Rename a category or stop using it */
+    patch: operations['AdminExpenseCategoryController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/expenses': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Expenses, newest first
+     * @description The chosen branch, else every branch the user may see; from/to are AD days.
+     */
+    get: operations['AdminExpenseController_list'];
+    put?: never;
+    /** Record money spent, out of one of the branch's accounts */
+    post: operations['AdminExpenseController_record'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/expenses/{id}/void': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Void an expense entered by mistake (kept on record) */
+    post: operations['AdminExpenseController_void'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/orders/{id}/message': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The order's latest news, ready to send
+     * @description For customers without email updates (guests, counter): open whatsappUrl, viberUrl or smsUrl and send. Signed-in customers are emailed by themselves.
+     */
+    get: operations['AdminOrderMessageController_message'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/dataset/import': {
     parameters: {
       query?: never;
@@ -4320,7 +4902,7 @@ export interface paths {
     put?: never;
     /**
      * Record stock movements from Excel
-     * @description Sheet Movements with columns sku, type (PURCHASE, RETURN, DAMAGE or ADJUSTMENT), quantity, unit_cost, reference and note. All rows are recorded together or none are.
+     * @description Sheet Movements with columns sku, type (PURCHASE, RETURN, DAMAGE or ADJUSTMENT), quantity, unit_cost, reference and note, for the X-Branch branch. All rows are recorded together or none are.
      */
     post: operations['AdminStockImportController_import'];
     delete?: never;
@@ -4524,6 +5106,17 @@ export interface components {
         | 'settings:manage'
         | 'requests:handle'
         | 'discounts:override'
+        | 'branches:read'
+        | 'branches:manage'
+        | 'branches:all'
+        | 'money:read'
+        | 'money:write'
+        | 'money:manage'
+        | 'purchases:read'
+        | 'purchases:write'
+        | 'expenses:read'
+        | 'expenses:write'
+        | 'expenses:manage'
       )[];
     };
     CustomerSignupDto: {
@@ -4587,6 +5180,8 @@ export interface components {
         | 'ACCOUNTANT'
         | 'STORE_STAFF'
       )[];
+      /** @description Branches the person works at; the branch serving online orders when left out */
+      branchIds?: string[];
     };
     UpdateUserDto: {
       /** @example admin@pujasanskar.com */
@@ -4613,6 +5208,85 @@ export interface components {
     ResetPasswordDto: {
       /** Format: password */
       password: string;
+    };
+    BranchResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example BNS */
+      code: string;
+      /** @example Baneshwor branch */
+      name: string;
+      /** @example Baneshwor, Kathmandu */
+      address: string;
+      /** @example 9801234567 */
+      phone: string;
+      isActive: boolean;
+      /** @description Website orders are served from this branch */
+      servesOnline: boolean;
+      /**
+       * @description Printed before its bill numbers; null prints the number alone
+       * @example BNS
+       */
+      billPrefix: string | null;
+      /**
+       * @description Staff who work here
+       * @example 4
+       */
+      staffCount: number;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    BranchSummary: {
+      /** Format: uuid */
+      id: string;
+      /** @example BNS */
+      code: string;
+      /** @example Baneshwor branch */
+      name: string;
+    };
+    BranchScopeResponse: {
+      branch: components['schemas']['BranchSummary'] | null;
+      /** @description Branches the user may see; null for every branch */
+      branchIds: string[] | null;
+    };
+    CreateBranchDto: {
+      /**
+       * @description Printed before bill numbers (BNS-2083/84-000001); the code when left out on a new branch, null for none
+       * @example BNS
+       */
+      billPrefix?: string | null;
+      /**
+       * @description Prints on bills; cannot change later
+       * @example BNS
+       */
+      code: string;
+      /** @example Baneshwor branch */
+      name: string;
+      /** @example Baneshwor, Kathmandu */
+      address: string;
+      /** @example +9779801234567 */
+      phone: string;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdateBranchDto: {
+      /**
+       * @description Printed before bill numbers (BNS-2083/84-000001); the code when left out on a new branch, null for none
+       * @example BNS
+       */
+      billPrefix?: string | null;
+      /** @example Baneshwor branch */
+      name?: string;
+      /** @example Baneshwor, Kathmandu */
+      address?: string;
+      /** @example +9779801234567 */
+      phone?: string;
+      /** @default true */
+      isActive: boolean;
+    };
+    SetStaffBranchesDto: {
+      /** @description Every branch the person works at; empty for none */
+      branchIds: string[];
     };
     SavedAddressResponse: {
       /** Format: uuid */
@@ -6678,6 +7352,60 @@ export interface components {
       /** @description Products that go well with this one, in display order */
       productIds: string[];
     };
+    BranchTermsResponse: {
+      /** @description false: not sold at this branch's counter */
+      isListed: boolean;
+      /**
+       * @description As sold, VAT included; null keeps the catalogue price
+       * @example 130.00
+       */
+      price: string | null;
+      /** @example 150.00 */
+      compareAtPrice: string | null;
+    };
+    CounterPriceResponse: {
+      /** @example 130.00 */
+      price: string;
+      /** @example 150.00 */
+      compareAtPrice: string | null;
+    };
+    BranchPackResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example KAP-050 */
+      sku: string;
+      /** @example 50 g */
+      label: string;
+      pack: components['schemas']['PackResponse'] | null;
+      /**
+       * Format: uuid
+       * @description One of the product's grades
+       */
+      gradeId: string | null;
+      /** @example 120.00 */
+      price: string;
+      /** @example 150.00 */
+      compareAtPrice: string | null;
+      /** @example NPR */
+      currency: string;
+      /** @description Picked when the product is added by material */
+      isDefault: boolean;
+      /** @description Can be sold now: more on hand than held for orders */
+      inStock: boolean;
+      branch: components['schemas']['BranchTermsResponse'];
+      /** @description What the counter charges */
+      counter: components['schemas']['CounterPriceResponse'];
+      /** @description Sold on the website (catalogue setting) */
+      isActive: boolean;
+    };
+    SetBranchPackDto: {
+      /** @description false: this branch does not sell the pack at its counter */
+      isListed: boolean;
+      /** @example 130.00 */
+      price?: string | null;
+      /** @example 150.00 */
+      compareAtPrice?: string | null;
+    };
     PopularSearchesResponse: {
       /**
        * @example [
@@ -6735,6 +7463,7 @@ export interface components {
       isActive: boolean;
     };
     StockLevelResponse: {
+      branch: components['schemas']['BranchSummary'];
       variant: components['schemas']['VariantSummary'];
       /** @example 42 */
       onHand: number;
@@ -6750,6 +7479,11 @@ export interface components {
       available: number;
       /** @example 10 */
       reorderLevel: number | null;
+      /**
+       * @description One unit's moving average cost at this branch
+       * @example 82.50
+       */
+      avgCost: string;
       /** @description onHand is at or below reorderLevel */
       isLowStock: boolean;
       /** Format: date-time */
@@ -6765,10 +7499,16 @@ export interface components {
     StockMovementResponse: {
       /** Format: uuid */
       id: string;
+      /**
+       * Format: uuid
+       * @description The branch whose stock moved
+       */
+      branchId: string;
       /** Format: uuid */
       variantId: string;
       /** @enum {string} */
-      type: 'PURCHASE' | 'RETURN' | 'SALE' | 'DAMAGE' | 'ADJUSTMENT';
+      type:
+        'PURCHASE' | 'RETURN' | 'SALE' | 'DAMAGE' | 'ADJUSTMENT' | 'TRANSFER_OUT' | 'TRANSFER_IN';
       /**
        * @description Signed change to the stock
        * @example -2
@@ -6798,6 +7538,24 @@ export interface components {
       /** @example INV-2026-0142 */
       reference?: string | null;
       /** @example Monthly stock count */
+      note?: string | null;
+    };
+    TransferLineDto: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example 12 */
+      quantity: number;
+    };
+    TransferStockDto: {
+      /**
+       * Format: uuid
+       * @description The open branch receiving the goods
+       */
+      toBranchId: string;
+      lines: components['schemas']['TransferLineDto'][];
+      /** @example TRF-2026-11-03-7K2Q */
+      reference?: string | null;
+      /** @example Dashain restock for Patan */
       note?: string | null;
     };
     CartMemberResponse: {
@@ -8608,6 +9366,8 @@ export interface components {
       history: components['schemas']['AdminStatusChangeResponse'][];
       /** Format: date-time */
       createdAt: string;
+      /** @description The branch that sold it */
+      branch: components['schemas']['BranchSummary'];
       customer: components['schemas']['OrderPersonResponse'] | null;
       /** @description The customer, or the staff member at the counter; null for a guest quick-pay order */
       createdBy: components['schemas']['OrderPersonResponse'] | null;
@@ -9646,6 +10406,11 @@ export interface components {
       voidReason: string | null;
       /** Format: uuid */
       id: string;
+      /**
+       * Format: uuid
+       * @description The branch that issued it
+       */
+      branchId: string;
       /** Format: uuid */
       orderId: string;
       /**
@@ -10072,18 +10837,208 @@ export interface components {
       vatRegistered: boolean;
       chat: components['schemas']['ShopChatResponse'];
     };
-    OrderMessageResponse: {
+    MoneyAccountResponse: {
+      /** Format: uuid */
+      id: string;
+      branch: components['schemas']['BranchSummary'];
+      /** @enum {string} */
+      kind: 'CASH' | 'BANK' | 'WALLET';
+      /** @example Cash drawer */
+      name: string;
+      /** @example 5000.00 */
+      openingBalance: string;
       /**
-       * @example Namaste Sita,
-       *     Your order PS-000042 is on its way.
-       *     Dhanyabad! Puja Sanskar
+       * @description Opening balance plus everything recorded since
+       * @example 18450.00
        */
-      message: string;
-      /** @example https://wa.me/9779841000000?text=... */
-      whatsappUrl: string;
-      /** @example viber://forward?text=... */
-      viberUrl: string;
-      smsUrl: string | null;
+      balance: string;
+      isActive: boolean;
+    };
+    MethodAccountResponse: {
+      /** @enum {string} */
+      method: 'CASH' | 'QR' | 'ESEWA' | 'KHALTI' | 'BANK_TRANSFER' | 'CARD' | 'OTHER';
+      /** Format: uuid */
+      accountId: string | null;
+    };
+    SetMethodAccountDto: {
+      /** @enum {string} */
+      method: 'CASH' | 'QR' | 'ESEWA' | 'KHALTI' | 'BANK_TRANSFER' | 'CARD' | 'OTHER';
+      /**
+       * Format: uuid
+       * @description One of the branch's open accounts
+       */
+      accountId: string;
+    };
+    MoneyTransferResponse: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      fromAccountId: string;
+      /** Format: uuid */
+      toAccountId: string;
+      /** @example 20000.00 */
+      amount: string;
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      day: string;
+      reference: string | null;
+      note: string | null;
+    };
+    TransferMoneyDto: {
+      /** Format: uuid */
+      fromAccountId: string;
+      /**
+       * Format: uuid
+       * @description Any open account, at this branch or another
+       */
+      toAccountId: string;
+      /** @example 20000.00 */
+      amount: string;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      day?: string | null;
+      /** @example Deposit slip 4471 */
+      reference?: string | null;
+      /** @example Day cash to Nabil Bank */
+      note?: string | null;
+    };
+    MoneyEntryResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @enum {string} */
+      kind:
+        | 'CUSTOMER_PAYMENT'
+        | 'CUSTOMER_REFUND'
+        | 'SUPPLIER_PAYMENT'
+        | 'EXPENSE'
+        | 'TRANSFER_OUT'
+        | 'TRANSFER_IN'
+        | 'ADJUSTMENT';
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      day: string;
+      /** Format: date-time */
+      at: string;
+      /**
+       * @description Signed: in is positive
+       * @example 810.00
+       */
+      amount: string;
+      /** @description Listed, but not in the balance */
+      voided: boolean;
+      /** @example 18450.00 */
+      balance: string;
+      /** @example PS-000612 */
+      order: string | null;
+      reference: string | null;
+      note: string | null;
+    };
+    MoneyEntriesResponse: {
+      items: components['schemas']['MoneyEntryResponse'][];
+      meta: components['schemas']['PageMetaDto'];
+    };
+    MoneyBookResponse: {
+      account: components['schemas']['MoneyAccountResponse'];
+      /**
+       * Format: date
+       * @example 2026-10-18
+       */
+      from: string;
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      to: string;
+      /**
+       * @description Balance before the first day
+       * @example 5000.00
+       */
+      opening: string;
+      /** @example 42000.00 */
+      moneyIn: string;
+      /** @example 28550.00 */
+      moneyOut: string;
+      /**
+       * @description Balance at the end of the last day
+       * @example 18450.00
+       */
+      closing: string;
+      entries: components['schemas']['MoneyEntriesResponse'];
+    };
+    CreateMoneyAccountDto: {
+      /** @enum {string} */
+      kind: 'CASH' | 'BANK' | 'WALLET';
+      /** @example Nabil Bank current */
+      name: string;
+      /** @example 25000.00 */
+      openingBalance?: string | null;
+    };
+    UpdateMoneyAccountDto: {
+      /** @example Nabil Bank current */
+      name?: string | null;
+      /** @example 25000.00 */
+      openingBalance?: string | null;
+      /** @description A closed account takes no new money */
+      isActive?: boolean;
+    };
+    MoneyAdjustmentResponse: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      accountId: string;
+      /** @example -50.00 */
+      amount: string;
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      day: string;
+      /** @example Day closing */
+      reason: string;
+      /** @example 18400.00 */
+      countedAmount: string | null;
+    };
+    AdjustMoneyDto: {
+      /**
+       * @description Positive adds to the balance, negative takes away
+       * @example -150.00
+       */
+      amount: string;
+      /** @example Torn note returned to bank */
+      reason: string;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      day?: string | null;
+    };
+    DayClosingResponse: {
+      account: components['schemas']['MoneyAccountResponse'];
+      /**
+       * @description What the book says
+       * @example 18450.00
+       */
+      expected: string;
+      /** @example 18400.00 */
+      counted: string;
+      /**
+       * @description counted - expected
+       * @example -50.00
+       */
+      difference: string;
+      adjustment: components['schemas']['MoneyAdjustmentResponse'] | null;
+    };
+    CloseDayDto: {
+      /** @example 18450.00 */
+      counted: string;
+      /** @example Short by a 50 note */
+      note?: string | null;
     };
     PeriodResponse: {
       /**
@@ -10292,6 +11247,97 @@ export interface components {
       items: components['schemas']['SalesBookRowResponse'][];
       meta: components['schemas']['PageMetaResponse'];
     };
+    ExpenseLineResponse: {
+      /** @example RENT */
+      code: string;
+      /** @example Rent */
+      name: string;
+      /** @example 15000.00 */
+      amount: string;
+    };
+    VatPositionResponse: {
+      /** @example 13000.00 */
+      collected: string;
+      /** @example 8200.00 */
+      paidOnPurchases: string;
+      /** @example 450.00 */
+      paidOnExpenses: string;
+      /**
+       * @description Negative carries forward as a credit
+       * @example 4350.00
+       */
+      payable: string;
+    };
+    ProfitAndLossResponse: {
+      period: components['schemas']['PeriodResponse'];
+      /**
+       * @description Issued bills without VAT, after discounts
+       * @example 100000.00
+       */
+      sales: string;
+      /** @example 62000.00 */
+      costOfSales: string;
+      /** @example 38000.00 */
+      grossProfit: string;
+      /**
+       * @description Damage and count corrections at cost
+       * @example 500.00
+       */
+      stockWrittenOff: string;
+      expenses: components['schemas']['ExpenseLineResponse'][];
+      /** @example 21000.00 */
+      totalExpenses: string;
+      /** @example 16500.00 */
+      netProfit: string;
+      vat: components['schemas']['VatPositionResponse'];
+    };
+    PurchaseTotalsResponse: {
+      /** @example 12 */
+      bills: number;
+      /** @example 84000.00 */
+      taxableTotal: string;
+      /** @example 6000.00 */
+      exemptTotal: string;
+      /**
+       * @description VAT paid, to set against VAT collected
+       * @example 10920.00
+       */
+      vatTotal: string;
+      /** @example 100920.00 */
+      total: string;
+    };
+    PurchaseBookRowResponse: {
+      /** Format: uuid */
+      billId: string;
+      /** @example 2083-07-17 */
+      dateBs: string;
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      date: string;
+      /** @example Asan Bazar Traders */
+      supplierName: string;
+      /** @example 601234567 */
+      supplierPan: string | null;
+      /** @example INV-4471 */
+      supplierBillNumber: string;
+      /** @example 2040.00 */
+      taxableTotal: string;
+      /** @example 0.00 */
+      exemptTotal: string;
+      /** @example 265.20 */
+      vatTotal: string;
+      /** @example 2305.20 */
+      total: string;
+    };
+    PurchaseBookResponse: {
+      period: components['schemas']['PeriodResponse'];
+      /** @description Over the whole period */
+      totals: components['schemas']['PurchaseTotalsResponse'];
+      items: components['schemas']['PurchaseBookRowResponse'][];
+      meta: components['schemas']['PageMetaResponse'];
+    };
     VatMonthResponse: {
       /**
        * @description After discount
@@ -10417,6 +11463,266 @@ export interface components {
       /** @description Oldest first */
       items: components['schemas']['ReceivableRowResponse'][];
       meta: components['schemas']['PageMetaResponse'];
+    };
+    SupplierResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example SUP_ASAN */
+      code: string;
+      /** @example Asan Bazar Traders */
+      name: string;
+      /** @example 601234567 */
+      panNumber: string | null;
+      phone: string | null;
+      address: string | null;
+      /** @example 0.00 */
+      openingBalance: string;
+      /**
+       * @description What the shop owes them now
+       * @example 24500.00
+       */
+      owed: string;
+      isActive: boolean;
+    };
+    CreateSupplierDto: {
+      /** @example SUP_ASAN */
+      code: string;
+      /** @example Asan Bazar Traders */
+      name: string;
+      /** @example 601234567 */
+      panNumber?: string | null;
+      /** @example +9779801234567 */
+      phone?: string | null;
+      /** @example Asan, Kathmandu */
+      address?: string | null;
+      /** @example 12000.00 */
+      openingBalance?: string | null;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdateSupplierDto: {
+      /** @example Asan Bazar Traders */
+      name?: string;
+      /** @example 601234567 */
+      panNumber?: string | null;
+      /** @example +9779801234567 */
+      phone?: string | null;
+      /** @example Asan, Kathmandu */
+      address?: string | null;
+      /** @example 12000.00 */
+      openingBalance?: string | null;
+      /** @default true */
+      isActive: boolean;
+    };
+    PurchaseLineResponse: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      variantId: string;
+      /** @example 24 */
+      quantity: number;
+      /**
+       * @description One unit, before VAT
+       * @example 85.00
+       */
+      unitCost: string;
+      /** @example 13.00 */
+      vatRate: string;
+      /** @example 2040.00 */
+      amount: string;
+      /** @example 265.20 */
+      vatAmount: string;
+    };
+    PurchaseBillResponse: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      branchId: string;
+      /** Format: uuid */
+      supplierId: string;
+      /** @example INV-4471 */
+      supplierBillNumber: string;
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      billDay: string;
+      /** @example 2083-07-17 */
+      billDayBs: string;
+      /** @enum {string} */
+      status: 'DRAFT' | 'POSTED';
+      /** @example 2040.00 */
+      taxableTotal: string;
+      /** @example 0.00 */
+      exemptTotal: string;
+      /** @example 265.20 */
+      vatTotal: string;
+      /** @example 2305.20 */
+      total: string;
+      note: string | null;
+      /** Format: date-time */
+      postedAt: string | null;
+      lines: components['schemas']['PurchaseLineResponse'][];
+    };
+    PurchaseLineDto: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example 24 */
+      quantity: number;
+      /** @example 85.00 */
+      unitCost: string;
+      /** @example 13 */
+      vatRate?: string | null;
+    };
+    SavePurchaseBillDto: {
+      /** Format: uuid */
+      supplierId: string;
+      /** @example INV-4471 */
+      supplierBillNumber: string;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      billDay: string;
+      lines: components['schemas']['PurchaseLineDto'][];
+      /** @example Dashain stock */
+      note?: string | null;
+    };
+    SupplierPaymentResponse: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      supplierId: string;
+      /** Format: uuid */
+      branchId: string;
+      /** Format: uuid */
+      accountId: string;
+      /** @example 20000.00 */
+      amount: string;
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      day: string;
+      reference: string | null;
+      note: string | null;
+      /** @enum {string} */
+      status: 'RECORDED' | 'VOID';
+      voidReason: string | null;
+    };
+    PaySupplierDto: {
+      /** Format: uuid */
+      supplierId: string;
+      /**
+       * Format: uuid
+       * @description One of the branch's open accounts
+       */
+      accountId: string;
+      /** @example 20000.00 */
+      amount: string;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      day?: string | null;
+      /** @example Cheque 000112 */
+      reference?: string | null;
+      /** @example Part payment */
+      note?: string | null;
+    };
+    ExpenseCategoryResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example RENT */
+      code: string;
+      /** @example Rent */
+      name: string;
+      isActive: boolean;
+    };
+    CreateExpenseCategoryDto: {
+      /** @example INSURANCE */
+      code: string;
+      /** @example Insurance */
+      name: string;
+    };
+    UpdateExpenseCategoryDto: {
+      /** @example Insurance */
+      name?: string | null;
+      /** @description An inactive category cannot be newly used */
+      isActive?: boolean;
+    };
+    ExpenseResponse: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      branchId: string;
+      /** Format: uuid */
+      categoryId: string;
+      /** Format: uuid */
+      accountId: string;
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      day: string;
+      /** @example 2083-07-17 */
+      dayBs: string;
+      /**
+       * @description Paid, VAT included
+       * @example 3500.00
+       */
+      amount: string;
+      /** @example 402.65 */
+      vatAmount: string;
+      payee: string | null;
+      payeePan: string | null;
+      reference: string | null;
+      note: string | null;
+      receiptUrl: string | null;
+      /** @enum {string} */
+      status: 'RECORDED' | 'VOID';
+      voidReason: string | null;
+    };
+    RecordExpenseDto: {
+      /** Format: uuid */
+      categoryId: string;
+      /**
+       * Format: uuid
+       * @description One of the branch's open accounts
+       */
+      accountId: string;
+      /** @example 3500.00 */
+      amount: string;
+      /** @example 402.65 */
+      vatAmount?: string | null;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      day?: string | null;
+      /** @example Nepal Electricity Authority */
+      payee?: string | null;
+      /** @example 601234567 */
+      payeePan?: string | null;
+      /** @example Bill 2083-07 */
+      reference?: string | null;
+      /** @example Kartik electricity */
+      note?: string | null;
+      /** @example https://media.pujasanskar.com/receipts/nea.jpg */
+      receiptUrl?: string | null;
+    };
+    OrderMessageResponse: {
+      /**
+       * @example Namaste Sita,
+       *     Your order PS-000042 is on its way.
+       *     Dhanyabad! Puja Sanskar
+       */
+      message: string;
+      /** @example https://wa.me/9779841000000?text=... */
+      whatsappUrl: string;
+      /** @example viber://forward?text=... */
+      viberUrl: string;
+      smsUrl: string | null;
     };
     RowIssueResponse: {
       /** @example Unit_Master */
@@ -11691,6 +12997,598 @@ export interface operations {
       };
       /** @description NOT_FOUND */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateBranchDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchController_mine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchController_current: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchScopeResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateBranchDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchController_makeOnline: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStaffBranchController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStaffBranchController_set: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetStaffBranchesDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
         headers: {
           [name: string]: unknown;
         };
@@ -18353,6 +20251,228 @@ export interface operations {
       };
     };
   };
+  AdminBranchPackController_list: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchPackResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchPackController_set: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path: {
+        productId: string;
+        variantId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetBranchPackDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchPackResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBranchPackController_reset: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path: {
+        productId: string;
+        variantId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BranchPackResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   SearchController_popular: {
     parameters: {
       query?: never;
@@ -18488,7 +20608,10 @@ export interface operations {
         /** @description Only SKUs at or below their reorder level */
         lowStock?: boolean;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -18559,7 +20682,10 @@ export interface operations {
         /** @description Only SKUs at or below their reorder level */
         lowStock?: boolean;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -18606,7 +20732,10 @@ export interface operations {
   AdminStockLevelController_get: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
       path: {
         variantId: string;
       };
@@ -18669,7 +20798,10 @@ export interface operations {
   AdminStockLevelController_update: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
       path: {
         variantId: string;
       };
@@ -18738,9 +20870,13 @@ export interface operations {
       query?: {
         page?: number;
         limit?: number;
-        type?: 'PURCHASE' | 'RETURN' | 'SALE' | 'DAMAGE' | 'ADJUSTMENT';
+        type?:
+          'PURCHASE' | 'RETURN' | 'SALE' | 'DAMAGE' | 'ADJUSTMENT' | 'TRANSFER_OUT' | 'TRANSFER_IN';
       };
-      header?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
       path: {
         variantId: string;
       };
@@ -18806,7 +20942,10 @@ export interface operations {
   AdminStockMovementController_record: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
       path: {
         variantId: string;
       };
@@ -18829,6 +20968,83 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['StockMovementResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockTransferController_transfer: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferStockDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['StockMovementResponse'][];
           };
         };
       };
@@ -24419,7 +26635,10 @@ export interface operations {
         /** @description Order number (PS-000123), phone or contact name */
         q?: string;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -24494,7 +26713,10 @@ export interface operations {
         /** @description Order number (PS-000123), phone or contact name */
         q?: string;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -24532,7 +26754,10 @@ export interface operations {
   AdminOrderController_get: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -24595,7 +26820,10 @@ export interface operations {
   AdminOrderController_changeStatus: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -24680,7 +26908,10 @@ export interface operations {
   AdminOrderController_setDeliveryFee: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -24766,6 +26997,8 @@ export interface operations {
     parameters: {
       query?: never;
       header: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
         /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
         'Idempotency-Key': string;
       };
@@ -27608,7 +29841,10 @@ export interface operations {
   AdminPaymentController_account: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -27672,6 +29908,8 @@ export interface operations {
     parameters: {
       query?: never;
       header: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
         /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
         'Idempotency-Key': string;
       };
@@ -27768,6 +30006,8 @@ export interface operations {
     parameters: {
       query?: never;
       header: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
         /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
         'Idempotency-Key': string;
       };
@@ -27863,7 +30103,10 @@ export interface operations {
   AdminPaymentController_void: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -27939,7 +30182,10 @@ export interface operations {
   AdminPaymentController_paymentQr: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -28011,7 +30257,10 @@ export interface operations {
   AdminInvoiceController_issue: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -28103,7 +30352,10 @@ export interface operations {
         /** @description Bill number (2083/84-000012), buyer name or phone */
         q?: string;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -28158,7 +30410,10 @@ export interface operations {
   AdminInvoiceController_get: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -28221,7 +30476,10 @@ export interface operations {
   AdminInvoiceController_void: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -28297,7 +30555,10 @@ export interface operations {
   AdminInvoiceController_print: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -28360,7 +30621,10 @@ export interface operations {
   AdminInvoiceController_share: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -28423,7 +30687,10 @@ export interface operations {
   AdminInvoiceController_email: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -29090,10 +31357,363 @@ export interface operations {
       };
     };
   };
-  AdminOrderMessageController_message: {
+  AdminMoneyController_list: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MoneyAccountResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMoneyController_create: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateMoneyAccountDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MoneyAccountResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMoneyController_methods: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MethodAccountResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMoneyController_setMethod: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetMethodAccountDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MethodAccountResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMoneyController_transfer: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TransferMoneyDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MoneyTransferResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMoneyController_get: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -29111,7 +31731,7 @@ export interface operations {
             success: boolean;
             /** @example Request successful */
             message: string;
-            data: components['schemas']['OrderMessageResponse'];
+            data: components['schemas']['MoneyAccountResponse'];
           };
         };
       };
@@ -29153,6 +31773,352 @@ export interface operations {
       };
     };
   };
+  AdminMoneyController_update: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateMoneyAccountDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MoneyAccountResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMoneyController_book: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+        page?: number;
+        limit?: number;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MoneyBookResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMoneyController_adjust: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AdjustMoneyDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MoneyAdjustmentResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMoneyController_close: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CloseDayDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['DayClosingResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminReportController_summary: {
     parameters: {
       query?: {
@@ -29161,7 +32127,10 @@ export interface operations {
         from?: string | null;
         to?: string | null;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29229,7 +32198,10 @@ export interface operations {
         page?: number;
         limit?: number;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29295,7 +32267,205 @@ export interface operations {
         from?: string | null;
         to?: string | null;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminReportController_profitAndLoss: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ProfitAndLossResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminReportController_purchaseBook: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+        page?: number;
+        limit?: number;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PurchaseBookResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminReportController_exportPurchaseBook: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29345,7 +32515,10 @@ export interface operations {
         /** @description Defaults to the current fiscal year */
         fiscalYear?: string;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29409,7 +32582,10 @@ export interface operations {
         /** @description Defaults to the current fiscal year */
         fiscalYear?: string;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29461,7 +32637,10 @@ export interface operations {
         from?: string | null;
         to?: string | null;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29527,7 +32706,10 @@ export interface operations {
         from?: string | null;
         to?: string | null;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29579,7 +32761,10 @@ export interface operations {
         page?: number;
         limit?: number;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29636,7 +32821,10 @@ export interface operations {
         page?: number;
         limit?: number;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -29662,6 +32850,1475 @@ export interface operations {
       };
       /** @description FORBIDDEN */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminSupplierController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Name, code, PAN or phone */
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['SupplierResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminSupplierController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateSupplierDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SupplierResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminSupplierController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SupplierResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminSupplierController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateSupplierDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SupplierResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseBillController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        supplierId?: string;
+        status?: 'DRAFT' | 'POSTED';
+        /** @description The supplier's bill number or name */
+        q?: string;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['PurchaseBillResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseBillController_create: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SavePurchaseBillDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PurchaseBillResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseBillController_get: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PurchaseBillResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseBillController_update: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SavePurchaseBillDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PurchaseBillResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseBillController_delete: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseBillController_post: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PurchaseBillResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminSupplierPaymentController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        supplierId?: string;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['SupplierPaymentResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminSupplierPaymentController_pay: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PaySupplierDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SupplierPaymentResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminSupplierPaymentController_void: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VoidDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SupplierPaymentResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminExpenseCategoryController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ExpenseCategoryResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminExpenseCategoryController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateExpenseCategoryDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ExpenseCategoryResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminExpenseCategoryController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateExpenseCategoryDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ExpenseCategoryResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminExpenseController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        categoryId?: string;
+        status?: 'RECORDED' | 'VOID';
+        from?: string | null;
+        to?: string | null;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['ExpenseResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminExpenseController_record: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RecordExpenseDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ExpenseResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminExpenseController_void: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VoidDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ExpenseResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOrderMessageController_message: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OrderMessageResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -29872,7 +34529,10 @@ export interface operations {
         /** @description Validate and report without writing anything */
         dryRun?: boolean;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };

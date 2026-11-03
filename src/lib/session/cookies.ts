@@ -9,6 +9,9 @@ export const SESSION_COOKIES = {
   guestCart: `${prefix}_cart`,
 } as const;
 
+// The branch staff are working in (its code); the browser sets it, every API call carries it.
+export const BRANCH_COOKIE = `${prefix}_branch`;
+
 export const cookieOptions = (expires: Date) => ({
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',

@@ -52,6 +52,14 @@ export const routes = {
   deliverySlots: () => '/settings/delivery-slots',
   shopSettings: () => '/settings/shop',
   businessProfile: () => '/settings/business',
+  branches: () => '/settings/branches',
+
+  moneyAccounts: () => '/money',
+  purchaseBills: () => '/purchases',
+  suppliers: () => '/purchases/suppliers',
+  supplierPayments: () => '/purchases/payments',
+  expenses: () => '/expenses',
+  expenseCategories: () => '/expenses/categories',
 
   staff: () => '/staff',
   activity: () => '/staff/activity',
@@ -61,6 +69,8 @@ export const routes = {
   vat: () => '/reports/vat',
   dayBook: () => '/reports/day-book',
   receivables: () => '/reports/receivables',
+  profitAndLoss: () => '/reports/profit-and-loss',
+  purchaseBook: () => '/reports/purchase-book',
 } as const;
 
 export type RouteName = keyof typeof routes;

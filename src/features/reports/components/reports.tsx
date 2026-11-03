@@ -237,3 +237,130 @@ export function ReceivablesReport() {
     />
   );
 }
+
+type PurchaseBook = Schema<'PurchaseBookResponse'>;
+type PurchaseRow = PurchaseBook['items'][number];
+type Profit = Schema<'ProfitAndLossResponse'>;
+type StatementLine = {
+  key: string;
+  label: string;
+  amount: string;
+  strong?: boolean;
+  indent?: boolean;
+};
+
+// खरिद खाता: posted supplier bills with the VAT paid, for the VAT return.
+export function PurchaseBookReport() {
+  const tc = useTranslations('reports.columns');
+  return (
+    <ReportScreen<PurchaseBook, PurchaseRow>
+      path="/admin/reports/purchase-book"
+      paged
+      filters={['range', 'fiscalYear']}
+      rows={(data) => data.items}
+      rowKey={(row) => row.billId}
+      summary={(data) => (
+        <div className="grid gap-3 sm:grid-cols-4">
+          <Figure label={tc('bills')} value={String(data.totals.bills)} />
+          <Figure label={tc('taxableTotal')} value={money(data.totals.taxableTotal)} />
+          <Figure label={tc('vatPaid')} value={money(data.totals.vatTotal)} />
+          <Figure label={tc('grossTotal')} value={money(data.totals.total)} />
+        </div>
+      )}
+      initialSort={{ key: 'date', direction: 'desc' }}
+      columns={[
+        {
+          key: 'date',
+          header: tc('date'),
+          cell: (row) => formatDate(row.date, 'en'),
+          sortValue: (row) => row.date,
+        },
+        {
+          key: 'supplierName',
+          header: tc('supplier'),
+          cell: (row) => (
+            <>
+              <div>{row.supplierName}</div>
+              <div className="text-xs text-muted-foreground">
+                {row.supplierBillNumber}
+                {row.supplierPan ? ` · PAN ${row.supplierPan}` : ''}
+              </div>
+            </>
+          ),
+          sortValue: (row) => row.supplierName,
+        },
+        amount<PurchaseRow>('taxableTotal', tc('taxableTotal')),
+        amount<PurchaseRow>('exemptTotal', tc('exemptTotal')),
+        amount<PurchaseRow>('vatTotal', tc('vatPaid')),
+        amount<PurchaseRow>('total', tc('grossTotal')),
+      ]}
+    />
+  );
+}
+
+// Sales less what they cost, stock written off and expenses; and the VAT to pay.
+export function ProfitAndLossReport() {
+  const t = useTranslations('reports.profit');
+  const lines = (data: Profit): StatementLine[] => [
+    { key: 'sales', label: t('sales'), amount: data.sales },
+    { key: 'costOfSales', label: t('costOfSales'), amount: `-${data.costOfSales}` },
+    { key: 'grossProfit', label: t('grossProfit'), amount: data.grossProfit, strong: true },
+    { key: 'stockWrittenOff', label: t('stockWrittenOff'), amount: `-${data.stockWrittenOff}` },
+    ...data.expenses.map((e) => ({
+      key: `expense-${e.code}`,
+      label: e.name,
+      amount: `-${e.amount}`,
+      indent: true,
+    })),
+    { key: 'totalExpenses', label: t('totalExpenses'), amount: `-${data.totalExpenses}` },
+    { key: 'netProfit', label: t('netProfit'), amount: data.netProfit, strong: true },
+  ];
+  const shown = (amount: string) =>
+    money(amount.startsWith('--') ? amount.slice(2) : amount.replace(/^-0\.00$/, '0.00'));
+  return (
+    <ReportScreen<Profit, StatementLine>
+      path="/admin/reports/profit-and-loss"
+      noExport
+      filters={['range', 'fiscalYear']}
+      rows={lines}
+      rowKey={(row) => row.key}
+      summary={(data) => (
+        <div className="grid gap-3 sm:grid-cols-4">
+          <Figure label={t('sales')} value={money(data.sales)} />
+          <Figure label={t('grossProfit')} value={money(data.grossProfit)} />
+          <Figure
+            label={t('netProfit')}
+            value={money(data.netProfit)}
+            tone={Number(data.netProfit) < 0 ? 'danger' : undefined}
+          />
+          <Figure label={t('vatPayable')} value={money(data.vat.payable)} />
+        </div>
+      )}
+      columns={[
+        {
+          key: 'label',
+          header: t('line'),
+          cell: (row) => (
+            <span
+              className={
+                row.strong ? 'font-semibold' : row.indent ? 'pl-5 text-muted-foreground' : undefined
+              }
+            >
+              {row.label}
+            </span>
+          ),
+          filterValue: null,
+        },
+        {
+          key: 'amount',
+          header: t('amount'),
+          cell: (row) => (
+            <span className={row.strong ? 'font-semibold' : undefined}>{shown(row.amount)}</span>
+          ),
+          align: 'right',
+          filterValue: null,
+        },
+      ]}
+    />
+  );
+}

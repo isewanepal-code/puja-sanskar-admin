@@ -25,6 +25,17 @@ export const PERMISSIONS = [
   'settings:manage',
   'requests:handle',
   'discounts:override',
+  'branches:read',
+  'branches:manage',
+  'branches:all',
+  'money:read',
+  'money:write',
+  'money:manage',
+  'purchases:read',
+  'purchases:write',
+  'expenses:read',
+  'expenses:write',
+  'expenses:manage',
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];

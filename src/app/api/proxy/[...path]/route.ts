@@ -5,6 +5,7 @@ import {
   clearTokens,
   isExpiring,
   refreshOnce,
+  BRANCH_COOKIE,
   SESSION_COOKIES,
   writeTokens,
   type SessionTokens,
@@ -32,6 +33,9 @@ async function forward(
     if (value) headers.set(name, value);
   }
   if (access) headers.set('Authorization', `Bearer ${access}`);
+  // A screen may name a branch itself; otherwise the one chosen in the header.
+  const branch = request.headers.get('x-branch') ?? request.cookies.get(BRANCH_COOKIE)?.value;
+  if (branch) headers.set('X-Branch', branch);
   const ip = request.headers.get('x-forwarded-for');
   if (ip) headers.set('X-Forwarded-For', ip);
 

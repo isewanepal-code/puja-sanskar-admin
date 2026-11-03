@@ -6,6 +6,7 @@ import { useState, type ReactNode } from 'react';
 
 import { useToast } from '@/components/overlays';
 import { Button } from '@/components/ui/button';
+import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { DataTable, type Column } from '@/components/ui/data-table';
 import { Input, Select } from '@/components/ui/input';
 import { download, isApiError, request } from '@/lib/api';
@@ -25,6 +26,8 @@ type ReportScreenProps<D, R> = {
   // Totals or anything else above the table.
   summary?: (data: D) => ReactNode;
   initialSort?: { key: string; direction: 'asc' | 'desc' };
+  // Reports without an Excel copy.
+  noExport?: boolean;
 };
 
 // One report: its filters, a summary, a sortable table and the same report as an Excel file.
@@ -37,6 +40,7 @@ export function ReportScreen<D, R>({
   columns,
   summary,
   initialSort,
+  noExport = false,
 }: ReportScreenProps<D, R>) {
   const t = useTranslations('reports');
   const tf = useTranslations('forms');
@@ -74,19 +78,21 @@ export function ReportScreen<D, R>({
           <>
             <label className="grid gap-1 text-sm">
               {t('from')}
-              <Input
-                type="date"
-                value={draft.from ?? ''}
-                onChange={(e) => setDraft({ ...draft, from: e.target.value || undefined })}
-              />
+              <div className="w-56">
+                <BsDatePicker
+                  value={draft.from ?? ''}
+                  onChange={(value) => setDraft({ ...draft, from: value || undefined })}
+                />
+              </div>
             </label>
             <label className="grid gap-1 text-sm">
               {t('to')}
-              <Input
-                type="date"
-                value={draft.to ?? ''}
-                onChange={(e) => setDraft({ ...draft, to: e.target.value || undefined })}
-              />
+              <div className="w-56">
+                <BsDatePicker
+                  value={draft.to ?? ''}
+                  onChange={(value) => setDraft({ ...draft, to: value || undefined })}
+                />
+              </div>
             </label>
           </>
         ) : null}
@@ -117,14 +123,16 @@ export function ReportScreen<D, R>({
         <Button type="submit" variant="secondary">
           {t('show')}
         </Button>
-        <Button
-          className="ml-auto"
-          icon="upload"
-          disabled={exportFile.isPending}
-          onClick={() => exportFile.mutate()}
-        >
-          {exportFile.isPending ? t('exporting') : t('export')}
-        </Button>
+        {noExport ? null : (
+          <Button
+            className="ml-auto"
+            icon="download"
+            disabled={exportFile.isPending}
+            onClick={() => exportFile.mutate()}
+          >
+            {exportFile.isPending ? t('exporting') : t('export')}
+          </Button>
+        )}
       </form>
 
       {report.isError ? (

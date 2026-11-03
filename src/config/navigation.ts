@@ -13,6 +13,9 @@ export type NavSection = {
     | 'catalogue'
     | 'content'
     | 'marketing'
+    | 'money'
+    | 'purchases'
+    | 'expenses'
     | 'settings'
     | 'staff';
   href: string;
@@ -22,7 +25,7 @@ export type NavSection = {
 };
 
 export type NavGroup = {
-  key: 'overview' | 'sales' | 'catalogue' | 'site' | 'admin';
+  key: 'overview' | 'sales' | 'accounts' | 'catalogue' | 'site' | 'admin';
   sections: NavSection[];
 };
 
@@ -46,6 +49,19 @@ export const navigation: NavGroup[] = [
         icon: 'percent',
         permission: 'promotions:manage',
       },
+    ],
+  },
+  {
+    key: 'accounts',
+    sections: [
+      { key: 'money', href: routes.moneyAccounts(), icon: 'coin', permission: 'money:read' },
+      {
+        key: 'purchases',
+        href: routes.purchaseBills(),
+        icon: 'truck',
+        permission: 'purchases:read',
+      },
+      { key: 'expenses', href: routes.expenses(), icon: 'tag', permission: 'expenses:read' },
     ],
   },
   {

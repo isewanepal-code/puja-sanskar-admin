@@ -3,11 +3,11 @@ import { Thumb } from '@/components/media-library/thumb';
 import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
+import { packChoices } from '@/features/products';
 
 export type Kit = Schema<'AdminKitResponse'>;
 type Line = Schema<'AdminKitLineResponse'>;
 type Puja = Schema<'AdminPujaResponse'>;
-type Product = Schema<'AdminProductResponse'>;
 type Page<T> = { items: T[] };
 type Name = (key: string) => string;
 
@@ -23,18 +23,6 @@ export const pujaChoices = {
 };
 
 // Every pack on sale, as "SKU · product · pack".
-const packChoices = {
-  key: 'packs',
-  load: async (): Promise<Option[]> =>
-    (
-      await request<Page<Product>>('GET', '/admin/products', { query: { limit: 100 } })
-    ).items.flatMap((product) =>
-      product.variants.map((variant) => ({
-        value: variant.id,
-        label: `${variant.sku} · ${product.nameNe} · ${variant.label}`,
-      })),
-    ),
-};
 
 const tierChoices = (name: Name) =>
   TIERS.map((tier) => ({ value: tier, label: name(`tiers.${tier}`) }));

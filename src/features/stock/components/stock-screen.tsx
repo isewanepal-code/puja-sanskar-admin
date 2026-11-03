@@ -16,10 +16,15 @@ import { Modal } from '@/components/ui/modal';
 import { productChoices } from '@/features/products';
 import type { Schema } from '@/lib/api';
 
-import { historyResource, movementResource, stockResource } from '../resources';
+import {
+  historyResource,
+  movementResource,
+  stockResource,
+  transferStockResource,
+} from '../resources';
 
 type Level = Schema<'StockLevelResponse'>;
-type Open = { what: 'record' | 'history'; level: Level } | null;
+type Open = { what: 'record' | 'history' | 'transfer'; level: Level } | null;
 
 export function StockScreen() {
   const t = useTranslations('actions');
@@ -83,6 +88,11 @@ export function StockScreen() {
               label={t('history')}
               onClick={() => setOpen({ what: 'history', level: row })}
             />
+            <IconButton
+              icon="truck"
+              label={t('sendToBranch')}
+              onClick={() => setOpen({ what: 'transfer', level: row })}
+            />
           </>
         )}
       />
@@ -92,6 +102,14 @@ export function StockScreen() {
         description={t('recordMovementNote')}
         submitLabel={t('record')}
         doneMessage={t('recorded')}
+        onClose={() => setOpen(null)}
+      />
+      <ActionModal
+        resource={open?.what === 'transfer' ? transferStockResource(open.level) : null}
+        title={t('sendToBranchOf', { name })}
+        description={t('sendToBranchNote')}
+        submitLabel={t('send')}
+        doneMessage={t('sent')}
         onClose={() => setOpen(null)}
       />
       <Modal

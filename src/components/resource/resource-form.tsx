@@ -170,7 +170,8 @@ export function ResourceForm<T>({
 
   const save = useMutation({
     mutationFn: (values: FormValues) => {
-      const body = toBody(fields, values, mode);
+      const fieldBody = toBody(fields, values, mode);
+      const body = resource.shapeBody ? resource.shapeBody(fieldBody) : fieldBody;
       if (resource.singleton) return request(resource.singleton, resource.path, { body });
       return row
         ? request('PATCH', `${resource.path}/${resource.rowId(row)}`, { body })

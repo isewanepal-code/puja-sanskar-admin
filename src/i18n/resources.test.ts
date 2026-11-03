@@ -62,6 +62,26 @@ import { usersResource } from '@/features/staff-accounts';
 import { activityResource } from '@/features/system';
 import { historyResource, movementResource, stockResource } from '@/features/stock';
 
+import { branchesResource, staffBranchesResource } from '@/features/branches';
+import {
+  expenseCategoriesResource,
+  expensesResource,
+  voidExpenseResource,
+} from '@/features/expenses';
+import {
+  accountsResource,
+  adjustResource,
+  closeDayResource,
+  transferResource,
+} from '@/features/money';
+import {
+  purchaseBillsResource,
+  supplierPaymentsResource,
+  suppliersResource,
+  voidSupplierPaymentResource,
+} from '@/features/purchases';
+import { transferStockResource } from '@/features/stock';
+
 import messages from './messages/en.json';
 
 const ORDER = { id: 'o', nextStatuses: ['CONFIRMED'], deliveryQuoteNeeded: true } as never;
@@ -129,6 +149,20 @@ const RESOURCES: Resource<never>[] = [
   messagesResource((key) => key),
   remindersResource,
   activityResource,
+  branchesResource((key) => key),
+  staffBranchesResource('u'),
+  accountsResource((key) => key),
+  transferResource(),
+  adjustResource(ANY),
+  closeDayResource(ANY),
+  suppliersResource(),
+  purchaseBillsResource((key) => key, new Map()),
+  supplierPaymentsResource((key) => key, new Map()),
+  voidSupplierPaymentResource(ANY),
+  expenseCategoriesResource,
+  expensesResource((key) => key, new Map()),
+  voidExpenseResource(ANY),
+  transferStockResource(LEVEL),
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>

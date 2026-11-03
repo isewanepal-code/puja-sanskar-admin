@@ -1,3 +1,4 @@
+import { branchChoices } from '@/features/branches';
 import type { Resource } from '@/components/resource';
 import { request } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
@@ -149,3 +150,24 @@ export function historyResource(level: Level, name: Name): Resource<Movement> {
     fields: [],
   };
 }
+
+// One pack sent from the branch in the header to another, at its average cost.
+export const transferStockResource = (level: Level): Resource<never> => ({
+  key: 'stockTransfer',
+  scope: 'stock',
+  path: '/admin/stock-transfers',
+  list: 'all',
+  rowId: () => '',
+  rowLabel: () => level.variant.sku,
+  columns: [],
+  fields: [
+    { name: 'toBranchId', kind: 'select', required: true, optionsFrom: branchChoices },
+    { name: 'quantity', kind: 'number', required: true },
+    { name: 'note', kind: 'text', max: 500, wide: true },
+  ],
+  shapeBody: ({ toBranchId, quantity, note }) => ({
+    toBranchId,
+    note,
+    lines: [{ variantId: level.variant.id, quantity }],
+  }),
+});
