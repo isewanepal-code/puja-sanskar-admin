@@ -78,9 +78,17 @@ export type Resource<T> = {
   matches?: (row: T, query: string) => boolean;
   initialSort?: { key: string; direction: 'asc' | 'desc' };
   modalSize?: ModalSize;
+  canCreate?: boolean;
+  canEdit?: boolean;
   canDelete?: boolean;
+  // Off for lists the API cannot search.
+  searchable?: boolean;
+  // A list that comes inside another record (a kit's items), loaded whole.
+  loadAll?: () => Promise<T[]>;
   // Extra query sent with every list request.
   listQuery?: Record<string, string>;
+  // A rule across fields, checked before sending; names the field to mark.
+  check?: (values: Record<string, unknown>) => { field: string; message: string } | null;
   // A record as its form edits it, when the API nests what the form sends as ids.
   formRow?: (row: T) => Record<string, unknown>;
   // The query root it refreshes with: packs of a product refresh the product list too.

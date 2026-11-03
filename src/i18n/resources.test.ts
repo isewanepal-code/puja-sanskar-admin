@@ -8,6 +8,7 @@ import {
   unitsResource,
 } from '@/features/catalogue';
 import { faqsResource, storiesResource } from '@/features/content';
+import { kitFromPujaResource, kitItemsResource, kitsResource } from '@/features/kits';
 import { mantrasResource } from '@/features/mantras';
 import { panditsResource } from '@/features/marketing';
 import { pujaGroupResource, ritualTypesResource } from '@/features/puja-groups';
@@ -18,16 +19,18 @@ import {
   variantsResource,
   type Product,
 } from '@/features/products';
-import { pujasResource } from '@/features/pujas';
+import { pujasResource, requirementsResource, verifyResource } from '@/features/pujas';
 import {
   deliverySlotsResource,
   deliveryZonesResource,
   taxClassesResource,
 } from '@/features/settings';
 import { usersResource } from '@/features/staff-accounts';
+import { historyResource, movementResource, stockResource } from '@/features/stock';
 
 import messages from './messages/en.json';
 
+const LEVEL = { variant: { id: 'v', sku: 'S' } } as never;
 const PRODUCT = { id: 'p', grades: [], nameNe: 'p' } as unknown as Product;
 
 // Every admin resource, so a label it shows can never be missing from the messages.
@@ -54,6 +57,14 @@ const RESOURCES: Resource<never>[] = [
   variantsResource(PRODUCT),
   gradesResource(PRODUCT),
   pairingsResource(PRODUCT),
+  stockResource(false),
+  movementResource(LEVEL, (key) => key),
+  historyResource(LEVEL, (key) => key),
+  kitsResource((key) => key),
+  kitFromPujaResource((key) => key),
+  kitItemsResource('k'),
+  requirementsResource('p', (key) => key),
+  verifyResource('p', { id: 'r', material: { nameNe: 'x' } } as never, (key) => key),
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>

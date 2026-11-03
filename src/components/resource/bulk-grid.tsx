@@ -116,7 +116,13 @@ export function BulkGrid<T>({
           message: `${t(`fields.${String(issue.path[0])}`)}: ${issue.message}`,
         };
         invalid = true;
-      } else next[i] = null;
+      } else {
+        const rule = resource.check?.(row);
+        next[i] = rule
+          ? { state: 'failed', message: `${t(`fields.${rule.field}`)}: ${rule.message}` }
+          : null;
+        invalid ||= rule !== null && rule !== undefined;
+      }
     }
     setStatus(next);
     if (invalid) {

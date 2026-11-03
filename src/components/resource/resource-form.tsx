@@ -192,7 +192,14 @@ export function ResourceForm<T>({
     <form
       id={formId}
       noValidate
-      onSubmit={form.handleSubmit((values) => save.mutate(values))}
+      onSubmit={form.handleSubmit((values) => {
+        const issue = resource.check?.(values);
+        if (issue) {
+          form.setError(issue.field, { message: issue.message });
+          return;
+        }
+        save.mutate(values);
+      })}
       className="grid gap-x-4 gap-y-4 sm:grid-cols-2"
     >
       {fields.map((field) => {

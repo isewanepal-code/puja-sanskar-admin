@@ -179,7 +179,8 @@
       "list": "Pujas",
       "ritualTypes": "Ritual types",
       "mantras": "Mantras",
-      "levels": "Levels"
+      "levels": "Levels",
+      "kits": "Kits"
     },
     "tree": {
       "loading": "Loading the tree...",
@@ -711,6 +712,171 @@
       "fields": {
         "productIds": "Products"
       }
+    },
+    "stock": {
+      "title": "Stock",
+      "add": "—",
+      "empty": "No packs to show.",
+      "none": "—",
+      "fields": {
+        "sku": "SKU",
+        "label": "Pack",
+        "onHand": "On hand",
+        "reserved": "In carts",
+        "available": "Available",
+        "reorderLevel": "Reorder at",
+        "updatedAt": "Updated"
+      },
+      "hints": {
+        "reorderLevel": "The pack shows as low once what is available falls to this."
+      }
+    },
+    "movements": {
+      "title": "Stock changes",
+      "add": "—",
+      "empty": "No stock changes yet.",
+      "none": "—",
+      "fields": {
+        "type": "Kind",
+        "quantity": "Quantity",
+        "unitCost": "Cost each",
+        "reference": "Reference",
+        "note": "Note",
+        "createdAt": "When",
+        "balanceAfter": "On hand after"
+      },
+      "hints": {
+        "quantity": "Units of this pack. Negative only for an adjustment.",
+        "reference": "A supplier bill number or the like."
+      },
+      "kinds": {
+        "PURCHASE": "Purchase",
+        "RETURN": "Return",
+        "SALE": "Sale",
+        "DAMAGE": "Damage",
+        "ADJUSTMENT": "Adjustment"
+      }
+    },
+    "kits": {
+      "title": "Kits",
+      "add": "Add a kit",
+      "empty": "No kits match.",
+      "none": "—",
+      "fields": {
+        "images": "Images",
+        "code": "Code",
+        "pujaId": "Puja",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "tier": "Package",
+        "discountPercent": "Kit discount %",
+        "sortOrder": "Order",
+        "description": "Description",
+        "slug": "Web address",
+        "isActive": "Shown on the website",
+        "items": "Items",
+        "salePrice": "Price",
+        "isAvailable": "Stock"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _, such as KIT001. It cannot change later.",
+        "tier": "Basic, Standard or Premium; a puja offers one kit of each.",
+        "discountPercent": "Off the sum of the packs inside.",
+        "description": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+      },
+      "sections": {
+        "website": "On the website",
+        "seo": "Search engines"
+      },
+      "tiers": {
+        "BASIC": "Basic",
+        "STANDARD": "Standard",
+        "PREMIUM": "Premium"
+      },
+      "available": "In stock",
+      "unavailable": "Short"
+    },
+    "kitFromPuja": {
+      "title": "Kit from a puja",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "pujaId": "Puja",
+        "code": "Code",
+        "tier": "Package",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "description": "Description"
+      }
+    },
+    "kitItems": {
+      "title": "Kit items",
+      "add": "Add an item",
+      "empty": "No items yet.",
+      "none": "—",
+      "fields": {
+        "variantId": "Pack",
+        "quantity": "How many",
+        "lineTotal": "Total",
+        "isOptional": "Optional",
+        "note": "Note",
+        "sortOrder": "Order"
+      }
+    },
+    "requirements": {
+      "title": "Samagri",
+      "add": "Add a samagri",
+      "empty": "Nothing listed yet. Add the samagri one by one or many at once.",
+      "none": "—",
+      "fields": {
+        "materialId": "Samagri",
+        "quantityType": "Amount",
+        "quantityValue": "How much",
+        "unitId": "Unit",
+        "requiredLevel": "Need",
+        "specification": "Specification",
+        "notes": "Notes",
+        "sourceId": "Source",
+        "verificationStatus": "Checked",
+        "sortOrder": "Order"
+      },
+      "hints": {
+        "quantityType": "Exact or about this much; as offered and as the ritual asks need no number."
+      },
+      "quantityTypes": {
+        "EXACT": "Exactly",
+        "APPROXIMATE": "About",
+        "AS_OFFERED": "As offered",
+        "AS_RITUAL": "As the ritual asks"
+      },
+      "levels": {
+        "CORE": "Needed",
+        "OPTIONAL": "Optional"
+      },
+      "statuses": {
+        "UNVERIFIED": "Not checked",
+        "INDICATIVE": "Starter data",
+        "REVIEWED": "Reviewed",
+        "VERIFIED": "Verified"
+      },
+      "rules": {
+        "amount": "Give how much for an exact or approximate amount",
+        "unit": "Pick the unit for this amount",
+        "none": "Leave the amount and unit empty when it is as offered or as the ritual asks"
+      }
+    },
+    "verify": {
+      "title": "Verify",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "status": "How sure",
+        "sourceId": "Source"
+      }
     }
   },
   "catalogue": {
@@ -720,7 +886,8 @@
       "materials": "Samagri",
       "units": "Units",
       "sources": "Sources",
-      "products": "Products"
+      "products": "Products",
+      "stock": "Stock"
     }
   },
   "contentSection": {
@@ -773,7 +940,31 @@
     "pairingsOf": "Goes well with {name}",
     "pairingsNote": "Shown on the product page and as cart suggestions.",
     "savePairings": "Save",
-    "pairingsSaved": "Pairings saved"
+    "pairingsSaved": "Pairings saved",
+    "lowOnly": "Low stock only",
+    "recordMovement": "Record stock change",
+    "recordMovementFor": "Stock change for {name}",
+    "recordMovementNote": "Purchases, returns and damage are counted as given; an adjustment can be negative.",
+    "record": "Record",
+    "recorded": "Stock recorded",
+    "history": "History",
+    "historyOf": "Stock history of {name}",
+    "kitFromPuja": "Kit from a puja",
+    "kitFromPujaNote": "Fills a kit with each samagri the puja lists, at its default pack. Samagri the shop does not sell are skipped.",
+    "makeKit": "Make kit",
+    "kitMade": "Kit made",
+    "items": "Items",
+    "itemsOf": "Items in {name}",
+    "itemsNote": "The packs in the kit and how many of each. Optional ones are left out unless the shopper adds them.",
+    "samagriList": "Samagri list",
+    "samagriListOf": "Samagri list of {name}",
+    "samagriListNote": "What this puja needs, how much and how strictly. Editing a line sends it back to unverified.",
+    "verify": "Verify",
+    "verifyFor": "How sure is {name}?",
+    "verifyNote": "Reviewed means checked by staff against a source; verified means confirmed by a guru or pandit.",
+    "verified": "Verification saved",
+    "product": "Product",
+    "allProducts": "Every product"
   },
   "media": {
     "pickTitle": "Choose an image",

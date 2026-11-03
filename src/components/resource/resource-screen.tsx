@@ -48,15 +48,23 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
     queryKey: [
       resource.scope ?? resource.key,
       resource.path,
+      resource.listQuery ?? {},
       resource.list === 'paged' ? { q: query, page } : 'all',
     ],
     queryFn: async (): Promise<Page<T>> => {
       if (resource.list === 'all') {
-        const items = await request<T[]>('GET', resource.path, { query: resource.listQuery });
+        const items = resource.loadAll
+          ? await resource.loadAll()
+          : await request<T[]>('GET', resource.path, { query: resource.listQuery });
         return { items, meta: { page: 1, totalPages: 1, total: items.length } };
       }
       return request<Page<T>>('GET', resource.path, {
-        query: { ...resource.listQuery, q: query, page, limit: 50 },
+        query: {
+          ...resource.listQuery,
+          ...(resource.searchable !== false && { q: query }),
+          page,
+          limit: 50,
+        },
       });
     },
     placeholderData: keepPreviousData,
@@ -83,21 +91,25 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
   }));
 
   const meta = list.data?.meta;
+  const canCreate = resource.canCreate !== false;
+  const canEdit = resource.canEdit !== false;
 
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center gap-3">
-        <Input
-          type="search"
-          value={search}
-          onChange={(event) => {
-            setSearch(event.target.value);
-            setPage(1);
-          }}
-          placeholder={tt('search')}
-          aria-label={tt('search')}
-          className="sm:w-72"
-        />
+        {resource.searchable !== false ? (
+          <Input
+            type="search"
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
+            placeholder={tt('search')}
+            aria-label={tt('search')}
+            className="sm:w-72"
+          />
+        ) : null}
         {meta ? (
           <span className="text-sm text-muted-foreground">
             {tt('count', { total: meta.total })}
@@ -110,9 +122,11 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
               {tf('bulkAdd')}
             </Button>
           ) : null}
-          <Button icon="plus" onClick={() => setEditing('new')}>
-            {t('add')}
-          </Button>
+          {canCreate ? (
+            <Button icon="plus" onClick={() => setEditing('new')}>
+              {t('add')}
+            </Button>
+          ) : null}
         </div>
       </div>
 
@@ -129,11 +143,13 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
         loading={list.isPending}
         initialSort={resource.initialSort}
         empty={t('empty')}
-        onRowClick={(row) => setEditing(row)}
+        onRowClick={canEdit ? (row) => setEditing(row) : undefined}
         actions={(row) => (
           <div className="inline-flex items-center gap-0.5">
             {rowActions?.(row)}
-            <IconButton icon="edit" label={tf('edit')} onClick={() => setEditing(row)} />
+            {canEdit ? (
+              <IconButton icon="edit" label={tf('edit')} onClick={() => setEditing(row)} />
+            ) : null}
             {resource.canDelete !== false ? (
               <IconButton
                 icon="trash"

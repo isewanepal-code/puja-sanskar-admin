@@ -18,10 +18,12 @@ export const routes = {
   ritualTypes: () => '/pujas/ritual-types',
   pujaLevels: () => '/pujas/levels',
   mantras: () => '/pujas/mantras',
+  kits: () => '/pujas/kits',
 
   categories: () => '/catalogue',
   materials: () => '/catalogue/samagri',
   products: () => '/catalogue/products',
+  stock: () => '/catalogue/stock',
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
 
