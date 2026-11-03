@@ -33,15 +33,28 @@ import {
 } from '@/features/products';
 import { pujasResource, requirementsResource, verifyResource } from '@/features/pujas';
 import {
+  businessProfileResource,
   deliverySlotsResource,
   deliveryZonesResource,
+  shopSettingsResource,
   taxClassesResource,
 } from '@/features/settings';
+import {
+  billsResource,
+  deliveryFeeResource,
+  issueBillResource,
+  receivePaymentResource,
+  refundResource,
+  statusResource,
+  voidBillResource,
+  voidPaymentResource,
+} from '@/features/sales';
 import { usersResource } from '@/features/staff-accounts';
 import { historyResource, movementResource, stockResource } from '@/features/stock';
 
 import messages from './messages/en.json';
 
+const ORDER = { id: 'o', nextStatuses: ['CONFIRMED'], deliveryQuoteNeeded: true } as never;
 const ANY = { id: 'x' } as never;
 const LEVEL = { variant: { id: 'v', sku: 'S' } } as never;
 const PRODUCT = { id: 'p', grades: [], nameNe: 'p' } as unknown as Product;
@@ -88,6 +101,16 @@ const RESOURCES: Resource<never>[] = [
   bannersResource((key) => key),
   homeSectionsResource((key) => key),
   discountsResource((key) => key),
+  statusResource(ORDER, (key) => key),
+  deliveryFeeResource(ORDER),
+  receivePaymentResource(ORDER, (key) => key),
+  refundResource(ORDER, (key) => key),
+  voidPaymentResource(ANY),
+  issueBillResource(ORDER),
+  voidBillResource(ANY),
+  billsResource((key) => key),
+  businessProfileResource,
+  shopSettingsResource((key) => key),
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>

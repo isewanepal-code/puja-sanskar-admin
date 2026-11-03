@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { Fragment, useEffect, useId } from 'react';
+import { Fragment, useEffect, useId, useState } from 'react';
 import { useForm, type UseFormReturn } from 'react-hook-form';
 
 import { Field as FieldShell } from '@/components/forms';
@@ -143,6 +143,8 @@ export function ResourceForm<T>({
   const queryClient = useQueryClient();
   const idBase = useId();
   const mode = row ? 'edit' : 'create';
+  // One key for this form's life: sending again after a lost answer replays the first result.
+  const [idempotencyKey] = useState(() => crypto.randomUUID());
   const fields = resource.fields.filter((field) =>
     mode === 'create' ? !field.editOnly : !field.createOnly,
   );
@@ -158,10 +160,12 @@ export function ResourceForm<T>({
   const save = useMutation({
     mutationFn: (values: FormValues) => {
       const body = toBody(fields, values, mode);
+      if (resource.singleton) return request(resource.singleton, resource.path, { body });
       return row
         ? request('PATCH', `${resource.path}/${resource.rowId(row)}`, { body })
         : request(resource.submitMethod ?? 'POST', resource.path, {
             body: { ...body, ...extraBody },
+            headers: resource.idempotent ? { 'Idempotency-Key': idempotencyKey } : undefined,
           });
     },
     onMutate: () => onPendingChange?.(true),

@@ -8,7 +8,11 @@ type Query = Record<string, string | number | boolean | undefined | null>;
 export async function request<T>(
   method: Method,
   path: string,
-  { body, query }: { body?: unknown; query?: Query } = {},
+  {
+    body,
+    query,
+    headers,
+  }: { body?: unknown; query?: Query; headers?: Record<string, string> } = {},
 ): Promise<T> {
   const search = new URLSearchParams(
     Object.entries(query ?? {})
@@ -24,6 +28,7 @@ export async function request<T>(
       headers: {
         Accept: 'application/json',
         ...(body !== undefined && { 'Content-Type': 'application/json' }),
+        ...headers,
       },
       body: body === undefined ? undefined : JSON.stringify(body),
     });

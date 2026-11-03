@@ -21,6 +21,8 @@ export default async function SettingsLayout({
             { href: routes.taxClasses(), label: t('tabs.taxClasses') },
             { href: routes.deliveryZones(), label: t('tabs.deliveryZones') },
             { href: routes.deliverySlots(), label: t('tabs.deliverySlots') },
+            { href: routes.shopSettings(), label: t('tabs.shop') },
+            { href: routes.businessProfile(), label: t('tabs.business') },
           ]}
         />
       </header>

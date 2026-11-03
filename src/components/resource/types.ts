@@ -93,6 +93,10 @@ export type Resource<T> = {
   formRow?: (row: T) => Record<string, unknown>;
   // The query root it refreshes with: packs of a product refresh the product list too.
   scope?: string;
+  // One record with no id (the shop's settings): read and saved at its path with this method.
+  singleton?: 'PUT' | 'PATCH';
+  // Moves money or stock: the form sends one Idempotency-Key, so a retry cannot repeat it.
+  idempotent?: boolean;
   // How a new record is sent; PUT for a list that replaces the old one.
   submitMethod?: 'POST' | 'PUT' | 'PATCH';
   // Fields offered as columns of the bulk-entry grid; leave out for no bulk entry.

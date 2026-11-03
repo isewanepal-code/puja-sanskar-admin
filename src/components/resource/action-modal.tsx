@@ -20,6 +20,8 @@ type ActionModalProps<T> = {
   defaults?: Record<string, unknown>;
   size?: ModalSize;
   onClose: () => void;
+  // After a successful send, before closing: refresh a page drawn on the server.
+  onSaved?: () => void;
 };
 
 // A one-off action that needs a few fields (a new tax rate, a password reset), in the usual modal.
@@ -32,6 +34,7 @@ export function ActionModal<T>({
   defaults,
   size = 'sm',
   onClose,
+  onSaved,
 }: ActionModalProps<T>) {
   const tf = useTranslations('forms');
   const formId = useId();
@@ -62,7 +65,10 @@ export function ActionModal<T>({
           defaults={defaults}
           successMessage={doneMessage}
           onPendingChange={setPending}
-          onDone={onClose}
+          onDone={() => {
+            onSaved?.();
+            onClose();
+          }}
         />
       ) : null}
     </Modal>

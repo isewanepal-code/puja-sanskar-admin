@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { getOrder, StatusChip } from '@/features/orders';
+import { OrderActions } from '@/features/sales';
 import { Link } from '@/i18n/navigation';
 import { resolveLocale } from '@/i18n/server';
 import { isApiError } from '@/lib/api';
@@ -53,6 +54,7 @@ export default async function OrderPage({ params }: PageProps<'/[locale]/orders/
           {t(`fulfilment.${order.fulfilment}`)}
         </span>
       </header>
+      <OrderActions order={order} />
       {order.cancelReason ? (
         <p className="text-sm text-destructive">
           {t('detail.cancelReason', { reason: order.cancelReason })}

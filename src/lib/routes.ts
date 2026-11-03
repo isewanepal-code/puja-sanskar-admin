@@ -10,6 +10,8 @@ export const routes = {
   dashboard: () => '/',
   orders: () => '/orders',
   order: (id: string) => `/orders/${id}`,
+  counterSale: () => '/orders/counter',
+  bills: () => '/orders/bills',
   login: (next?: string) => (next ? `/login?next=${encodeURIComponent(next)}` : '/login'),
 
   // The tree, opened at a group.
@@ -42,6 +44,8 @@ export const routes = {
   taxClasses: () => '/settings',
   deliveryZones: () => '/settings/delivery-zones',
   deliverySlots: () => '/settings/delivery-slots',
+  shopSettings: () => '/settings/shop',
+  businessProfile: () => '/settings/business',
 
   staff: () => '/staff',
 } as const;

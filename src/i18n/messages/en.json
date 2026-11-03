@@ -1141,6 +1141,216 @@
         "targets": "Pick what it covers",
         "scope": "Pick only items of the kind it covers"
       }
+    },
+    "orderStatus": {
+      "title": "—",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "status": "Next step",
+        "note": "Note",
+        "deliveryFee": "Delivery fee"
+      },
+      "statuses": {
+        "PENDING": "Pending",
+        "CONFIRMED": "Confirmed",
+        "PACKED": "Packed",
+        "OUT_FOR_DELIVERY": "Out for delivery",
+        "READY_FOR_PICKUP": "Ready to collect",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled"
+      }
+    },
+    "deliveryFee": {
+      "title": "—",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "deliveryFee": "Delivery fee"
+      }
+    },
+    "receivePayment": {
+      "title": "—",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "method": "Paid by",
+        "amount": "Amount",
+        "reference": "Reference",
+        "paidAt": "Paid at",
+        "note": "Note",
+        "issueBill": "Issue the bill once fully paid",
+        "buyerPan": "Buyer's PAN"
+      },
+      "hints": {
+        "amount": "Empty takes everything still due.",
+        "reference": "The eSewa, Khalti or bank reference."
+      },
+      "methods": {
+        "CASH": "Cash",
+        "QR": "QR",
+        "ESEWA": "eSewa",
+        "KHALTI": "Khalti",
+        "BANK_TRANSFER": "Bank transfer",
+        "CARD": "Card",
+        "OTHER": "Other"
+      },
+      "kinds": {
+        "RECEIPT": "Received",
+        "REFUND": "Refund"
+      }
+    },
+    "refund": {
+      "title": "—",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "method": "Paid back by",
+        "amount": "Amount",
+        "reference": "Reference",
+        "note": "Note"
+      },
+      "methods": {
+        "CASH": "Cash",
+        "QR": "QR",
+        "ESEWA": "eSewa",
+        "KHALTI": "Khalti",
+        "BANK_TRANSFER": "Bank transfer",
+        "CARD": "Card",
+        "OTHER": "Other"
+      }
+    },
+    "voidPayment": {
+      "title": "—",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "reason": "Why"
+      }
+    },
+    "issueBill": {
+      "title": "—",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "buyerPan": "Buyer's PAN"
+      }
+    },
+    "voidBill": {
+      "title": "—",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "reason": "Why"
+      }
+    },
+    "bills": {
+      "title": "Bills",
+      "add": "—",
+      "empty": "No bills yet.",
+      "none": "—",
+      "fields": {
+        "number": "Bill",
+        "orderNumber": "Order",
+        "issuedOn": "Issued",
+        "buyer": "Buyer",
+        "kind": "Kind",
+        "vatTotal": "VAT",
+        "payableTotal": "Total",
+        "status": "Status"
+      },
+      "kinds": {
+        "TAX_INVOICE": "Tax invoice",
+        "INVOICE": "Invoice"
+      },
+      "statuses": {
+        "ISSUED": "Issued",
+        "VOID": "Void"
+      }
+    },
+    "businessProfile": {
+      "title": "Business profile",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "legalName": "Registered name",
+        "address": "Address",
+        "phone": "Phone",
+        "email": "Email",
+        "panNumber": "PAN",
+        "vatRegistered": "Registered for VAT",
+        "qrPayload": "Payment QR text",
+        "qrLabel": "QR label",
+        "billFooter": "Bill footer",
+        "whatsappNumber": "WhatsApp number",
+        "viberNumber": "Viber number",
+        "messengerPage": "Messenger page"
+      },
+      "hints": {
+        "vatRegistered": "Bills become tax invoices with 13% VAT shown apart.",
+        "qrPayload": "The text inside the shop's Fonepay or bank QR; the amount is added for each order.",
+        "messengerPage": "The page name in m.me/pujasanskar.",
+        "billFooter": "Printed at the bottom of every bill."
+      },
+      "sections": {
+        "payment": "Payment",
+        "chat": "Chat links"
+      }
+    },
+    "shopSettings": {
+      "title": "Shop",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "defaultTaxClassId": "Default tax class",
+        "deliveryTaxClassId": "Delivery tax class",
+        "pricesIncludeTax": "Prices are entered with VAT",
+        "totalRounding": "Round what the buyer pays",
+        "discountStacking": "Discounts together",
+        "counterDiscountMaxPercent": "Counter discount at most %",
+        "paymentWindowHours": "Hours to pay",
+        "unlistedAreaDelivery": "Address outside the delivery areas",
+        "cashOnDeliveryMax": "Cash on delivery up to",
+        "cashOnDelivery": "Offer cash on delivery",
+        "emailOrderUpdates": "Email customers about their orders",
+        "popularSearches": "Popular searches"
+      },
+      "hints": {
+        "defaultTaxClassId": "For anything whose product and categories name none.",
+        "counterDiscountMaxPercent": "Above this, a counter discount needs a manager's permission.",
+        "paymentWindowHours": "An unpaid online order is cancelled after this.",
+        "popularSearches": "Offered in the empty search box, in this order, separated by commas.",
+        "pricesIncludeTax": "Off converts prices at the product's tax rate of the day."
+      },
+      "sections": {
+        "tax": "Tax and prices",
+        "discounts": "Discounts",
+        "orders": "Orders and delivery",
+        "search": "Search"
+      },
+      "rounding": {
+        "NONE": "No rounding",
+        "RUPEE": "To the rupee",
+        "FIVE_RUPEES": "To 5 rupees",
+        "TEN_RUPEES": "To 10 rupees"
+      },
+      "stacking": {
+        "BEST_ONLY": "Only the largest one",
+        "COUPON_WITH_AUTOMATIC": "A coupon on top of the best automatic one"
+      },
+      "unlisted": {
+        "QUOTE": "Staff quote the fee",
+        "REFUSE": "Checkout refuses it"
+      }
     }
   },
   "catalogue": {
@@ -1179,7 +1389,9 @@
     "tabs": {
       "taxClasses": "Tax",
       "deliveryZones": "Delivery areas",
-      "deliverySlots": "Delivery times"
+      "deliverySlots": "Delivery times",
+      "shop": "Shop",
+      "business": "Business profile"
     }
   },
   "staffSection": {
@@ -1270,5 +1482,87 @@
     "libraryNote": "Every uploaded image. Product, puja and pandit forms pick from here too.",
     "copy": "Copy address",
     "copied": "Address copied"
+  },
+  "salesSection": {
+    "title": "Orders",
+    "tabs": {
+      "orders": "Orders",
+      "counterSale": "Counter sale",
+      "bills": "Bills"
+    }
+  },
+  "orderActions": {
+    "status": "Move order on",
+    "statusTitle": "Move {number} on",
+    "statusNote": "Only the next steps the order can take are offered. A note goes into its history.",
+    "statusDone": "Order moved on",
+    "receive": "Receive payment",
+    "receiveTitle": "Payment for {number}",
+    "receiveNote": "The amount starts at what is still due. The bill is issued once the order is fully paid.",
+    "received": "Received",
+    "due": "Due",
+    "refunded": "Refunded",
+    "refund": "Refund",
+    "refundTitle": "Refund for {number}",
+    "qr": "Payment QR",
+    "qrMissing": "There is nothing to pay, or the shop has no QR set up in its business profile.",
+    "message": "Message for the customer",
+    "copy": "Copy",
+    "copied": "Copied",
+    "loading": "Loading...",
+    "fee": "Delivery fee",
+    "feeTitle": "Delivery fee for {number}",
+    "saved": "Saved",
+    "bill": "Issue bill",
+    "billTitle": "Bill for {number}",
+    "billNote": "Add the buyer's PAN for a business bill.",
+    "billed": "Bill issued",
+    "payments": "Payments",
+    "noPayments": "No payments yet.",
+    "void": "Void",
+    "voidTitle": "Void this payment",
+    "voidNote": "It stays on record, struck through, with the reason.",
+    "voided": "Payment voided"
+  },
+  "bills": {
+    "print": "Print",
+    "share": "Share",
+    "email": "Email to the customer",
+    "void": "Void",
+    "voidTitle": "Void bill {number}",
+    "voidNote": "A voided bill stays on record; issue a new one if needed.",
+    "voided": "Bill voided",
+    "shareTitle": "Share bill {number}",
+    "copyLink": "Copy link",
+    "copied": "Link copied",
+    "loading": "Loading...",
+    "emailed": "Bill emailed",
+    "popup": "Allow pop-ups for this site to print."
+  },
+  "counterSale": {
+    "pack": "Pack",
+    "choose": "Choose a pack",
+    "loading": "Loading packs...",
+    "quantity": "Qty",
+    "add": "Add",
+    "price": "Price",
+    "total": "Total",
+    "remove": "Remove",
+    "empty": "Add the first pack.",
+    "noLines": "Add at least one pack",
+    "subtotal": "Subtotal",
+    "customer": "Customer name",
+    "phone": "Phone",
+    "coupon": "Coupon",
+    "discount": "Counter discount",
+    "discountKind": "As",
+    "reason": "Why the discount",
+    "reasonNeeded": "Say why the discount is given",
+    "amount": "An amount such as 50 or 10.5",
+    "percent": "A percentage is at most 100",
+    "note": "Note",
+    "sell": "Record sale",
+    "sold": "Sale {number} recorded",
+    "afterNote": "The sale opens as an order, where payment is taken and the bill issued."
   }
 }
