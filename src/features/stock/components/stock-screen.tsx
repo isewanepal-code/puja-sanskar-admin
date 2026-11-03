@@ -4,7 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
-import { ActionModal, ResourceScreen, useResourceText } from '@/components/resource';
+import {
+  ActionModal,
+  ResourceScreen,
+  useResourceText,
+  WorkbookUploadButton,
+} from '@/components/resource';
 import { IconButton } from '@/components/ui/button';
 import { Select, Switch } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
@@ -56,6 +61,13 @@ export function StockScreen() {
               label={t('lowOnly')}
               checked={lowOnly}
               onChange={(event) => setLowOnly(event.target.checked)}
+            />
+            <WorkbookUploadButton
+              path="/admin/stock-levels/import"
+              templatePath="/admin/stock-levels/import/template"
+              title={t('uploadStock')}
+              description={t('uploadStockNote')}
+              refresh={['stock']}
             />
           </>
         }

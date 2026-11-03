@@ -12,6 +12,7 @@ import { Modal } from '@/components/ui/modal';
 import { isApiError, request } from '@/lib/api';
 
 import { BulkGrid } from './bulk-grid';
+import { ExportButton } from './export-button';
 import { ConfirmDelete } from './confirm-delete';
 import { ResourceForm } from './resource-form';
 import { useResourceText } from './translate';
@@ -117,6 +118,12 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
         ) : null}
         <div className="ml-auto flex items-center gap-2">
           {toolbar}
+          {resource.exportPath ? (
+            <ExportButton
+              path={resource.exportPath}
+              query={{ ...resource.listQuery, ...(resource.searchable !== false && { q: query }) }}
+            />
+          ) : null}
           {resource.bulk ? (
             <Button variant="secondary" icon="list" onClick={() => setBulk(true)}>
               {tf('bulkAdd')}

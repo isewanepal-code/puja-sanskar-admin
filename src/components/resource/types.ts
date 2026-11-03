@@ -87,6 +87,8 @@ export type Resource<T> = {
   loadAll?: () => Promise<T[]>;
   // Extra query sent with every list request.
   listQuery?: Record<string, string>;
+  // An Excel download of the list, taking its filters and search.
+  exportPath?: string;
   // A rule across fields, checked before sending; names the field to mark.
   check?: (values: Record<string, unknown>) => { field: string; message: string } | null;
   // A record as its form edits it, when the API nests what the form sends as ids.

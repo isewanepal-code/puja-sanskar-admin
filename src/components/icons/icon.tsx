@@ -257,6 +257,12 @@ const PATHS = {
       <path d="M4 16v4h16v-4" />
     </>
   ),
+  download: (
+    <>
+      <path d="M12 4v12M7 11l5 5 5-5" />
+      <path d="M4 16v4h16v-4" />
+    </>
+  ),
   play: (
     <>
       <path d="M7 4v16l13-8Z" />

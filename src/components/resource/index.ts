@@ -8,3 +8,5 @@ export { RecordScreen } from './record-screen';
 export { ResourceScreen } from './resource-screen';
 export { useResourceText } from './translate';
 export type { Cell, Field, FieldKind, Option, Resource } from './types';
+export { ExportButton } from './export-button';
+export { WorkbookUpload, WorkbookUploadButton } from './workbook-upload';

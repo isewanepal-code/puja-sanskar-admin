@@ -9,7 +9,7 @@ import { ResourceScreen, useResourceText } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
 import { Select } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
-import { download, isApiError, request, type Schema } from '@/lib/api';
+import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
 
 import {
@@ -253,26 +253,5 @@ export function MessagesScreen() {
 }
 
 export function RemindersScreen() {
-  const ta = useTranslations('customerActions');
-  const tf = useTranslations('forms');
-  const toast = useToast();
-  const save = useMutation({
-    mutationFn: () => download('/admin/reminder-subscriptions/export'),
-    onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
-  });
-  return (
-    <ResourceScreen
-      resource={remindersResource}
-      toolbar={
-        <Button
-          variant="secondary"
-          icon="upload"
-          disabled={save.isPending}
-          onClick={() => save.mutate()}
-        >
-          {ta('export')}
-        </Button>
-      }
-    />
-  );
+  return <ResourceScreen resource={remindersResource} />;
 }

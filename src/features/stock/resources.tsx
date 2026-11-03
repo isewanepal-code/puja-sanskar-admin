@@ -25,6 +25,7 @@ export function stockResource(lowOnly: boolean, productId?: string): Resource<Le
   return {
     key: 'stock',
     path: '/admin/stock-levels',
+    exportPath: '/admin/stock-levels/export',
     list: productId ? 'all' : 'paged',
     loadAll: productId ? () => packsOf(productId, lowOnly) : undefined,
     // Part of the list's cache key too, so each filter keeps its own list.

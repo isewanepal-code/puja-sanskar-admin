@@ -51,6 +51,7 @@ export const productChoices = {
 export const productsResource: Resource<Product> = {
   key: 'products',
   path: '/admin/products',
+  exportPath: '/admin/products/export',
   list: 'paged',
   rowId: (row) => row.id,
   rowLabel: (row) => `${row.code} · ${row.nameNe}`,

@@ -1624,7 +1624,11 @@
     "saved": "Saved",
     "publish": "Publish or archive",
     "publishFor": "Status of {name}",
-    "publishNote": "Only published articles show on the website; the first publish sets its date."
+    "publishNote": "Only published articles show on the website; the first publish sets its date.",
+    "uploadProducts": "Upload products from Excel",
+    "uploadProductsNote": "Use the downloaded list or the layout: a Products sheet and a Packs sheet. Rows match by code and SKU; new ones are added, a blank cell keeps what is saved. Prices are as sold, VAT included.",
+    "uploadStock": "Upload stock from Excel",
+    "uploadStockNote": "A Movements sheet: sku, type (PURCHASE, RETURN, DAMAGE or ADJUSTMENT), quantity, and optionally unit_cost, reference and note. All rows are recorded together or none are."
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -1750,8 +1754,7 @@
     "noAddresses": "No saved addresses.",
     "loading": "Loading...",
     "cart": "Cart",
-    "cartTitle": "Cart · {total}",
-    "export": "Download as CSV"
+    "cartTitle": "Cart · {total}"
   },
   "listPhotos": {
     "fill": "Fill the list",
@@ -1833,22 +1836,34 @@
     "request": "Request",
     "detailsLabel": "Details",
     "importTitle": "Master dataset",
-    "importNote": "Upload the .xlsx. A dry run checks every sheet and changes nothing; run it without the dry run to write. Re-importing the same file is safe.",
-    "chooseFile": "Choose the .xlsx",
-    "dryRun": "Dry run (check only)",
-    "check": "Check the file",
-    "import": "Import",
-    "checked": "Checked; nothing was written",
-    "imported": "Imported",
-    "sheet": "Sheet",
-    "created": "New",
-    "updated": "Changed",
-    "unchanged": "Same",
-    "skipped": "Skipped",
+    "importNote": "Upload the .xlsx. Re-importing the same file is safe.",
     "searchTitle": "Search",
     "searchNote": "The search index refreshes itself; rebuild it after a large import.",
     "reindex": "Rebuild the search index",
     "reindexing": "Rebuilding...",
     "reindexed": "{count} entries indexed"
+  },
+  "spreadsheets": {
+    "download": "Download Excel",
+    "preparing": "Preparing...",
+    "upload": "Upload Excel",
+    "template": "Download the layout",
+    "chooseFile": "Choose the .xlsx",
+    "check": "Check the file",
+    "import": "Import",
+    "checkFirst": "Check the file first: nothing is written until every row is right, and Import is used after a clean check.",
+    "checked": "Checked; nothing was written",
+    "imported": "Imported",
+    "wouldChange": "What importing would change",
+    "changed": "What changed",
+    "sheet": "Sheet",
+    "created": "New",
+    "updated": "Changed",
+    "unchanged": "Same",
+    "skipped": "Skipped",
+    "problems": "{count, plural, one {# problem} other {# problems}}; nothing was written. Fix them in the file and check it again.",
+    "row": "Row",
+    "column": "Column",
+    "problem": "Problem"
   }
 }

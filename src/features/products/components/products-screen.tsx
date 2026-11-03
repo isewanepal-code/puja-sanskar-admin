@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { ActionModal, ResourceScreen } from '@/components/resource';
+import { ActionModal, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
 import { IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { request } from '@/lib/api';
@@ -44,6 +44,15 @@ export function ProductsScreen() {
     <>
       <ResourceScreen
         resource={productsResource}
+        toolbar={
+          <WorkbookUploadButton
+            path="/admin/products/import"
+            templatePath="/admin/products/import/template"
+            title={t('uploadProducts')}
+            description={t('uploadProductsNote')}
+            refresh={['products', 'stock']}
+          />
+        }
         rowActions={(row) => (
           <>
             <IconButton
