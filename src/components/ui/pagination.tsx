@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Icon, type IconName } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
-export const PAGE_SIZES = [20, 50, 100] as const;
+export const PAGE_SIZES = [10, 20, 50, 100] as const;
 
 type PaginationProps = {
   page: number;

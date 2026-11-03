@@ -1,5 +1,6 @@
 'use client';
 
+import { Popover } from '@base-ui/react/popover';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState, type ReactNode } from 'react';
 
@@ -117,83 +118,60 @@ export function DataTable<T>({
                     active ? (sort.direction === 'asc' ? 'ascending' : 'descending') : undefined
                   }
                   className={cn(
-                    'border-r border-border/70 px-3 py-2.5 font-semibold tracking-wide whitespace-nowrap last:border-r-0',
+                    'group border-r border-border px-3 py-2.5 font-semibold tracking-wide whitespace-nowrap last:border-r-0',
                     column.align === 'right' && 'text-right',
                     column.className,
                   )}
                 >
-                  {column.sortValue ? (
-                    <button
-                      type="button"
-                      onClick={() => toggle(column.key)}
-                      className={cn(
-                        'inline-flex items-center gap-1 uppercase hover:text-foreground',
-                        active && 'text-foreground',
-                      )}
-                    >
-                      {column.header}
-                      <Icon
-                        name="down"
-                        size={12}
+                  <span
+                    className={cn(
+                      'inline-flex items-center gap-1',
+                      column.align === 'right' && 'flex-row-reverse',
+                    )}
+                  >
+                    {column.sortValue ? (
+                      <button
+                        type="button"
+                        onClick={() => toggle(column.key)}
                         className={cn(
-                          'transition-transform',
-                          !active && 'opacity-30',
-                          active && sort.direction === 'asc' && 'rotate-180',
+                          'inline-flex items-center gap-1 uppercase hover:text-foreground',
+                          active && 'text-foreground',
                         )}
+                      >
+                        {column.header}
+                        <Icon
+                          name="down"
+                          size={12}
+                          className={cn(
+                            'transition-transform',
+                            !active && 'opacity-30',
+                            active && sort.direction === 'asc' && 'rotate-180',
+                          )}
+                        />
+                      </button>
+                    ) : (
+                      column.header
+                    )}
+                    {searchable && filterOf(column) ? (
+                      <ColumnSearch
+                        label={t('searchColumn', { column: column.header })}
+                        value={filters[column.key] ?? ''}
+                        yesNo={isYesNo(column)}
+                        onChange={(next) =>
+                          setFilters((current) => ({ ...current, [column.key]: next }))
+                        }
                       />
-                    </button>
-                  ) : (
-                    column.header
-                  )}
+                    ) : null}
+                  </span>
                 </th>
               );
             })}
             {actions ? (
-              <th className="px-3 py-2.5">
+              <th className="w-px px-3 py-2.5">
                 <span className="sr-only">{t('actions')}</span>
               </th>
             ) : null}
           </tr>
-          {searchable ? (
-            <tr className="border-b border-border">
-              {columns.map((column) => {
-                const filter = filterOf(column);
-                const value = filters[column.key] ?? '';
-                const set = (next: string) =>
-                  setFilters((current) => ({ ...current, [column.key]: next }));
-                const label = t('searchColumn', { column: column.header });
-                return (
-                  <th
-                    key={column.key}
-                    className="border-r border-border/70 px-2 py-1.5 font-normal last:border-r-0"
-                  >
-                    {!filter ? null : isYesNo(column) ? (
-                      <select
-                        value={value}
-                        onChange={(event) => set(event.target.value)}
-                        aria-label={label}
-                        className="h-7 w-full min-w-16 rounded-sm border border-border bg-card px-1.5 text-xs text-foreground"
-                      >
-                        <option value="">{t('any')}</option>
-                        <option value="true">{t('yes')}</option>
-                        <option value="false">{t('no')}</option>
-                      </select>
-                    ) : (
-                      <input
-                        type="search"
-                        value={value}
-                        onChange={(event) => set(event.target.value)}
-                        placeholder={t('filter')}
-                        aria-label={label}
-                        className="h-7 w-full min-w-20 rounded-sm border border-border bg-card px-2 text-xs font-normal text-foreground normal-case placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none"
-                      />
-                    )}
-                  </th>
-                );
-              })}
-              {actions ? <th /> : null}
-            </tr>
-          ) : null}
         </thead>
         <tbody>
           {loading ? (
@@ -220,7 +198,7 @@ export function DataTable<T>({
                 key={rowKey(row)}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
                 className={cn(
-                  'border-b border-border/60 transition-colors last:border-0 even:bg-muted/25 hover:bg-primary/5',
+                  'border-b border-border transition-colors last:border-0 even:bg-muted/30 hover:bg-primary/5',
                   onRowClick && 'cursor-pointer',
                 )}
               >
@@ -228,7 +206,7 @@ export function DataTable<T>({
                   <td
                     key={column.key}
                     className={cn(
-                      'border-r border-border/50 px-3 py-2.5 align-middle last:border-r-0',
+                      'border-r border-border px-3 py-2.5 align-middle',
                       column.align === 'right' && 'text-right',
                       column.className,
                     )}
@@ -250,5 +228,82 @@ export function DataTable<T>({
         </tbody>
       </table>
     </div>
+  );
+}
+
+type ColumnSearchProps = {
+  label: string;
+  value: string;
+  yesNo: boolean;
+  onChange: (value: string) => void;
+};
+
+// The funnel beside a heading: a small search for that column, marked while it narrows rows.
+function ColumnSearch({ label, value, yesNo, onChange }: ColumnSearchProps) {
+  const t = useTranslations('table');
+  const active = value.trim() !== '';
+  return (
+    <Popover.Root>
+      <Popover.Trigger
+        aria-label={label}
+        title={label}
+        className={cn(
+          'relative grid size-6 place-items-center rounded-sm transition-colors hover:bg-card hover:text-foreground',
+          active
+            ? 'text-primary'
+            : 'text-muted-foreground/35 group-hover:text-muted-foreground data-[popup-open]:text-foreground',
+        )}
+      >
+        <Icon name="filter" size={12} />
+        {active ? (
+          <span className="absolute top-0.5 right-0.5 size-1.5 rounded-full bg-primary" />
+        ) : null}
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner sideOffset={6} align="start" className="z-50">
+          <Popover.Popup
+            initialFocus={(type) => type === 'keyboard' || undefined}
+            className="w-60 rounded-md bg-card p-2.5 text-left normal-case shadow-lg ring-1 ring-border outline-none"
+          >
+            <p className="mb-1.5 text-xs font-medium text-muted-foreground">{label}</p>
+            {yesNo ? (
+              <div className="grid grid-cols-3 gap-1">
+                {(['', 'true', 'false'] as const).map((choice) => (
+                  <button
+                    key={choice || 'any'}
+                    type="button"
+                    onClick={() => onChange(choice)}
+                    className={cn(
+                      'h-8 rounded-sm border border-border text-sm transition-colors hover:bg-muted',
+                      value === choice && 'border-primary bg-primary/8 text-primary',
+                    )}
+                  >
+                    {choice === '' ? t('any') : choice === 'true' ? t('yes') : t('no')}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <input
+                type="search"
+                autoFocus
+                value={value}
+                onChange={(event) => onChange(event.target.value)}
+                placeholder={t('filter')}
+                className="h-9 w-full rounded-sm border border-border bg-card px-2.5 text-sm focus:border-primary focus:outline-none"
+              />
+            )}
+            {active ? (
+              <button
+                type="button"
+                onClick={() => onChange('')}
+                className="mt-2 text-xs text-muted-foreground hover:text-foreground"
+              >
+                {t('clearFilter')}
+              </button>
+            ) : null}
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
   );
 }

@@ -20,7 +20,7 @@ const initial = siteConfig.name.slice(0, 1);
 export function Sidebar({ groups }: { groups: NavGroup[] }) {
   const t = useTranslations('panel');
   const pathname = usePathname();
-  const { collapsed, open, close } = usePanel();
+  const { collapsed, open, close, toggle } = usePanel();
 
   return (
     <>
@@ -42,23 +42,25 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
       >
         <div
           className={cn(
-            'flex h-14 shrink-0 items-center border-b border-border px-5',
+            'flex h-14 shrink-0 items-center gap-2.5 border-b border-border px-4',
             collapsed && 'md:justify-center md:px-0',
           )}
         >
           <Link
             href={routes.dashboard()}
-            className="font-heading text-lg font-semibold whitespace-nowrap text-primary"
             title={siteConfig.name}
+            className="flex min-w-0 items-center gap-2.5"
           >
-            <span className={cn(collapsed && 'md:hidden')}>{siteConfig.name}</span>
+            <span className="grid size-8 shrink-0 place-items-center rounded-md bg-primary font-heading text-sm font-semibold text-primary-foreground">
+              {initial}
+            </span>
             <span
               className={cn(
-                'hidden size-8 place-items-center rounded-md bg-primary text-sm text-primary-foreground',
-                collapsed && 'md:grid',
+                'truncate font-heading text-[0.95rem] font-semibold text-foreground',
+                collapsed && 'md:hidden',
               )}
             >
-              {initial}
+              {siteConfig.name}
             </span>
           </Link>
         </div>
@@ -112,6 +114,22 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
             </div>
           ))}
         </nav>
+        <div className="hidden shrink-0 border-t border-border p-2 md:block">
+          <button
+            type="button"
+            onClick={toggle}
+            title={collapsed ? t('showMenu') : t('hideMenu')}
+            className={cn(
+              'flex w-full items-center gap-2.5 rounded-md px-2.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+              collapsed && 'justify-center px-0',
+            )}
+          >
+            <Icon name={collapsed ? 'right' : 'left'} size={16} className="shrink-0" />
+            <span className={cn(collapsed && 'sr-only')}>
+              {collapsed ? t('showMenu') : t('hideMenu')}
+            </span>
+          </button>
+        </div>
       </aside>
     </>
   );

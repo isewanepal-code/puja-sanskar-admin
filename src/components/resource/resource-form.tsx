@@ -8,6 +8,7 @@ import { useForm, type UseFormReturn } from 'react-hook-form';
 
 import { Field as FieldShell } from '@/components/forms';
 import { useToast } from '@/components/overlays';
+import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { Input, Select, Switch, Textarea } from '@/components/ui/input';
 import { fieldErrors, isApiError, request } from '@/lib/api';
 
@@ -20,8 +21,6 @@ const INPUT_TYPE: Partial<Record<Field['kind'], string>> = {
   password: 'password',
   url: 'url',
   time: 'time',
-  date: 'date',
-  datetime: 'datetime-local',
   number: 'number',
 };
 
@@ -68,6 +67,17 @@ function Control({
           value={String(form.watch(field.name) ?? '[]')}
           current={() => String(getValues(field.name) ?? '[]')}
           onChange={setByPicker}
+        />
+      );
+    case 'date':
+    case 'datetime':
+      return (
+        <BsDatePicker
+          id={id}
+          value={String(form.watch(field.name) ?? '')}
+          onChange={setByPicker}
+          withTime={field.kind === 'datetime'}
+          invalid={invalid}
         />
       );
     case 'switch':
@@ -122,7 +132,8 @@ type ResourceFormProps<T> = {
   defaults?: Record<string, unknown>;
   // The toast after an action that is not a plain create or save.
   successMessage?: string;
-  onDone: () => void;
+  // Given the saved record, so a new one can open its next step.
+  onDone: (saved?: unknown) => void;
   onPendingChange?: (pending: boolean) => void;
 };
 
@@ -170,14 +181,14 @@ export function ResourceForm<T>({
     },
     onMutate: () => onPendingChange?.(true),
     onSettled: () => onPendingChange?.(false),
-    onSuccess: async () => {
+    onSuccess: async (saved) => {
       toast.success(successMessage ?? tf(row ? 'saved' : 'created'));
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: [resource.scope ?? resource.key] }),
         // Dropdowns elsewhere may list what just changed.
         queryClient.invalidateQueries({ queryKey: ['options'] }),
       ]);
-      onDone();
+      onDone(saved);
     },
     onError: (error) => {
       const byField = fieldErrors(error);
@@ -213,7 +224,7 @@ export function ResourceForm<T>({
         return (
           <Fragment key={field.name}>
             {field.section ? (
-              <h3 className="pt-2 text-xs font-semibold tracking-wide text-muted-foreground uppercase sm:col-span-2">
+              <h3 className="mt-2 flex items-center gap-3 text-xs font-semibold tracking-wide text-foreground/70 uppercase after:h-px after:flex-1 after:bg-border sm:col-span-2">
                 {t(`sections.${field.section}`)}
               </h3>
             ) : null}

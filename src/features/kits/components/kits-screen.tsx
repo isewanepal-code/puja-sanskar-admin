@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 import { ActionModal, ResourceScreen, useResourceText } from '@/components/resource';
-import { Button, IconButton } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 
 import { kitFromPujaResource, kitItemsResource, kitsResource, type Kit } from '../resources';
@@ -25,8 +25,11 @@ export function KitsScreen() {
             {t('kitFromPuja')}
           </Button>
         }
+        onCreated={setItemsOf}
         rowActions={(row) => (
-          <IconButton icon="list" label={t('items')} onClick={() => setItemsOf(row)} />
+          <Button variant="secondary" size="sm" icon="list" onClick={() => setItemsOf(row)}>
+            {t('itemsCount', { count: row.items.length })}
+          </Button>
         )}
       />
       <ActionModal

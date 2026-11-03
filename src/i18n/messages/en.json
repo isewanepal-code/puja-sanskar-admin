@@ -215,14 +215,15 @@
     "on": "On",
     "off": "Off",
     "searchColumn": "Search {column}",
-    "filter": "Filter...",
+    "filter": "Type to search...",
     "any": "Any",
     "yes": "Yes",
     "no": "No",
     "noMatch": "No rows match these column searches.",
     "showing": "{from}–{to} of {total}",
     "perPage": "Rows per page",
-    "pages": "Pages"
+    "pages": "Pages",
+    "clearFilter": "Clear this search"
   },
   "password": {
     "title": "Change password",
@@ -1662,7 +1663,8 @@
     "uploadProducts": "Upload products from Excel",
     "uploadProductsNote": "Use the downloaded list or the layout: a Products sheet and a Packs sheet. Rows match by code and SKU; new ones are added, a blank cell keeps what is saved. Prices are as sold, VAT included.",
     "uploadStock": "Upload stock from Excel",
-    "uploadStockNote": "A Movements sheet: sku, type (PURCHASE, RETURN, DAMAGE or ADJUSTMENT), quantity, and optionally unit_cost, reference and note. All rows are recorded together or none are."
+    "uploadStockNote": "A Movements sheet: sku, type (PURCHASE, RETURN, DAMAGE or ADJUSTMENT), quantity, and optionally unit_cost, reference and note. All rows are recorded together or none are.",
+    "itemsCount": "Items ({count})"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -1899,5 +1901,15 @@
     "row": "Row",
     "column": "Column",
     "problem": "Problem"
+  },
+  "datePicker": {
+    "choose": "Choose a date",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "month": "Month",
+    "year": "Year",
+    "time": "Time",
+    "today": "Today",
+    "clear": "Clear"
   }
 }

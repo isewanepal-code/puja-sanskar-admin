@@ -54,9 +54,11 @@ export function Modal({
             WIDTH[size],
           )}
         >
-          <header className="flex items-start justify-between gap-4 px-5 pt-4 pb-3">
+          <header className="relative flex items-start justify-between gap-4 rounded-t-lg border-b border-border bg-muted/50 py-3.5 pr-4 pl-6 before:absolute before:top-3.5 before:bottom-3.5 before:left-0 before:w-1 before:rounded-r-full before:bg-primary">
             <div className="min-w-0">
-              <Dialog.Title className="font-heading text-lg font-semibold">{title}</Dialog.Title>
+              <Dialog.Title className="font-heading text-[1.05rem] leading-snug font-semibold">
+                {title}
+              </Dialog.Title>
               {description ? (
                 <Dialog.Description className="mt-0.5 text-sm text-muted-foreground">
                   {description}
@@ -65,16 +67,16 @@ export function Modal({
             </div>
             <Dialog.Close
               aria-label={t('close')}
-              className="-mr-1 grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+              className="grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-card hover:text-foreground"
             >
               <Icon name="x" size={18} />
             </Dialog.Close>
           </header>
-          <div ref={body} className="min-h-0 flex-1 overflow-y-auto px-5 pb-5">
+          <div ref={body} className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
             {children}
           </div>
           {footer ? (
-            <footer className="flex items-center justify-end gap-2 border-t border-border px-5 py-3">
+            <footer className="flex items-center justify-end gap-2 rounded-b-lg border-t border-border bg-muted/40 px-6 py-3">
               {footer}
             </footer>
           ) : null}

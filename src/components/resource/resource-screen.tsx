@@ -9,7 +9,7 @@ import { Button, IconButton } from '@/components/ui/button';
 import { DataTable, type Column } from '@/components/ui/data-table';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
-import { PAGE_SIZES, Pagination } from '@/components/ui/pagination';
+import { Pagination } from '@/components/ui/pagination';
 import { isApiError, request } from '@/lib/api';
 
 import { BulkGrid } from './bulk-grid';
@@ -27,10 +27,17 @@ type ResourceScreenProps<T> = {
   rowActions?: (row: T) => ReactNode;
   // Above the table, beside the search (a bulk-entry button…).
   toolbar?: ReactNode;
+  // After a new record is saved: open what comes next for it (a kit's items…).
+  onCreated?: (row: T) => void;
 };
 
 // Any resource's list with search, sorting, paging and its create, edit and delete modals.
-export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScreenProps<T>) {
+export function ResourceScreen<T>({
+  resource,
+  rowActions,
+  toolbar,
+  onCreated,
+}: ResourceScreenProps<T>) {
   const t = useResourceText(resource.key);
   const tf = useTranslations('forms');
   const tt = useTranslations('table');
@@ -41,7 +48,7 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
   const [search, setSearch] = useState('');
   const query = useDeferredValue(search.trim());
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[1]);
+  const [pageSize, setPageSize] = useState<number>(20);
   const [editing, setEditing] = useState<T | 'new' | null>(null);
   const [removing, setRemoving] = useState<T | null>(null);
   const [saving, setSaving] = useState(false);
@@ -212,7 +219,10 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
             row={editing === 'new' ? undefined : editing}
             formId={formId}
             onPendingChange={setSaving}
-            onDone={() => setEditing(null)}
+            onDone={(saved) => {
+              if (editing === 'new' && saved) onCreated?.(saved as T);
+              setEditing(null);
+            }}
           />
         ) : null}
       </Modal>
