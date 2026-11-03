@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { navigation } from './navigation';
+import { navigationFor } from './navigation';
 import { can } from './permissions';
 
 describe('can', () => {
@@ -10,8 +10,16 @@ describe('can', () => {
     expect(can(['reports:read'], 'orders:read')).toBe(false);
   });
 
-  it('should leave a staff member without orders:read a sidebar of the dashboard alone', () => {
-    const shown = navigation.filter((section) => can(['reports:read'], section.permission));
-    expect(shown.map((section) => section.key)).toEqual(['dashboard']);
+  it('should leave a staff member only the sections and groups they may open', () => {
+    const groups = navigationFor(['reports:read']);
+    expect(groups.map((group) => group.key)).toEqual(['overview']);
+    expect(groups[0]!.sections.map((section) => section.key)).toEqual(['dashboard']);
+  });
+
+  it('should show catalogue sections to a content manager', () => {
+    const keys = navigationFor(['catalogue:read', 'catalogue:write']).flatMap((group) =>
+      group.sections.map((section) => section.key),
+    );
+    expect(keys).toEqual(['dashboard', 'pujas']);
   });
 });

@@ -23,6 +23,23 @@ export const routes = {
   newRitualType: () => '/pujas/ritual-types/new',
   ritualType: (id: string) => `/pujas/ritual-types/${id}`,
   pujaLevels: () => '/pujas/levels',
+  mantras: () => '/pujas/mantras',
+
+  categories: () => '/catalogue',
+  materials: () => '/catalogue/samagri',
+  units: () => '/catalogue/units',
+  sources: () => '/catalogue/sources',
+
+  faqs: () => '/content',
+  stories: () => '/content/stories',
+
+  pandits: () => '/marketing',
+
+  taxClasses: () => '/settings',
+  deliveryZones: () => '/settings/delivery-zones',
+  deliverySlots: () => '/settings/delivery-slots',
+
+  staff: () => '/staff',
 } as const;
 
 export type RouteName = keyof typeof routes;

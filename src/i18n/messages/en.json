@@ -58,7 +58,9 @@
     "locked": "Too many tries. This account is locked for a while; try again later.",
     "captcha": "Too many tries. The security check is needed before signing in again.",
     "disabled": "This staff account is turned off. Ask an administrator.",
-    "network": "The server can't be reached. Check that the API is running."
+    "network": "The server can't be reached. Check that the API is running.",
+    "emailInvalid": "Enter an email address",
+    "passwordRequired": "Enter your password"
   },
   "panel": {
     "menu": "Admin sections",
@@ -66,7 +68,20 @@
     "sections": {
       "dashboard": "Dashboard",
       "orders": "Orders",
-      "pujas": "Pujas"
+      "pujas": "Pujas",
+      "catalogue": "Catalogue",
+      "content": "Content",
+      "marketing": "Pandits and offers",
+      "settings": "Settings",
+      "staff": "Staff"
+    },
+    "changePassword": "Change password",
+    "groups": {
+      "overview": "Overview",
+      "sales": "Sales",
+      "catalogue": "Pujas and samagri",
+      "site": "Website",
+      "admin": "Administration"
     }
   },
   "dashboard": {
@@ -151,7 +166,11 @@
     "deleted": "Deleted",
     "optional": "optional",
     "active": "Shown on the website",
-    "failed": "That didn't save. Check the fields and try again."
+    "failed": "That didn't save. Check the fields and try again.",
+    "created": "Created",
+    "edit": "Edit",
+    "editing": "Edit {name}",
+    "bulkAdd": "Add many"
   },
   "pujas": {
     "title": "Pujas",
@@ -260,5 +279,44 @@
       "add": "Add a level",
       "remove": "Remove"
     }
-  }
+  },
+  "table": {
+    "search": "Search",
+    "count": "{total, plural, one {# item} other {# items}}",
+    "empty": "Nothing here yet.",
+    "loading": "Loading...",
+    "failed": "The list could not load.",
+    "actions": "Actions",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {total}"
+  },
+  "password": {
+    "title": "Change password",
+    "note": "You will be signed out everywhere and sign in again with the new one.",
+    "current": "Current password",
+    "new": "New password",
+    "repeat": "New password again",
+    "submit": "Change password",
+    "required": "Required",
+    "tooShort": "At least {min} characters",
+    "mismatch": "The two new passwords differ",
+    "same": "Pick a password you have not used here",
+    "wrongCurrent": "That is not your current password",
+    "changed": "Password changed. Sign in with the new one."
+  },
+  "bulk": {
+    "title": "Add many: {what}",
+    "hint": "Type a row per record, or copy rows from Excel or Google Sheets and paste them into the first cell. Empty rows are skipped.",
+    "moreRows": "More rows",
+    "cancel": "Close",
+    "save": "Save all",
+    "saving": "Saving...",
+    "saved": "{count, plural, one {# saved} other {# saved}}",
+    "partly": "{saved} saved, {failed} need fixing",
+    "fixRows": "Some rows need fixing first",
+    "failed": "Not saved",
+    "row": "Row {row}"
+  },
+  "resources": {}
 }

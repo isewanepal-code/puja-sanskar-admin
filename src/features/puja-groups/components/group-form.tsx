@@ -64,7 +64,7 @@ export function GroupForm({ group, parent, ritualTypes }: GroupFormProps) {
         ),
       );
       if (saved) {
-        toast(tf('saved'));
+        toast.success(tf('saved'));
         router.refresh();
       }
       return;
@@ -97,7 +97,7 @@ export function GroupForm({ group, parent, ritualTypes }: GroupFormProps) {
       return true;
     });
     if (done) {
-      toast(tf('deleted'));
+      toast.success(tf('deleted'));
       router.push(routes.pujaGroups(group.parentId ?? undefined));
       router.refresh();
     }

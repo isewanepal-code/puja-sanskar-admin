@@ -45,7 +45,7 @@ export function RitualTypeForm({ ritualType }: { ritualType?: RitualType }) {
           ),
     );
     if (saved) {
-      toast(tf('saved'));
+      toast.success(tf('saved'));
       router.push(routes.ritualTypes());
       router.refresh();
     }
@@ -62,7 +62,7 @@ export function RitualTypeForm({ ritualType }: { ritualType?: RitualType }) {
       return true;
     });
     if (done) {
-      toast(tf('deleted'));
+      toast.success(tf('deleted'));
       router.push(routes.ritualTypes());
       router.refresh();
     }

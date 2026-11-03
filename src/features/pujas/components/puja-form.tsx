@@ -66,7 +66,7 @@ export function PujaForm({ puja, groups, groupId }: PujaFormProps) {
         ),
       );
       if (saved) {
-        toast(tf('saved'));
+        toast.success(tf('saved'));
         router.refresh();
       }
       return;
@@ -94,7 +94,7 @@ export function PujaForm({ puja, groups, groupId }: PujaFormProps) {
       return true;
     });
     if (done) {
-      toast(tf('deleted'));
+      toast.success(tf('deleted'));
       router.push(routes.pujas());
       router.refresh();
     }

@@ -1,3 +1,4 @@
+export { request } from './admin-request';
 export { browserApi } from './browser';
 export { found } from './found';
 export { ApiError, fieldErrors, isApiError, movedSlug, toApiError } from './errors';

@@ -26,7 +26,7 @@ export function AudioPlayer({ src, title, loop = false, className }: AudioPlayer
 
       <Button
         size="icon"
-        variant="outline"
+        variant="secondary"
         onClick={toggle}
         disabled={hasError}
         aria-label={isPlaying ? t('pause', { title }) : t('play', { title })}

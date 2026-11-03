@@ -34,7 +34,7 @@ export function LevelsForm({ levels }: { levels: Level[] }) {
       })),
     };
     if (await run(() => unwrap(browserApi.PUT('/api/v1/admin/puja-group-levels', { body })))) {
-      toast(tf('saved'));
+      toast.success(tf('saved'));
       router.refresh();
     }
   }
