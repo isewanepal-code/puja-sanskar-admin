@@ -1,10 +1,12 @@
 import { defineRouting } from 'next-intl/routing';
 
+// English only, with no prefix; adding Nepali later is a locale here and a messages file.
 export const routing = defineRouting({
-  locales: ['ne', 'en'],
-  defaultLocale: 'ne',
-  localePrefix: 'as-needed',
+  locales: ['en'],
+  defaultLocale: 'en',
+  localePrefix: 'never',
   localeDetection: false,
 });
 
-export type Locale = (typeof routing.locales)[number];
+// The shared formatters speak both of the website's languages.
+export type Locale = 'ne' | 'en';

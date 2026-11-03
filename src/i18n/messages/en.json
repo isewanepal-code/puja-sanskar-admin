@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "description": "What each puja needs, how much, and where to buy it. Ready puja kits, samagri and delivery to your door."
+    "description": "Staff panel for running the Puja Sanskar shop."
   },
   "common": {
     "loading": "Loading...",
@@ -21,7 +21,7 @@
   "notFound": {
     "title": "Page not found",
     "description": "The page you are looking for does not exist or may have been moved.",
-    "home": "Go home"
+    "home": "Go to the dashboard"
   },
   "audio": {
     "play": "Play {title}",
@@ -46,5 +46,96 @@
     "pages": "Pages",
     "previous": "Previous",
     "next": "Next"
+  },
+  "login": {
+    "title": "Staff sign in",
+    "subtitle": "Puja Sanskar admin",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "failed": "That email and password don't match a staff account.",
+    "locked": "Too many tries. This account is locked for a while; try again later.",
+    "captcha": "Too many tries. The security check is needed before signing in again.",
+    "disabled": "This staff account is turned off. Ask an administrator.",
+    "network": "The server can't be reached. Check that the API is running."
+  },
+  "panel": {
+    "menu": "Admin sections",
+    "signOut": "Sign out",
+    "sections": {
+      "dashboard": "Dashboard",
+      "orders": "Orders"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "period": "{from} – {to} · fiscal year {fiscalYear}",
+    "sales": "Sales",
+    "salesNote": "{bills} bills · VAT {vat}",
+    "collected": "Collected",
+    "collectedNote": "{count} payments · refunds {refunds}",
+    "due": "Owed by customers",
+    "dueNote": "Refunds owed {refunds}",
+    "byStatus": "Orders by status",
+    "waiting": "Waiting to be confirmed",
+    "seeAll": "See all",
+    "noneWaiting": "No orders are waiting.",
+    "noReports": "Your role can't see the sales figures."
+  },
+  "orders": {
+    "title": "Orders",
+    "search": "Search by number, name or phone",
+    "searchButton": "Search",
+    "all": "All",
+    "empty": "No orders match.",
+    "emptyHint": "Clear the search or pick another status.",
+    "count": "{total, plural, one {# order} other {# orders}}",
+    "columns": {
+      "number": "Order",
+      "customer": "Customer",
+      "placed": "Placed",
+      "channel": "Channel",
+      "status": "Status",
+      "total": "Total"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "PACKED": "Packed",
+      "OUT_FOR_DELIVERY": "Out for delivery",
+      "READY_FOR_PICKUP": "Ready to collect",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    },
+    "channel": {
+      "ONLINE": "Online",
+      "STORE": "Counter"
+    },
+    "fulfilment": {
+      "DELIVERY": "Delivery",
+      "PICKUP": "Pickup"
+    },
+    "detail": {
+      "back": "All orders",
+      "items": "Items",
+      "item": "Item",
+      "qty": "Qty",
+      "price": "Price",
+      "lineTotal": "Total",
+      "subtotal": "Subtotal",
+      "discounts": "Discounts",
+      "delivery": "Delivery",
+      "quoteNeeded": "To be quoted",
+      "total": "Total",
+      "customer": "Customer",
+      "guest": "Guest",
+      "address": "Delivery address",
+      "neededBy": "Needed by {date}",
+      "note": "Note",
+      "history": "History",
+      "by": "by {name}",
+      "cancelReason": "Cancelled: {reason}"
+    }
   }
 }

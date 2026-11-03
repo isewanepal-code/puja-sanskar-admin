@@ -3,8 +3,6 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { serverEnv } from '@/lib/env/server';
 import {
   clearTokens,
-  cookieOptions,
-  GUEST_CART_DAYS,
   isExpiring,
   refreshOnce,
   SESSION_COOKIES,
@@ -13,10 +11,8 @@ import {
 } from '@/lib/session';
 
 const FORWARDED_HEADERS = ['content-type', 'accept', 'idempotency-key', 'accept-language'];
-const DAY_MS = 86_400_000;
 
-// The admin panel is its own app; the website never reaches staff routes.
-const allowed = (path: string) => path.startsWith('api/v1/') && !path.startsWith('api/v1/admin/');
+const allowed = (path: string) => path.startsWith('api/v1/');
 
 const notFound = () =>
   NextResponse.json(
@@ -36,8 +32,6 @@ async function forward(
     if (value) headers.set(name, value);
   }
   if (access) headers.set('Authorization', `Bearer ${access}`);
-  const cart = request.cookies.get(SESSION_COOKIES.guestCart)?.value;
-  if (cart) headers.set('X-Cart-Token', cart);
   const ip = request.headers.get('x-forwarded-for');
   if (ip) headers.set('X-Forwarded-For', ip);
 
@@ -78,30 +72,14 @@ async function handle(request: NextRequest, { params }: RouteContext<'/api/proxy
     if (refreshed) upstream = await forward(request, path, body, refreshed.accessToken);
   }
 
-  const response = await relay(upstream, path, request.method);
+  const response = await relay(upstream);
   if (refreshed) writeTokens(response.cookies, refreshed);
   else if (refreshed === null) clearTokens(response.cookies);
   return response;
 }
 
-// A new guest cart's token goes into an httpOnly cookie, never to the page.
-async function relay(upstream: Response, path: string, method: string): Promise<NextResponse> {
+async function relay(upstream: Response): Promise<NextResponse> {
   const contentType = upstream.headers.get('content-type') ?? '';
-  if (method === 'POST' && path === 'api/v1/guest-cart' && upstream.ok) {
-    const { data, ...envelope } = (await upstream.json()) as {
-      data: { token: string; cart: unknown };
-    };
-    const response = NextResponse.json(
-      { ...envelope, data: { cart: data.cart } },
-      { status: upstream.status },
-    );
-    response.cookies.set(
-      SESSION_COOKIES.guestCart,
-      data.token,
-      cookieOptions(new Date(Date.now() + GUEST_CART_DAYS * DAY_MS)),
-    );
-    return response;
-  }
   const headers = new Headers();
   for (const name of ['content-type', 'content-disposition', 'cache-control', 'retry-after']) {
     const value = upstream.headers.get(name);

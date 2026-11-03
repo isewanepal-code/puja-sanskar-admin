@@ -1039,7 +1039,10 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** Browse and search active pujas */
+    /**
+     * Browse and search active pujas
+     * @description material narrows to pujas whose list asks for that samagri.
+     */
     get: operations['PujaController_list'];
     put?: never;
     post?: never;
@@ -1194,6 +1197,26 @@ export interface paths {
      * @description Only active products with an active variant; material filters by samagri slug, category by a category and everything below it. Price filters and sorting use each product's lowest pack price.
      */
     get: operations['ProductController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/products/facets': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * How many products each category holds under these filters
+     * @description For category chips beside a filtered list; same filters as the list.
+     */
+    get: operations['ProductController_facets'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1393,6 +1416,80 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/search/popular': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Searches to offer before anything is typed */
+    get: operations['SearchController_popular'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/search': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Search pujas, samagri, products, kits, festivals and articles
+     * @description Typos and spellings are forgiven: कपूर, kapur and kapoor find the same things.
+     */
+    get: operations['SearchController_find'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/sitemap.xml': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Sitemap of every public page, for search engines */
+    get: operations['SearchController_sitemapXml'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/search/reindex': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Rebuild the search index now
+     * @description Normally not needed: changes are picked up within 30 seconds.
+     */
+    post: operations['AdminSearchController_reindex'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/stock-levels': {
     parameters: {
       query?: never;
@@ -1523,6 +1620,26 @@ export interface paths {
      * @description Each required material becomes its default SKU, enough packs to cover the quantity. Lines already in the cart are only raised, never lowered.
      */
     post: operations['GuestCartController_addPujaItems'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/pujas/{slug}/shopping-list': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * A puja's samagri as the shop can fill it
+     * @description Each requirement with its category, the product and pack that would be added, how many packs cover it and whether it is in stock; adding the puja to a cart adds exactly these.
+     */
+    get: operations['PujaShoppingListController_shoppingList'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2211,80 +2328,6 @@ export interface paths {
     head?: never;
     /** Record that a guide was reviewed or verified by a pandit */
     patch: operations['AdminArticleController_verify'];
-    trace?: never;
-  };
-  '/api/v1/search/popular': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Searches to offer before anything is typed */
-    get: operations['SearchController_popular'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/search': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Search pujas, samagri, products, kits, festivals and articles
-     * @description Typos and spellings are forgiven: कपूर, kapur and kapoor find the same things.
-     */
-    get: operations['SearchController_find'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sitemap.xml': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Sitemap of every public page, for search engines */
-    get: operations['SearchController_sitemapXml'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/search/reindex': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Rebuild the search index now
-     * @description Normally not needed: changes are picked up within 30 seconds.
-     */
-    post: operations['AdminSearchController_reindex'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
     trace?: never;
   };
   '/api/v1/home': {
@@ -4174,7 +4217,7 @@ export interface components {
       /** Format: password */
       password: string;
       /** @example +9779801234567 */
-      phone?: Record<string, never> | null;
+      phone?: string | null;
     };
     SocialLoginDto: {
       /** @description Google: the ID token from Google Identity Services. Facebook: the user access token. */
@@ -4204,7 +4247,7 @@ export interface components {
       /** @example Ram Bahadur */
       fullName?: string;
       /** @example +9779801234567 */
-      phone?: Record<string, never> | null;
+      phone?: string | null;
     };
     CreateUserDto: {
       /** @example admin@pujasanskar.com */
@@ -4280,13 +4323,13 @@ export interface components {
       /** @example Kathmandu */
       city: string;
       /** @example Opposite the temple gate */
-      landmark?: Record<string, never> | null;
+      landmark?: string | null;
       /** @example Home */
       label: string;
       /** @example Sita Sharma */
-      recipientName?: Record<string, never> | null;
+      recipientName?: string | null;
       /** @example +9779801234567 */
-      phone?: Record<string, never> | null;
+      phone?: string | null;
       /** @description Preselect it at checkout; the first address always is */
       isDefault?: boolean;
     };
@@ -4298,13 +4341,13 @@ export interface components {
       /** @example Kathmandu */
       city?: string;
       /** @example Opposite the temple gate */
-      landmark?: Record<string, never> | null;
+      landmark?: string | null;
       /** @example Home */
       label?: string;
       /** @example Sita Sharma */
-      recipientName?: Record<string, never> | null;
+      recipientName?: string | null;
       /** @example +9779801234567 */
-      phone?: Record<string, never> | null;
+      phone?: string | null;
       /** @description Preselect it at checkout; the first address always is */
       isDefault?: boolean;
     };
@@ -4512,7 +4555,7 @@ export interface components {
       /** @description Let customers pay cash on delivery for orders inside a delivery zone */
       cashOnDelivery?: boolean;
       /** @example 10000.00 */
-      cashOnDeliveryMax?: Record<string, never> | null;
+      cashOnDeliveryMax?: string | null;
       /**
        * @description Offered in the empty search box, in this order
        * @example [
@@ -4560,9 +4603,9 @@ export interface components {
       /** @example 100.00 */
       fee: string;
       /** @example 2000.00 */
-      freeAbove?: Record<string, never> | null;
+      freeAbove?: string | null;
       /** @example 250.00 */
-      expressFee?: Record<string, never> | null;
+      expressFee?: string | null;
       /** @default true */
       isActive: boolean;
       /** @default 0 */
@@ -4575,9 +4618,9 @@ export interface components {
       /** @example 100.00 */
       fee?: string;
       /** @example 2000.00 */
-      freeAbove?: Record<string, never> | null;
+      freeAbove?: string | null;
       /** @example 250.00 */
-      expressFee?: Record<string, never> | null;
+      expressFee?: string | null;
       /** @default true */
       isActive: boolean;
       /** @default 0 */
@@ -4804,19 +4847,19 @@ export interface components {
       /** @example धूप–दीप */
       nameNe: string;
       /** @example Dhup-Deep */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
        * Format: uuid
        * @description Parent category; leave out or null for a top-level one
        */
-      parentId?: Record<string, never> | null;
+      parentId?: string | null;
       /**
        * Format: uuid
        * @description Tax class for everything filed here; null inherits from the parent category
        */
-      taxClassId?: Record<string, never> | null;
+      taxClassId?: string | null;
       /** @default 0 */
       sortOrder: number;
       /** @default true */
@@ -4828,19 +4871,19 @@ export interface components {
       /** @example धूप–दीप */
       nameNe?: string;
       /** @example Dhup-Deep */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
        * Format: uuid
        * @description Parent category; leave out or null for a top-level one
        */
-      parentId?: Record<string, never> | null;
+      parentId?: string | null;
       /**
        * Format: uuid
        * @description Tax class for everything filed here; null inherits from the parent category
        */
-      taxClassId?: Record<string, never> | null;
+      taxClassId?: string | null;
       /** @default 0 */
       sortOrder: number;
       /** @default true */
@@ -4869,7 +4912,7 @@ export interface components {
       /** @example g */
       symbol: string;
       /** @example Gram */
-      nameEn?: Record<string, never> | null;
+      nameEn?: string | null;
       /** @example ग्राम */
       nameNe: string;
       /** @default true */
@@ -4879,7 +4922,7 @@ export interface components {
       /** @example g */
       symbol?: string;
       /** @example Gram */
-      nameEn?: Record<string, never> | null;
+      nameEn?: string | null;
       /** @example ग्राम */
       nameNe?: string;
       /** @default true */
@@ -4907,11 +4950,11 @@ export interface components {
       /** @example Astro Bigyan Nepal */
       name: string;
       /** @example Satyanarayan Puja materials */
-      topic?: Record<string, never> | null;
+      topic?: string | null;
       /** @example Nepal-based puja service page */
-      note?: Record<string, never> | null;
+      note?: string | null;
       /** @example https://example.com/satyanarayan */
-      url?: Record<string, never> | null;
+      url?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -4919,11 +4962,11 @@ export interface components {
       /** @example Astro Bigyan Nepal */
       name?: string;
       /** @example Satyanarayan Puja materials */
-      topic?: Record<string, never> | null;
+      topic?: string | null;
       /** @example Nepal-based puja service page */
-      note?: Record<string, never> | null;
+      note?: string | null;
       /** @example https://example.com/satyanarayan */
-      url?: Record<string, never> | null;
+      url?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -5018,11 +5061,11 @@ export interface components {
       /** @example कपूर */
       nameNe: string;
       /** @example Kapur */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @example पूजा योग्य */
-      specification?: Record<string, never> | null;
+      specification?: string | null;
       /** @example आरती */
-      notes?: Record<string, never> | null;
+      notes?: string | null;
       /**
        * @example [
        *       "kapoor",
@@ -5038,7 +5081,7 @@ export interface components {
        * Format: uuid
        * @description Omit for samagri without a measurable unit (dakshina)
        */
-      defaultUnitId?: Record<string, never> | null;
+      defaultUnitId?: string | null;
       /**
        * @description Kit-like item, e.g. Panchamrit
        * @default false
@@ -5058,11 +5101,11 @@ export interface components {
       /** @example कपूर */
       nameNe?: string;
       /** @example Kapur */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @example पूजा योग्य */
-      specification?: Record<string, never> | null;
+      specification?: string | null;
       /** @example आरती */
-      notes?: Record<string, never> | null;
+      notes?: string | null;
       /**
        * @example [
        *       "kapoor",
@@ -5078,7 +5121,7 @@ export interface components {
        * Format: uuid
        * @description Omit for samagri without a measurable unit (dakshina)
        */
-      defaultUnitId?: Record<string, never> | null;
+      defaultUnitId?: string | null;
       /**
        * @description Kit-like item, e.g. Panchamrit
        * @default false
@@ -5144,11 +5187,11 @@ export interface components {
       /** @example ॐ श्रीं ह्रीं श्रीं कमले कमलालये प्रसीद प्रसीद */
       text: string;
       /** @example Om shreem hreem shreem kamale kamalalaye praseeda praseeda */
-      romanized?: Record<string, never> | null;
+      romanized?: string | null;
       /** @example https://cdn.pujasanskar.com/mantras/mahalakshmi.mp3 */
-      audioUrl?: Record<string, never> | null;
+      audioUrl?: string | null;
       /** @example 312 */
-      durationSeconds?: Record<string, never> | null;
+      durationSeconds?: number | null;
       /**
        * @description Lower comes first
        * @default 0
@@ -5167,11 +5210,11 @@ export interface components {
       /** @example ॐ श्रीं ह्रीं श्रीं कमले कमलालये प्रसीद प्रसीद */
       text?: string;
       /** @example Om shreem hreem shreem kamale kamalalaye praseeda praseeda */
-      romanized?: Record<string, never> | null;
+      romanized?: string | null;
       /** @example https://cdn.pujasanskar.com/mantras/mahalakshmi.mp3 */
-      audioUrl?: Record<string, never> | null;
+      audioUrl?: string | null;
       /** @example 312 */
-      durationSeconds?: Record<string, never> | null;
+      durationSeconds?: number | null;
       /**
        * @description Lower comes first
        * @default 0
@@ -5342,7 +5385,7 @@ export interface components {
       /** @example सत्यनारायण पूजा */
       nameNe: string;
       /** @example Satyanarayan Puja */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
@@ -5358,27 +5401,27 @@ export interface components {
        */
       traditions?: string[];
       /** @example Worship and katha of Lord Vishnu as Satyanarayan */
-      summaryEn?: Record<string, never> | null;
+      summaryEn?: string | null;
       /** @example भगवान विष्णुको सत्यनारायण स्वरूपको पूजा */
-      summaryNe?: Record<string, never> | null;
+      summaryNe?: string | null;
       /**
        * @example ## When
        *     …
        */
-      descriptionEn?: Record<string, never> | null;
+      descriptionEn?: string | null;
       /**
        * @example ## कहिले
        *     …
        */
-      descriptionNe?: Record<string, never> | null;
+      descriptionNe?: string | null;
       /** @example https://cdn.pujasanskar.com/pujas/satyanarayan.webp */
-      imageUrl?: Record<string, never> | null;
+      imageUrl?: string | null;
       /** @example Satyanarayan Puja: samagri list and kits */
-      metaTitle?: Record<string, never> | null;
+      metaTitle?: string | null;
       /** @example Everything for a Satyanarayan puja at home, in the right amounts. */
-      metaDescription?: Record<string, never> | null;
+      metaDescription?: string | null;
       /** Format: uuid */
-      mantraId?: Record<string, never> | null;
+      mantraId?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -5388,7 +5431,7 @@ export interface components {
       /** @example सत्यनारायण पूजा */
       nameNe?: string;
       /** @example Satyanarayan Puja */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
@@ -5404,27 +5447,27 @@ export interface components {
        */
       traditions?: string[];
       /** @example Worship and katha of Lord Vishnu as Satyanarayan */
-      summaryEn?: Record<string, never> | null;
+      summaryEn?: string | null;
       /** @example भगवान विष्णुको सत्यनारायण स्वरूपको पूजा */
-      summaryNe?: Record<string, never> | null;
+      summaryNe?: string | null;
       /**
        * @example ## When
        *     …
        */
-      descriptionEn?: Record<string, never> | null;
+      descriptionEn?: string | null;
       /**
        * @example ## कहिले
        *     …
        */
-      descriptionNe?: Record<string, never> | null;
+      descriptionNe?: string | null;
       /** @example https://cdn.pujasanskar.com/pujas/satyanarayan.webp */
-      imageUrl?: Record<string, never> | null;
+      imageUrl?: string | null;
       /** @example Satyanarayan Puja: samagri list and kits */
-      metaTitle?: Record<string, never> | null;
+      metaTitle?: string | null;
       /** @example Everything for a Satyanarayan puja at home, in the right amounts. */
-      metaDescription?: Record<string, never> | null;
+      metaDescription?: string | null;
       /** Format: uuid */
-      mantraId?: Record<string, never> | null;
+      mantraId?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -5458,19 +5501,19 @@ export interface components {
        */
       quantityType: 'EXACT' | 'APPROXIMATE' | 'AS_OFFERED' | 'AS_RITUAL';
       /** @example 20 */
-      quantityValue?: Record<string, never> | null;
+      quantityValue?: number | null;
       /** @enum {string} */
       requiredLevel: 'CORE' | 'OPTIONAL';
       /** @example साबुत, सफा */
-      specification?: Record<string, never> | null;
+      specification?: string | null;
       /** @example Scale by participants */
-      notes?: Record<string, never> | null;
+      notes?: string | null;
       /** Format: uuid */
       materialId: string;
       /** Format: uuid */
-      unitId?: Record<string, never> | null;
+      unitId?: string | null;
       /** Format: uuid */
-      sourceId?: Record<string, never> | null;
+      sourceId?: string | null;
     };
     UpdateRequirementDto: {
       /**
@@ -5479,17 +5522,17 @@ export interface components {
        */
       quantityType?: 'EXACT' | 'APPROXIMATE' | 'AS_OFFERED' | 'AS_RITUAL';
       /** @example 20 */
-      quantityValue?: Record<string, never> | null;
+      quantityValue?: number | null;
       /** @enum {string} */
       requiredLevel?: 'CORE' | 'OPTIONAL';
       /** @example साबुत, सफा */
-      specification?: Record<string, never> | null;
+      specification?: string | null;
       /** @example Scale by participants */
-      notes?: Record<string, never> | null;
+      notes?: string | null;
       /** Format: uuid */
-      unitId?: Record<string, never> | null;
+      unitId?: string | null;
       /** Format: uuid */
-      sourceId?: Record<string, never> | null;
+      sourceId?: string | null;
     };
     VerifyRequirementDto: {
       /** @enum {string} */
@@ -5498,7 +5541,7 @@ export interface components {
        * Format: uuid
        * @description Source checked
        */
-      sourceId?: Record<string, never> | null;
+      sourceId?: string | null;
     };
     ProductImageResponse: {
       /** @example https://cdn.pujasanskar.com/products/kapur.webp */
@@ -5552,6 +5595,8 @@ export interface components {
       currency: string;
       /** @description Picked when the product is added by material */
       isDefault: boolean;
+      /** @description Can be sold now: more on hand than held for orders */
+      inStock: boolean;
     };
     ProductResponse: {
       /** Format: uuid */
@@ -5576,6 +5621,25 @@ export interface components {
       /** @description Grades in order; packs name theirs with gradeId */
       grades: components['schemas']['ProductGradeResponse'][];
       variants: components['schemas']['VariantResponse'][];
+    };
+    CategoryFacetResponse: {
+      /** @example incense-lamps */
+      slug: string;
+      /** @example Incense and lamps */
+      nameEn: string;
+      /** @example धूप र बत्ती */
+      nameNe: string;
+      /** @example 14 */
+      count: number;
+    };
+    ProductFacetsResponse: {
+      /**
+       * @description Products matching, in any category
+       * @example 120
+       */
+      total: number;
+      /** @description Top-level categories with at least one match, in category order */
+      categories: components['schemas']['CategoryFacetResponse'][];
     };
     CardImageResponse: {
       /** @example https://cdn.pujasanskar.com/products/lighter.webp */
@@ -5641,6 +5705,8 @@ export interface components {
       variants: components['schemas']['VariantResponse'][];
       /** @description Goes well with: those on sale, in the order staff set */
       pairs: components['schemas']['ProductCardResponse'][];
+      /** @description Where the shop files this samagri; null when that category is off */
+      category: components['schemas']['CategorySummary'] | null;
     };
     EffectiveTaxResponse: {
       /** Format: uuid */
@@ -5674,6 +5740,8 @@ export interface components {
       currency: string;
       /** @description Picked when the product is added by material */
       isDefault: boolean;
+      /** @description Can be sold now: more on hand than held for orders */
+      inStock: boolean;
       isActive: boolean;
       sortOrder: number;
       /** Format: date-time */
@@ -5732,7 +5800,7 @@ export interface components {
       /** @example https://cdn.pujasanskar.com/products/kapur-50g.webp */
       url: string;
       /** @example Kapur, 50 g pack */
-      altText?: Record<string, never> | null;
+      altText?: string | null;
     };
     CreateProductDto: {
       /** @example PRD001 */
@@ -5744,9 +5812,9 @@ export interface components {
       /** @example कपूर */
       nameNe: string;
       /** @example Kapur */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @example Pure camphor tablets for aarti */
-      description?: Record<string, never> | null;
+      description?: string | null;
       /**
        * Format: uuid
        * @description A sellable, active material; cannot be changed later
@@ -5759,7 +5827,7 @@ export interface components {
        * Format: uuid
        * @description Tax class of this product; leave out or null to use its category's, then the shop default
        */
-      taxClassId?: Record<string, never> | null;
+      taxClassId?: string | null;
     };
     UpdateProductDto: {
       /** @description Generated from nameEn when omitted */
@@ -5769,9 +5837,9 @@ export interface components {
       /** @example कपूर */
       nameNe?: string;
       /** @example Kapur */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @example Pure camphor tablets for aarti */
-      description?: Record<string, never> | null;
+      description?: string | null;
       images?: components['schemas']['ImageDto'][];
       /** @default true */
       isActive: boolean;
@@ -5779,7 +5847,7 @@ export interface components {
        * Format: uuid
        * @description Tax class of this product; leave out or null to use its category's, then the shop default
        */
-      taxClassId?: Record<string, never> | null;
+      taxClassId?: string | null;
       /** @description true makes this the material's default product; it cannot be unset directly */
       isDefault?: boolean;
     };
@@ -5792,18 +5860,18 @@ export interface components {
        * @description Pack size; needs packUnitId
        * @example 50
        */
-      packQuantity?: Record<string, never> | null;
+      packQuantity?: number | null;
       /** Format: uuid */
-      packUnitId?: Record<string, never> | null;
+      packUnitId?: string | null;
       /**
        * Format: uuid
        * @description One of the product's grades
        */
-      gradeId?: Record<string, never> | null;
+      gradeId?: string | null;
       /** @example 120.00 */
       price: string;
       /** @example 150.00 */
-      compareAtPrice?: Record<string, never> | null;
+      compareAtPrice?: string | null;
       /** @description false: price and compareAtPrice are before tax and get the product's rate of today added. Defaults to the shop's pricesIncludeTax setting. */
       pricesIncludeTax?: boolean;
       /** @default true */
@@ -5816,18 +5884,18 @@ export interface components {
        * @description Pack size; needs packUnitId
        * @example 50
        */
-      packQuantity?: Record<string, never> | null;
+      packQuantity?: number | null;
       /** Format: uuid */
-      packUnitId?: Record<string, never> | null;
+      packUnitId?: string | null;
       /**
        * Format: uuid
        * @description One of the product's grades
        */
-      gradeId?: Record<string, never> | null;
+      gradeId?: string | null;
       /** @example 120.00 */
       price?: string;
       /** @example 150.00 */
-      compareAtPrice?: Record<string, never> | null;
+      compareAtPrice?: string | null;
       /** @description false: price and compareAtPrice are before tax and get the product's rate of today added. Defaults to the shop's pricesIncludeTax setting. */
       pricesIncludeTax?: boolean;
       /** @default true */
@@ -5842,9 +5910,9 @@ export interface components {
       /** @example हातले बनेको */
       nameNe: string;
       /** @example Nepali herbs, burns longer */
-      noteEn?: Record<string, never> | null;
+      noteEn?: string | null;
       /** @example नेपाली जडीबुटी, लामो बल्ने */
-      noteNe?: Record<string, never> | null;
+      noteNe?: string | null;
     };
     UpdateProductGradeDto: {
       /** @example Handmade */
@@ -5852,14 +5920,59 @@ export interface components {
       /** @example हातले बनेको */
       nameNe?: string;
       /** @example Nepali herbs, burns longer */
-      noteEn?: Record<string, never> | null;
+      noteEn?: string | null;
       /** @example नेपाली जडीबुटी, लामो बल्ने */
-      noteNe?: Record<string, never> | null;
+      noteNe?: string | null;
       sortOrder?: number;
     };
     SetProductPairingsDto: {
       /** @description Products that go well with this one, in display order */
       productIds: string[];
+    };
+    PopularSearchesResponse: {
+      /**
+       * @example [
+       *       "dhup",
+       *       "कपूर",
+       *       "kalash"
+       *     ]
+       */
+      searches: string[];
+    };
+    SearchHitResponse: {
+      /** @enum {string} */
+      type: 'PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE';
+      /** Format: uuid */
+      id: string;
+      /** @example kapur */
+      slug: string;
+      /**
+       * @description Page on the website
+       * @example /products/kapur
+       */
+      path: string;
+      /** @example Kapur */
+      nameEn: string;
+      /** @example कपूर */
+      nameNe: string | null;
+      /** @example Camphor */
+      subtitle: string | null;
+      imageUrl: string | null;
+      /**
+       * @description Products: cheapest pack
+       * @example 120.00
+       */
+      fromPrice: string | null;
+      /**
+       * @description Higher is closer
+       * @example 3.82
+       */
+      score: number;
+    };
+    ReindexResponse: {
+      rebuilt: boolean;
+      /** @example 412 */
+      documents: number | null;
     };
     VariantSummary: {
       /** Format: uuid */
@@ -5932,11 +6045,11 @@ export interface components {
        */
       quantity: number;
       /** @example 85.00 */
-      unitCost?: Record<string, never> | null;
+      unitCost?: string | null;
       /** @example INV-2026-0142 */
-      reference?: Record<string, never> | null;
+      reference?: string | null;
       /** @example Monthly stock count */
-      note?: Record<string, never> | null;
+      note?: string | null;
     };
     CartMemberResponse: {
       /** Format: uuid */
@@ -6170,6 +6283,26 @@ export interface components {
        * @default false
        */
       includeOptional: boolean;
+      /** @description Samagri the shopper already has; they are left out */
+      skipMaterialIds?: string[];
+    };
+    ShoppingListRowResponse: {
+      requirement: components['schemas']['RequirementResponse'];
+      category: components['schemas']['CategorySummary'] | null;
+      /** @description What the shop sells for it; its pack is the one added */
+      product: components['schemas']['ProductCardResponse'] | null;
+      /**
+       * @description Packs that cover the amount the puja needs
+       * @example 2
+       */
+      packs: number | null;
+      /** @description The pack can be sold now */
+      inStock: boolean;
+      /**
+       * @description Why the shopper arranges it themselves
+       * @enum {string|null}
+       */
+      skipReason: 'NOT_SOLD' | 'NO_PRODUCT' | null;
     };
     JoinCartDto: {
       /** @description Token from the share link */
@@ -6516,14 +6649,14 @@ export interface components {
       /** @example सत्यनारायण पूजा सामग्री */
       nameNe: string;
       /** @example Satyanarayan Puja Samagri */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @example Everything for a home Satyanarayan puja */
-      description?: Record<string, never> | null;
+      description?: string | null;
       /**
        * Format: uuid
        * @description The puja this kit is for
        */
-      pujaId?: Record<string, never> | null;
+      pujaId?: string | null;
       /**
        * @description Which of the puja's packages this is; one kit per package and puja
        * @enum {string|null}
@@ -6557,7 +6690,7 @@ export interface components {
       /** @example सत्यनारायण पूजा सामग्री */
       nameNe: string;
       /** @example Everything for a home Satyanarayan puja */
-      description?: Record<string, never> | null;
+      description?: string | null;
       /** @enum {string|null} */
       tier?: 'BASIC' | 'STANDARD' | 'PREMIUM' | null;
     };
@@ -6569,14 +6702,14 @@ export interface components {
       /** @example सत्यनारायण पूजा सामग्री */
       nameNe?: string;
       /** @example Satyanarayan Puja Samagri */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @example Everything for a home Satyanarayan puja */
-      description?: Record<string, never> | null;
+      description?: string | null;
       /**
        * Format: uuid
        * @description The puja this kit is for
        */
-      pujaId?: Record<string, never> | null;
+      pujaId?: string | null;
       /**
        * @description Which of the puja's packages this is; one kit per package and puja
        * @enum {string|null}
@@ -6607,7 +6740,7 @@ export interface components {
        */
       isOptional: boolean;
       /** @example For the aarti */
-      note?: Record<string, never> | null;
+      note?: string | null;
     };
     UpdateKitItemDto: {
       /** @example 2 */
@@ -6618,7 +6751,7 @@ export interface components {
        */
       isOptional: boolean;
       /** @example For the aarti */
-      note?: Record<string, never> | null;
+      note?: string | null;
       /** @description New position (0 = first); the others shift */
       sortOrder?: number;
     };
@@ -6843,23 +6976,23 @@ export interface components {
       /** @example दशैं */
       nameNe: string;
       /** @example Dashain */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @example Nepal's longest festival, honouring Durga */
-      summaryEn?: Record<string, never> | null;
+      summaryEn?: string | null;
       /** @example दुर्गा भवानीको आराधना गरिने चाड */
-      summaryNe?: Record<string, never> | null;
+      summaryNe?: string | null;
       /** @example ## Ghatasthapana\n… */
-      descriptionEn?: Record<string, never> | null;
+      descriptionEn?: string | null;
       /** @example ## घटस्थापना\n… */
-      descriptionNe?: Record<string, never> | null;
+      descriptionNe?: string | null;
       /** @example https://cdn.pujasanskar.com/festivals/dashain.webp */
-      imageUrl?: Record<string, never> | null;
+      imageUrl?: string | null;
       /** @example Dashain 2083: puja samagri and kits */
-      metaTitle?: Record<string, never> | null;
+      metaTitle?: string | null;
       /** @example Everything for Ghatasthapana to Tika, delivered in Kathmandu. */
-      metaDescription?: Record<string, never> | null;
+      metaDescription?: string | null;
       /** Format: uuid */
-      mantraId?: Record<string, never> | null;
+      mantraId?: string | null;
       /** @default 0 */
       sortOrder: number;
       /** @default true */
@@ -6873,23 +7006,23 @@ export interface components {
       /** @example दशैं */
       nameNe?: string;
       /** @example Dashain */
-      nameRomanized?: Record<string, never> | null;
+      nameRomanized?: string | null;
       /** @example Nepal's longest festival, honouring Durga */
-      summaryEn?: Record<string, never> | null;
+      summaryEn?: string | null;
       /** @example दुर्गा भवानीको आराधना गरिने चाड */
-      summaryNe?: Record<string, never> | null;
+      summaryNe?: string | null;
       /** @example ## Ghatasthapana\n… */
-      descriptionEn?: Record<string, never> | null;
+      descriptionEn?: string | null;
       /** @example ## घटस्थापना\n… */
-      descriptionNe?: Record<string, never> | null;
+      descriptionNe?: string | null;
       /** @example https://cdn.pujasanskar.com/festivals/dashain.webp */
-      imageUrl?: Record<string, never> | null;
+      imageUrl?: string | null;
       /** @example Dashain 2083: puja samagri and kits */
-      metaTitle?: Record<string, never> | null;
+      metaTitle?: string | null;
       /** @example Everything for Ghatasthapana to Tika, delivered in Kathmandu. */
-      metaDescription?: Record<string, never> | null;
+      metaDescription?: string | null;
       /** Format: uuid */
-      mantraId?: Record<string, never> | null;
+      mantraId?: string | null;
       /** @default 0 */
       sortOrder: number;
       /** @default true */
@@ -6907,7 +7040,7 @@ export interface components {
        */
       endsOn: string;
       /** @example Ghatasthapana to Kojagrat Purnima */
-      note?: Record<string, never> | null;
+      note?: string | null;
     };
     SetFestivalPujasDto: {
       /** @description In display order; replaces the list */
@@ -6976,25 +7109,25 @@ export interface components {
       /** @example How to perform Satyanarayan Puja at home */
       titleEn: string;
       /** @example घरमै सत्यनारायण पूजा कसरी गर्ने */
-      titleNe?: Record<string, never> | null;
+      titleNe?: string | null;
       /** @example Samagri, steps and timing for a family puja */
-      summaryEn?: Record<string, never> | null;
+      summaryEn?: string | null;
       /** @example परिवारको लागि सामग्री, विधि र समय */
-      summaryNe?: Record<string, never> | null;
+      summaryNe?: string | null;
       /** @example ## Samagri\n- Kapur\n… */
       bodyEn: string;
       /** @example ## सामग्री\n- कपूर\n… */
-      bodyNe?: Record<string, never> | null;
+      bodyNe?: string | null;
       /** Format: uuid */
-      pujaId?: Record<string, never> | null;
+      pujaId?: string | null;
       /** Format: uuid */
-      festivalId?: Record<string, never> | null;
+      festivalId?: string | null;
       /** @example https://cdn.pujasanskar.com/guides/satyanarayan.webp */
-      coverImageUrl?: Record<string, never> | null;
+      coverImageUrl?: string | null;
       /** @example Satyanarayan Puja at home: samagri and vidhi */
-      metaTitle?: Record<string, never> | null;
+      metaTitle?: string | null;
       /** @example A step-by-step guide with the samagri list. */
-      metaDescription?: Record<string, never> | null;
+      metaDescription?: string | null;
     };
     UpdateArticleDto: {
       /** @description Generated from nameEn when omitted */
@@ -7002,25 +7135,25 @@ export interface components {
       /** @example How to perform Satyanarayan Puja at home */
       titleEn?: string;
       /** @example घरमै सत्यनारायण पूजा कसरी गर्ने */
-      titleNe?: Record<string, never> | null;
+      titleNe?: string | null;
       /** @example Samagri, steps and timing for a family puja */
-      summaryEn?: Record<string, never> | null;
+      summaryEn?: string | null;
       /** @example परिवारको लागि सामग्री, विधि र समय */
-      summaryNe?: Record<string, never> | null;
+      summaryNe?: string | null;
       /** @example ## Samagri\n- Kapur\n… */
       bodyEn?: string;
       /** @example ## सामग्री\n- कपूर\n… */
-      bodyNe?: Record<string, never> | null;
+      bodyNe?: string | null;
       /** Format: uuid */
-      pujaId?: Record<string, never> | null;
+      pujaId?: string | null;
       /** Format: uuid */
-      festivalId?: Record<string, never> | null;
+      festivalId?: string | null;
       /** @example https://cdn.pujasanskar.com/guides/satyanarayan.webp */
-      coverImageUrl?: Record<string, never> | null;
+      coverImageUrl?: string | null;
       /** @example Satyanarayan Puja at home: samagri and vidhi */
-      metaTitle?: Record<string, never> | null;
+      metaTitle?: string | null;
       /** @example A step-by-step guide with the samagri list. */
-      metaDescription?: Record<string, never> | null;
+      metaDescription?: string | null;
     };
     ChangeArticleStatusDto: {
       /** @enum {string} */
@@ -7032,51 +7165,6 @@ export interface components {
        * @enum {string}
        */
       status: 'UNVERIFIED' | 'REVIEWED' | 'VERIFIED';
-    };
-    PopularSearchesResponse: {
-      /**
-       * @example [
-       *       "dhup",
-       *       "कपूर",
-       *       "kalash"
-       *     ]
-       */
-      searches: string[];
-    };
-    SearchHitResponse: {
-      /** @enum {string} */
-      type: 'PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE';
-      /** Format: uuid */
-      id: string;
-      /** @example kapur */
-      slug: string;
-      /**
-       * @description Page on the website
-       * @example /products/kapur
-       */
-      path: string;
-      /** @example Kapur */
-      nameEn: string;
-      /** @example कपूर */
-      nameNe: string | null;
-      /** @example Camphor */
-      subtitle: string | null;
-      imageUrl: string | null;
-      /**
-       * @description Products: cheapest pack
-       * @example 120.00
-       */
-      fromPrice: string | null;
-      /**
-       * @description Higher is closer
-       * @example 3.82
-       */
-      score: number;
-    };
-    ReindexResponse: {
-      rebuilt: boolean;
-      /** @example 412 */
-      documents: number | null;
     };
     BannerResponse: {
       /** Format: uuid */
@@ -7158,20 +7246,20 @@ export interface components {
       /** @default 0 */
       sortOrder: number;
       /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: Record<string, never> | null;
+      startsAt?: string | null;
       /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: Record<string, never> | null;
+      endsAt?: string | null;
       /** @example Dashain kits are here */
       title: string;
       /** @example Everything for Ghatasthapana */
-      subtitle?: Record<string, never> | null;
+      subtitle?: string | null;
       /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
       imageUrl: string;
       /**
        * @description A path on the website or an https URL
        * @example /kits/dashain-kit
        */
-      linkUrl?: Record<string, never> | null;
+      linkUrl?: string | null;
       /** @enum {string} */
       placement: 'HOME_HERO' | 'HOME_STRIP';
     };
@@ -7181,20 +7269,20 @@ export interface components {
       /** @default 0 */
       sortOrder: number;
       /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: Record<string, never> | null;
+      startsAt?: string | null;
       /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: Record<string, never> | null;
+      endsAt?: string | null;
       /** @example Dashain kits are here */
       title?: string;
       /** @example Everything for Ghatasthapana */
-      subtitle?: Record<string, never> | null;
+      subtitle?: string | null;
       /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
       imageUrl?: string;
       /**
        * @description A path on the website or an https URL
        * @example /kits/dashain-kit
        */
-      linkUrl?: Record<string, never> | null;
+      linkUrl?: string | null;
       /** @enum {string} */
       placement?: 'HOME_HERO' | 'HOME_STRIP';
     };
@@ -7215,13 +7303,13 @@ export interface components {
       /** @default 0 */
       sortOrder: number;
       /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: Record<string, never> | null;
+      startsAt?: string | null;
       /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: Record<string, never> | null;
+      endsAt?: string | null;
       /** @example Dashain essentials */
       title: string;
       /** @example दशैंका सामग्री */
-      titleNe?: Record<string, never> | null;
+      titleNe?: string | null;
       /** @enum {string} */
       kind: 'PRODUCTS' | 'KITS' | 'PUJAS';
       /** @description Products, kits or pujas, in display order */
@@ -7233,13 +7321,13 @@ export interface components {
       /** @default 0 */
       sortOrder: number;
       /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: Record<string, never> | null;
+      startsAt?: string | null;
       /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: Record<string, never> | null;
+      endsAt?: string | null;
       /** @example Dashain essentials */
       title?: string;
       /** @example दशैंका सामग्री */
-      titleNe?: Record<string, never> | null;
+      titleNe?: string | null;
       /** @enum {string} */
       kind?: 'PRODUCTS' | 'KITS' | 'PUJAS';
       /** @description Products, kits or pujas, in display order */
@@ -7325,9 +7413,9 @@ export interface components {
       /** @example 5 */
       rating: number;
       /** @example Fresh and fragrant */
-      title?: Record<string, never> | null;
+      title?: string | null;
       /** @example The kapur burnt clean and the pack was sealed. */
-      body?: Record<string, never> | null;
+      body?: string | null;
     };
     AdminReviewResponse: {
       /** Format: uuid */
@@ -7359,7 +7447,7 @@ export interface components {
       /** @enum {string} */
       status: 'PUBLISHED' | 'HIDDEN';
       /** @example Mentions a phone number */
-      note?: Record<string, never> | null;
+      note?: string | null;
     };
     TrackedStepResponse: {
       /** @enum {string} */
@@ -7573,7 +7661,7 @@ export interface components {
       /** @example Kathmandu */
       city: string;
       /** @example Opposite the temple gate */
-      landmark?: Record<string, never> | null;
+      landmark?: string | null;
     };
     CheckoutDto: {
       /** Format: uuid */
@@ -7597,7 +7685,7 @@ export interface components {
        */
       addressId?: string;
       /** @example Home */
-      saveAddressAs?: Record<string, never> | null;
+      saveAddressAs?: string | null;
       /**
        * @description For DELIVERY: EXPRESS where the zone offers it; SCHEDULED needs neededBy and slotId
        * @default STANDARD
@@ -7613,14 +7701,14 @@ export interface components {
        * Format: date
        * @example 2026-11-02
        */
-      neededBy?: Record<string, never> | null;
+      neededBy?: string | null;
       /** @example Please call before coming */
-      note?: Record<string, never> | null;
+      note?: string | null;
       /**
        * @description A coupon code; matched in any case
        * @example DASHAIN10
        */
-      couponCode?: Record<string, never>;
+      couponCode?: string;
       /**
        * @description CASH_ON_DELIVERY where the shop allows it; SOMEONE_ELSE then asks POST /orders/:id/pay-link
        * @default PAY_NOW
@@ -7647,7 +7735,7 @@ export interface components {
     };
     CancelOrderDto: {
       /** @example Ordered the wrong items */
-      reason?: Record<string, never> | null;
+      reason?: string | null;
     };
     OrderPersonResponse: {
       /** Format: uuid */
@@ -7785,9 +7873,9 @@ export interface components {
         | 'COMPLETED'
         | 'CANCELLED';
       /** @example Payment received on eSewa */
-      note?: Record<string, never> | null;
+      note?: string | null;
       /** @example 100.00 */
-      deliveryFee?: Record<string, never> | null;
+      deliveryFee?: string | null;
     };
     SetDeliveryFeeDto: {
       /** @example 100.00 */
@@ -7810,13 +7898,13 @@ export interface components {
     StoreSaleDto: {
       lines: components['schemas']['StoreSaleLineDto'][];
       /** @example Walk-in customer */
-      contactName?: Record<string, never> | null;
+      contactName?: string | null;
       /** @example +9779801234567 */
-      contactPhone?: Record<string, never> | null;
+      contactPhone?: string | null;
       /** @example Paid in cash */
-      note?: Record<string, never> | null;
+      note?: string | null;
       /** @example DASHAIN10 */
-      couponCode?: Record<string, never>;
+      couponCode?: string;
       /** @description Taken off after any automatic discount or coupon; above the shop limit it needs discounts:override */
       discount?: components['schemas']['CounterDiscountDto'];
     };
@@ -7922,15 +8010,15 @@ export interface components {
       /** @example पं. रामप्रसाद अधिकारी */
       nameNe: string;
       /** @example Baneshwor */
-      area?: Record<string, never> | null;
+      area?: string | null;
       /** @example https://cdn.pujasanskar.com/pandits/ram.webp */
-      photoUrl?: Record<string, never> | null;
+      photoUrl?: string | null;
       /** @example Thirty years of Satyanarayan katha */
-      bioEn?: Record<string, never> | null;
+      bioEn?: string | null;
       /** @example तीस वर्षदेखि सत्यनारायण कथा */
-      bioNe?: Record<string, never> | null;
+      bioNe?: string | null;
       /** @example +9779801234567 */
-      phone?: Record<string, never> | null;
+      phone?: string | null;
       /** @example 5.00 */
       customerDiscountPercent?: string | null;
       /** @example 5.00 */
@@ -7948,15 +8036,15 @@ export interface components {
       /** @example पं. रामप्रसाद अधिकारी */
       nameNe?: string;
       /** @example Baneshwor */
-      area?: Record<string, never> | null;
+      area?: string | null;
       /** @example https://cdn.pujasanskar.com/pandits/ram.webp */
-      photoUrl?: Record<string, never> | null;
+      photoUrl?: string | null;
       /** @example Thirty years of Satyanarayan katha */
-      bioEn?: Record<string, never> | null;
+      bioEn?: string | null;
       /** @example तीस वर्षदेखि सत्यनारायण कथा */
-      bioNe?: Record<string, never> | null;
+      bioNe?: string | null;
       /** @example +9779801234567 */
-      phone?: Record<string, never> | null;
+      phone?: string | null;
       /** @example 5.00 */
       customerDiscountPercent?: string | null;
       /** @example 5.00 */
@@ -8035,7 +8123,7 @@ export interface components {
        * @description Required for a COUPON; stored in capitals, matched in any case
        * @example DASHAIN10
        */
-      couponCode?: Record<string, never> | null;
+      couponCode?: string | null;
       /**
        * @description ORDER, or only the listed categories (with their subcategories) or products
        * @default ORDER
@@ -8050,26 +8138,26 @@ export interface components {
       /** @example 500 */
       minSubtotal?: string | null;
       /** @example 200 */
-      maxDiscount?: Record<string, never> | null;
+      maxDiscount?: string | null;
       /** @default false */
       firstOrderOnly: boolean;
       /** @description Uses in total */
-      usageLimit?: Record<string, never> | null;
+      usageLimit?: number | null;
       /** @description Uses per customer; such a discount needs a signed-in customer */
-      perCustomerLimit?: Record<string, never> | null;
+      perCustomerLimit?: number | null;
       /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: Record<string, never> | null;
+      startsAt?: string | null;
       /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: Record<string, never> | null;
+      endsAt?: string | null;
       /**
        * @description Show it on the website's offers; needs both titles
        * @default false
        */
       isPublic: boolean;
       /** @example Tihar: 10% off above Rs 2000 */
-      titleEn?: Record<string, never> | null;
+      titleEn?: string | null;
       /** @example तिहार: रु २००० माथि १०% छुट */
-      titleNe?: Record<string, never> | null;
+      titleNe?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -8093,7 +8181,7 @@ export interface components {
        * @description Required for a COUPON; stored in capitals, matched in any case
        * @example DASHAIN10
        */
-      couponCode?: Record<string, never> | null;
+      couponCode?: string | null;
       /**
        * @description ORDER, or only the listed categories (with their subcategories) or products
        * @default ORDER
@@ -8108,26 +8196,26 @@ export interface components {
       /** @example 500 */
       minSubtotal?: string | null;
       /** @example 200 */
-      maxDiscount?: Record<string, never> | null;
+      maxDiscount?: string | null;
       /** @default false */
       firstOrderOnly: boolean;
       /** @description Uses in total */
-      usageLimit?: Record<string, never> | null;
+      usageLimit?: number | null;
       /** @description Uses per customer; such a discount needs a signed-in customer */
-      perCustomerLimit?: Record<string, never> | null;
+      perCustomerLimit?: number | null;
       /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: Record<string, never> | null;
+      startsAt?: string | null;
       /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: Record<string, never> | null;
+      endsAt?: string | null;
       /**
        * @description Show it on the website's offers; needs both titles
        * @default false
        */
       isPublic: boolean;
       /** @example Tihar: 10% off above Rs 2000 */
-      titleEn?: Record<string, never> | null;
+      titleEn?: string | null;
       /** @example तिहार: रु २००० माथि १०% छुट */
-      titleNe?: Record<string, never> | null;
+      titleNe?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -8328,21 +8416,21 @@ export interface components {
        */
       status?: 'IN_PROGRESS' | 'CLOSED';
       /** @example Pure cow ghee and Bhimseni camphor */
-      staffNote?: Record<string, never> | null;
+      staffNote?: string | null;
       /** @description true: I take it; false: leave it for anyone */
       assignToMe?: boolean;
     };
     ListRequestItemDto: {
       /** @example धुप - २ पोका */
-      writtenText?: Record<string, never> | null;
+      writtenText?: string | null;
       /**
        * Format: uuid
        * @description The pack matched; leave out for something we do not sell
        */
-      variantId?: Record<string, never> | null;
-      quantity?: Record<string, never> | null;
+      variantId?: string | null;
+      quantity?: number | null;
       /** @example We do not sell walnuts */
-      note?: Record<string, never> | null;
+      note?: string | null;
     };
     SetListItemsDto: {
       items: components['schemas']['ListRequestItemDto'][];
@@ -8402,7 +8490,7 @@ export interface components {
       /** @enum {string} */
       status?: 'NEW' | 'HANDLED';
       /** @example Called back, delivery booked */
-      staffNote?: Record<string, never> | null;
+      staffNote?: string | null;
     };
     ReminderSubscriptionResponse: {
       /** @enum {string} */
@@ -8462,7 +8550,7 @@ export interface components {
       /** @example सुनिता अधिकारी */
       personNe: string;
       /** @example Baneshwor */
-      place?: Record<string, never> | null;
+      place?: string | null;
       /** @example Ordered the Satyanarayan kit the day before */
       topicEn: string;
       /** @example सत्यनारायण किट: पूजाको अघिल्लो दिन मगाएँ */
@@ -8471,11 +8559,11 @@ export interface components {
        * @description The 11 characters after watch?v=
        * @example dQw4w9WgXcQ
        */
-      youtubeId?: Record<string, never> | null;
+      youtubeId?: string | null;
       /** @example https://cdn.pujasanskar.com/stories/sunita.webp */
-      imageUrl?: Record<string, never> | null;
+      imageUrl?: string | null;
       /** @example 102 */
-      durationSeconds?: Record<string, never> | null;
+      durationSeconds?: number | null;
       /** @default true */
       isActive: boolean;
       /** @default 0 */
@@ -8489,7 +8577,7 @@ export interface components {
       /** @example सुनिता अधिकारी */
       personNe?: string;
       /** @example Baneshwor */
-      place?: Record<string, never> | null;
+      place?: string | null;
       /** @example Ordered the Satyanarayan kit the day before */
       topicEn?: string;
       /** @example सत्यनारायण किट: पूजाको अघिल्लो दिन मगाएँ */
@@ -8498,11 +8586,11 @@ export interface components {
        * @description The 11 characters after watch?v=
        * @example dQw4w9WgXcQ
        */
-      youtubeId?: Record<string, never> | null;
+      youtubeId?: string | null;
       /** @example https://cdn.pujasanskar.com/stories/sunita.webp */
-      imageUrl?: Record<string, never> | null;
+      imageUrl?: string | null;
       /** @example 102 */
-      durationSeconds?: Record<string, never> | null;
+      durationSeconds?: number | null;
       /** @default true */
       isActive: boolean;
       /** @default 0 */
@@ -8593,26 +8681,26 @@ export interface components {
       /** @example +9779801234567 */
       phone: string;
       /** @example billing@pujasanskar.com */
-      email?: Record<string, never> | null;
+      email?: string | null;
       /** @example 601234567 */
-      panNumber?: Record<string, never> | null;
+      panNumber?: string | null;
       /** @description Registered for VAT: bills become tax invoices with 13% VAT split out */
       vatRegistered: boolean;
       /** @example 000201010211…6304ABCD */
-      qrPayload?: Record<string, never> | null;
+      qrPayload?: string | null;
       /** @example Fonepay – Puja Sanskar */
-      qrLabel?: Record<string, never> | null;
+      qrLabel?: string | null;
       /** @example Goods once sold are exchanged within 7 days. */
-      billFooter?: Record<string, never> | null;
+      billFooter?: string | null;
       /** @example +9779801234567 */
-      whatsappNumber?: Record<string, never> | null;
+      whatsappNumber?: string | null;
       /**
        * @description Facebook page username, as in m.me/pujasanskar
        * @example pujasanskar
        */
-      messengerPage?: Record<string, never> | null;
+      messengerPage?: string | null;
       /** @example +9779801234567 */
-      viberNumber?: Record<string, never> | null;
+      viberNumber?: string | null;
     };
     SettlementResponse: {
       /**
@@ -8813,11 +8901,11 @@ export interface components {
       /** @enum {string} */
       method: 'CASH' | 'QR' | 'ESEWA' | 'KHALTI' | 'BANK_TRANSFER' | 'CARD' | 'OTHER';
       /** @example 1361.00 */
-      amount?: Record<string, never> | null;
+      amount?: string | null;
       /** @example FP2026100812345 */
-      reference?: Record<string, never> | null;
+      reference?: string | null;
       /** @example Screenshot checked in the Fonepay app */
-      note?: Record<string, never> | null;
+      note?: string | null;
       /**
        * @description When the money arrived (defaults to now)
        * @example 2026-10-08T10:30:00+05:45
@@ -8832,17 +8920,17 @@ export interface components {
        * @description Buyer's PAN for a business bill
        * @example 601234567
        */
-      buyerPan?: Record<string, never>;
+      buyerPan?: string;
     };
     RefundDto: {
       /** @enum {string} */
       method: 'CASH' | 'QR' | 'ESEWA' | 'KHALTI' | 'BANK_TRANSFER' | 'CARD' | 'OTHER';
       /** @example 1361.00 */
-      amount?: Record<string, never> | null;
+      amount?: string | null;
       /** @example FP2026100812345 */
-      reference?: Record<string, never> | null;
+      reference?: string | null;
       /** @example Screenshot checked in the Fonepay app */
-      note?: Record<string, never> | null;
+      note?: string | null;
     };
     VoidDto: {
       /** @example Entered twice by mistake */
@@ -8875,7 +8963,7 @@ export interface components {
        * @description Buyer's PAN for a business bill
        * @example 601234567
        */
-      buyerPan?: Record<string, never>;
+      buyerPan?: string;
     };
     BillPrintResponse: {
       /** @example Copy of original (1) */
@@ -8969,6 +9057,24 @@ export interface components {
       /** @example 62.50 */
       amount: string;
     };
+    DeliveryPreviewResponse: {
+      /** @example Inside Ring Road */
+      zoneName: string | null;
+      /**
+       * @description Null when staff price it after the order, or it cannot go there
+       * @example 100.00
+       */
+      fee: string | null;
+      /** @example 2500.00 */
+      freeAbove: string | null;
+      /**
+       * @description More goods that would make delivery free; null if the zone never is
+       * @example 640.00
+       */
+      toFree: string | null;
+      /** @enum {string|null} */
+      problem: 'DELIVERY_AREA_NOT_SERVED' | 'DELIVERY_EXPRESS_UNAVAILABLE' | null;
+    };
     CouponProblemResponse: {
       /** @example COUPON_BELOW_MINIMUM */
       code: string;
@@ -8981,10 +9087,12 @@ export interface components {
       /** @example 62.50 */
       discountTotal: string;
       /**
-       * @description Before any delivery charge
+       * @description With delivery when an area was sent and has a fee
        * @example 1187.50
        */
       total: string;
+      /** @description Delivery to the area sent; null without one */
+      delivery: components['schemas']['DeliveryPreviewResponse'] | null;
       /** @description Why the coupon sent does not apply to this way of paying */
       couponProblem: components['schemas']['CouponProblemResponse'] | null;
     };
@@ -8994,10 +9102,12 @@ export interface components {
       /** @example 62.50 */
       discountTotal: string;
       /**
-       * @description Before any delivery charge
+       * @description With delivery when an area was sent and has a fee
        * @example 1187.50
        */
       total: string;
+      /** @description Delivery to the area sent; null without one */
+      delivery: components['schemas']['DeliveryPreviewResponse'] | null;
       /** @description Why the coupon sent does not apply to this way of paying */
       couponProblem: components['schemas']['CouponProblemResponse'] | null;
       /** @description Empty when the shop has not set up chat payments */
@@ -9058,7 +9168,7 @@ export interface components {
        */
       addressId?: string;
       /** @example Home */
-      saveAddressAs?: Record<string, never> | null;
+      saveAddressAs?: string | null;
       /**
        * @description For DELIVERY: EXPRESS where the zone offers it; SCHEDULED needs neededBy and slotId
        * @default STANDARD
@@ -9074,14 +9184,14 @@ export interface components {
        * Format: date
        * @example 2026-11-02
        */
-      neededBy?: Record<string, never> | null;
+      neededBy?: string | null;
       /** @example Please call before coming */
-      note?: Record<string, never> | null;
+      note?: string | null;
       /**
        * @description A coupon code; matched in any case
        * @example DASHAIN10
        */
-      couponCode?: Record<string, never>;
+      couponCode?: string;
       /**
        * @description A pandit's code
        * @example PANDIT-RAM
@@ -9093,7 +9203,7 @@ export interface components {
        */
       channel: 'WHATSAPP' | 'MESSENGER' | 'VIBER';
       /** @example Sita Sharma */
-      contactName?: Record<string, never> | null;
+      contactName?: string | null;
     };
     PayPageLineResponse: {
       /** @example Kapur */
@@ -14385,6 +14495,8 @@ export interface operations {
         q?: string;
         type?: 'PUJA' | 'FESTIVAL' | 'SAMSKARA' | 'VRAT' | 'SHANTI' | 'SHRADDHA' | 'PATH' | 'HOMA';
         tradition?: string;
+        /** @description Material slug: pujas whose list asks for this samagri */
+        material?: string;
       };
       header?: never;
       path?: never;
@@ -14411,6 +14523,15 @@ export interface operations {
       };
       /** @description BAD_REQUEST */
       400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -15201,11 +15322,23 @@ export interface operations {
         material?: string;
         /** @description Category slug: products filed in it or any category below it */
         category?: string;
-        sort?: 'CODE' | 'NAME' | 'PRICE_LOW' | 'PRICE_HIGH' | 'NEWEST' | 'TOP_RATED';
+        sort?:
+          | 'CODE'
+          | 'NAME'
+          | 'PRICE_LOW'
+          | 'PRICE_HIGH'
+          | 'NEWEST'
+          | 'TOP_RATED'
+          | 'POPULAR'
+          | 'RELEVANCE';
         minPrice?: string | null;
         maxPrice?: string | null;
         /** @description Only products with a pack in stock right now */
         inStock?: boolean;
+        /** @description Only products with a pack sold in quality grades */
+        graded?: boolean;
+        /** @description Only products with a pack priced below its usual price */
+        onSale?: boolean;
       };
       header?: never;
       path?: never;
@@ -15227,6 +15360,71 @@ export interface operations {
               items: components['schemas']['ProductResponse'][];
               meta: components['schemas']['PageMetaDto'];
             };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ProductController_facets: {
+    parameters: {
+      query?: {
+        /** @description Nepali, English or romanized name, or SKU */
+        q?: string;
+        /** @description Material slug: products sold for this samagri */
+        material?: string;
+        minPrice?: string | null;
+        maxPrice?: string | null;
+        /** @description Only products with a pack in stock right now */
+        inStock?: boolean;
+        /** @description Only products with a pack sold in quality grades */
+        graded?: boolean;
+        /** @description Only products with a pack priced below its usual price */
+        onSale?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ProductFacetsResponse'];
           };
         };
       };
@@ -15352,7 +15550,15 @@ export interface operations {
         /** @description Products of samagri filed in this category or below it */
         categoryId?: string;
         materialId?: string;
-        sort?: 'CODE' | 'NAME' | 'PRICE_LOW' | 'PRICE_HIGH' | 'NEWEST' | 'TOP_RATED';
+        sort?:
+          | 'CODE'
+          | 'NAME'
+          | 'PRICE_LOW'
+          | 'PRICE_HIGH'
+          | 'NEWEST'
+          | 'TOP_RATED'
+          | 'POPULAR'
+          | 'RELEVANCE';
       };
       header?: never;
       path?: never;
@@ -16438,6 +16644,131 @@ export interface operations {
       };
     };
   };
+  SearchController_popular: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PopularSearchesResponse'];
+          };
+        };
+      };
+    };
+  };
+  SearchController_find: {
+    parameters: {
+      query: {
+        /** @description Nepali, English or Nepali in English letters */
+        q: string;
+        /** @description Only these kinds; repeat or comma-separate (type=PUJA,KIT) */
+        type?: ('PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE')[];
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SearchHitResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  SearchController_sitemapXml: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminSearchController_reindex: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ReindexResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminStockLevelController_list: {
     parameters: {
       query?: {
@@ -17106,6 +17437,42 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  PujaShoppingListController_shoppingList: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ShoppingListRowResponse'][];
+          };
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -20470,131 +20837,6 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  SearchController_popular: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['PopularSearchesResponse'];
-          };
-        };
-      };
-    };
-  };
-  SearchController_find: {
-    parameters: {
-      query: {
-        /** @description Nepali, English or Nepali in English letters */
-        q: string;
-        /** @description Only these kinds; repeat or comma-separate (type=PUJA,KIT) */
-        type?: ('PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE')[];
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['SearchHitResponse'][];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  SearchController_sitemapXml: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AdminSearchController_reindex: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['ReindexResponse'];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
         headers: {
           [name: string]: unknown;
         };
@@ -26684,6 +26926,10 @@ export interface operations {
         coupon?: string;
         /** @description A pandit's code */
         panditCode?: string;
+        /** @description With city, prices delivery there into each total */
+        area?: string;
+        city?: string;
+        speed?: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
       };
       header: {
         /** @description Token returned by POST /guest-cart */
@@ -26726,6 +26972,10 @@ export interface operations {
         coupon?: string;
         /** @description A pandit's code */
         panditCode?: string;
+        /** @description With city, prices delivery there into each total */
+        area?: string;
+        city?: string;
+        speed?: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
       };
       header?: never;
       path: {

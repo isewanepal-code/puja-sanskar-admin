@@ -6,9 +6,9 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "next dev --port 3001",
+    "dev": "next dev --port 3002",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 3002",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "api:types": "openapi-typescript ${API_DOCS_URL:-http://localhost:3000/api/v1/docs-json} -o src/lib/api/schema.d.ts",

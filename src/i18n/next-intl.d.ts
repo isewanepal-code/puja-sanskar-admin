@@ -1,9 +1,10 @@
-import type messages from './messages/ne.json';
-import type { routing } from './routing';
+import type messages from './messages/en.json';
+import type { Locale } from './routing';
 
 declare module 'next-intl' {
   interface AppConfig {
-    Locale: (typeof routing.locales)[number];
+    // The shared components take either of the website's languages; routing serves English.
+    Locale: Locale;
     Messages: typeof messages;
   }
 }

@@ -4,9 +4,9 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 
 import { ThemeScript } from '@/components/theme';
+import { siteConfig } from '@/config/site';
 import { routing } from '@/i18n/routing';
 import { resolveLocale } from '@/i18n/server';
-import { createMetadata } from '@/lib/seo';
 import { AppProviders } from '@/providers';
 
 import '../globals.css';
@@ -34,7 +34,11 @@ export async function generateMetadata({ params }: LayoutProps<'/[locale]'>): Pr
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: 'metadata' });
 
-  return createMetadata({ locale, description: t('description') });
+  return {
+    title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
+    description: t('description'),
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function LocaleLayout({ children, params }: LayoutProps<'/[locale]'>) {
