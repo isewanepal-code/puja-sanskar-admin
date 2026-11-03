@@ -11,6 +11,13 @@ import { faqsResource, storiesResource } from '@/features/content';
 import { mantrasResource } from '@/features/mantras';
 import { panditsResource } from '@/features/marketing';
 import { pujaGroupResource, ritualTypesResource } from '@/features/puja-groups';
+import {
+  gradesResource,
+  pairingsResource,
+  productsResource,
+  variantsResource,
+  type Product,
+} from '@/features/products';
 import { pujasResource } from '@/features/pujas';
 import {
   deliverySlotsResource,
@@ -20,6 +27,8 @@ import {
 import { usersResource } from '@/features/staff-accounts';
 
 import messages from './messages/en.json';
+
+const PRODUCT = { id: 'p', grades: [], nameNe: 'p' } as unknown as Product;
 
 // Every admin resource, so a label it shows can never be missing from the messages.
 const RESOURCES: Resource<never>[] = [
@@ -41,6 +50,10 @@ const RESOURCES: Resource<never>[] = [
   deliveryZonesResource,
   deliverySlotsResource,
   usersResource((key) => key),
+  productsResource,
+  variantsResource(PRODUCT),
+  gradesResource(PRODUCT),
+  pairingsResource(PRODUCT),
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>

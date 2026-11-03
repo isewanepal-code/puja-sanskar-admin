@@ -14,6 +14,10 @@ export type FieldKind =
   | 'money'
   | 'percent'
   | 'url'
+  // One picture's address, chosen or uploaded through the media library.
+  | 'image'
+  // An ordered gallery of { url, altText }.
+  | 'images'
   | 'code'
   | 'slug'
   | 'time'
@@ -79,6 +83,10 @@ export type Resource<T> = {
   listQuery?: Record<string, string>;
   // A record as its form edits it, when the API nests what the form sends as ids.
   formRow?: (row: T) => Record<string, unknown>;
+  // The query root it refreshes with: packs of a product refresh the product list too.
+  scope?: string;
+  // How a new record is sent; PUT for a list that replaces the old one.
+  submitMethod?: 'POST' | 'PUT';
   // Fields offered as columns of the bulk-entry grid; leave out for no bulk entry.
   bulk?: string[];
 };

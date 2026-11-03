@@ -118,7 +118,7 @@ export function storiesResource(name: Name): Resource<Story> {
       { name: 'topicNe', kind: 'text', required: true, max: 200, wide: true },
       { name: 'topicEn', kind: 'text', required: true, max: 200, wide: true },
       { name: 'youtubeId', kind: 'text' },
-      { name: 'imageUrl', kind: 'url', max: 2048 },
+      { name: 'imageUrl', kind: 'image', max: 2048 },
       { name: 'isActive', kind: 'switch' },
     ],
   };

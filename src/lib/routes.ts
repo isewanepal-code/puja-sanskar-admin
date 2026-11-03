@@ -21,11 +21,13 @@ export const routes = {
 
   categories: () => '/catalogue',
   materials: () => '/catalogue/samagri',
+  products: () => '/catalogue/products',
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
 
   faqs: () => '/content',
   stories: () => '/content/stories',
+  media: () => '/content/media',
 
   pandits: () => '/marketing',
 

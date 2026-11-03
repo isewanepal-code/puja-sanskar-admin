@@ -12,6 +12,7 @@ import { Input, Select, Switch, Textarea } from '@/components/ui/input';
 import { fieldErrors, isApiError, request } from '@/lib/api';
 
 import { schemaFor, toBody, toFormValues, type FormValues } from './form-values';
+import { ImageInput, ImagesInput } from './image-inputs';
 import { useResourceText, type Translate } from './translate';
 import type { Field, Resource } from './types';
 
@@ -52,7 +53,23 @@ function Control({
   }, [options.data, field.name, getValues, setValue]);
   const common = { id, 'aria-invalid': invalid || undefined, ...register(field.name) };
 
+  const setByPicker = (value: string) =>
+    setValue(field.name, value, { shouldDirty: true, shouldValidate: true });
+
   switch (field.kind) {
+    case 'image':
+      return (
+        <ImageInput id={id} value={String(form.watch(field.name) ?? '')} onChange={setByPicker} />
+      );
+    case 'images':
+      return (
+        <ImagesInput
+          id={id}
+          value={String(form.watch(field.name) ?? '[]')}
+          current={() => String(getValues(field.name) ?? '[]')}
+          onChange={setByPicker}
+        />
+      );
     case 'switch':
       return <Switch label={t(`fields.${field.name}`)} {...register(field.name)} />;
     case 'textarea':
@@ -143,14 +160,16 @@ export function ResourceForm<T>({
       const body = toBody(fields, values, mode);
       return row
         ? request('PATCH', `${resource.path}/${resource.rowId(row)}`, { body })
-        : request('POST', resource.path, { body: { ...body, ...extraBody } });
+        : request(resource.submitMethod ?? 'POST', resource.path, {
+            body: { ...body, ...extraBody },
+          });
     },
     onMutate: () => onPendingChange?.(true),
     onSettled: () => onPendingChange?.(false),
     onSuccess: async () => {
       toast.success(successMessage ?? tf(row ? 'saved' : 'created'));
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: [resource.key] }),
+        queryClient.invalidateQueries({ queryKey: [resource.scope ?? resource.key] }),
         // Dropdowns elsewhere may list what just changed.
         queryClient.invalidateQueries({ queryKey: ['options'] }),
       ]);
@@ -201,6 +220,7 @@ export function ResourceForm<T>({
                   field.wide ||
                   field.kind === 'textarea' ||
                   field.kind === 'html' ||
+                  field.kind === 'images' ||
                   field.kind === 'multiselect'
                     ? 'sm:col-span-2'
                     : undefined

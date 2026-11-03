@@ -45,7 +45,11 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
   const [bulk, setBulk] = useState(false);
 
   const list = useQuery({
-    queryKey: [resource.key, 'list', resource.list === 'paged' ? { q: query, page } : 'all'],
+    queryKey: [
+      resource.scope ?? resource.key,
+      resource.path,
+      resource.list === 'paged' ? { q: query, page } : 'all',
+    ],
     queryFn: async (): Promise<Page<T>> => {
       if (resource.list === 'all') {
         const items = await request<T[]>('GET', resource.path, { query: resource.listQuery });
@@ -68,7 +72,7 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
     onSuccess: async () => {
       toast.success(tf('deleted'));
       setRemoving(null);
-      await queryClient.invalidateQueries({ queryKey: [resource.key] });
+      await queryClient.invalidateQueries({ queryKey: [resource.scope ?? resource.key] });
     },
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });

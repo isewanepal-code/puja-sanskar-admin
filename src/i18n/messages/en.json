@@ -286,7 +286,7 @@
         "summaryEn": "Summary in English",
         "descriptionNe": "Description in Nepali",
         "descriptionEn": "Description in English",
-        "imageUrl": "Image address",
+        "imageUrl": "Image",
         "ritualTypeId": "Ritual type"
       },
       "hints": {
@@ -322,7 +322,7 @@
         "summaryEn": "Summary in English",
         "descriptionNe": "Description in Nepali",
         "descriptionEn": "Description in English",
-        "imageUrl": "Image address",
+        "imageUrl": "Image",
         "groupId": "Group",
         "type": "Kind",
         "mantraId": "Mantra",
@@ -500,7 +500,7 @@
         "topicNe": "Topic in Nepali",
         "topicEn": "Topic in English",
         "youtubeId": "YouTube video id",
-        "imageUrl": "Cover image address",
+        "imageUrl": "Cover image",
         "durationSeconds": "Length in seconds",
         "sortOrder": "Order",
         "isActive": "Shown on the website"
@@ -527,7 +527,7 @@
         "phone": "Phone",
         "customerDiscountPercent": "Customer discount %",
         "commissionPercent": "Commission %",
-        "photoUrl": "Photo address",
+        "photoUrl": "Photo",
         "bioNe": "About, in Nepali",
         "bioEn": "About, in English",
         "sortOrder": "Order",
@@ -634,6 +634,83 @@
         "ACTIVE": "Active",
         "DISABLED": "Switched off"
       }
+    },
+    "products": {
+      "title": "Products",
+      "add": "Add a product",
+      "empty": "No products match.",
+      "none": "—",
+      "fields": {
+        "images": "Images",
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "materialId": "Samagri",
+        "taxClassId": "Tax class",
+        "description": "Description",
+        "slug": "Web address",
+        "isActive": "Shown on the website",
+        "variants": "Packs",
+        "fromPrice": "From"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _, such as PRD001. It cannot change later.",
+        "materialId": "The samagri it sells; it cannot change later.",
+        "taxClassId": "Empty takes the samagri's category, then the shop default.",
+        "description": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "images": "The first image is the main one.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+      },
+      "sections": {
+        "website": "On the website",
+        "seo": "Search engines"
+      }
+    },
+    "variants": {
+      "title": "Packs",
+      "add": "Add a pack",
+      "empty": "No packs yet. Add one so the product can be sold.",
+      "none": "—",
+      "fields": {
+        "sku": "SKU",
+        "label": "Label",
+        "packQuantity": "Pack size",
+        "packUnitId": "Pack unit",
+        "gradeId": "Grade",
+        "price": "Price",
+        "compareAtPrice": "Was",
+        "pricesIncludeTax": "Price includes VAT",
+        "inStock": "In stock",
+        "isActive": "On sale"
+      },
+      "hints": {
+        "sku": "Capital letters, digits or -, such as KAP-050.",
+        "label": "As the shopper reads it: 50 g, 1 पोका.",
+        "compareAtPrice": "Shown struck through when higher than the price."
+      }
+    },
+    "grades": {
+      "title": "Grades",
+      "add": "Add a grade",
+      "empty": "No grades. Packs can still be sold without one.",
+      "none": "—",
+      "fields": {
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "noteNe": "Note in Nepali",
+        "noteEn": "Note in English",
+        "sortOrder": "Order"
+      }
+    },
+    "pairings": {
+      "title": "Goes well with",
+      "add": "Save",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "productIds": "Products"
+      }
     }
   },
   "catalogue": {
@@ -642,14 +719,16 @@
       "categories": "Categories",
       "materials": "Samagri",
       "units": "Units",
-      "sources": "Sources"
+      "sources": "Sources",
+      "products": "Products"
     }
   },
   "contentSection": {
     "title": "Content",
     "tabs": {
       "faqs": "Questions",
-      "stories": "Stories"
+      "stories": "Stories",
+      "media": "Images"
     }
   },
   "marketing": {
@@ -683,6 +762,41 @@
     "resetPassword": "Reset password",
     "resetPasswordFor": "New password for {name}",
     "resetPasswordNote": "They are signed out everywhere and sign in with this password.",
-    "passwordReset": "Password reset"
+    "passwordReset": "Password reset",
+    "packs": "Packs",
+    "packsOf": "Packs of {name}",
+    "packsNote": "Each pack is its own SKU with its own price and stock. The cheapest active pack is the default.",
+    "grades": "Grades",
+    "gradesOf": "Grades of {name}",
+    "gradesNote": "Qualities a pack can be, such as साधारण and विशेष.",
+    "pairings": "Goes well with",
+    "pairingsOf": "Goes well with {name}",
+    "pairingsNote": "Shown on the product page and as cart suggestions.",
+    "savePairings": "Save",
+    "pairingsSaved": "Pairings saved"
+  },
+  "media": {
+    "pickTitle": "Choose an image",
+    "pickNote": "Pick an uploaded image, or upload new ones (JPEG, PNG, WebP or AVIF, up to 10 MB).",
+    "upload": "Upload images",
+    "uploading": "Uploading...",
+    "uploaded": "{count, plural, one {# image uploaded} other {# images uploaded}}",
+    "tooBig": "{name} is over 10 MB",
+    "done": "Done",
+    "loading": "Loading images...",
+    "empty": "No images yet. Upload the first one.",
+    "use": "Use",
+    "more": "Show more",
+    "choose": "Choose an image",
+    "change": "Change",
+    "remove": "Remove",
+    "add": "Add images",
+    "altText": "What the image shows, for screen readers and search",
+    "main": "Main",
+    "earlier": "Move up",
+    "later": "Move down",
+    "libraryNote": "Every uploaded image. Product, puja and pandit forms pick from here too.",
+    "copy": "Copy address",
+    "copied": "Address copied"
   }
 }

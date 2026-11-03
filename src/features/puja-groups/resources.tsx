@@ -101,7 +101,7 @@ export function pujaGroupResource(typesCode: boolean): Resource<GroupNode> {
       { name: 'summaryEn', kind: 'textarea', max: 500 },
       { name: 'descriptionNe', kind: 'html' },
       { name: 'descriptionEn', kind: 'html' },
-      { name: 'imageUrl', kind: 'url', max: 2048, wide: true },
+      { name: 'imageUrl', kind: 'image', max: 2048, wide: true },
       { name: 'slug', kind: 'slug', max: 160, section: 'seo', wide: true },
       { name: 'metaTitle', kind: 'text', max: 70, wide: true },
       { name: 'metaDescription', kind: 'textarea', max: 160 },

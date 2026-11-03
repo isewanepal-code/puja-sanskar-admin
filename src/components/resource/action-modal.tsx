@@ -16,6 +16,8 @@ type ActionModalProps<T> = {
   description?: string;
   submitLabel: string;
   doneMessage: string;
+  // What the form starts with: the list it is about to replace.
+  defaults?: Record<string, unknown>;
   size?: ModalSize;
   onClose: () => void;
 };
@@ -27,6 +29,7 @@ export function ActionModal<T>({
   description,
   submitLabel,
   doneMessage,
+  defaults,
   size = 'sm',
   onClose,
 }: ActionModalProps<T>) {
@@ -56,6 +59,7 @@ export function ActionModal<T>({
         <ResourceForm
           resource={resource}
           formId={formId}
+          defaults={defaults}
           successMessage={doneMessage}
           onPendingChange={setPending}
           onDone={onClose}

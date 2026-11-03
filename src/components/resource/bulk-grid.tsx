@@ -141,7 +141,7 @@ export function BulkGrid<T>({
     }
     setSaving(false);
     await Promise.all([
-      queryClient.invalidateQueries({ queryKey: [resource.key] }),
+      queryClient.invalidateQueries({ queryKey: [resource.scope ?? resource.key] }),
       queryClient.invalidateQueries({ queryKey: ['options'] }),
     ]);
 

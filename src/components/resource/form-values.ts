@@ -16,10 +16,23 @@ const PATTERN: Partial<Record<Field['kind'], { regex: RegExp; message: string }>
   percent: { regex: /^\d{1,3}(\.\d{1,2})?$/, message: 'A percentage such as 10 or 12.5' },
   number: { regex: /^-?\d+$/, message: 'A whole number' },
   url: { regex: /^https?:\/\/\S+$/, message: 'A web address starting with https://' },
+  image: { regex: /^https?:\/\/\S+$/, message: 'Choose an image' },
   time: { regex: /^([01]\d|2[0-3]):[0-5]\d$/, message: 'A time such as 09:30' },
 };
 
 export type FormValues = Record<string, string | boolean | string[]>;
+
+export type Image = { url: string; altText: string | null };
+
+// A gallery travels through the form as JSON text, so it fits the form's plain values.
+export function readImages(text: string): Image[] {
+  try {
+    const value: unknown = JSON.parse(text || '[]');
+    return Array.isArray(value) ? (value as Image[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 function fieldSchema(field: Field): z.ZodType {
   if (field.kind === 'switch') return z.boolean();
@@ -60,6 +73,9 @@ export function toFormValues(fields: Field[], row?: Record<string, unknown>): Fo
       if (field.kind === 'multiselect') {
         return [field.name, Array.isArray(value) ? value.map(String) : (field.defaultValue ?? [])];
       }
+      if (field.kind === 'images') {
+        return [field.name, JSON.stringify(Array.isArray(value) ? value : [])];
+      }
       if (field.codec)
         return [field.name, value === null || value === undefined ? '' : field.codec.toText(value)];
       if (value === null || value === undefined) return [field.name, field.defaultValue ?? ''];
@@ -84,6 +100,13 @@ export function toBody(
     if (mode === 'edit' && field.createOnly) continue;
     if (mode === 'create' && field.editOnly) continue;
     const value = values[field.name];
+    if (field.kind === 'images' && typeof value === 'string') {
+      body[field.name] = readImages(value).map(({ url, altText }) => ({
+        url,
+        altText: altText ?? undefined,
+      }));
+      continue;
+    }
     if (field.codec && typeof value === 'string') {
       body[field.name] = field.codec.fromText(value);
       continue;

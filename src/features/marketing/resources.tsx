@@ -70,7 +70,7 @@ export const panditsResource: Resource<Pandit> = {
     },
     { name: 'customerDiscountPercent', kind: 'percent', section: 'terms' },
     { name: 'commissionPercent', kind: 'percent' },
-    { name: 'photoUrl', kind: 'url', max: 2048, section: 'profile', wide: true },
+    { name: 'photoUrl', kind: 'image', max: 2048, section: 'profile', wide: true },
     { name: 'bioNe', kind: 'html', max: 1000 },
     { name: 'bioEn', kind: 'html', max: 1000 },
     { name: 'sortOrder', kind: 'number' },

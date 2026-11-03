@@ -20,6 +20,7 @@ export default async function ContentLayout({
           tabs={[
             { href: routes.faqs(), label: t('tabs.faqs') },
             { href: routes.stories(), label: t('tabs.stories') },
+            { href: routes.media(), label: t('tabs.media') },
           ]}
         />
       </header>
