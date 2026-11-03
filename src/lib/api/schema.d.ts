@@ -1032,6 +1032,169 @@ export interface paths {
     patch: operations['AdminMantraController_update'];
     trace?: never;
   };
+  '/api/v1/puja-groups/tree': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Active puja groups nested under their parents
+     * @description With the name of each level and the ritual types, for headings and filters.
+     */
+    get: operations['PujaGroupController_tree'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/puja-groups/{slug}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * An active puja group with its breadcrumbs and subgroups
+     * @description Its pujas: GET /pujas?group={slug}.
+     */
+    get: operations['PujaGroupController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/puja-groups/tree': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Every puja group, active or not, as a tree
+     * @description With the level names and every ritual type.
+     */
+    get: operations['AdminPujaGroupController_tree'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/puja-groups/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a puja group */
+    get: operations['AdminPujaGroupController_get'];
+    put?: never;
+    post?: never;
+    /**
+     * Delete a puja group created by mistake
+     * @description Only while it has no subgroups and no pujas; otherwise deactivate it.
+     */
+    delete: operations['AdminPujaGroupController_delete'];
+    options?: never;
+    head?: never;
+    /** Update or deactivate a puja group */
+    patch: operations['AdminPujaGroupController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/puja-groups': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Create a puja group
+     * @description A top-level group needs a code; one below a parent is numbered from it (H1, H1.1).
+     */
+    post: operations['AdminPujaGroupController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/ritual-types': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List ritual types, active or not */
+    get: operations['AdminRitualTypeController_list'];
+    put?: never;
+    /** Create a ritual type */
+    post: operations['AdminRitualTypeController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/ritual-types/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a ritual type */
+    get: operations['AdminRitualTypeController_get'];
+    put?: never;
+    post?: never;
+    /**
+     * Delete a ritual type created by mistake
+     * @description Only while no group names it; otherwise deactivate it.
+     */
+    delete: operations['AdminRitualTypeController_delete'];
+    options?: never;
+    head?: never;
+    /** Rename, reorder or deactivate a ritual type */
+    patch: operations['AdminRitualTypeController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/puja-group-levels': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** The name of each level of the group tree */
+    get: operations['AdminPujaGroupLevelController_list'];
+    /**
+     * Name the levels of the group tree
+     * @description The list sent replaces the whole list.
+     */
+    put: operations['AdminPujaGroupLevelController_replace'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/pujas': {
     parameters: {
       query?: never;
@@ -1041,7 +1204,7 @@ export interface paths {
     };
     /**
      * Browse and search active pujas
-     * @description material narrows to pujas whose list asks for that samagri.
+     * @description material narrows to pujas whose list asks for that samagri; group to a puja group and the groups below it.
      */
     get: operations['PujaController_list'];
     put?: never;
@@ -5223,6 +5386,360 @@ export interface components {
       /** @default true */
       isActive: boolean;
     };
+    PujaGroupLevelResponse: {
+      /**
+       * @description 0 is the top level
+       * @example 0
+       */
+      depth: number;
+      /** @example Main religious group */
+      nameEn: string;
+      /** @example मुख्य धार्मिक समूह */
+      nameNe: string;
+    };
+    RitualTypeResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example PUJ */
+      code: string;
+      /** @example Puja */
+      nameEn: string;
+      /** @example पूजा */
+      nameNe: string;
+    };
+    PujaGroupTreeResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example H1 */
+      code: string;
+      /** @example daily-and-regular-puja */
+      slug: string;
+      /** @example Daily and regular puja */
+      nameEn: string;
+      /** @example दैनिक तथा नियमित पूजा */
+      nameNe: string;
+      nameRomanized: string | null;
+      /** Format: uuid */
+      parentId: string | null;
+      /**
+       * @description 0 for a top-level group
+       * @example 1
+       */
+      depth: number;
+      /** @example 0 */
+      sortOrder: number;
+      summaryEn: string | null;
+      summaryNe: string | null;
+      imageUrl: string | null;
+      /** @description Its own, else the nearest group above it names */
+      ritualType: components['schemas']['RitualTypeResponse'] | null;
+      children: components['schemas']['PujaGroupTreeResponse'][];
+    };
+    PujaGroupCatalogueResponse: {
+      levels: components['schemas']['PujaGroupLevelResponse'][];
+      ritualTypes: components['schemas']['RitualTypeResponse'][];
+      groups: components['schemas']['PujaGroupTreeResponse'][];
+    };
+    PujaGroupResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example H1 */
+      code: string;
+      /** @example daily-and-regular-puja */
+      slug: string;
+      /** @example Daily and regular puja */
+      nameEn: string;
+      /** @example दैनिक तथा नियमित पूजा */
+      nameNe: string;
+      nameRomanized: string | null;
+      /** Format: uuid */
+      parentId: string | null;
+      /**
+       * @description 0 for a top-level group
+       * @example 1
+       */
+      depth: number;
+      /** @example 0 */
+      sortOrder: number;
+      summaryEn: string | null;
+      summaryNe: string | null;
+      imageUrl: string | null;
+      /** @description Its own, else the nearest group above it names */
+      ritualType: components['schemas']['RitualTypeResponse'] | null;
+    };
+    PujaGroupDetailResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example H1 */
+      code: string;
+      /** @example daily-and-regular-puja */
+      slug: string;
+      /** @example Daily and regular puja */
+      nameEn: string;
+      /** @example दैनिक तथा नियमित पूजा */
+      nameNe: string;
+      nameRomanized: string | null;
+      /** Format: uuid */
+      parentId: string | null;
+      /**
+       * @description 0 for a top-level group
+       * @example 1
+       */
+      depth: number;
+      /** @example 0 */
+      sortOrder: number;
+      summaryEn: string | null;
+      summaryNe: string | null;
+      imageUrl: string | null;
+      /** @description Its own, else the nearest group above it names */
+      ritualType: components['schemas']['RitualTypeResponse'] | null;
+      /** @description Markdown */
+      descriptionEn: string | null;
+      /** @description Markdown */
+      descriptionNe: string | null;
+      metaTitle: string | null;
+      metaDescription: string | null;
+      /** @description From the top-level group down to the parent */
+      breadcrumbs: components['schemas']['PujaGroupResponse'][];
+      children: components['schemas']['PujaGroupResponse'][];
+    };
+    AdminRitualTypeResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example PUJ */
+      code: string;
+      /** @example Puja */
+      nameEn: string;
+      /** @example पूजा */
+      nameNe: string;
+      /** @example 0 */
+      sortOrder: number;
+      isActive: boolean;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    AdminPujaGroupTreeResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example H1 */
+      code: string;
+      /** @example daily-and-regular-puja */
+      slug: string;
+      /**
+       * @description Earlier slugs; their pages redirect to the current one
+       * @example [
+       *       "satyanarayan-pooja"
+       *     ]
+       */
+      previousSlugs: string[];
+      /** @example Daily and regular puja */
+      nameEn: string;
+      /** @example दैनिक तथा नियमित पूजा */
+      nameNe: string;
+      nameRomanized: string | null;
+      /**
+       * Format: uuid
+       * @description Its own; null takes the parent’s
+       */
+      ritualTypeId: string | null;
+      /** Format: uuid */
+      parentId: string | null;
+      /** @description From the top-level group down to the parent */
+      ancestorIds: string[];
+      /** @example 1 */
+      depth: number;
+      /** @example 0 */
+      sortOrder: number;
+      summaryEn: string | null;
+      summaryNe: string | null;
+      descriptionEn: string | null;
+      descriptionNe: string | null;
+      imageUrl: string | null;
+      metaTitle: string | null;
+      metaDescription: string | null;
+      isActive: boolean;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** @description Its own, else the nearest group above it names */
+      ritualType: components['schemas']['AdminRitualTypeResponse'] | null;
+      children: components['schemas']['AdminPujaGroupTreeResponse'][];
+    };
+    AdminPujaGroupCatalogueResponse: {
+      levels: components['schemas']['PujaGroupLevelResponse'][];
+      ritualTypes: components['schemas']['AdminRitualTypeResponse'][];
+      groups: components['schemas']['AdminPujaGroupTreeResponse'][];
+    };
+    AdminPujaGroupResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example H1 */
+      code: string;
+      /** @example daily-and-regular-puja */
+      slug: string;
+      /**
+       * @description Earlier slugs; their pages redirect to the current one
+       * @example [
+       *       "satyanarayan-pooja"
+       *     ]
+       */
+      previousSlugs: string[];
+      /** @example Daily and regular puja */
+      nameEn: string;
+      /** @example दैनिक तथा नियमित पूजा */
+      nameNe: string;
+      nameRomanized: string | null;
+      /**
+       * Format: uuid
+       * @description Its own; null takes the parent’s
+       */
+      ritualTypeId: string | null;
+      /** Format: uuid */
+      parentId: string | null;
+      /** @description From the top-level group down to the parent */
+      ancestorIds: string[];
+      /** @example 1 */
+      depth: number;
+      /** @example 0 */
+      sortOrder: number;
+      summaryEn: string | null;
+      summaryNe: string | null;
+      descriptionEn: string | null;
+      descriptionNe: string | null;
+      imageUrl: string | null;
+      metaTitle: string | null;
+      metaDescription: string | null;
+      isActive: boolean;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreatePujaGroupDto: {
+      /**
+       * @description Typed for a top-level group only; groups below one are numbered from their parent (H1, H1.1)
+       * @example H
+       */
+      code?: string;
+      /** @example Daily and regular puja */
+      nameEn: string;
+      /** @example दैनिक तथा नियमित पूजा */
+      nameNe: string;
+      /** @example Dainik tatha Niyamit Puja */
+      nameRomanized?: string | null;
+      /** @description Generated from nameEn when omitted */
+      slug?: string;
+      /**
+       * Format: uuid
+       * @description Parent group; leave out for a top-level one. Fixed once created.
+       */
+      parentId?: string | null;
+      /**
+       * Format: uuid
+       * @description Null takes the parent group’s ritual type
+       */
+      ritualTypeId?: string | null;
+      /** @default 0 */
+      sortOrder: number;
+      /** @example Pujas done every day or on fixed days */
+      summaryEn?: string | null;
+      /** @example दैनिक वा तोकिएका दिनमा गरिने पूजा */
+      summaryNe?: string | null;
+      /**
+       * @example ## What belongs here
+       *     …
+       */
+      descriptionEn?: string | null;
+      /**
+       * @example ## यहाँ के पर्छ
+       *     …
+       */
+      descriptionNe?: string | null;
+      /** @example https://cdn.pujasanskar.com/groups/daily-puja.webp */
+      imageUrl?: string | null;
+      /** @example Daily puja: what each one needs */
+      metaTitle?: string | null;
+      /** @example Every daily and regular puja, with its samagri and kits. */
+      metaDescription?: string | null;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdatePujaGroupDto: {
+      /** @example Daily and regular puja */
+      nameEn?: string;
+      /** @example दैनिक तथा नियमित पूजा */
+      nameNe?: string;
+      /** @example Dainik tatha Niyamit Puja */
+      nameRomanized?: string | null;
+      /** @description Generated from nameEn when omitted */
+      slug?: string;
+      /**
+       * Format: uuid
+       * @description Null takes the parent group’s ritual type
+       */
+      ritualTypeId?: string | null;
+      /** @default 0 */
+      sortOrder: number;
+      /** @example Pujas done every day or on fixed days */
+      summaryEn?: string | null;
+      /** @example दैनिक वा तोकिएका दिनमा गरिने पूजा */
+      summaryNe?: string | null;
+      /**
+       * @example ## What belongs here
+       *     …
+       */
+      descriptionEn?: string | null;
+      /**
+       * @example ## यहाँ के पर्छ
+       *     …
+       */
+      descriptionNe?: string | null;
+      /** @example https://cdn.pujasanskar.com/groups/daily-puja.webp */
+      imageUrl?: string | null;
+      /** @example Daily puja: what each one needs */
+      metaTitle?: string | null;
+      /** @example Every daily and regular puja, with its samagri and kits. */
+      metaDescription?: string | null;
+      /** @default true */
+      isActive: boolean;
+    };
+    CreateRitualTypeDto: {
+      /** @example PUJ */
+      code: string;
+      /** @example Puja */
+      nameEn: string;
+      /** @example पूजा */
+      nameNe: string;
+      /** @default 0 */
+      sortOrder: number;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdateRitualTypeDto: {
+      /** @example Puja */
+      nameEn?: string;
+      /** @example पूजा */
+      nameNe?: string;
+      /** @default 0 */
+      sortOrder: number;
+      /** @default true */
+      isActive: boolean;
+    };
+    PujaGroupLevelDto: {
+      /** @example 0 */
+      depth: number;
+      /** @example Main religious group */
+      nameEn: string;
+      /** @example मुख्य धार्मिक समूह */
+      nameNe: string;
+    };
+    ReplaceLevelsDto: {
+      /** @description Every named depth; a depth left out shows as "Level n" */
+      levels: components['schemas']['PujaGroupLevelDto'][];
+    };
     PujaCardResponse: {
       /** Format: uuid */
       id: string;
@@ -5289,6 +5806,8 @@ export interface components {
       metaDescription: string | null;
       /** @description Played only when the visitor asks */
       mantra: components['schemas']['MantraSummary'] | null;
+      /** @description Where it is filed, with its ritual type */
+      group: components['schemas']['PujaGroupResponse'] | null;
     };
     MaterialSummary: {
       /** Format: uuid */
@@ -5371,6 +5890,8 @@ export interface components {
       metaDescription: string | null;
       /** Format: uuid */
       mantraId: string | null;
+      /** Format: uuid */
+      groupId: string | null;
       isActive: boolean;
       /** Format: date-time */
       createdAt: string;
@@ -5422,6 +5943,11 @@ export interface components {
       metaDescription?: string | null;
       /** Format: uuid */
       mantraId?: string | null;
+      /**
+       * Format: uuid
+       * @description The puja group it is filed in, at any depth
+       */
+      groupId?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -5468,6 +5994,11 @@ export interface components {
       metaDescription?: string | null;
       /** Format: uuid */
       mantraId?: string | null;
+      /**
+       * Format: uuid
+       * @description The puja group it is filed in, at any depth
+       */
+      groupId?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -14486,6 +15017,815 @@ export interface operations {
       };
     };
   };
+  PujaGroupController_tree: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PujaGroupCatalogueResponse'];
+          };
+        };
+      };
+    };
+  };
+  PujaGroupController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PujaGroupDetailResponse'];
+          };
+        };
+      };
+      /** @description MOVED_PERMANENTLY */
+      301: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPujaGroupController_tree: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminPujaGroupCatalogueResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPujaGroupController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminPujaGroupResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPujaGroupController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPujaGroupController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePujaGroupDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminPujaGroupResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPujaGroupController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePujaGroupDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminPujaGroupResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminRitualTypeController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminRitualTypeResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminRitualTypeController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateRitualTypeDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminRitualTypeResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminRitualTypeController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminRitualTypeResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminRitualTypeController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminRitualTypeController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateRitualTypeDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminRitualTypeResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPujaGroupLevelController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PujaGroupLevelResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPujaGroupLevelController_replace: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReplaceLevelsDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PujaGroupLevelResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   PujaController_list: {
     parameters: {
       query?: {
@@ -14497,6 +15837,8 @@ export interface operations {
         tradition?: string;
         /** @description Material slug: pujas whose list asks for this samagri */
         material?: string;
+        /** @description Puja group slug: pujas filed in it or any group below it */
+        group?: string;
       };
       header?: never;
       path?: never;
@@ -14632,6 +15974,10 @@ export interface operations {
         isActive?: boolean;
         type?: 'PUJA' | 'FESTIVAL' | 'SAMSKARA' | 'VRAT' | 'SHANTI' | 'SHRADDHA' | 'PATH' | 'HOMA';
         tradition?: string;
+        /** @description Pujas filed directly in this group */
+        groupId?: string;
+        /** @description Only pujas not filed in any group */
+        ungrouped?: boolean;
       };
       header?: never;
       path?: never;

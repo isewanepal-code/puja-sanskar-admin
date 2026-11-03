@@ -65,7 +65,8 @@
     "signOut": "Sign out",
     "sections": {
       "dashboard": "Dashboard",
-      "orders": "Orders"
+      "orders": "Orders",
+      "pujas": "Pujas"
     }
   },
   "dashboard": {
@@ -136,6 +137,128 @@
       "history": "History",
       "by": "by {name}",
       "cancelReason": "Cancelled: {reason}"
+    }
+  },
+  "forms": {
+    "save": "Save",
+    "saving": "Saving...",
+    "saved": "Saved",
+    "create": "Create",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleteTitle": "Delete {name}?",
+    "deleteBody": "This can't be undone. Switch it off instead if it may come back.",
+    "deleted": "Deleted",
+    "optional": "optional",
+    "active": "Shown on the website",
+    "failed": "That didn't save. Check the fields and try again."
+  },
+  "pujas": {
+    "title": "Pujas",
+    "tabs": {
+      "groups": "Groups",
+      "list": "Pujas",
+      "ritualTypes": "Ritual types",
+      "levels": "Levels"
+    },
+    "browser": {
+      "level": "Level {depth}",
+      "add": "Add",
+      "addTop": "Add a main group",
+      "empty": "Nothing here yet.",
+      "emptyTree": "No groups yet. Start with a main group such as Hindu (H).",
+      "pujasIn": "Pujas in {code}",
+      "noPujas": "No pujas filed here.",
+      "addPuja": "Add a puja",
+      "edit": "Edit",
+      "off": "Off"
+    },
+    "group": {
+      "newTitle": "New group",
+      "newUnder": "New group under {code}",
+      "editTitle": "Group {code}",
+      "code": "Code",
+      "codeHint": "Capital letters, such as H. Groups below it are numbered from it: H1, then H1.1.",
+      "numbered": "The code is numbered from {code} when you save.",
+      "nameNe": "Name in Nepali",
+      "nameEn": "Name in English",
+      "nameRomanized": "Romanized name",
+      "ritualType": "Ritual type",
+      "inherit": "Same as the group above",
+      "sortOrder": "Order",
+      "words": "On the website",
+      "summaryNe": "Summary in Nepali",
+      "summaryEn": "Summary in English",
+      "descriptionNe": "Description in Nepali",
+      "descriptionEn": "Description in English",
+      "markdown": "Markdown",
+      "imageUrl": "Image address",
+      "seo": "Search engines",
+      "slug": "Address",
+      "slugHint": "Made from the English name when left empty. Old addresses keep working.",
+      "metaTitle": "Title",
+      "metaDescription": "Description",
+      "place": "Place in the tree",
+      "parent": "Under {name}",
+      "top": "Main group (level 0)"
+    },
+    "list": {
+      "search": "Search by code or name",
+      "searchButton": "Search",
+      "empty": "No pujas match.",
+      "add": "Add a puja",
+      "count": "{total, plural, one {# puja} other {# pujas}}",
+      "columns": {
+        "code": "Code",
+        "name": "Name",
+        "group": "Group",
+        "type": "Type",
+        "status": "Status"
+      },
+      "unfiled": "Not filed",
+      "on": "On",
+      "off": "Off"
+    },
+    "puja": {
+      "newTitle": "New puja",
+      "editTitle": "Puja {code}",
+      "code": "Code",
+      "codeHint": "Capital letters, digits or _, such as K1.",
+      "type": "Kind",
+      "group": "Group",
+      "noGroup": "Not filed in a group"
+    },
+    "types": {
+      "PUJA": "Puja",
+      "FESTIVAL": "Festival",
+      "SAMSKARA": "Sanskar",
+      "VRAT": "Vrat",
+      "SHANTI": "Shanti",
+      "SHRADDHA": "Shraddha",
+      "PATH": "Path",
+      "HOMA": "Hom"
+    },
+    "ritualTypes": {
+      "add": "Add a ritual type",
+      "newTitle": "New ritual type",
+      "editTitle": "Ritual type {code}",
+      "empty": "No ritual types yet. Add Puja (PUJ), Sanskar (SAN) and the rest.",
+      "code": "Code",
+      "codeHint": "Capital letters, such as PUJ.",
+      "columns": {
+        "code": "Code",
+        "name": "Name",
+        "order": "Order",
+        "status": "Status"
+      }
+    },
+    "levels": {
+      "intro": "The heading of each level of the group tree, as the groups browser and the website show it.",
+      "depth": "Level {depth}",
+      "nameNe": "Name in Nepali",
+      "nameEn": "Name in English",
+      "add": "Add a level",
+      "remove": "Remove"
     }
   }
 }
