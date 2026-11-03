@@ -55,6 +55,7 @@ export const panditsResource: Resource<Pandit> = {
       name: 'referralCode',
       kind: 'code',
       required: true,
+      createOnly: true,
       pattern: {
         regex: /^[A-Z0-9][A-Z0-9-]{2,31}$/,
         message: 'Capital letters, digits or -, such as PANDIT-RAM',
