@@ -60,6 +60,8 @@ export function toFormValues(fields: Field[], row?: Record<string, unknown>): Fo
       if (field.kind === 'multiselect') {
         return [field.name, Array.isArray(value) ? value.map(String) : (field.defaultValue ?? [])];
       }
+      if (field.codec)
+        return [field.name, value === null || value === undefined ? '' : field.codec.toText(value)];
       if (value === null || value === undefined) return [field.name, field.defaultValue ?? ''];
       if (field.kind === 'tags' && Array.isArray(value)) return [field.name, value.join(', ')];
       if (field.kind === 'datetime') return [field.name, localDateTime(String(value))];
@@ -80,7 +82,12 @@ export function toBody(
   const body: Record<string, unknown> = {};
   for (const field of fields) {
     if (mode === 'edit' && field.createOnly) continue;
+    if (mode === 'create' && field.editOnly) continue;
     const value = values[field.name];
+    if (field.codec && typeof value === 'string') {
+      body[field.name] = field.codec.fromText(value);
+      continue;
+    }
     if (typeof value === 'boolean' || Array.isArray(value)) {
       body[field.name] = value;
       continue;

@@ -1,3 +1,4 @@
+export { ActionModal } from './action-modal';
 export { ActiveBadge } from './active-badge';
 export { BulkGrid } from './bulk-grid';
 export { ConfirmDelete } from './confirm-delete';

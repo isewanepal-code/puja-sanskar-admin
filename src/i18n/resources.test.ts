@@ -7,9 +7,17 @@ import {
   sourcesResource,
   unitsResource,
 } from '@/features/catalogue';
+import { faqsResource, storiesResource } from '@/features/content';
 import { mantrasResource } from '@/features/mantras';
+import { panditsResource } from '@/features/marketing';
 import { pujaGroupResource, ritualTypesResource } from '@/features/puja-groups';
 import { pujasResource } from '@/features/pujas';
+import {
+  deliverySlotsResource,
+  deliveryZonesResource,
+  taxClassesResource,
+} from '@/features/settings';
+import { usersResource } from '@/features/staff-accounts';
 
 import messages from './messages/en.json';
 
@@ -26,6 +34,13 @@ const RESOURCES: Resource<never>[] = [
   materialsResource,
   unitsResource,
   sourcesResource,
+  faqsResource((key) => key),
+  storiesResource((key) => key),
+  panditsResource,
+  taxClassesResource((key) => key),
+  deliveryZonesResource,
+  deliverySlotsResource,
+  usersResource((key) => key),
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>

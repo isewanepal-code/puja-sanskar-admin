@@ -16,6 +16,7 @@ import { useResourceText, type Translate } from './translate';
 import type { Field, Resource } from './types';
 
 const INPUT_TYPE: Partial<Record<Field['kind'], string>> = {
+  password: 'password',
   url: 'url',
   time: 'time',
   date: 'date',
@@ -102,6 +103,8 @@ type ResourceFormProps<T> = {
   extraBody?: Record<string, unknown>;
   // What a new record's fields start with.
   defaults?: Record<string, unknown>;
+  // The toast after an action that is not a plain create or save.
+  successMessage?: string;
   onDone: () => void;
   onPendingChange?: (pending: boolean) => void;
 };
@@ -113,6 +116,7 @@ export function ResourceForm<T>({
   formId,
   extraBody,
   defaults,
+  successMessage,
   onDone,
   onPendingChange,
 }: ResourceFormProps<T>) {
@@ -122,7 +126,9 @@ export function ResourceForm<T>({
   const queryClient = useQueryClient();
   const idBase = useId();
   const mode = row ? 'edit' : 'create';
-  const fields = resource.fields.filter((field) => mode === 'create' || !field.createOnly);
+  const fields = resource.fields.filter((field) =>
+    mode === 'create' ? !field.editOnly : !field.createOnly,
+  );
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schemaFor(fields)) as never,
@@ -142,7 +148,7 @@ export function ResourceForm<T>({
     onMutate: () => onPendingChange?.(true),
     onSettled: () => onPendingChange?.(false),
     onSuccess: async () => {
-      toast.success(tf(row ? 'saved' : 'created'));
+      toast.success(successMessage ?? tf(row ? 'saved' : 'created'));
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: [resource.key] }),
         // Dropdowns elsewhere may list what just changed.

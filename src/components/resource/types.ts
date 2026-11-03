@@ -6,6 +6,7 @@ export type Option = { value: string; label: string };
 
 export type FieldKind =
   | 'text'
+  | 'password'
   | 'textarea'
   // Text the website shows as HTML: <p>, <br>, <strong> and lists.
   | 'html'
@@ -32,6 +33,10 @@ export type Field = {
   max?: number;
   // Fixed once the record exists (codes); shown only when creating.
   createOnly?: boolean;
+  // Only changed on an existing record (an account's status).
+  editOnly?: boolean;
+  // A value the API takes as a structure, edited as text (one place per line).
+  codec?: { toText: (value: unknown) => string; fromText: (text: string) => unknown };
   // A stricter rule than the kind's own (letters-only top-level codes).
   pattern?: { regex: RegExp; message: string };
   options?: Option[];

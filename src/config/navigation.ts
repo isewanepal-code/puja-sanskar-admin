@@ -25,13 +25,37 @@ export const navigation: NavGroup[] = [
   },
   {
     key: 'sales',
-    sections: [{ key: 'orders', href: routes.orders(), icon: 'box', permission: 'orders:read' }],
+    sections: [
+      { key: 'orders', href: routes.orders(), icon: 'box', permission: 'orders:read' },
+      {
+        key: 'marketing',
+        href: routes.pandits(),
+        icon: 'percent',
+        permission: 'promotions:manage',
+      },
+    ],
   },
   {
     key: 'catalogue',
     sections: [
       { key: 'pujas', href: routes.pujaGroups(), icon: 'temple', permission: 'catalogue:read' },
       { key: 'catalogue', href: routes.categories(), icon: 'leaf', permission: 'catalogue:read' },
+    ],
+  },
+  {
+    key: 'site',
+    sections: [{ key: 'content', href: routes.faqs(), icon: 'book', permission: 'catalogue:read' }],
+  },
+  {
+    key: 'admin',
+    sections: [
+      {
+        key: 'settings',
+        href: routes.taxClasses(),
+        icon: 'palette',
+        permission: 'settings:manage',
+      },
+      { key: 'staff', href: routes.staff(), icon: 'users', permission: 'users:read' },
     ],
   },
 ];

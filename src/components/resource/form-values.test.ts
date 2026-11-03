@@ -73,6 +73,19 @@ describe('resource form values', () => {
     ).not.toHaveProperty('code');
   });
 
+  it('should edit a structured value as text through its codec', () => {
+    const places: Field = {
+      name: 'areas',
+      kind: 'textarea',
+      codec: {
+        toText: (value) => (value as string[]).join('\n'),
+        fromText: (text) => text.split('\n').filter(Boolean),
+      },
+    };
+    expect(toFormValues([places], { areas: ['a', 'b'] })).toEqual({ areas: 'a\nb' });
+    expect(toBody([places], { areas: 'a\n\nb' }, 'create')).toEqual({ areas: ['a', 'b'] });
+  });
+
   it('should check the rules before anything is sent', () => {
     const schema = schemaFor(fields);
     const result = schema.safeParse({

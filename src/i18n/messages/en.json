@@ -458,6 +458,180 @@
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later."
       }
+    },
+    "faqs": {
+      "title": "Questions",
+      "add": "Add a question",
+      "empty": "No questions yet.",
+      "none": "—",
+      "fields": {
+        "topic": "Topic",
+        "questionNe": "Question in Nepali",
+        "questionEn": "Question in English",
+        "answerNe": "Answer in Nepali",
+        "answerEn": "Answer in English",
+        "sortOrder": "Order",
+        "isActive": "Shown on the website"
+      },
+      "hints": {
+        "answerNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "answerEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags."
+      },
+      "topics": {
+        "GENERAL": "General",
+        "KITS": "Kits",
+        "DELIVERY": "Delivery",
+        "PAYMENT": "Payment",
+        "PANDITS": "Pandits"
+      }
+    },
+    "stories": {
+      "title": "Stories",
+      "add": "Add a story",
+      "empty": "No stories yet.",
+      "none": "—",
+      "fields": {
+        "kind": "Told by",
+        "personNe": "Name in Nepali",
+        "personEn": "Name in English",
+        "place": "Place",
+        "topicNe": "Topic in Nepali",
+        "topicEn": "Topic in English",
+        "youtubeId": "YouTube video id",
+        "imageUrl": "Cover image address",
+        "durationSeconds": "Length in seconds",
+        "sortOrder": "Order",
+        "isActive": "Shown on the website"
+      },
+      "hints": {
+        "youtubeId": "The part after v= in the video's address, such as dQw4w9WgXcQ."
+      },
+      "kinds": {
+        "CUSTOMER": "Customer",
+        "PANDIT": "Pandit"
+      }
+    },
+    "pandits": {
+      "title": "Pandits",
+      "add": "Add a pandit",
+      "empty": "No pandits match.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "referralCode": "Referral code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "area": "Area",
+        "phone": "Phone",
+        "customerDiscountPercent": "Customer discount %",
+        "commissionPercent": "Commission %",
+        "photoUrl": "Photo address",
+        "bioNe": "About, in Nepali",
+        "bioEn": "About, in English",
+        "sortOrder": "Order",
+        "slug": "Web address",
+        "isActive": "Shown on the website",
+        "ordersBrought": "Orders",
+        "salesBrought": "Sales"
+      },
+      "hints": {
+        "referralCode": "Customers type it at checkout, such as PANDIT-RAM.",
+        "bioNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "bioEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags."
+      },
+      "sections": {
+        "terms": "Discount and commission",
+        "profile": "Profile"
+      }
+    },
+    "taxClasses": {
+      "title": "Tax",
+      "add": "Add a tax class",
+      "empty": "No tax classes yet.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "name": "Name",
+        "kind": "Kind",
+        "ratePercent": "Rate %",
+        "effectiveFrom": "From",
+        "rates": "Rates",
+        "isActive": "In use"
+      },
+      "hints": {
+        "ratePercent": "For a standard class, such as 13.",
+        "kind": "It cannot change later."
+      },
+      "kinds": {
+        "STANDARD": "Standard",
+        "ZERO_RATED": "Zero rated",
+        "EXEMPT": "Exempt"
+      }
+    },
+    "deliveryZones": {
+      "title": "Delivery areas",
+      "add": "Add a delivery area",
+      "empty": "No delivery areas yet.",
+      "none": "—",
+      "fields": {
+        "name": "Name",
+        "fee": "Delivery fee",
+        "freeAbove": "Free above",
+        "expressFee": "Same-day fee",
+        "areas": "Places",
+        "sortOrder": "Order",
+        "isActive": "Delivered to"
+      },
+      "hints": {
+        "areas": "One place per line, city then area: Kathmandu / Baneshwor.",
+        "freeAbove": "Orders at or above this pay no delivery fee.",
+        "expressFee": "Empty means same-day delivery is not offered here."
+      }
+    },
+    "deliverySlots": {
+      "title": "Delivery times",
+      "add": "Add a delivery time",
+      "empty": "No delivery times yet.",
+      "none": "—",
+      "fields": {
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "startsAt": "From",
+        "endsAt": "Until",
+        "sortOrder": "Order",
+        "isActive": "Offered"
+      }
+    },
+    "users": {
+      "title": "Staff accounts",
+      "add": "Add a staff account",
+      "empty": "No staff accounts match.",
+      "none": "—",
+      "fields": {
+        "fullName": "Name",
+        "email": "Email",
+        "password": "Password",
+        "status": "Status",
+        "roles": "Roles",
+        "lastLoginAt": "Last sign-in"
+      },
+      "hints": {
+        "password": "At least 12 characters; they can change it after signing in.",
+        "roles": "What they may see and do."
+      },
+      "roles": {
+        "SUPER_ADMIN": "Super admin",
+        "ADMIN": "Admin",
+        "CONTENT_MANAGER": "Content",
+        "INVENTORY_MANAGER": "Inventory",
+        "ORDER_MANAGER": "Orders",
+        "ACCOUNTANT": "Accounts",
+        "STORE_STAFF": "Counter"
+      },
+      "statuses": {
+        "ACTIVE": "Active",
+        "DISABLED": "Switched off"
+      }
     }
   },
   "catalogue": {
@@ -468,5 +642,45 @@
       "units": "Units",
       "sources": "Sources"
     }
+  },
+  "contentSection": {
+    "title": "Content",
+    "tabs": {
+      "faqs": "Questions",
+      "stories": "Stories"
+    }
+  },
+  "marketing": {
+    "title": "Pandits and offers",
+    "tabs": {
+      "pandits": "Pandits"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "taxClasses": "Tax",
+      "deliveryZones": "Delivery areas",
+      "deliverySlots": "Delivery times"
+    }
+  },
+  "staffSection": {
+    "title": "Staff",
+    "tabs": {
+      "users": "Staff accounts"
+    }
+  },
+  "actions": {
+    "newRate": "New rate",
+    "newRateFor": "New rate for {name}",
+    "newRateNote": "The rate applies to sales from the date on; earlier bills keep theirs.",
+    "schedule": "Schedule",
+    "scheduled": "Rate scheduled",
+    "unlock": "Unlock sign-in",
+    "unlocked": "Sign-in unlocked",
+    "resetPassword": "Reset password",
+    "resetPasswordFor": "New password for {name}",
+    "resetPasswordNote": "They are signed out everywhere and sign in with this password.",
+    "passwordReset": "Password reset"
   }
 }
