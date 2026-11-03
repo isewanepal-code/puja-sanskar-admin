@@ -5,7 +5,15 @@ import { can, type Permission } from './permissions';
 
 export type NavSection = {
   key:
-    'dashboard' | 'orders' | 'pujas' | 'catalogue' | 'content' | 'marketing' | 'settings' | 'staff';
+    | 'dashboard'
+    | 'orders'
+    | 'customers'
+    | 'pujas'
+    | 'catalogue'
+    | 'content'
+    | 'marketing'
+    | 'settings'
+    | 'staff';
   href: string;
   icon: IconName;
   // Shown only to staff who hold it; the API refuses the rest anyway.
@@ -27,6 +35,7 @@ export const navigation: NavGroup[] = [
     key: 'sales',
     sections: [
       { key: 'orders', href: routes.orders(), icon: 'box', permission: 'orders:read' },
+      { key: 'customers', href: routes.customers(), icon: 'user', permission: 'customers:read' },
       {
         key: 'marketing',
         href: routes.pandits(),

@@ -38,6 +38,12 @@ export const routes = {
   homeSections: () => '/content/home-rows',
   reviews: () => '/content/reviews',
 
+  customers: () => '/customers',
+  carts: () => '/customers/carts',
+  listPhotos: () => '/customers/lists',
+  messages: () => '/customers/messages',
+  reminders: () => '/customers/reminders',
+
   pandits: () => '/marketing',
   discounts: () => '/marketing/discounts',
 

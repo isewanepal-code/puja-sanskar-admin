@@ -20,6 +20,14 @@ import {
   reviewsResource,
   storiesResource,
 } from '@/features/content';
+import {
+  cartActivityResource,
+  cartsResource,
+  customersResource,
+  listRequestsResource,
+  messagesResource,
+  remindersResource,
+} from '@/features/customers';
 import { kitFromPujaResource, kitItemsResource, kitsResource } from '@/features/kits';
 import { mantrasResource } from '@/features/mantras';
 import { discountsResource, panditsResource } from '@/features/marketing';
@@ -111,6 +119,12 @@ const RESOURCES: Resource<never>[] = [
   billsResource((key) => key),
   businessProfileResource,
   shopSettingsResource((key) => key),
+  customersResource('NEWEST', (key) => key),
+  cartsResource((key) => key),
+  cartActivityResource('c', (key) => key),
+  listRequestsResource((key) => key),
+  messagesResource((key) => key),
+  remindersResource,
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>

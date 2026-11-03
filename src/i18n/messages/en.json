@@ -73,7 +73,8 @@
       "content": "Content",
       "marketing": "Pandits and offers",
       "settings": "Settings",
-      "staff": "Staff"
+      "staff": "Staff",
+      "customers": "Customers"
     },
     "changePassword": "Change password",
     "groups": {
@@ -1351,6 +1352,129 @@
         "QUOTE": "Staff quote the fee",
         "REFUSE": "Checkout refuses it"
       }
+    },
+    "customers": {
+      "title": "Customers",
+      "add": "—",
+      "empty": "No customers match.",
+      "none": "—",
+      "fields": {
+        "fullName": "Name",
+        "phone": "Phone",
+        "orderCount": "Orders",
+        "paidTotal": "Paid",
+        "dueTotal": "Due",
+        "lastOrderAt": "Last order",
+        "status": "Account"
+      },
+      "sorts": {
+        "NEWEST": "Newest first",
+        "NAME": "By name",
+        "TOP_PAYING": "Paid most",
+        "RECENT_ORDER": "Ordered lately"
+      },
+      "statuses": {
+        "ACTIVE": "Active",
+        "DISABLED": "Switched off"
+      }
+    },
+    "carts": {
+      "title": "Carts",
+      "add": "—",
+      "empty": "No carts.",
+      "none": "—",
+      "guest": "Guest",
+      "fields": {
+        "members": "Whose",
+        "status": "Status",
+        "itemCount": "Items",
+        "subtotal": "Subtotal",
+        "isShared": "Shared",
+        "updatedAt": "Updated"
+      },
+      "statuses": {
+        "OPEN": "Open",
+        "CHECKED_OUT": "Checked out",
+        "MERGED": "Merged"
+      }
+    },
+    "cartActivity": {
+      "title": "Activity",
+      "add": "—",
+      "empty": "Nothing happened yet.",
+      "none": "—",
+      "fields": {
+        "createdAt": "When",
+        "type": "What",
+        "quantity": "Quantity"
+      },
+      "kinds": {
+        "ITEM_ADDED": "Added",
+        "ITEM_UPDATED": "Changed",
+        "ITEM_REMOVED": "Removed",
+        "PUJA_ITEMS_ADDED": "A puja's list added",
+        "KIT_ITEMS_ADDED": "A kit added",
+        "KIT_CHANGED": "Kit changed",
+        "KIT_REMOVED": "Kit removed",
+        "GUEST_CART_MERGED": "Guest cart merged",
+        "SHARE_LINK_CREATED": "Shared",
+        "SHARE_LINK_REVOKED": "Sharing stopped",
+        "MEMBER_JOINED": "Someone joined",
+        "MEMBER_LEFT": "Someone left",
+        "MEMBER_REMOVED": "Someone removed"
+      }
+    },
+    "listRequests": {
+      "title": "List photos",
+      "add": "—",
+      "empty": "No list photos yet.",
+      "none": "—",
+      "fields": {
+        "photos": "Photo",
+        "number": "List",
+        "name": "From",
+        "puja": "Puja",
+        "status": "Status",
+        "total": "Total",
+        "createdAt": "Sent",
+        "staffNote": "Staff note",
+        "assignToMe": "Take it on myself"
+      },
+      "statuses": {
+        "RECEIVED": "New",
+        "IN_PROGRESS": "Being read",
+        "READY": "Ready",
+        "ORDERED": "Ordered",
+        "CLOSED": "Closed"
+      }
+    },
+    "contactMessages": {
+      "title": "Messages",
+      "add": "—",
+      "empty": "No messages.",
+      "none": "—",
+      "fields": {
+        "createdAt": "Sent",
+        "name": "From",
+        "message": "Message",
+        "status": "Status",
+        "staffNote": "Staff note"
+      },
+      "statuses": {
+        "NEW": "New",
+        "HANDLED": "Handled"
+      }
+    },
+    "reminders": {
+      "title": "Reminders",
+      "add": "—",
+      "empty": "Nobody has asked for reminders yet.",
+      "none": "—",
+      "fields": {
+        "phone": "Phone",
+        "language": "Language",
+        "createdAt": "Signed up"
+      }
     }
   },
   "catalogue": {
@@ -1564,5 +1688,44 @@
     "sell": "Record sale",
     "sold": "Sale {number} recorded",
     "afterNote": "The sale opens as an order, where payment is taken and the bill issued."
+  },
+  "customersSection": {
+    "title": "Customers",
+    "tabs": {
+      "customers": "Customers",
+      "carts": "Carts",
+      "lists": "List photos",
+      "messages": "Messages",
+      "reminders": "Reminders"
+    }
+  },
+  "customerActions": {
+    "sort": "Order by",
+    "details": "Details",
+    "summary": "{orders, plural, one {# order} other {# orders}} · paid {paid} · due {due}",
+    "addresses": "Saved addresses",
+    "noAddresses": "No saved addresses.",
+    "loading": "Loading...",
+    "cart": "Cart",
+    "cartTitle": "Cart · {total}",
+    "export": "Download as CSV"
+  },
+  "listPhotos": {
+    "fill": "Fill the list",
+    "fillTitle": "List {number}",
+    "fillNote": "Read the photos and write each line: what the customer wrote, the pack we sell for it, and how many. Leave the pack empty for something we do not sell.",
+    "openPhoto": "Open the photo full size",
+    "photo": "Photo {n}",
+    "written": "Written",
+    "pack": "Our pack",
+    "quantity": "Qty",
+    "note": "Note",
+    "notSold": "Not sold here",
+    "remove": "Remove",
+    "addRow": "Add a line",
+    "ready": "Mark ready and share",
+    "readyTitle": "The list is ready",
+    "copyLink": "Copy link",
+    "copied": "Link copied"
   }
 }
