@@ -9,6 +9,7 @@ import { Icon } from '@/components/icons';
 import { routes } from '@/lib/routes';
 
 import { ChangePasswordModal } from './change-password-modal';
+import { usePanel } from './panel-shell';
 
 type HeaderBarProps = {
   staff: { fullName: string; email: string; roles: string[] };
@@ -29,6 +30,7 @@ export function HeaderBar({ staff }: HeaderBarProps) {
   const t = useTranslations('panel');
   const router = useRouter();
   const [changing, setChanging] = useState(false);
+  const panel = usePanel();
 
   async function signOut() {
     await fetch('/api/auth/logout', { method: 'POST' }).catch(() => undefined);
@@ -37,7 +39,16 @@ export function HeaderBar({ staff }: HeaderBarProps) {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center justify-end border-b border-border bg-background/90 px-4 backdrop-blur md:px-8">
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-card px-4 shadow-[0_1px_2px_rgb(0_0_0/0.04),0_4px_12px_-4px_rgb(0_0_0/0.08)] md:px-6">
+      <button
+        type="button"
+        onClick={panel.toggle}
+        aria-label={panel.collapsed ? t('showMenu') : t('hideMenu')}
+        title={panel.collapsed ? t('showMenu') : t('hideMenu')}
+        className="grid size-9 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      >
+        <Icon name="sidebar" size={18} />
+      </button>
       <Menu.Root>
         <Menu.Trigger className="flex items-center gap-2.5 rounded-md py-1 pr-2 pl-1 text-sm hover:bg-muted">
           <span className="grid size-8 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">

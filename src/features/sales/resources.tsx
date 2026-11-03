@@ -90,6 +90,7 @@ export function ordersResource(filter: OrderFilter, name: Name): Resource<Order>
         key: 'status',
         cell: (row) => <OrderStatusBadge status={row.status} />,
         sortValue: (row) => ORDER_STATUSES.indexOf(row.status),
+        filterValue: (row) => row.status.replaceAll('_', ' '),
       },
       {
         key: 'total',

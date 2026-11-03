@@ -84,7 +84,10 @@
       "catalogue": "Pujas and samagri",
       "site": "Website",
       "admin": "Administration"
-    }
+    },
+    "showMenu": "Show the menu",
+    "hideMenu": "Hide the menu",
+    "closeMenu": "Close the menu"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -210,7 +213,16 @@
     "next": "Next",
     "page": "Page {page} of {total}",
     "on": "On",
-    "off": "Off"
+    "off": "Off",
+    "searchColumn": "Search {column}",
+    "filter": "Filter...",
+    "any": "Any",
+    "yes": "Yes",
+    "no": "No",
+    "noMatch": "No rows match these column searches.",
+    "showing": "{from}–{to} of {total}",
+    "perPage": "Rows per page",
+    "pages": "Pages"
   },
   "password": {
     "title": "Change password",

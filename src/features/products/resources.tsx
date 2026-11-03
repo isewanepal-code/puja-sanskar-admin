@@ -53,9 +53,10 @@ export const productsResource: Resource<Product> = {
   path: '/admin/products',
   exportPath: '/admin/products/export',
   list: 'paged',
+  // Newest first, as the shop adds them; a heading still sorts the page.
+  listQuery: { sort: 'NEWEST' },
   rowId: (row) => row.id,
   rowLabel: (row) => `${row.code} · ${row.nameNe}`,
-  initialSort: { key: 'code', direction: 'asc' },
   modalSize: 'lg',
   bulk: ['code', 'materialId', 'nameNe', 'nameEn'],
   formRow: (row) => ({ ...row, materialId: row.material.id }),

@@ -263,6 +263,12 @@ const PATHS = {
       <path d="M4 16v4h16v-4" />
     </>
   ),
+  sidebar: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M9 4v16" />
+    </>
+  ),
   play: (
     <>
       <path d="M7 4v16l13-8Z" />

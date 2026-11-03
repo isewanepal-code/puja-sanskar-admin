@@ -9,6 +9,7 @@ import { Button, IconButton } from '@/components/ui/button';
 import { DataTable, type Column } from '@/components/ui/data-table';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
+import { PAGE_SIZES, Pagination } from '@/components/ui/pagination';
 import { isApiError, request } from '@/lib/api';
 
 import { BulkGrid } from './bulk-grid';
@@ -40,6 +41,7 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
   const [search, setSearch] = useState('');
   const query = useDeferredValue(search.trim());
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[1]);
   const [editing, setEditing] = useState<T | 'new' | null>(null);
   const [removing, setRemoving] = useState<T | null>(null);
   const [saving, setSaving] = useState(false);
@@ -50,7 +52,7 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
       resource.scope ?? resource.key,
       resource.path,
       resource.listQuery ?? {},
-      resource.list === 'paged' ? { q: query, page } : 'all',
+      resource.list === 'paged' ? { q: query, page, pageSize } : 'all',
     ],
     queryFn: async (): Promise<Page<T>> => {
       if (resource.list === 'all') {
@@ -64,7 +66,7 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
           ...resource.listQuery,
           ...(resource.searchable !== false && { q: query }),
           page,
-          limit: 50,
+          limit: pageSize,
         },
       });
     },
@@ -169,28 +171,18 @@ export function ResourceScreen<T>({ resource, rowActions, toolbar }: ResourceScr
         )}
       />
 
-      {meta && meta.totalPages > 1 ? (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setPage(page - 1)}
-          >
-            {tt('previous')}
-          </Button>
-          <span className="text-muted-foreground">
-            {tt('page', { page, total: meta.totalPages })}
-          </span>
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page >= meta.totalPages}
-            onClick={() => setPage(page + 1)}
-          >
-            {tt('next')}
-          </Button>
-        </div>
+      {meta && resource.list === 'paged' && meta.total > 0 ? (
+        <Pagination
+          page={page}
+          totalPages={meta.totalPages}
+          total={meta.total}
+          pageSize={pageSize}
+          onPage={setPage}
+          onPageSize={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+        />
       ) : null}
 
       <Modal

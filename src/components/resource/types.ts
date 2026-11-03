@@ -58,6 +58,8 @@ export type Cell<T> = {
   key: string;
   cell: (row: T) => ReactNode;
   sortValue?: (row: T) => string | number | boolean | null | undefined;
+  // What the column's search box matches; the sort value unless given, null for no box.
+  filterValue?: ((row: T) => string | null | undefined) | null;
   align?: 'left' | 'right';
   className?: string;
 };
