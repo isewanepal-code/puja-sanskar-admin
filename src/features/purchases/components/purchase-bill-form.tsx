@@ -1,9 +1,10 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
 import { Icon } from '@/components/icons';
 import { useToast } from '@/components/overlays';
@@ -11,11 +12,11 @@ import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { Button, IconButton } from '@/components/ui/button';
 import { Input, Select } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
-import { packChoices } from '@/features/products';
 import { isApiError, request } from '@/lib/api';
+import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 
-import { supplierChoices, type PurchaseBill } from '../resources';
+import type { PurchaseBill } from '../resources';
 
 type Line = { variantId: string; quantity: string; unitCost: string; vatRate: string };
 
@@ -50,15 +51,14 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
       vatRate: String(Number(l.vatRate)),
     })) ?? [emptyLine()],
   );
-  const suppliers = useQuery({
-    queryKey: ['options', supplierChoices.key],
-    queryFn: supplierChoices.load,
-  });
-  const packs = useQuery({
-    queryKey: ['options', packChoices.key],
-    queryFn: packChoices.load,
-    staleTime: 5 * 60 * 1000,
-  });
+
+  // The bill names its packs, so a draft opens without looking them up.
+  const packNames = (bill?.lines ?? []).map((l) => ({
+    value: l.variantId,
+    label: l.packName,
+    detail: l.sku,
+  }));
+  const supplierName = bill ? [{ value: bill.supplierId, label: bill.supplierName }] : undefined;
 
   const change = (index: number, patch: Partial<Line>) =>
     setLines((current) => current.map((l, i) => (i === index ? { ...l, ...patch } : l)));
@@ -122,18 +122,14 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
       <div className="grid gap-5">
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label={t('supplier')} htmlFor="bill-supplier">
-            <Select
+            <SearchSelect
               id="bill-supplier"
+              source={choices.suppliers}
+              known={supplierName}
+              required
               value={supplierId}
-              onChange={(e) => setSupplierId(e.target.value)}
-            >
-              <option value="">—</option>
-              {(suppliers.data ?? []).map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </Select>
+              onChange={(value) => setSupplierId(String(value))}
+            />
           </Field>
           <Field label={t('billNumber')} htmlFor="bill-number">
             <Input
@@ -174,18 +170,14 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
               {lines.map((line, index) => (
                 <tr key={index} className="border-t border-border">
                   <td className="border-r border-border p-1.5">
-                    <Select
+                    <SearchSelect
                       aria-label={t('pack')}
+                      source={choices.packs}
+                      known={packNames}
+                      required
                       value={line.variantId}
-                      onChange={(e) => change(index, { variantId: e.target.value })}
-                    >
-                      <option value="">—</option>
-                      {(packs.data ?? []).map((o) => (
-                        <option key={o.value} value={o.value}>
-                          {o.label}
-                        </option>
-                      ))}
-                    </Select>
+                      onChange={(value) => change(index, { variantId: String(value) })}
+                    />
                   </td>
                   <td className="border-r border-border p-1.5">
                     <Input

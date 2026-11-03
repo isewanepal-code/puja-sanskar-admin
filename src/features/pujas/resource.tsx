@@ -1,6 +1,7 @@
-import { ActiveBadge, type Resource } from '@/components/resource';
-import { mantraChoices } from '@/features/mantras';
+import { PathText } from '@/components/display';
+import { activeColumn, recordColumn, type Resource } from '@/components/resource';
 import { groupChoices } from '@/features/puja-groups';
+import { choices } from '@/lib/choices';
 
 import { PUJA_KINDS, type Puja } from './types';
 
@@ -19,41 +20,23 @@ export function pujasResource(
     list: 'paged',
     rowId: (row) => row.id,
     rowLabel: (row) => `[${row.code}] ${row.nameNe}`,
-    initialSort: { key: 'code', direction: 'asc' },
+    initialSort: { key: 'nameNe', direction: 'asc' },
     modalSize: 'lg',
     bulk: ['code', 'nameNe', 'nameEn', 'type', 'groupId'],
     columns: [
-      {
-        key: 'code',
-        cell: (row) => <span className="font-semibold">{row.code}</span>,
-        sortValue: (row) => row.code,
-      },
-      {
-        key: 'nameNe',
-        cell: (row) => (
-          <>
-            <div>{row.nameNe}</div>
-            <div className="text-xs text-muted-foreground">{row.nameEn}</div>
-          </>
-        ),
-        sortValue: (row) => row.nameNe,
-      },
+      recordColumn<Puja>('nameNe', { code: (row) => row.code }),
       {
         key: 'groupId',
         cell: (row) =>
           row.groupId ? (
-            (groupName(row.groupId) ?? '—')
+            <PathText path={groupName(row.groupId) ?? '—'} />
           ) : (
             <span className="text-muted-foreground">—</span>
           ),
         sortValue: (row) => (row.groupId ? groupName(row.groupId) : null),
       },
       { key: 'type', cell: (row) => kindName(row.type), sortValue: (row) => kindName(row.type) },
-      {
-        key: 'isActive',
-        cell: (row) => <ActiveBadge on={row.isActive} />,
-        sortValue: (row) => row.isActive,
-      },
+      activeColumn(),
     ],
     fields: [
       { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
@@ -65,7 +48,7 @@ export function pujasResource(
         options: kindChoices(kindName),
         defaultValue: 'PUJA',
       },
-      { name: 'mantraId', kind: 'select', optionsFrom: mantraChoices },
+      { name: 'mantraId', kind: 'select', optionsFrom: choices.mantras },
       { name: 'nameNe', kind: 'text', required: true, max: 160, section: 'names' },
       { name: 'nameEn', kind: 'text', required: true, max: 160 },
       { name: 'nameRomanized', kind: 'text', max: 160 },

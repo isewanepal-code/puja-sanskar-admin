@@ -1,28 +1,15 @@
-import { ActiveBadge, type Option, type Resource } from '@/components/resource';
-import { Thumb } from '@/components/media-library/thumb';
+import { activeColumn, recordColumn, type Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
+import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
-import { packChoices } from '@/features/products';
 
 export type Kit = Schema<'AdminKitResponse'>;
 type Line = Schema<'AdminKitLineResponse'>;
-type Puja = Schema<'AdminPujaResponse'>;
-type Page<T> = { items: T[] };
 type Name = (key: string) => string;
 
 const TIERS = ['BASIC', 'STANDARD', 'PREMIUM'] as const;
 const money = (amount: string | null | undefined) => (amount ? formatMoney(amount, 'en') : '—');
-
-export const pujaChoices = {
-  key: 'pujas',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Puja>>('GET', '/admin/pujas', { query: { limit: 100 } })).items.map(
-      (puja) => ({ value: puja.id, label: `${puja.code} · ${puja.nameNe}` }),
-    ),
-};
-
-// Every pack on sale, as "SKU · product · pack".
 
 const tierChoices = (name: Name) =>
   TIERS.map((tier) => ({ value: tier, label: name(`tiers.${tier}`) }));
@@ -38,30 +25,11 @@ export function kitsResource(name: Name): Resource<Kit> {
     modalSize: 'lg',
     formRow: (row) => ({ ...row, pujaId: row.puja?.id }),
     columns: [
-      {
-        key: 'images',
-        cell: (row) =>
-          row.images[0] ? (
-            <Thumb src={row.images[0].url} size={40} className="size-10" />
-          ) : (
-            <span className="block size-10 rounded-md bg-muted" />
-          ),
-      },
-      {
-        key: 'code',
-        cell: (row) => <span className="font-semibold">{row.code}</span>,
-        sortValue: (row) => row.code,
-      },
-      {
-        key: 'nameNe',
-        cell: (row) => (
-          <>
-            <div>{row.nameNe}</div>
-            <div className="text-xs text-muted-foreground">{row.puja?.nameNe ?? row.nameEn}</div>
-          </>
-        ),
-        sortValue: (row) => row.nameNe,
-      },
+      recordColumn<Kit>('item', {
+        image: (row) => row.images[0]?.url,
+        code: (row) => row.code,
+        also: (row) => row.puja?.nameNe ?? row.nameEn,
+      }),
       {
         key: 'tier',
         cell: (row) => (row.tier ? name(`tiers.${row.tier}`) : '—'),
@@ -95,15 +63,11 @@ export function kitsResource(name: Name): Resource<Kit> {
         ),
         sortValue: (row) => row.isAvailable,
       },
-      {
-        key: 'isActive',
-        cell: (row) => <ActiveBadge on={row.isActive} />,
-        sortValue: (row) => row.isActive,
-      },
+      activeColumn(),
     ],
     fields: [
       { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
-      { name: 'pujaId', kind: 'select', optionsFrom: pujaChoices },
+      { name: 'pujaId', kind: 'select', optionsFrom: choices.pujas },
       { name: 'nameNe', kind: 'text', required: true, max: 160 },
       { name: 'nameEn', kind: 'text', required: true, max: 160 },
       { name: 'nameRomanized', kind: 'text', max: 160 },
@@ -131,7 +95,7 @@ export function kitFromPujaResource(name: Name): Resource<never> {
     rowLabel: () => '',
     columns: [],
     fields: [
-      { name: 'pujaId', kind: 'select', required: true, optionsFrom: pujaChoices, wide: true },
+      { name: 'pujaId', kind: 'select', required: true, optionsFrom: choices.pujas, wide: true },
       { name: 'code', kind: 'code', required: true, max: 32 },
       { name: 'tier', kind: 'select', options: tierChoices(name) },
       { name: 'nameNe', kind: 'text', required: true, max: 160 },
@@ -195,7 +159,7 @@ export function kitItemsResource(kitId: string): Resource<Line> {
         kind: 'select',
         required: true,
         createOnly: true,
-        optionsFrom: packChoices,
+        optionsFrom: choices.packs,
         wide: true,
       },
       {

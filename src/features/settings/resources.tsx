@@ -1,4 +1,4 @@
-import { ActiveBadge, type Resource } from '@/components/resource';
+import { activeColumn, type Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { formatMoney } from '@/lib/format';
 import type { Schema } from '@/lib/api';
@@ -13,12 +13,6 @@ type Name = (key: string) => string;
 const TAX_KINDS = ['STANDARD', 'ZERO_RATED', 'EXEMPT'] as const;
 
 const money = (amount: string | null | undefined) => (amount ? formatMoney(amount, 'en') : '—');
-
-const active = <T extends { isActive: boolean }>() => ({
-  key: 'isActive',
-  cell: (row: T) => <ActiveBadge on={row.isActive} />,
-  sortValue: (row: T) => row.isActive,
-});
 
 export function taxClassesResource(name: Name): Resource<TaxClass> {
   return {
@@ -49,7 +43,7 @@ export function taxClassesResource(name: Name): Resource<TaxClass> {
         sortValue: (row) => row.rates.length,
         align: 'right',
       },
-      active<TaxClass>(),
+      activeColumn<TaxClass>(),
     ],
     fields: [
       { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
@@ -145,7 +139,7 @@ export const deliveryZonesResource: Resource<Zone> = {
       sortValue: (row) => row.areas.length,
     },
     { key: 'sortOrder', cell: (row) => row.sortOrder, sortValue: (row) => row.sortOrder },
-    active<Zone>(),
+    activeColumn<Zone>(),
   ],
   fields: [
     { name: 'name', kind: 'text', required: true, max: 80, wide: true },
@@ -182,7 +176,7 @@ export const deliverySlotsResource: Resource<Slot> = {
     { key: 'startsAt', cell: (row) => row.startsAt, sortValue: (row) => row.startsAt },
     { key: 'endsAt', cell: (row) => row.endsAt, sortValue: (row) => row.endsAt },
     { key: 'sortOrder', cell: (row) => row.sortOrder, sortValue: (row) => row.sortOrder },
-    active<Slot>(),
+    activeColumn<Slot>(),
   ],
   fields: [
     { name: 'nameNe', kind: 'text', required: true, max: 80 },

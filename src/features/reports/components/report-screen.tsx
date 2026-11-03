@@ -9,10 +9,12 @@ import { Button } from '@/components/ui/button';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { DataTable, type Column } from '@/components/ui/data-table';
 import { Input, Select } from '@/components/ui/input';
+import { Pagination } from '@/components/ui/pagination';
 import { download, isApiError, request } from '@/lib/api';
 
 export type Filter = 'range' | 'fiscalYear' | 'kind' | 'search';
 type Query = Record<string, string | undefined>;
+type PageMeta = { page: number; totalPages: number; total: number };
 
 type ReportScreenProps<D, R> = {
   path: string;
@@ -56,11 +58,15 @@ export function ReportScreen<D, R>({
     ),
   );
 
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
   const report = useQuery({
-    queryKey: ['reports', path, asked],
-    queryFn: () => request<D>('GET', path, { query: { ...asked, ...(paged && { limit: 100 }) } }),
+    queryKey: ['reports', path, asked, paged ? { page, pageSize } : 'all'],
+    queryFn: () =>
+      request<D>('GET', path, { query: { ...asked, ...(paged && { page, limit: pageSize }) } }),
     placeholderData: keepPreviousData,
   });
+  const meta = paged ? (report.data as { meta?: PageMeta } | undefined)?.meta : undefined;
   const exportFile = useMutation({
     mutationFn: () => download(`${path}/export`, asked),
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
@@ -73,6 +79,7 @@ export function ReportScreen<D, R>({
         onSubmit={(event) => {
           event.preventDefault();
           setQuery(draft);
+          setPage(1);
         }}
       >
         {filters.includes('range') ? (
@@ -162,6 +169,19 @@ export function ReportScreen<D, R>({
         initialSort={initialSort}
         empty={t('empty')}
       />
+      {meta && meta.total > 0 ? (
+        <Pagination
+          page={page}
+          totalPages={meta.totalPages}
+          total={meta.total}
+          pageSize={pageSize}
+          onPage={setPage}
+          onPageSize={(size) => {
+            setPageSize(size);
+            setPage(1);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

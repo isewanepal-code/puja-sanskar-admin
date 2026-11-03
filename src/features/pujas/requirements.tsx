@@ -1,12 +1,9 @@
-import type { Option, Resource } from '@/components/resource';
+import type { Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
-import { request, type Schema } from '@/lib/api';
+import { type Schema } from '@/lib/api';
+import { choices } from '@/lib/choices';
 
 type Requirement = Schema<'AdminRequirementResponse'>;
-type Material = Schema<'AdminMaterialResponse'>;
-type Unit = Schema<'UnitResponse'>;
-type Source = Schema<'SourceResponse'>;
-type Page<T> = { items: T[] };
 type Name = (key: string) => string;
 
 const QUANTITY_TYPES = ['EXACT', 'APPROXIMATE', 'AS_OFFERED', 'AS_RITUAL'] as const;
@@ -19,30 +16,6 @@ const TONE = {
   REVIEWED: 'warning',
   VERIFIED: 'success',
 } as const;
-
-const materialChoices = {
-  key: 'materials-all',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Material>>('GET', '/admin/materials', { query: { limit: 100 } })).items.map(
-      (material) => ({ value: material.id, label: `${material.code} · ${material.nameNe}` }),
-    ),
-};
-
-const unitChoices = {
-  key: 'units',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Unit>>('GET', '/admin/units', { query: { limit: 100 } })).items.map(
-      (unit) => ({ value: unit.id, label: `${unit.symbol} · ${unit.nameNe}` }),
-    ),
-};
-
-const sourceChoices = {
-  key: 'sources',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Source>>('GET', '/admin/sources', { query: { limit: 100 } })).items.map(
-      (source) => ({ value: source.id, label: `${source.code} · ${source.name}` }),
-    ),
-};
 
 const amount = (row: Requirement, name: Name) =>
   row.quantity.value !== null && row.quantity.value !== undefined
@@ -132,7 +105,7 @@ export function requirementsResource(pujaId: string, name: Name): Resource<Requi
         kind: 'select',
         required: true,
         createOnly: true,
-        optionsFrom: materialChoices,
+        optionsFrom: choices.materials,
         wide: true,
       },
       {
@@ -157,10 +130,10 @@ export function requirementsResource(pujaId: string, name: Name): Resource<Requi
         kind: 'number',
         pattern: { regex: /^\d+(\.\d{1,3})?$/, message: 'An amount such as 10 or 0.5' },
       },
-      { name: 'unitId', kind: 'select', optionsFrom: unitChoices },
+      { name: 'unitId', kind: 'select', optionsFrom: choices.units },
       { name: 'specification', kind: 'text', max: 500, wide: true },
       { name: 'notes', kind: 'textarea', max: 1000 },
-      { name: 'sourceId', kind: 'select', optionsFrom: sourceChoices, wide: true },
+      { name: 'sourceId', kind: 'select', optionsFrom: choices.sources, wide: true },
     ],
   };
 }
@@ -183,7 +156,7 @@ export function verifyResource(pujaId: string, row: Requirement, name: Name): Re
         options: STATUSES.map((status) => ({ value: status, label: name(`statuses.${status}`) })),
         defaultValue: 'REVIEWED',
       },
-      { name: 'sourceId', kind: 'select', optionsFrom: sourceChoices },
+      { name: 'sourceId', kind: 'select', optionsFrom: choices.sources },
     ],
   };
 }

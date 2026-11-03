@@ -14,6 +14,7 @@ import { isApiError, request } from '@/lib/api';
 
 import { BulkGrid } from './bulk-grid';
 import { ExportButton } from './export-button';
+import { InlineToggle } from './inline-toggle';
 import { ConfirmDelete } from './confirm-delete';
 import { ResourceForm } from './resource-form';
 import { useResourceText } from './translate';
@@ -95,14 +96,36 @@ export function ResourceScreen<T>({
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
 
-  const columns: Column<T>[] = resource.columns.map((column) => ({
-    ...column,
-    header: t(`fields.${column.key}`),
-  }));
-
   const meta = list.data?.meta;
   const canCreate = resource.canCreate !== false;
   const canEdit = resource.canEdit !== false;
+
+  // A column showing an on/off field of the form becomes a switch staff flip in the list.
+  const switches = new Set(
+    resource.fields
+      .filter((field) => field.kind === 'switch' && !field.createOnly)
+      .map((f) => f.name),
+  );
+  const columns: Column<T>[] = resource.columns.map((column) => {
+    const header = t(`fields.${column.key}`);
+    if (!canEdit || resource.singleton || !switches.has(column.key) || !column.sortValue) {
+      return { ...column, header };
+    }
+    const on = column.sortValue;
+    return {
+      ...column,
+      header,
+      cell: (row: T) => (
+        <InlineToggle
+          path={`${resource.path}/${resource.rowId(row)}`}
+          field={column.key}
+          on={on(row) === true}
+          label={`${header}: ${resource.rowLabel(row)}`}
+          scope={resource.scope ?? resource.key}
+        />
+      ),
+    };
+  });
 
   return (
     <div className="grid gap-4">

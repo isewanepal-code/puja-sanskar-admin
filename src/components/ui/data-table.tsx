@@ -31,6 +31,8 @@ type DataTableProps<T> = {
   initialSort?: { key: string; direction: 'asc' | 'desc' };
   // A search box under each heading that narrows the rows shown.
   columnSearch?: boolean;
+  // Keeps the first column in view while the table scrolls sideways (on by default).
+  pinFirst?: boolean;
 };
 
 const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
@@ -64,6 +66,7 @@ export function DataTable<T>({
   empty,
   initialSort,
   columnSearch = true,
+  pinFirst = true,
 }: DataTableProps<T>) {
   const t = useTranslations('table');
   const [sort, setSort] = useState(initialSort);
@@ -104,11 +107,12 @@ export function DataTable<T>({
     );
 
   return (
-    <div className="overflow-x-auto rounded-md border border-border bg-card">
-      <table className="w-full border-collapse text-left text-sm">
-        <thead className="bg-muted/60">
-          <tr className="border-b border-border text-xs text-muted-foreground uppercase">
-            {columns.map((column) => {
+    // Scrolls both ways inside itself, so the heading stays on top and the first column at left.
+    <div className="max-h-[calc(100dvh-14rem)] min-h-40 overflow-auto rounded-md border border-border bg-card">
+      <table className="w-full border-separate border-spacing-0 text-left text-sm">
+        <thead className="sticky top-0 z-20">
+          <tr className="text-xs text-muted-foreground uppercase">
+            {columns.map((column, index) => {
               const active = sort?.key === column.key;
               return (
                 <th
@@ -118,8 +122,11 @@ export function DataTable<T>({
                     active ? (sort.direction === 'asc' ? 'ascending' : 'descending') : undefined
                   }
                   className={cn(
-                    'group border-r border-border px-3 py-2.5 font-semibold tracking-wide whitespace-nowrap last:border-r-0',
+                    'group border-r border-b border-border bg-muted px-3 py-2.5 font-semibold tracking-wide whitespace-nowrap last:border-r-0',
                     column.align === 'right' && 'text-right',
+                    pinFirst &&
+                      index === 0 &&
+                      'sticky left-0 z-10 shadow-[1px_0_0_var(--color-border)]',
                     column.className,
                   )}
                 >
@@ -167,7 +174,7 @@ export function DataTable<T>({
               );
             })}
             {actions ? (
-              <th className="w-px px-3 py-2.5">
+              <th className="sticky right-0 z-10 w-px border-b border-border bg-muted px-3 py-2.5 shadow-[-1px_0_0_var(--color-border)]">
                 <span className="sr-only">{t('actions')}</span>
               </th>
             ) : null}
@@ -197,17 +204,17 @@ export function DataTable<T>({
               <tr
                 key={rowKey(row)}
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
-                className={cn(
-                  'border-b border-border transition-colors last:border-0 even:bg-muted/30 hover:bg-primary/5',
-                  onRowClick && 'cursor-pointer',
-                )}
+                className={cn('data-row group/row', onRowClick && 'cursor-pointer')}
               >
-                {columns.map((column) => (
+                {columns.map((column, index) => (
                   <td
                     key={column.key}
                     className={cn(
-                      'border-r border-border px-3 py-2.5 align-middle',
+                      'border-r border-b border-border px-3 py-2.5 align-middle group-last/row:border-b-0',
                       column.align === 'right' && 'text-right',
+                      pinFirst &&
+                        index === 0 &&
+                        'pin sticky left-0 z-[5] shadow-[1px_0_0_var(--color-border)]',
                       column.className,
                     )}
                   >
@@ -216,7 +223,7 @@ export function DataTable<T>({
                 ))}
                 {actions ? (
                   <td
-                    className="px-3 py-1.5 text-right whitespace-nowrap"
+                    className="pin sticky right-0 z-[5] border-b border-border px-3 py-1.5 text-right whitespace-nowrap shadow-[-1px_0_0_var(--color-border)] group-last/row:border-b-0"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {actions(row)}

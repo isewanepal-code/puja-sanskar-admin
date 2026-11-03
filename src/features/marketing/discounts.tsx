@@ -1,12 +1,12 @@
-import { ActiveBadge, type Option, type Resource } from '@/components/resource';
+import { activeColumn, type Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
-import { request, type Schema } from '@/lib/api';
+import { type Schema } from '@/lib/api';
+import { mergedSource } from '@/lib/choices';
 import { formatDate, formatMoney } from '@/lib/format';
 
 type Discount = Schema<'DiscountRuleResponse'>;
 type Category = Schema<'AdminCategoryResponse'>;
 type Product = Schema<'AdminProductResponse'>;
-type Page<T> = { items: T[] };
 type Name = (key: string) => string;
 
 const CHANNELS = ['ACCOUNT_CHECKOUT', 'QUICK_PAY', 'COUNTER'] as const;
@@ -14,25 +14,24 @@ const SCOPES = ['ORDER', 'CATEGORIES', 'PRODUCTS'] as const;
 
 // What a discount may cover, remembered so the check can tell a category from a product.
 const targetScope = new Map<string, 'CATEGORIES' | 'PRODUCTS'>();
-const targetChoices = (name: Name) => ({
-  key: 'discount-targets',
-  load: async (): Promise<Option[]> => {
-    const [categories, products] = await Promise.all([
-      request<Page<Category>>('GET', '/admin/categories', { query: { limit: 100 } }),
-      request<Page<Product>>('GET', '/admin/products', { query: { limit: 100 } }),
-    ]);
-    return [
-      ...categories.items.map((c) => {
-        targetScope.set(c.id, 'CATEGORIES');
-        return { value: c.id, label: `${name('scopes.CATEGORIES')} · ${c.nameNe}` };
-      }),
-      ...products.items.map((p) => {
-        targetScope.set(p.id, 'PRODUCTS');
-        return { value: p.id, label: `${name('scopes.PRODUCTS')} · ${p.nameNe}` };
-      }),
-    ];
-  },
-});
+const targetChoices = (name: Name) => {
+  const list = <T extends { id: string; nameNe: string; code: string }>(
+    scope: 'CATEGORIES' | 'PRODUCTS',
+    path: string,
+  ) => ({
+    path,
+    toChoices: (row: T) => {
+      targetScope.set(row.id, scope);
+      return [
+        { value: row.id, label: row.nameNe, detail: row.code, group: name(`scopes.${scope}`) },
+      ];
+    },
+  });
+  return mergedSource('discount-targets', [
+    list<Category>('CATEGORIES', '/admin/categories'),
+    list<Product>('PRODUCTS', '/admin/products'),
+  ]);
+};
 
 const worth = (row: Discount) =>
   row.kind === 'PERCENT' ? `${Number(row.value)}%` : formatMoney(row.value, 'en');
@@ -56,7 +55,7 @@ export function discountsResource(name: Name): Resource<Discount> {
       if (scope && scope !== 'ORDER' && ids.length === 0) {
         return { field: 'scopeIds', message: name('rules.targets') };
       }
-      if (ids.some((id) => targetScope.get(id) !== scope)) {
+      if (ids.some((id) => targetScope.has(id) && targetScope.get(id) !== scope)) {
         return { field: 'scopeIds', message: name('rules.scope') };
       }
       return null;
@@ -102,11 +101,7 @@ export function discountsResource(name: Name): Resource<Discount> {
         cell: (row) => (row.isPublic ? <Badge tone="info">✓</Badge> : '—'),
         sortValue: (row) => row.isPublic,
       },
-      {
-        key: 'isActive',
-        cell: (row) => <ActiveBadge on={row.isActive} />,
-        sortValue: (row) => row.isActive,
-      },
+      activeColumn(),
     ],
     fields: [
       { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },

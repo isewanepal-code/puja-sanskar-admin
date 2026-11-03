@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { ActionModal, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
+import { ActionModal, BulkGrid, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { request } from '@/lib/api';
@@ -18,7 +18,7 @@ import {
   type Product,
 } from '../resources';
 
-type Open = { what: 'packs' | 'grades' | 'pairings'; id: string } | { what: 'new' } | null;
+type Open = { what: 'packs' | 'grades' | 'pairings'; id: string } | { what: 'new' | 'many' } | null;
 
 // The product as it is now, so grades added a moment ago reach its packs' form.
 function useProduct(id: string | undefined) {
@@ -31,6 +31,7 @@ function useProduct(id: string | undefined) {
 
 export function ProductsScreen() {
   const t = useTranslations('actions');
+  const tf = useTranslations('forms');
   const [open, setOpen] = useState<Open>(null);
   const id = open && 'id' in open ? open.id : undefined;
   const product = useProduct(id);
@@ -55,6 +56,9 @@ export function ProductsScreen() {
               description={t('uploadProductsNote')}
               refresh={['products', 'stock']}
             />
+            <Button variant="secondary" icon="list" onClick={() => setOpen({ what: 'many' })}>
+              {tf('bulkAdd')}
+            </Button>
             <Button icon="plus" onClick={() => setOpen({ what: 'new' })}>
               {t('addItem')}
             </Button>
@@ -95,6 +99,13 @@ export function ProductsScreen() {
           <ResourceScreen resource={gradesResource(product.data)} />
         ) : null}
       </Modal>
+
+      <BulkGrid
+        resource={quickItemResource}
+        open={open?.what === 'many'}
+        onOpenChange={(next) => (next ? undefined : close())}
+        description={t('addManyItemsNote')}
+      />
 
       <ActionModal
         resource={open?.what === 'new' ? quickItemResource : null}

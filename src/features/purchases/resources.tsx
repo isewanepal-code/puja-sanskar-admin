@@ -1,25 +1,17 @@
-import type { Option, Resource } from '@/components/resource';
+import type { Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { accountChoices } from '@/features/money';
-import { request, type Schema } from '@/lib/api';
+import { type Schema } from '@/lib/api';
+import { choices } from '@/lib/choices';
 import { formatDate, formatMoney } from '@/lib/format';
 
 export type Supplier = Schema<'SupplierResponse'>;
 export type PurchaseBill = Schema<'PurchaseBillResponse'>;
 export type SupplierPayment = Schema<'SupplierPaymentResponse'>;
 type Name = (key: string) => string;
-type Page<T> = { items: T[] };
 
 const money = (amount: string) => formatMoney(amount, 'en');
 const PAN = { regex: /^\d{9}$/, message: 'A PAN is 9 digits' };
-
-export const supplierChoices = {
-  key: 'suppliers',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Supplier>>('GET', '/admin/suppliers', { query: { limit: 100 } })).items
-      .filter((s) => s.isActive)
-      .map((s) => ({ value: s.id, label: `${s.code} · ${s.name}` })),
-};
 
 // Who the shop buys from, with what it owes each (2.36).
 export function suppliersResource(): Resource<Supplier> {
@@ -79,10 +71,7 @@ export function suppliersResource(): Resource<Supplier> {
 const STATUS_TONE = { DRAFT: 'warning', POSTED: 'success' } as const;
 
 // Supplier bills, drafts and posted; the form is its own screen because of its lines.
-export function purchaseBillsResource(
-  name: Name,
-  suppliers: Map<string, string>,
-): Resource<PurchaseBill> {
+export function purchaseBillsResource(name: Name): Resource<PurchaseBill> {
   return {
     key: 'purchaseBills',
     path: '/admin/purchase-bills',
@@ -102,11 +91,11 @@ export function purchaseBillsResource(
         key: 'supplierId',
         cell: (row) => (
           <>
-            <div className="font-medium">{suppliers.get(row.supplierId) ?? '—'}</div>
+            <div className="font-medium">{row.supplierName}</div>
             <div className="text-xs text-muted-foreground">{row.supplierBillNumber}</div>
           </>
         ),
-        sortValue: (row) => suppliers.get(row.supplierId) ?? '',
+        sortValue: (row) => row.supplierName,
       },
       {
         key: 'lines',
@@ -139,10 +128,7 @@ export function purchaseBillsResource(
 }
 
 // Paying suppliers out of the branch's accounts.
-export function supplierPaymentsResource(
-  name: Name,
-  suppliers: Map<string, string>,
-): Resource<SupplierPayment> {
+export function supplierPaymentsResource(name: Name): Resource<SupplierPayment> {
   return {
     key: 'supplierPayments',
     path: '/admin/supplier-payments',
@@ -151,14 +137,14 @@ export function supplierPaymentsResource(
     canDelete: false,
     searchable: false,
     rowId: (row) => row.id,
-    rowLabel: (row) => suppliers.get(row.supplierId) ?? '',
+    rowLabel: (row) => row.supplierName,
     modalSize: 'md',
     columns: [
       { key: 'day', cell: (row) => formatDate(row.day, 'en'), sortValue: (row) => row.day },
       {
         key: 'supplierId',
-        cell: (row) => suppliers.get(row.supplierId) ?? '—',
-        sortValue: (row) => suppliers.get(row.supplierId) ?? '',
+        cell: (row) => row.supplierName,
+        sortValue: (row) => row.supplierName,
       },
       { key: 'reference', cell: (row) => row.reference ?? '—' },
       {
@@ -182,7 +168,7 @@ export function supplierPaymentsResource(
       },
     ],
     fields: [
-      { name: 'supplierId', kind: 'select', required: true, optionsFrom: supplierChoices },
+      { name: 'supplierId', kind: 'select', required: true, optionsFrom: choices.suppliers },
       { name: 'accountId', kind: 'select', required: true, optionsFrom: accountChoices },
       { name: 'amount', kind: 'money', required: true },
       { name: 'day', kind: 'date' },

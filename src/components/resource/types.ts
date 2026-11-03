@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import type { Choice, ChoiceSource } from '@/lib/choices';
 import type { ModalSize } from '@/components/ui/modal';
 
 export type Option = { value: string; label: string };
@@ -44,8 +45,11 @@ export type Field = {
   // A stricter rule than the kind's own (letters-only top-level codes).
   pattern?: { regex: RegExp; message: string };
   options?: Option[];
-  // Choices that come from another endpoint, loaded once and cached under `key`.
-  optionsFrom?: { key: string; load: () => Promise<Option[]> };
+  // Choices from the API, shown in the searchable dropdown: a short list loaded once, or a
+  // long one the API searches a page at a time (pagedSource).
+  optionsFrom?: ChoiceSource;
+  // Labels of the saved values, read from the record being edited, so none is fetched.
+  known?: (row: Record<string, unknown>) => Choice[];
   // Takes the whole row of the form.
   wide?: boolean;
   // A heading the field starts, from resources.<key>.sections.<section>.

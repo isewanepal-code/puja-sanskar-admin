@@ -1,19 +1,9 @@
-import type { Option, Resource } from '@/components/resource';
-import { request, type Schema } from '@/lib/api';
+import type { Resource } from '@/components/resource';
+import { choices } from '@/lib/choices';
 
-type TaxClass = Schema<'TaxClassResponse'>;
 type Name = (key: string) => string;
 
 const PHONE = { regex: /^\+?[0-9]{7,15}$/, message: 'Digits only, such as 9801234567' };
-
-const taxClassChoices = {
-  key: 'tax-classes',
-  load: async (): Promise<Option[]> =>
-    (await request<TaxClass[]>('GET', '/admin/tax-classes')).map((tax) => ({
-      value: tax.id,
-      label: `${tax.code} · ${tax.name}`,
-    })),
-};
 
 const record = (
   key: string,
@@ -52,8 +42,8 @@ export function shopSettingsResource(name: Name): Resource<never> {
   const choose = <V extends string>(values: readonly V[], group: string) =>
     values.map((value) => ({ value, label: name(`${group}.${value}`) }));
   return record('shopSettings', '/admin/settings', 'PATCH', [
-    { name: 'defaultTaxClassId', kind: 'select', optionsFrom: taxClassChoices, section: 'tax' },
-    { name: 'deliveryTaxClassId', kind: 'select', optionsFrom: taxClassChoices },
+    { name: 'defaultTaxClassId', kind: 'select', optionsFrom: choices.taxClasses, section: 'tax' },
+    { name: 'deliveryTaxClassId', kind: 'select', optionsFrom: choices.taxClasses },
     { name: 'pricesIncludeTax', kind: 'switch' },
     {
       name: 'totalRounding',

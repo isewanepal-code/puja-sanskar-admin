@@ -1,76 +1,15 @@
-import { ActiveBadge, type Option, type Resource } from '@/components/resource';
+import { activeColumn, recordColumn, type Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
-import { request, type Schema } from '@/lib/api';
+import { type Schema } from '@/lib/api';
+import { choices, pagedSource } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
-import { Thumb } from '@/components/media-library/thumb';
 import { categoryChoices } from '@/features/catalogue';
 
 export type Product = Schema<'AdminProductResponse'>;
 type Variant = Schema<'AdminVariantResponse'>;
 type Grade = Schema<'ProductGradeResponse'>;
-type Material = Schema<'AdminMaterialResponse'>;
-type Unit = Schema<'UnitResponse'>;
-type TaxClass = Schema<'TaxClassResponse'>;
-type Page<T> = { items: T[]; meta: { totalPages: number } };
 
 const money = (amount: string | null | undefined) => (amount ? formatMoney(amount, 'en') : '—');
-
-// Sellable samagri only: a product is always one of them.
-const materialChoices = {
-  key: 'materials',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Material>>('GET', '/admin/materials', { query: { limit: 100 } })).items
-      .filter((material) => material.isSellable)
-      .map((material) => ({ value: material.id, label: `${material.code} · ${material.nameNe}` })),
-};
-
-const unitChoices = {
-  key: 'units',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Unit>>('GET', '/admin/units', { query: { limit: 100 } })).items.map(
-      (unit) => ({ value: unit.id, label: `${unit.symbol} · ${unit.nameNe}` }),
-    ),
-};
-
-const taxClassChoices = {
-  key: 'tax-classes',
-  load: async (): Promise<Option[]> =>
-    (await request<TaxClass[]>('GET', '/admin/tax-classes')).map((tax) => ({
-      value: tax.id,
-      label: `${tax.code} · ${tax.name}`,
-    })),
-};
-
-// Every pack of every product, page by page, for picking one in a form.
-export const packChoices = {
-  key: 'packs',
-  load: async (): Promise<Option[]> => {
-    const options: Option[] = [];
-    for (let page = 1; page <= 50; page++) {
-      const { items, meta } = await request<Page<Product>>('GET', '/admin/products', {
-        query: { limit: 100, page },
-      });
-      for (const product of items) {
-        for (const variant of product.variants) {
-          options.push({
-            value: variant.id,
-            label: `${variant.sku} · ${product.nameNe} · ${variant.label}`,
-          });
-        }
-      }
-      if (page >= meta.totalPages) break;
-    }
-    return options;
-  },
-};
-
-export const productChoices = {
-  key: 'products',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Product>>('GET', '/admin/products', { query: { limit: 100 } })).items.map(
-      (product) => ({ value: product.id, label: `${product.code} · ${product.nameNe}` }),
-    ),
-};
 
 const HS_CODE = { regex: /^\d{4,8}$/, message: '4 to 8 digits, such as 33074100' };
 
@@ -86,33 +25,12 @@ export const productsResource: Resource<Product> = {
   rowId: (row) => row.id,
   rowLabel: (row) => `${row.code} · ${row.nameNe}`,
   modalSize: 'lg',
-  bulk: ['code', 'materialId', 'nameNe', 'nameEn'],
   formRow: (row) => ({ ...row, materialId: row.material.id }),
   columns: [
-    {
-      key: 'images',
-      cell: (row) =>
-        row.images[0] ? (
-          <Thumb src={row.images[0].url} size={40} className="size-10" />
-        ) : (
-          <span className="block size-10 rounded-md bg-muted" />
-        ),
-    },
-    {
-      key: 'code',
-      cell: (row) => <span className="font-semibold">{row.code}</span>,
-      sortValue: (row) => row.code,
-    },
-    {
-      key: 'nameNe',
-      cell: (row) => (
-        <>
-          <div>{row.nameNe}</div>
-          <div className="text-xs text-muted-foreground">{row.material.nameNe}</div>
-        </>
-      ),
-      sortValue: (row) => row.nameNe,
-    },
+    recordColumn<Product>('item', {
+      image: (row) => row.images[0]?.url,
+      code: (row) => row.code,
+    }),
     {
       key: 'tags',
       cell: (row) =>
@@ -139,11 +57,7 @@ export const productsResource: Resource<Product> = {
       sortValue: (row) => Number(row.fromPrice ?? -1),
       align: 'right',
     },
-    {
-      key: 'isActive',
-      cell: (row) => <ActiveBadge on={row.isActive} />,
-      sortValue: (row) => row.isActive,
-    },
+    activeColumn(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
@@ -152,12 +66,12 @@ export const productsResource: Resource<Product> = {
       kind: 'select',
       required: true,
       createOnly: true,
-      optionsFrom: materialChoices,
+      optionsFrom: choices.sellableMaterials,
     },
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
     { name: 'nameRomanized', kind: 'text', max: 160 },
-    { name: 'taxClassId', kind: 'select', optionsFrom: taxClassChoices },
+    { name: 'taxClassId', kind: 'select', optionsFrom: choices.taxClasses },
     { name: 'hsCode', kind: 'text', max: 8, pattern: HS_CODE },
     { name: 'tags', kind: 'tags', wide: true },
     { name: 'images', kind: 'images', section: 'website' },
@@ -199,6 +113,22 @@ export const quickItemResource: Resource<never> = {
   key: 'quickItem',
   scope: 'products',
   path: '/admin/items',
+  // Required columns always show in "Add many"; the rest staff turn on as they need them.
+  bulk: [
+    'nameNe',
+    'nameEn',
+    'packLabel',
+    'price',
+    'categoryId',
+    'openingQuantity',
+    'openingUnitCost',
+    'hsCode',
+    'tags',
+    'materialId',
+    'compareAtPrice',
+    'code',
+    'sku',
+  ],
   list: 'all',
   rowId: () => '',
   rowLabel: () => '',
@@ -225,10 +155,10 @@ export const quickItemResource: Resource<never> = {
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
     { name: 'categoryId', kind: 'select', optionsFrom: categoryChoices },
-    { name: 'materialId', kind: 'select', optionsFrom: materialChoices },
+    { name: 'materialId', kind: 'select', optionsFrom: choices.sellableMaterials },
     { name: 'packLabel', kind: 'text', required: true, max: 80, section: 'pack' },
     { name: 'packQuantity', kind: 'number', pattern: QUANTITY },
-    { name: 'packUnitId', kind: 'select', optionsFrom: unitChoices },
+    { name: 'packUnitId', kind: 'select', optionsFrom: choices.units },
     { name: 'price', kind: 'money', required: true },
     { name: 'compareAtPrice', kind: 'money' },
     { name: 'openingQuantity', kind: 'number', section: 'stock' },
@@ -308,17 +238,13 @@ export function variantsResource(product: Product): Resource<Variant> {
         ),
         sortValue: (row) => row.inStock,
       },
-      {
-        key: 'isActive',
-        cell: (row) => <ActiveBadge on={row.isActive} />,
-        sortValue: (row) => row.isActive,
-      },
+      activeColumn(),
     ],
     fields: [
       { name: 'sku', kind: 'code', required: true, pattern: SKU },
       { name: 'label', kind: 'text', required: true, max: 80 },
       { name: 'packQuantity', kind: 'number', pattern: QUANTITY },
-      { name: 'packUnitId', kind: 'select', optionsFrom: unitChoices },
+      { name: 'packUnitId', kind: 'select', optionsFrom: choices.units },
       {
         name: 'gradeId',
         kind: 'select',
@@ -382,11 +308,14 @@ export function pairingsResource(product: Product): Resource<never> {
       {
         name: 'productIds',
         kind: 'multiselect',
-        optionsFrom: {
-          key: `products-but-${product.id}`,
-          load: async () =>
-            (await productChoices.load()).filter((option) => option.value !== product.id),
-        },
+        optionsFrom: pagedSource<Product>(`products-but-${product.id}`, {
+          path: '/admin/products',
+          toChoices: (other) =>
+            other.id === product.id
+              ? []
+              : [{ value: other.id, label: other.nameNe, detail: other.code }],
+          find: (id) => `/admin/products/${id}`,
+        }),
       },
     ],
   };

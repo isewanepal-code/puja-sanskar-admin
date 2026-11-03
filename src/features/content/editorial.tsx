@@ -1,7 +1,8 @@
-import { ActiveBadge, type Option, type Resource } from '@/components/resource';
+import { activeColumn, ActiveBadge, type Resource } from '@/components/resource';
 import { Thumb } from '@/components/media-library/thumb';
 import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
+import { choices, mergedSource } from '@/lib/choices';
 import { formatDate, formatDateTime } from '@/lib/format';
 
 type Festival = Schema<'AdminFestivalResponse'>;
@@ -10,11 +11,9 @@ type Article = Schema<'AdminArticleResponse'>;
 type Review = Schema<'AdminReviewResponse'>;
 type Banner = Schema<'AdminBannerResponse'>;
 type Section = Schema<'AdminHomeSectionResponse'>;
-type Mantra = Schema<'AdminMantraResponse'>;
 type Puja = Schema<'AdminPujaResponse'>;
 type Kit = Schema<'AdminKitResponse'>;
 type Product = Schema<'AdminProductResponse'>;
-type Page<T> = { items: T[] };
 type Name = (key: string) => string;
 
 const HTML_KIND = 'html' as const;
@@ -31,57 +30,25 @@ const named = (ne: string, en?: string | null) => (
   </>
 );
 
-const pageOf = <T,>(path: string) =>
-  request<Page<T>>('GET', path, { query: { limit: 100 } }).then((page) => page.items);
-
-const mantraChoices = {
-  key: 'mantras',
-  load: async (): Promise<Option[]> =>
-    (await pageOf<Mantra>('/admin/mantras')).map((m) => ({
-      value: m.id,
-      label: `${m.code} · ${m.nameNe}`,
-    })),
-};
-
-const pujaChoices = {
-  key: 'pujas',
-  load: async (): Promise<Option[]> =>
-    (await pageOf<Puja>('/admin/pujas')).map((p) => ({
-      value: p.id,
-      label: `${p.code} · ${p.nameNe}`,
-    })),
-};
-
-const festivalChoices = {
-  key: 'festivals',
-  load: async (): Promise<Option[]> =>
-    (await pageOf<Festival>('/admin/festivals')).map((f) => ({
-      value: f.id,
-      label: `${f.code} · ${f.nameNe}`,
-    })),
-};
-
 // What each home row may list, remembered so a row's check can tell a kit from a puja.
 const itemKind = new Map<string, (typeof SECTION_KINDS)[number]>();
-const homeItemChoices = (name: Name) => ({
-  key: 'home-items',
-  load: async (): Promise<Option[]> => {
-    const [products, kits, pujas] = await Promise.all([
-      pageOf<Product>('/admin/products'),
-      pageOf<Kit>('/admin/kits'),
-      pageOf<Puja>('/admin/pujas'),
-    ]);
-    const tag = (kind: (typeof SECTION_KINDS)[number], id: string, label: string) => {
-      itemKind.set(id, kind);
-      return { value: id, label: `${name(`kinds.${kind}`)} · ${label}` };
-    };
-    return [
-      ...products.map((p) => tag('PRODUCTS', p.id, p.nameNe)),
-      ...kits.map((k) => tag('KITS', k.id, k.nameNe)),
-      ...pujas.map((p) => tag('PUJAS', p.id, p.nameNe)),
-    ];
-  },
-});
+const homeItemChoices = (name: Name) => {
+  const list = <T extends { id: string; nameNe: string; code: string }>(
+    kind: (typeof SECTION_KINDS)[number],
+    path: string,
+  ) => ({
+    path,
+    toChoices: (row: T) => {
+      itemKind.set(row.id, kind);
+      return [{ value: row.id, label: row.nameNe, detail: row.code, group: name(`kinds.${kind}`) }];
+    },
+  });
+  return mergedSource('home-items', [
+    list<Product>('PRODUCTS', '/admin/products'),
+    list<Kit>('KITS', '/admin/kits'),
+    list<Puja>('PUJAS', '/admin/pujas'),
+  ]);
+};
 
 const schedule = [
   { name: 'sortOrder', kind: 'number' as const, section: 'schedule' },
@@ -133,15 +100,11 @@ export const festivalsResource: Resource<Festival> = {
       align: 'right',
     },
     { key: 'sortOrder', cell: (row) => row.sortOrder, sortValue: (row) => row.sortOrder },
-    {
-      key: 'isActive',
-      cell: (row) => <ActiveBadge on={row.isActive} />,
-      sortValue: (row) => row.isActive,
-    },
+    activeColumn(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
-    { name: 'mantraId', kind: 'select', optionsFrom: mantraChoices },
+    { name: 'mantraId', kind: 'select', optionsFrom: choices.mantras },
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
     { name: 'nameRomanized', kind: 'text', max: 160 },
@@ -208,7 +171,7 @@ export function festivalPujasResource(festival: Festival): Resource<never> {
     rowId: () => '',
     rowLabel: () => festival.nameNe,
     columns: [],
-    fields: [{ name: 'pujaIds', kind: 'multiselect', optionsFrom: pujaChoices }],
+    fields: [{ name: 'pujaIds', kind: 'multiselect', optionsFrom: choices.pujas }],
   };
 }
 
@@ -269,8 +232,8 @@ export function articlesResource(name: Name): Resource<Article> {
         options: ARTICLE_TYPES.map((type) => ({ value: type, label: name(`types.${type}`) })),
         defaultValue: 'GUIDE',
       },
-      { name: 'pujaId', kind: 'select', optionsFrom: pujaChoices },
-      { name: 'festivalId', kind: 'select', optionsFrom: festivalChoices },
+      { name: 'pujaId', kind: 'select', optionsFrom: choices.pujas },
+      { name: 'festivalId', kind: 'select', optionsFrom: choices.festivals },
       { name: 'titleNe', kind: 'text', max: 200 },
       { name: 'titleEn', kind: 'text', required: true, max: 200 },
       { name: 'coverImageUrl', kind: 'image', wide: true },
@@ -460,7 +423,8 @@ export function homeSectionsResource(name: Name): Resource<Section> {
     modalSize: 'lg',
     formRow: (row) => ({ ...row, ...row.schedule }),
     check: ({ kind, itemIds }) =>
-      Array.isArray(itemIds) && itemIds.some((id) => itemKind.get(String(id)) !== kind)
+      Array.isArray(itemIds) &&
+      itemIds.some((id) => itemKind.has(String(id)) && itemKind.get(String(id)) !== kind)
         ? { field: 'itemIds', message: name('rules.kind') }
         : null,
     columns: [

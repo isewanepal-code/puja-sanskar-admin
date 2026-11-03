@@ -1,21 +1,29 @@
-import { ActiveBadge, type Field, type Option, type Resource } from '@/components/resource';
+import { activeColumn, type Field, type Option, type Resource } from '@/components/resource';
 import { request, type Schema } from '@/lib/api';
+import { PATH_SEPARATOR, wholeSource, type Choice } from '@/lib/choices';
 
-import { groupOptions, type Catalogue, type GroupNode } from './tree';
+import type { Catalogue, GroupNode } from './tree';
 
 type RitualType = Schema<'AdminRitualTypeResponse'>;
 
-// The tree as one indented list, for any "which group" choice.
-export const groupChoices = {
-  key: 'puja-groups',
-  load: async (): Promise<Option[]> => {
-    const catalogue = await request<Catalogue>('GET', '/admin/puja-groups/tree');
-    return groupOptions(catalogue.groups).map((group) => ({
-      value: group.id,
-      label: `${' '.repeat(group.depth)}${group.label}`,
-    }));
-  },
-};
+// Every group in tree order, named by its path ("हिन्दु › दैनिक पूजा"), so a choice shows its
+// level and a search finds it by any step.
+export const groupChoices = wholeSource('puja-groups', async () => {
+  const catalogue = await request<Catalogue>('GET', '/admin/puja-groups/tree');
+  const walk = (nodes: GroupNode[], above: string[]): Choice[] =>
+    nodes.flatMap((node) => {
+      const path = [...above, node.nameNe];
+      return [
+        {
+          value: node.id,
+          label: path.join(PATH_SEPARATOR),
+          detail: [node.code, node.ritualType?.code].filter(Boolean).join(' · '),
+        },
+        ...walk(node.children, path),
+      ];
+    });
+  return walk(catalogue.groups, []);
+});
 
 const ritualTypeChoices = {
   key: 'ritual-types',
@@ -52,11 +60,7 @@ export const ritualTypesResource: Resource<RitualType> = {
       sortValue: (row) => row.nameNe,
     },
     { key: 'sortOrder', cell: (row) => row.sortOrder, sortValue: (row) => row.sortOrder },
-    {
-      key: 'isActive',
-      cell: (row) => <ActiveBadge on={row.isActive} />,
-      sortValue: (row) => row.isActive,
-    },
+    activeColumn(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },

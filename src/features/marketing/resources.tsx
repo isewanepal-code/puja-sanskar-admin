@@ -1,4 +1,4 @@
-import { ActiveBadge, type Resource } from '@/components/resource';
+import { activeColumn, type Resource } from '@/components/resource';
 import { formatMoney } from '@/lib/format';
 import type { Schema } from '@/lib/api';
 
@@ -43,11 +43,7 @@ export const panditsResource: Resource<Pandit> = {
       align: 'right',
     },
     { key: 'sortOrder', cell: (row) => row.sortOrder, sortValue: (row) => row.sortOrder },
-    {
-      key: 'isActive',
-      cell: (row) => <ActiveBadge on={row.isActive} />,
-      sortValue: (row) => row.isActive,
-    },
+    activeColumn(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },

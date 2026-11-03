@@ -1,33 +1,22 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { SearchSelect } from '@/components/controls';
 import { Thumb } from '@/components/media-library/thumb';
 import { useToast } from '@/components/overlays';
 import { Button, IconButton } from '@/components/ui/button';
-import { Input, Select } from '@/components/ui/input';
-import { isApiError, request, type Schema } from '@/lib/api';
+import { Input } from '@/components/ui/input';
+import { isApiError, request } from '@/lib/api';
+import { choices } from '@/lib/choices';
 
 import type { ListRequest } from '../resources';
 
-type Product = Schema<'AdminProductResponse'>;
 type Row = { writtenText: string; variantId: string; quantity: string; note: string };
 
 const blank = (): Row => ({ writtenText: '', variantId: '', quantity: '1', note: '' });
-
-async function loadPacks() {
-  const page = await request<{ items: Product[] }>('GET', '/admin/products', {
-    query: { limit: 100 },
-  });
-  return page.items.flatMap((product) =>
-    product.variants.map((variant) => ({
-      id: variant.id,
-      label: `${product.nameNe} · ${variant.label}`,
-    })),
-  );
-}
 
 // The customer's photos beside the list staff read off them; the list sent replaces the old one.
 export function ListItemsEditor({
@@ -41,11 +30,6 @@ export function ListItemsEditor({
   const tf = useTranslations('forms');
   const toast = useToast();
   const queryClient = useQueryClient();
-  const packs = useQuery({
-    queryKey: ['options', 'list-packs'],
-    queryFn: loadPacks,
-    staleTime: 60 * 1000,
-  });
   const [rows, setRows] = useState<Row[]>(() =>
     list.items.length > 0
       ? list.items.map((item) => ({
@@ -124,18 +108,13 @@ export function ListItemsEditor({
                 />
               </td>
               <td className="py-1 pr-2">
-                <Select
+                <SearchSelect
+                  source={choices.packs}
                   value={row.variantId}
                   aria-label={t('pack')}
-                  onChange={(e) => set(i, { variantId: e.target.value })}
-                >
-                  <option value="">{t('notSold')}</option>
-                  {(packs.data ?? []).map((pack) => (
-                    <option key={pack.id} value={pack.id}>
-                      {pack.label}
-                    </option>
-                  ))}
-                </Select>
+                  placeholder={t('notSold')}
+                  onChange={(value) => set(i, { variantId: String(value) })}
+                />
               </td>
               <td className="py-1 pr-2">
                 <Input

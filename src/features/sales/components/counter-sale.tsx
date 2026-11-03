@@ -1,16 +1,18 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { z } from 'zod';
 
+import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
 import { useToast } from '@/components/overlays';
 import { Button, IconButton } from '@/components/ui/button';
 import { Input, Select } from '@/components/ui/input';
 import { fieldErrors, isApiError, request, type Schema } from '@/lib/api';
+import { PAGE_SIZE, type Choice, type ChoiceSource } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
 
@@ -24,35 +26,56 @@ type Line = Pack & { quantity: number };
 const MONEY = /^\d{1,13}(\.\d{1,2})?$/;
 const PHONE = /^\+?[0-9]{7,15}$/;
 
-// Every kit and pack on sale with its price; kits first, as the shop sells them most.
-async function loadPacks(): Promise<Pack[]> {
-  const [kits, page] = await Promise.all([
-    request<{ items: Kit[] }>('GET', '/admin/kits', { query: { limit: 100 } }),
-    request<{ items: Product[] }>('GET', '/admin/products', {
-      query: { limit: 100, isActive: true },
-    }),
-  ]);
-  return [
-    ...kits.items
-      .filter((kit) => kit.isActive)
-      .map((kit) => ({
-        id: kit.id,
-        label: `Kit · ${kit.code} · ${kit.nameNe}`,
-        price: kit.price,
-        kind: 'kit' as const,
-      })),
-    ...page.items.flatMap((product) =>
-      product.variants
-        .filter((variant) => variant.isActive)
-        .map((variant) => ({
-          id: variant.id,
-          label: `${variant.sku} · ${product.nameNe} · ${variant.label}`,
-          price: variant.price,
-          kind: 'pack' as const,
-        })),
-    ),
-  ];
-}
+// What each choice sells and for how much, filled as the picker pages through them.
+const onSale = new Map<string, Pack>();
+
+const choicesOf = (packs: Pack[], group: string): Choice[] =>
+  packs.map((pack) => {
+    onSale.set(pack.id, pack);
+    return { value: pack.id, label: pack.label, detail: formatMoney(pack.price, 'en'), group };
+  });
+
+// Whole kits first, as the shop sells them most, then every active pack; the API searches both.
+const counterSource = (groups: { kits: string; packs: string }): ChoiceSource => ({
+  key: 'counter-packs',
+  search: async (q, page) => {
+    const [kits, products] = await Promise.all([
+      request<{ items: Kit[]; meta: { totalPages: number } }>('GET', '/admin/kits', {
+        query: { q, page, limit: PAGE_SIZE, isActive: true },
+      }),
+      request<{ items: Product[]; meta: { totalPages: number } }>('GET', '/admin/products', {
+        query: { q, page, limit: PAGE_SIZE, isActive: true },
+      }),
+    ]);
+    return {
+      choices: [
+        ...choicesOf(
+          kits.items.map((kit) => ({
+            id: kit.id,
+            label: `${kit.nameNe} (${kit.code})`,
+            price: kit.price,
+            kind: 'kit' as const,
+          })),
+          groups.kits,
+        ),
+        ...choicesOf(
+          products.items.flatMap((product) =>
+            product.variants
+              .filter((variant) => variant.isActive)
+              .map((variant) => ({
+                id: variant.id,
+                label: `${product.nameNe} · ${variant.label} (${variant.sku})`,
+                price: variant.price,
+                kind: 'pack' as const,
+              })),
+          ),
+          groups.packs,
+        ),
+      ],
+      more: page < Math.max(kits.meta.totalPages, products.meta.totalPages),
+    };
+  },
+});
 
 // A sale at the shop counter: packs and quantities, then the order it becomes takes the payment.
 export function CounterSale() {
@@ -60,13 +83,8 @@ export function CounterSale() {
   const tf = useTranslations('forms');
   const toast = useToast();
   const router = useRouter();
-  const packs = useQuery({
-    queryKey: ['options', 'counter-packs'],
-    queryFn: loadPacks,
-    staleTime: 60 * 1000,
-  });
+  const source = useMemo(() => counterSource({ kits: t('kits'), packs: t('packs') }), [t]);
 
-  const [packId, setPackId] = useState('');
   const [quantity, setQuantity] = useState('1');
   const [lines, setLines] = useState<Line[]>([]);
   const [contactName, setContactName] = useState('');
@@ -116,8 +134,8 @@ export function CounterSale() {
 
   const subtotal = lines.reduce((sum, line) => sum + Number(line.price) * line.quantity, 0);
 
-  function addLine() {
-    const pack = packs.data?.find((p) => p.id === packId);
+  function addLine(packId: string) {
+    const pack = onSale.get(packId);
     const count = Number(quantity);
     if (!pack || !Number.isInteger(count) || count < 1) return;
     setLines((current) =>
@@ -127,7 +145,6 @@ export function CounterSale() {
           )
         : [...current, { ...pack, quantity: count }],
     );
-    setPackId('');
     setQuantity('1');
   }
 
@@ -193,22 +210,6 @@ export function CounterSale() {
     <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
       <section className="grid content-start gap-4">
         <div className="flex flex-wrap items-end gap-2">
-          <Field label={t('pack')} htmlFor="sale-pack" className="min-w-72 flex-1">
-            <Select id="sale-pack" value={packId} onChange={(e) => setPackId(e.target.value)}>
-              <option value="">{packs.isPending ? t('loading') : t('choose')}</option>
-              {(['kit', 'pack'] as const).map((kind) => (
-                <optgroup key={kind} label={t(kind === 'kit' ? 'kits' : 'packs')}>
-                  {(packs.data ?? [])
-                    .filter((pack) => pack.kind === kind)
-                    .map((pack) => (
-                      <option key={pack.id} value={pack.id}>
-                        {pack.label} — {formatMoney(pack.price, 'en')}
-                      </option>
-                    ))}
-                </optgroup>
-              ))}
-            </Select>
-          </Field>
           <Field label={t('quantity')} htmlFor="sale-qty" className="w-24">
             <Input
               id="sale-qty"
@@ -218,9 +219,16 @@ export function CounterSale() {
               onChange={(e) => setQuantity(e.target.value)}
             />
           </Field>
-          <Button icon="plus" onClick={addLine} disabled={!packId}>
-            {t('add')}
-          </Button>
+          <Field label={t('pack')} htmlFor="sale-pack" className="min-w-72 flex-1">
+            <SearchSelect
+              id="sale-pack"
+              source={source}
+              value=""
+              required
+              placeholder={t('choose')}
+              onChange={(value) => addLine(String(value))}
+            />
+          </Field>
         </div>
 
         <table className="w-full text-sm">

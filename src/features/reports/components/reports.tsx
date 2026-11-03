@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 
+import { RecordCell } from '@/components/display';
 import { Badge } from '@/components/ui/badge';
 import type { Schema } from '@/lib/api';
 import { formatDate, formatMoney } from '@/lib/format';
@@ -403,15 +404,14 @@ export function ItemSalesReport() {
         {
           key: 'item',
           header: t('item'),
+          className: 'min-w-72',
           cell: (row) => (
-            <>
-              <div>
-                {row.productNameNe} · {row.packLabel}
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {row.sku} · {row.productNameEn}
-              </div>
-            </>
+            <RecordCell
+              title={row.productNameNe}
+              chip={row.packLabel}
+              also={row.productNameEn}
+              code={row.sku}
+            />
           ),
           sortValue: (row) => row.productNameNe,
         },

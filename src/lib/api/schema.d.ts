@@ -11734,6 +11734,10 @@ export interface components {
       amount: string;
       /** @example 265.20 */
       vatAmount: string;
+      /** @example LOBAN-50 */
+      sku: string;
+      /** @example लोबान धूप · 50 g */
+      packName: string;
     };
     PurchaseBillResponse: {
       /** Format: uuid */
@@ -11742,6 +11746,8 @@ export interface components {
       branchId: string;
       /** Format: uuid */
       supplierId: string;
+      /** @example Bhaktapur Traders */
+      supplierName: string;
       /** @example INV-4471 */
       supplierBillNumber: string;
       /**
@@ -11795,6 +11801,8 @@ export interface components {
       id: string;
       /** Format: uuid */
       supplierId: string;
+      /** @example Bhaktapur Traders */
+      supplierName: string;
       /** Format: uuid */
       branchId: string;
       /** Format: uuid */
@@ -19363,6 +19371,8 @@ export interface operations {
         /** @description Products of samagri filed in this category or below it */
         categoryId?: string;
         materialId?: string;
+        /** @description The product an active pack belongs to, to name a saved pack */
+        variantId?: string;
         sort?:
           | 'CODE'
           | 'NAME'
@@ -19510,6 +19520,8 @@ export interface operations {
         /** @description Products of samagri filed in this category or below it */
         categoryId?: string;
         materialId?: string;
+        /** @description The product an active pack belongs to, to name a saved pack */
+        variantId?: string;
         sort?:
           | 'CODE'
           | 'NAME'

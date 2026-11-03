@@ -1,17 +1,7 @@
-import { ActiveBadge, type Option, type Resource } from '@/components/resource';
-import { request, type Schema } from '@/lib/api';
+import { activeColumn, type Resource } from '@/components/resource';
+import { type Schema } from '@/lib/api';
 
 type Mantra = Schema<'AdminMantraResponse'>;
-type Page<T> = { items: T[] };
-
-// Every mantra, for a puja's "plays this mantra" choice.
-export const mantraChoices = {
-  key: 'mantras',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Mantra>>('GET', '/admin/mantras', { query: { limit: 100 } })).items.map(
-      (mantra) => ({ value: mantra.id, label: `${mantra.code} · ${mantra.nameNe}` }),
-    ),
-};
 
 export const mantrasResource: Resource<Mantra> = {
   key: 'mantras',
@@ -44,11 +34,7 @@ export const mantrasResource: Resource<Mantra> = {
       sortValue: (row) => row.durationSeconds,
     },
     { key: 'sortOrder', cell: (row) => row.sortOrder, sortValue: (row) => row.sortOrder },
-    {
-      key: 'isActive',
-      cell: (row) => <ActiveBadge on={row.isActive} />,
-      sortValue: (row) => row.isActive,
-    },
+    activeColumn(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },

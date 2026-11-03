@@ -1,4 +1,4 @@
-import { ActiveBadge, type Resource } from '@/components/resource';
+import { activeColumn, type Resource } from '@/components/resource';
 import type { Schema } from '@/lib/api';
 
 type Faq = Schema<'AdminFaqResponse'>;
@@ -8,12 +8,6 @@ const FAQ_TOPICS = ['GENERAL', 'KITS', 'DELIVERY', 'PAYMENT', 'PANDITS'] as cons
 const STORY_KINDS = ['CUSTOMER', 'PANDIT'] as const;
 
 type Name = (key: string) => string;
-
-const active = <T extends { isActive: boolean }>() => ({
-  key: 'isActive',
-  cell: (row: T) => <ActiveBadge on={row.isActive} />,
-  sortValue: (row: T) => row.isActive,
-});
 
 const order = <T extends { sortOrder: number }>() => ({
   key: 'sortOrder',
@@ -53,7 +47,7 @@ export function faqsResource(name: Name): Resource<Faq> {
         sortValue: (row) => row.questionNe,
       },
       order<Faq>(),
-      active<Faq>(),
+      activeColumn<Faq>(),
     ],
     fields: [
       {
@@ -100,7 +94,7 @@ export function storiesResource(name: Name): Resource<Story> {
       },
       { key: 'topicNe', cell: (row) => row.topicNe, sortValue: (row) => row.topicNe },
       order<Story>(),
-      active<Story>(),
+      activeColumn<Story>(),
     ],
     fields: [
       {

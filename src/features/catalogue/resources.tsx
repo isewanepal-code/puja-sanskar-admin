@@ -1,62 +1,27 @@
-import { ActiveBadge, type Option, type Resource } from '@/components/resource';
+import { activeColumn, codeColumn, recordColumn, type Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
+import { choices, wholeSource } from '@/lib/choices';
 
 type Category = Schema<'AdminCategoryResponse'>;
 type CategoryNode = Category & { children: CategoryNode[] };
 type Material = Schema<'AdminMaterialResponse'>;
 type Unit = Schema<'UnitResponse'>;
 type Source = Schema<'SourceResponse'>;
-type TaxClass = Schema<'TaxClassResponse'>;
-type Page<T> = { items: T[] };
 
 const flatten = (nodes: CategoryNode[]): CategoryNode[] =>
   nodes.flatMap((node) => [node, ...flatten(node.children)]);
 
-// Every category in tree order, indented by depth.
-export const categoryChoices = {
-  key: 'categories',
-  load: async (): Promise<Option[]> =>
-    flatten(await request<CategoryNode[]>('GET', '/admin/categories/tree')).map((c) => ({
-      value: c.id,
-      label: `${' '.repeat(c.depth)}${c.code} · ${c.nameNe}`,
-    })),
-};
-
-const unitChoices = {
-  key: 'units',
-  load: async (): Promise<Option[]> =>
-    (await request<Page<Unit>>('GET', '/admin/units', { query: { limit: 100 } })).items.map(
-      (unit) => ({ value: unit.id, label: `${unit.symbol} · ${unit.nameNe}` }),
-    ),
-};
-
-const taxClassChoices = {
-  key: 'tax-classes',
-  load: async (): Promise<Option[]> =>
-    (await request<TaxClass[]>('GET', '/admin/tax-classes')).map((tax) => ({
-      value: tax.id,
-      label: `${tax.code} · ${tax.name}`,
-    })),
-};
-
-const named = (row: { nameNe: string; nameEn?: string | null }) => (
-  <>
-    <div>{row.nameNe}</div>
-    {row.nameEn ? <div className="text-xs text-muted-foreground">{row.nameEn}</div> : null}
-  </>
-);
-
-const code = <T extends { code: string }>() => ({
-  key: 'code',
-  cell: (row: T) => <span className="font-semibold">{row.code}</span>,
-  sortValue: (row: T) => row.code,
-});
-
-const active = <T extends { isActive: boolean }>() => ({
-  key: 'isActive',
-  cell: (row: T) => <ActiveBadge on={row.isActive} />,
-  sortValue: (row: T) => row.isActive,
+// Every category in tree order; a sub-category reads "parent › child", so its level shows
+// at a glance and a search finds it by either name.
+export const categoryChoices = wholeSource('categories', async () => {
+  const nodes = flatten(await request<CategoryNode[]>('GET', '/admin/categories/tree'));
+  const names = new Map(nodes.map((c) => [c.id, c.nameNe]));
+  return nodes.map((c) => ({
+    value: c.id,
+    label: c.parentId ? `${names.get(c.parentId) ?? ''} › ${c.nameNe}` : c.nameNe,
+    detail: [c.nameEn, c.code].filter(Boolean).join(' · '),
+  }));
 });
 
 // `parentName` names a category's parent in the list.
@@ -72,15 +37,15 @@ export function categoriesResource(
     initialSort: { key: 'code', direction: 'asc' },
     bulk: ['code', 'nameNe', 'nameEn', 'parentId'],
     columns: [
-      code<Category>(),
-      { key: 'nameNe', cell: named, sortValue: (row) => row.nameNe },
+      codeColumn<Category>(),
+      recordColumn(),
       {
         key: 'parentId',
         cell: (row) => (row.parentId ? (parentName(row.parentId) ?? '—') : '—'),
         sortValue: (row) => (row.parentId ? parentName(row.parentId) : null),
       },
       { key: 'sortOrder', cell: (row) => row.sortOrder, sortValue: (row) => row.sortOrder },
-      active<Category>(),
+      activeColumn<Category>(),
     ],
     fields: [
       { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
@@ -88,7 +53,7 @@ export function categoriesResource(
       { name: 'nameNe', kind: 'text', required: true, max: 120 },
       { name: 'nameEn', kind: 'text', required: true, max: 120 },
       { name: 'nameRomanized', kind: 'text', max: 120 },
-      { name: 'taxClassId', kind: 'select', optionsFrom: taxClassChoices },
+      { name: 'taxClassId', kind: 'select', optionsFrom: choices.taxClasses },
       { name: 'sortOrder', kind: 'number' },
       { name: 'slug', kind: 'slug', max: 160, section: 'seo', wide: true },
       { name: 'metaTitle', kind: 'text', max: 70, wide: true },
@@ -109,8 +74,8 @@ export const materialsResource: Resource<Material> = {
   bulk: ['code', 'nameNe', 'nameEn', 'categoryId', 'defaultUnitId'],
   formRow: (row) => ({ ...row, categoryId: row.category.id, defaultUnitId: row.defaultUnit?.id }),
   columns: [
-    code<Material>(),
-    { key: 'nameNe', cell: named, sortValue: (row) => row.nameNe },
+    codeColumn<Material>(),
+    recordColumn(),
     {
       key: 'categoryId',
       cell: (row) => row.category.nameNe,
@@ -126,7 +91,7 @@ export const materialsResource: Resource<Material> = {
       cell: (row) => (row.isSellable ? <Badge tone="info">✓</Badge> : '—'),
       sortValue: (row) => row.isSellable,
     },
-    active<Material>(),
+    activeColumn<Material>(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
@@ -134,7 +99,7 @@ export const materialsResource: Resource<Material> = {
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
     { name: 'nameRomanized', kind: 'text', max: 160 },
-    { name: 'defaultUnitId', kind: 'select', optionsFrom: unitChoices },
+    { name: 'defaultUnitId', kind: 'select', optionsFrom: choices.units },
     { name: 'aliases', kind: 'tags', wide: true },
     { name: 'specification', kind: 'textarea', max: 500 },
     { name: 'notes', kind: 'textarea', max: 1000 },
@@ -157,10 +122,10 @@ export const unitsResource: Resource<Unit> = {
   modalSize: 'sm',
   bulk: ['code', 'symbol', 'nameNe', 'nameEn'],
   columns: [
-    code<Unit>(),
+    codeColumn<Unit>(),
     { key: 'symbol', cell: (row) => row.symbol, sortValue: (row) => row.symbol },
-    { key: 'nameNe', cell: named, sortValue: (row) => row.nameNe },
-    active<Unit>(),
+    recordColumn(),
+    activeColumn<Unit>(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
@@ -180,7 +145,7 @@ export const sourcesResource: Resource<Source> = {
   initialSort: { key: 'code', direction: 'asc' },
   bulk: ['code', 'name', 'topic', 'url'],
   columns: [
-    code<Source>(),
+    codeColumn<Source>(),
     { key: 'name', cell: (row) => row.name, sortValue: (row) => row.name },
     { key: 'topic', cell: (row) => row.topic ?? '—', sortValue: (row) => row.topic },
     {
@@ -199,7 +164,7 @@ export const sourcesResource: Resource<Source> = {
           '—'
         ),
     },
-    active<Source>(),
+    activeColumn<Source>(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },

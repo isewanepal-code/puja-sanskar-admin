@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
 
 // Every text box, select and text area shares these lines.
-const control =
+export const control =
   'w-full rounded-md border border-border bg-card px-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/15 disabled:opacity-60 aria-invalid:border-destructive';
 
 export function Input({ className, ...props }: ComponentProps<'input'>) {

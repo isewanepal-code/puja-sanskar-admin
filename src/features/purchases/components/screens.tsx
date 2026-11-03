@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
@@ -15,24 +15,10 @@ import {
   suppliersResource,
   voidSupplierPaymentResource,
   type PurchaseBill,
-  type Supplier,
   type SupplierPayment,
 } from '../resources';
 
 import { PurchaseBillForm } from './purchase-bill-form';
-
-// Supplier names by id, for lists that hold only the id.
-function useSupplierNames() {
-  const suppliers = useQuery({
-    queryKey: ['suppliers', 'names'],
-    queryFn: () =>
-      request<{ items: Supplier[] }>('GET', '/admin/suppliers', { query: { limit: 100 } }),
-  });
-  return useMemo(
-    () => new Map((suppliers.data?.items ?? []).map((s) => [s.id, s.name])),
-    [suppliers.data],
-  );
-}
 
 export function SuppliersScreen() {
   const resource = useMemo(() => suppliersResource(), []);
@@ -45,8 +31,7 @@ export function PurchaseBillsScreen() {
   const tf = useTranslations('forms');
   const toast = useToast();
   const queryClient = useQueryClient();
-  const names = useSupplierNames();
-  const resource = useMemo(() => purchaseBillsResource(t, names), [t, names]);
+  const resource = useMemo(() => purchaseBillsResource(t), [t]);
   const [editing, setEditing] = useState<PurchaseBill | 'new' | null>(null);
   const [removing, setRemoving] = useState<PurchaseBill | null>(null);
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['purchaseBills'] });
@@ -116,8 +101,7 @@ export function PurchaseBillsScreen() {
 export function SupplierPaymentsScreen() {
   const t = useResourceText('supplierPayments');
   const tp = useTranslations('purchases');
-  const names = useSupplierNames();
-  const resource = useMemo(() => supplierPaymentsResource(t, names), [t, names]);
+  const resource = useMemo(() => supplierPaymentsResource(t), [t]);
   const [voiding, setVoiding] = useState<SupplierPayment | null>(null);
   return (
     <>

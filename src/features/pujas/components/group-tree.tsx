@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useId, useMemo, useState, type ReactNode } from 'react';
 
+import { RecordCell } from '@/components/display';
 import { Icon } from '@/components/icons';
 import { useToast } from '@/components/overlays';
 import {
@@ -34,26 +35,38 @@ type Bulk = { what: 'groups'; parent: GroupNode | null } | { what: 'pujas'; grou
 type Removing = { what: 'group'; row: GroupNode } | { what: 'puja'; row: Puja };
 
 function Column({
+  depth,
   title,
   subtitle,
   actions,
   children,
 }: {
+  // The level number shown in the badge; none for the pujas column.
+  depth?: number;
   title: string;
   subtitle?: string;
   actions: ReactNode;
   children: ReactNode;
 }) {
   return (
-    <section className="flex w-72 shrink-0 flex-col gap-2">
-      <header className="grid gap-2 px-2">
-        <div className="min-w-0">
-          <h2 className="font-heading text-base font-semibold text-primary">{title}</h2>
-          {subtitle ? <p className="text-sm text-primary/80">{subtitle}</p> : null}
+    <section className="flex max-h-[calc(100dvh-16rem)] w-80 shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-card">
+      <header className="flex flex-wrap items-center gap-x-2.5 gap-y-2 border-b border-border bg-muted/50 px-3 py-2.5">
+        <span
+          aria-hidden
+          className={cn(
+            'grid size-7 shrink-0 place-items-center rounded-full text-xs font-bold',
+            depth === undefined ? 'bg-accent text-primary' : 'bg-primary text-primary-foreground',
+          )}
+        >
+          {depth ?? <Icon name="temple" size={14} />}
+        </span>
+        <div className="min-w-0 flex-1">
+          <h2 className="truncate text-sm font-semibold">{title}</h2>
+          {subtitle ? <p className="truncate text-xs text-muted-foreground">{subtitle}</p> : null}
         </div>
-        <div className="flex gap-1">{actions}</div>
+        <div className="flex w-full gap-1 pl-9">{actions}</div>
       </header>
-      <ul className="grid gap-px">{children}</ul>
+      <ul className="grid content-start gap-px overflow-y-auto p-1.5">{children}</ul>
     </section>
   );
 }
@@ -74,8 +87,9 @@ function Row({
   return (
     <li
       className={cn(
-        'group flex items-center gap-1 rounded-md pr-1 hover:bg-muted',
-        active && 'bg-primary/8 text-primary hover:bg-primary/10',
+        'group relative flex items-center gap-1 rounded-md pr-1 hover:bg-muted',
+        active &&
+          'bg-primary/8 text-primary before:absolute before:inset-y-1.5 before:left-0 before:w-0.5 before:rounded-full before:bg-primary hover:bg-primary/10',
         muted && 'opacity-60',
       )}
     >
@@ -90,6 +104,33 @@ function Row({
         {actions}
       </div>
     </li>
+  );
+}
+
+// Where the open group sits: each level from the top, one step to the right of the last.
+function LevelPath({ path, onOpen }: { path: GroupNode[]; onOpen: (group: GroupNode) => void }) {
+  if (path.length === 0) return null;
+  return (
+    <ol className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2 text-sm">
+      {path.map((group, depth) => (
+        <li key={group.id} className="flex items-center gap-1.5">
+          {depth > 0 ? <Icon name="right" size={14} className="text-muted-foreground" /> : null}
+          <button
+            type="button"
+            onClick={() => onOpen(group)}
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 hover:bg-muted',
+              depth === path.length - 1 && 'font-semibold text-primary',
+            )}
+          >
+            <span className="grid size-5 place-items-center rounded-full bg-muted text-[0.65rem] font-bold text-muted-foreground">
+              {depth}
+            </span>
+            {group.nameNe}
+          </button>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -244,114 +285,115 @@ export function GroupTree() {
           </div>
         </div>
       ) : (
-        <div className="flex gap-6 overflow-x-auto pb-4">
-          {columns.map((list, depth) => {
-            const parent = path[depth - 1] ?? null;
-            return (
+        <div className="grid gap-3">
+          <LevelPath path={path} onOpen={open} />
+          <div className="flex items-start gap-3 overflow-x-auto pb-4">
+            {columns.map((list, depth) => {
+              const parent = path[depth - 1] ?? null;
+              return (
+                <Column
+                  key={depth}
+                  depth={depth}
+                  title={t('level', { depth })}
+                  subtitle={levels.find((level) => level.depth === depth)?.nameNe}
+                  actions={columnActions(parent)}
+                >
+                  {list.map((group) => (
+                    <Row
+                      key={group.id}
+                      active={path[depth]?.id === group.id}
+                      muted={!group.isActive}
+                      onOpen={() => open(group)}
+                      actions={
+                        <>
+                          <IconButton
+                            icon="edit"
+                            label={tf('edit')}
+                            onClick={() => setEditing({ what: 'group', row: group, parent })}
+                          />
+                          <IconButton
+                            icon="trash"
+                            variant="danger"
+                            label={tf('delete')}
+                            onClick={() => setRemoving({ what: 'group', row: group })}
+                          />
+                        </>
+                      }
+                    >
+                      <span className="flex items-center gap-2">
+                        <RecordCell
+                          className="flex-1"
+                          title={group.nameNe}
+                          also={group.nameEn}
+                          chip={group.ritualType?.code}
+                          code={group.code}
+                        />
+                        {group.children.length > 0 ? (
+                          <span className="flex shrink-0 items-center gap-0.5 text-xs text-muted-foreground">
+                            {group.children.length}
+                            <Icon name="right" size={14} />
+                          </span>
+                        ) : null}
+                      </span>
+                    </Row>
+                  ))}
+                  {list.length === 0 ? (
+                    <li className="px-2.5 py-2 text-sm text-muted-foreground">{t('none')}</li>
+                  ) : null}
+                </Column>
+              );
+            })}
+
+            {opened ? (
               <Column
-                key={depth}
-                title={t('level', { depth })}
-                subtitle={levels.find((level) => level.depth === depth)?.nameNe}
-                actions={columnActions(parent)}
+                title={t('pujasIn', { code: opened.code })}
+                subtitle={opened.nameNe}
+                actions={
+                  <>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      icon="list"
+                      title={t('addManyPujas')}
+                      onClick={() => setBulk({ what: 'pujas', group: opened })}
+                    >
+                      {t('many')}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      icon="plus"
+                      title={t('addPuja')}
+                      onClick={() => setEditing({ what: 'puja', group: opened })}
+                    >
+                      {t('one')}
+                    </Button>
+                  </>
+                }
               >
-                {list.map((group) => (
+                {(pujas.data?.items ?? []).map((puja) => (
                   <Row
-                    key={group.id}
-                    active={path[depth]?.id === group.id}
-                    muted={!group.isActive}
-                    onOpen={() => open(group)}
+                    key={puja.id}
+                    muted={!puja.isActive}
+                    onOpen={() => setEditing({ what: 'puja', row: puja, group: opened })}
                     actions={
-                      <>
-                        <IconButton
-                          icon="edit"
-                          label={tf('edit')}
-                          onClick={() => setEditing({ what: 'group', row: group, parent })}
-                        />
-                        <IconButton
-                          icon="trash"
-                          variant="danger"
-                          label={tf('delete')}
-                          onClick={() => setRemoving({ what: 'group', row: group })}
-                        />
-                      </>
+                      <IconButton
+                        icon="trash"
+                        variant="danger"
+                        label={tf('delete')}
+                        onClick={() => setRemoving({ what: 'puja', row: puja })}
+                      />
                     }
                   >
-                    <span className="flex items-center gap-1">
-                      <span className="min-w-0 flex-1">
-                        <span className="font-semibold">[{group.code}]</span> {group.nameNe}
-                        {group.ritualType ? (
-                          <span className="text-muted-foreground"> ({group.ritualType.code})</span>
-                        ) : null}
-                        <span className="block truncate text-xs text-muted-foreground">
-                          {group.nameEn}
-                        </span>
-                      </span>
-                      {group.children.length > 0 ? (
-                        <Icon name="right" size={14} className="shrink-0 text-muted-foreground" />
-                      ) : null}
-                    </span>
+                    <RecordCell title={puja.nameNe} also={puja.nameEn} code={puja.code} />
                   </Row>
                 ))}
-                {list.length === 0 ? (
-                  <li className="px-2.5 py-2 text-sm text-muted-foreground">{t('none')}</li>
+                {pujas.data && pujas.data.items.length === 0 ? (
+                  <li className="px-2.5 py-2 text-sm text-muted-foreground">{t('noPujas')}</li>
                 ) : null}
               </Column>
-            );
-          })}
-
-          {opened ? (
-            <Column
-              title={t('pujasIn', { code: opened.code })}
-              subtitle={opened.nameNe}
-              actions={
-                <>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    icon="list"
-                    title={t('addManyPujas')}
-                    onClick={() => setBulk({ what: 'pujas', group: opened })}
-                  >
-                    {t('many')}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    icon="plus"
-                    title={t('addPuja')}
-                    onClick={() => setEditing({ what: 'puja', group: opened })}
-                  >
-                    {t('one')}
-                  </Button>
-                </>
-              }
-            >
-              {(pujas.data?.items ?? []).map((puja) => (
-                <Row
-                  key={puja.id}
-                  muted={!puja.isActive}
-                  onOpen={() => setEditing({ what: 'puja', row: puja, group: opened })}
-                  actions={
-                    <IconButton
-                      icon="trash"
-                      variant="danger"
-                      label={tf('delete')}
-                      onClick={() => setRemoving({ what: 'puja', row: puja })}
-                    />
-                  }
-                >
-                  <span className="font-semibold">[{puja.code}]</span> {puja.nameNe}
-                  <span className="text-muted-foreground"> ({opened.code})</span>
-                  <span className="block truncate text-xs text-muted-foreground">
-                    {puja.nameEn}
-                  </span>
-                </Row>
-              ))}
-              {pujas.data && pujas.data.items.length === 0 ? (
-                <li className="px-2.5 py-2 text-sm text-muted-foreground">{t('noPujas')}</li>
-              ) : null}
-            </Column>
-          ) : null}
+            ) : null}
+          </div>
         </div>
       )}
 

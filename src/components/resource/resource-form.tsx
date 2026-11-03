@@ -1,11 +1,12 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { Fragment, useEffect, useId, useState } from 'react';
+import { Fragment, useId, useState } from 'react';
 import { useForm, type UseFormReturn } from 'react-hook-form';
 
+import { SearchSelect } from '@/components/controls';
 import { Field as FieldShell } from '@/components/forms';
 import { useToast } from '@/components/overlays';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
@@ -30,30 +31,39 @@ function Control({
   form,
   invalid,
   t,
+  record,
 }: {
   field: Field;
   id: string;
   form: UseFormReturn<FormValues>;
   invalid: boolean;
   t: Translate;
+  record?: Record<string, unknown>;
 }) {
-  const options = useQuery({
-    queryKey: ['options', field.optionsFrom?.key],
-    queryFn: () => field.optionsFrom!.load(),
-    enabled: !!field.optionsFrom,
-    staleTime: 5 * 60 * 1000,
-  });
-  const choices = field.options ?? options.data ?? [];
+  const choices = field.options ?? [];
   const { register, getValues, setValue } = form;
-
-  // A select whose choices arrive after the form starts shows its value once they do.
-  useEffect(() => {
-    if (options.data) setValue(field.name, getValues(field.name));
-  }, [options.data, field.name, getValues, setValue]);
   const common = { id, 'aria-invalid': invalid || undefined, ...register(field.name) };
 
   const setByPicker = (value: string) =>
     setValue(field.name, value, { shouldDirty: true, shouldValidate: true });
+
+  if (field.optionsFrom && (field.kind === 'select' || field.kind === 'multiselect')) {
+    const multiple = field.kind === 'multiselect';
+    const value = form.watch(field.name);
+    return (
+      <SearchSelect
+        id={id}
+        source={field.optionsFrom}
+        multiple={multiple}
+        value={multiple ? (Array.isArray(value) ? value : []) : String(value ?? '')}
+        known={record && field.known ? field.known(record) : undefined}
+        invalid={invalid}
+        required={field.required}
+        placeholder={field.required ? undefined : t.has('none') ? t('none') : undefined}
+        onChange={(next) => setValue(field.name, next, { shouldDirty: true, shouldValidate: true })}
+      />
+    );
+  }
 
   switch (field.kind) {
     case 'image':
@@ -249,7 +259,14 @@ export function ResourceForm<T>({
                     : undefined
                 }
               >
-                <Control field={field} id={id} form={form} invalid={!!message} t={t} />
+                <Control
+                  field={field}
+                  id={id}
+                  form={form}
+                  invalid={!!message}
+                  t={t}
+                  record={row as Record<string, unknown> | undefined}
+                />
               </FieldShell>
             )}
           </Fragment>

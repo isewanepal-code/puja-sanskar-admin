@@ -1,6 +1,5 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
@@ -11,10 +10,11 @@ import {
   WorkbookUploadButton,
 } from '@/components/resource';
 import { IconButton } from '@/components/ui/button';
-import { Select, Switch } from '@/components/ui/input';
+import { SearchSelect } from '@/components/controls';
+import { Switch } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
-import { productChoices } from '@/features/products';
 import type { Schema } from '@/lib/api';
+import { choices } from '@/lib/choices';
 
 import {
   historyResource,
@@ -32,11 +32,6 @@ export function StockScreen() {
   const [lowOnly, setLowOnly] = useState(false);
   const [productId, setProductId] = useState('');
   const [open, setOpen] = useState<Open>(null);
-  const products = useQuery({
-    queryKey: ['options', productChoices.key],
-    queryFn: productChoices.load,
-    staleTime: 5 * 60 * 1000,
-  });
   const resource = useMemo(
     () => stockResource(lowOnly, productId || undefined),
     [lowOnly, productId],
@@ -49,19 +44,14 @@ export function StockScreen() {
         resource={resource}
         toolbar={
           <>
-            <Select
+            <SearchSelect
+              source={choices.products}
               value={productId}
-              onChange={(event) => setProductId(event.target.value)}
+              onChange={(value) => setProductId(String(value))}
+              placeholder={t('allProducts')}
               aria-label={t('product')}
               className="w-64"
-            >
-              <option value="">{t('allProducts')}</option>
-              {(products.data ?? []).map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
+            />
             <Switch
               label={t('lowOnly')}
               checked={lowOnly}

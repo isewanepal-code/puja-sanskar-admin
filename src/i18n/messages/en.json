@@ -241,7 +241,9 @@
     "showing": "{from}–{to} of {total}",
     "perPage": "Rows per page",
     "pages": "Pages",
-    "clearFilter": "Clear this search"
+    "clearFilter": "Clear this search",
+    "turnedOn": "Turned on · {name}",
+    "turnedOff": "Turned off · {name}"
   },
   "password": {
     "title": "Change password",
@@ -259,7 +261,7 @@
   },
   "bulk": {
     "title": "Add many: {what}",
-    "hint": "Type a row per record, or copy rows from Excel or Google Sheets and paste them into the first cell. Empty rows are skipped.",
+    "hint": "Type one record per row, or copy rows from Excel or Google Sheets and paste them into the first cell. Only starred columns are needed; empty rows are skipped.",
     "moreRows": "More rows",
     "cancel": "Close",
     "save": "Save all",
@@ -268,7 +270,11 @@
     "partly": "{saved} saved, {failed} need fixing",
     "fixRows": "Some rows need fixing first",
     "failed": "Not saved",
-    "row": "Row {row}"
+    "row": "Row {row}",
+    "rows": "Rows",
+    "addRow": "Add a row",
+    "columns": "Columns:",
+    "nothing": "Fill at least one row first"
   },
   "resources": {
     "ritualTypes": {
@@ -697,7 +703,8 @@
         "metaTitle": "Search title",
         "metaDescription": "Search description",
         "hsCode": "HS code",
-        "tags": "Tags"
+        "tags": "Tags",
+        "item": "Item"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as PRD001. It cannot change later.",
@@ -827,7 +834,8 @@
         "salePrice": "Price",
         "isAvailable": "Stock",
         "metaTitle": "Search title",
-        "metaDescription": "Search description"
+        "metaDescription": "Search description",
+        "item": "Kit"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as KIT001. It cannot change later.",
@@ -1948,7 +1956,8 @@
     "sent": "Sent",
     "addItem": "Add an item",
     "addItemNote": "Fill what you know; codes are made from the English name when left empty. Opening stock is added to the branch chosen at the top.",
-    "itemAdded": "Item added"
+    "itemAdded": "Item added",
+    "addManyItemsNote": "One item per row: name, pack size and price are enough. Turn on more columns (category, opening stock, cost, HS code, tags) above the grid. Opening stock goes to the branch chosen at the top; empty rows are skipped."
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -2347,5 +2356,14 @@
       "title": "Suppliers",
       "intro": "The people and shops you buy from, and what you still owe them."
     }
+  },
+  "select": {
+    "choose": "Choose…",
+    "search": "Type to search",
+    "loading": "Loading…",
+    "noMatch": "Nothing matches",
+    "failed": "Could not load the list",
+    "none": "— None —",
+    "remove": "Remove {name}"
   }
 }
