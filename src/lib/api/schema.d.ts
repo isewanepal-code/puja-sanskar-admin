@@ -7621,6 +7621,10 @@ export interface components {
       /** @enum {string} */
       status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
       /** Format: uuid */
+      pujaId: string | null;
+      /** Format: uuid */
+      festivalId: string | null;
+      /** Format: uuid */
       reviewedById: string | null;
       /** Format: uuid */
       authorId: string;

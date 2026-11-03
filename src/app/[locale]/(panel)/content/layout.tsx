@@ -19,7 +19,12 @@ export default async function ContentLayout({
           label={t('title')}
           tabs={[
             { href: routes.faqs(), label: t('tabs.faqs') },
+            { href: routes.festivals(), label: t('tabs.festivals') },
+            { href: routes.articles(), label: t('tabs.articles') },
+            { href: routes.banners(), label: t('tabs.banners') },
+            { href: routes.homeSections(), label: t('tabs.homeSections') },
             { href: routes.stories(), label: t('tabs.stories') },
+            { href: routes.reviews(), label: t('tabs.reviews') },
             { href: routes.media(), label: t('tabs.media') },
           ]}
         />

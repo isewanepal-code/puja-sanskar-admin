@@ -94,7 +94,7 @@ export type Resource<T> = {
   // The query root it refreshes with: packs of a product refresh the product list too.
   scope?: string;
   // How a new record is sent; PUT for a list that replaces the old one.
-  submitMethod?: 'POST' | 'PUT';
+  submitMethod?: 'POST' | 'PUT' | 'PATCH';
   // Fields offered as columns of the bulk-entry grid; leave out for no bulk entry.
   bulk?: string[];
 };

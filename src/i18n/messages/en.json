@@ -877,6 +877,270 @@
         "status": "How sure",
         "sourceId": "Source"
       }
+    },
+    "festivals": {
+      "title": "Festivals",
+      "add": "Add a festival",
+      "empty": "No festivals match.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "mantraId": "Mantra",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "sortOrder": "Order",
+        "imageUrl": "Image",
+        "summaryNe": "Summary in Nepali",
+        "summaryEn": "Summary in English",
+        "descriptionNe": "Description in Nepali",
+        "descriptionEn": "Description in English",
+        "slug": "Web address",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description",
+        "isActive": "Shown on the website",
+        "dates": "Next date",
+        "pujaIds": "Pujas"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. It cannot change later.",
+        "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+      },
+      "sections": {
+        "website": "On the website",
+        "seo": "Search engines"
+      }
+    },
+    "festivalDates": {
+      "title": "Dates",
+      "add": "Add a date",
+      "empty": "No dates yet. Add this year's.",
+      "none": "—",
+      "fields": {
+        "startsOn": "Starts on",
+        "endsOn": "Ends on",
+        "note": "Note"
+      },
+      "rules": {
+        "order": "Ends on or after the day it starts"
+      }
+    },
+    "festivalPujas": {
+      "title": "Pujas",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "pujaIds": "Pujas"
+      }
+    },
+    "articles": {
+      "title": "Articles",
+      "add": "Add an article",
+      "empty": "No articles match.",
+      "none": "—",
+      "fields": {
+        "type": "Kind",
+        "pujaId": "Puja",
+        "festivalId": "Festival",
+        "titleNe": "Title in Nepali",
+        "titleEn": "Title in English",
+        "coverImageUrl": "Cover image",
+        "summaryNe": "Summary in Nepali",
+        "summaryEn": "Summary in English",
+        "bodyNe": "Text in Nepali",
+        "bodyEn": "Text in English",
+        "slug": "Web address",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description",
+        "status": "Status",
+        "verificationStatus": "Checked",
+        "updatedAt": "Updated"
+      },
+      "hints": {
+        "type": "A guide explains a puja; a page is fixed (about, terms); a blog is news. It cannot change later.",
+        "bodyNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "bodyEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+      },
+      "sections": {
+        "seo": "Search engines"
+      },
+      "types": {
+        "GUIDE": "Guide",
+        "PAGE": "Page",
+        "BLOG": "Blog"
+      },
+      "statuses": {
+        "DRAFT": "Draft",
+        "PUBLISHED": "Published",
+        "ARCHIVED": "Archived"
+      },
+      "checks": {
+        "UNVERIFIED": "Not checked",
+        "INDICATIVE": "Starter data",
+        "REVIEWED": "Reviewed",
+        "VERIFIED": "Verified"
+      },
+      "rules": {
+        "guide": "A guide belongs to a puja"
+      }
+    },
+    "articleStatus": {
+      "title": "Status",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "status": "Status"
+      }
+    },
+    "articleCheck": {
+      "title": "Checked",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "status": "How sure"
+      }
+    },
+    "reviews": {
+      "title": "Reviews",
+      "add": "—",
+      "empty": "No reviews yet.",
+      "none": "—",
+      "fields": {
+        "rating": "Stars",
+        "body": "Review",
+        "authorName": "By",
+        "status": "Shown",
+        "createdAt": "Written",
+        "note": "Why (kept for staff)"
+      },
+      "statuses": {
+        "PUBLISHED": "Published",
+        "HIDDEN": "Hidden"
+      }
+    },
+    "banners": {
+      "title": "Banners",
+      "add": "Add a banner",
+      "empty": "No banners yet.",
+      "none": "—",
+      "fields": {
+        "imageUrl": "Image",
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "linkUrl": "Opens",
+        "placement": "Where",
+        "sortOrder": "Order",
+        "startsAt": "Shows from",
+        "endsAt": "Shows until",
+        "isActive": "Shown"
+      },
+      "hints": {
+        "linkUrl": "A website path such as /pujas/satyanarayan-puja, or a full address."
+      },
+      "sections": {
+        "schedule": "When it shows"
+      },
+      "placements": {
+        "HOME_HERO": "Home, top",
+        "HOME_STRIP": "Home, strip"
+      }
+    },
+    "homeSections": {
+      "title": "Home rows",
+      "add": "Add a home row",
+      "empty": "No home rows yet.",
+      "none": "—",
+      "fields": {
+        "kind": "Shows",
+        "title": "Title in English",
+        "titleNe": "Title in Nepali",
+        "itemIds": "Items",
+        "sortOrder": "Order",
+        "startsAt": "Shows from",
+        "endsAt": "Shows until",
+        "isActive": "Shown"
+      },
+      "sections": {
+        "schedule": "When it shows"
+      },
+      "kinds": {
+        "PRODUCTS": "Products",
+        "KITS": "Kits",
+        "PUJAS": "Pujas"
+      },
+      "rules": {
+        "kind": "Pick only items of the kind this row shows"
+      }
+    },
+    "discounts": {
+      "title": "Discounts",
+      "add": "Add a discount",
+      "empty": "No discounts match.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "name": "Name",
+        "trigger": "Applied",
+        "couponCode": "Coupon code",
+        "kind": "Kind",
+        "value": "Amount",
+        "scope": "Covers",
+        "channels": "Where it applies",
+        "scopeIds": "Categories or products",
+        "minSubtotal": "Order at least",
+        "maxDiscount": "Discount at most",
+        "usageLimit": "Uses in all",
+        "perCustomerLimit": "Uses per customer",
+        "startsAt": "From",
+        "endsAt": "Until",
+        "firstOrderOnly": "First order only",
+        "titleNe": "Title in Nepali",
+        "titleEn": "Title in English",
+        "isPublic": "Shown on the offers page",
+        "isActive": "In use",
+        "timesUsed": "Used"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. It cannot change later.",
+        "couponCode": "What the customer types, such as DASHAIN10.",
+        "value": "A percentage for a percent discount, rupees for a flat one.",
+        "scopeIds": "Only when it covers categories or products."
+      },
+      "sections": {
+        "covers": "What it covers",
+        "limits": "Limits",
+        "website": "On the website"
+      },
+      "triggers": {
+        "AUTOMATIC": "Automatically",
+        "COUPON": "With a coupon"
+      },
+      "kinds": {
+        "PERCENT": "Percent",
+        "FLAT": "Fixed amount"
+      },
+      "scopes": {
+        "ORDER": "Whole order",
+        "CATEGORIES": "Category",
+        "PRODUCTS": "Product"
+      },
+      "channels": {
+        "ACCOUNT_CHECKOUT": "Website checkout",
+        "QUICK_PAY": "Quick pay",
+        "COUNTER": "Shop counter"
+      },
+      "rules": {
+        "coupon": "A coupon discount needs its code",
+        "percent": "A percentage is at most 100",
+        "targets": "Pick what it covers",
+        "scope": "Pick only items of the kind it covers"
+      }
     }
   },
   "catalogue": {
@@ -895,13 +1159,19 @@
     "tabs": {
       "faqs": "Questions",
       "stories": "Stories",
-      "media": "Images"
+      "media": "Images",
+      "festivals": "Festivals",
+      "articles": "Articles",
+      "banners": "Banners",
+      "homeSections": "Home rows",
+      "reviews": "Reviews"
     }
   },
   "marketing": {
     "title": "Pandits and offers",
     "tabs": {
-      "pandits": "Pandits"
+      "pandits": "Pandits",
+      "discounts": "Discounts"
     }
   },
   "settings": {
@@ -964,7 +1234,18 @@
     "verifyNote": "Reviewed means checked by staff against a source; verified means confirmed by a guru or pandit.",
     "verified": "Verification saved",
     "product": "Product",
-    "allProducts": "Every product"
+    "allProducts": "Every product",
+    "dates": "Dates",
+    "datesOf": "Dates of {name}",
+    "datesNote": "One entry per year: lunar dates are entered here, never worked out.",
+    "festivalPujas": "Pujas",
+    "festivalPujasOf": "Pujas for {name}",
+    "festivalPujasNote": "The pujas the festival page offers, with their kits.",
+    "save": "Save",
+    "saved": "Saved",
+    "publish": "Publish or archive",
+    "publishFor": "Status of {name}",
+    "publishNote": "Only published articles show on the website; the first publish sets its date."
   },
   "media": {
     "pickTitle": "Choose an image",

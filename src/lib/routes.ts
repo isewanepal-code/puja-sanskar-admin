@@ -30,8 +30,14 @@ export const routes = {
   faqs: () => '/content',
   stories: () => '/content/stories',
   media: () => '/content/media',
+  festivals: () => '/content/festivals',
+  articles: () => '/content/articles',
+  banners: () => '/content/banners',
+  homeSections: () => '/content/home-rows',
+  reviews: () => '/content/reviews',
 
   pandits: () => '/marketing',
+  discounts: () => '/marketing/discounts',
 
   taxClasses: () => '/settings',
   deliveryZones: () => '/settings/delivery-zones',

@@ -7,10 +7,22 @@ import {
   sourcesResource,
   unitsResource,
 } from '@/features/catalogue';
-import { faqsResource, storiesResource } from '@/features/content';
+import {
+  articleCheckResource,
+  articlesResource,
+  articleStatusResource,
+  bannersResource,
+  faqsResource,
+  festivalDatesResource,
+  festivalPujasResource,
+  festivalsResource,
+  homeSectionsResource,
+  reviewsResource,
+  storiesResource,
+} from '@/features/content';
 import { kitFromPujaResource, kitItemsResource, kitsResource } from '@/features/kits';
 import { mantrasResource } from '@/features/mantras';
-import { panditsResource } from '@/features/marketing';
+import { discountsResource, panditsResource } from '@/features/marketing';
 import { pujaGroupResource, ritualTypesResource } from '@/features/puja-groups';
 import {
   gradesResource,
@@ -30,6 +42,7 @@ import { historyResource, movementResource, stockResource } from '@/features/sto
 
 import messages from './messages/en.json';
 
+const ANY = { id: 'x' } as never;
 const LEVEL = { variant: { id: 'v', sku: 'S' } } as never;
 const PRODUCT = { id: 'p', grades: [], nameNe: 'p' } as unknown as Product;
 
@@ -65,6 +78,16 @@ const RESOURCES: Resource<never>[] = [
   kitItemsResource('k'),
   requirementsResource('p', (key) => key),
   verifyResource('p', { id: 'r', material: { nameNe: 'x' } } as never, (key) => key),
+  festivalsResource,
+  festivalDatesResource(ANY, (key) => key),
+  festivalPujasResource(ANY),
+  articlesResource((key) => key),
+  articleStatusResource(ANY, (key) => key),
+  articleCheckResource(ANY, (key) => key),
+  reviewsResource((key) => key),
+  bannersResource((key) => key),
+  homeSectionsResource((key) => key),
+  discountsResource((key) => key),
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>
