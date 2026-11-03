@@ -14,7 +14,7 @@ type FieldProps = {
 // A label, its control, then either the API's complaint or a hint.
 export function Field({ label, htmlFor, hint, error, className, children }: FieldProps) {
   return (
-    <div className={cn('grid gap-1.5', className)}>
+    <div className={cn('grid content-start gap-1.5', className)}>
       <label htmlFor={htmlFor} className="text-sm font-medium">
         {label}
       </label>

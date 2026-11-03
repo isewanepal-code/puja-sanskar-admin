@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { getLevels, LevelsForm } from '@/features/puja-groups';
+import { LevelsForm } from '@/features/puja-groups';
 import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
@@ -14,5 +14,5 @@ export async function generateMetadata({
 
 export default async function PujaLevelsPage({ params }: PageProps<'/[locale]/pujas/levels'>) {
   await resolveLocale(params);
-  return <LevelsForm levels={await getLevels()} />;
+  return <LevelsForm />;
 }

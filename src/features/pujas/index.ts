@@ -1,4 +1,4 @@
-export { getPuja, listPujas, type PujaFilters } from './api/server';
-export { PujaForm } from './components/puja-form';
-export { PujasTable } from './components/pujas-table';
-export type { Puja } from './types';
+export { GroupTree } from './components/group-tree';
+export { PujasScreen } from './components/pujas-screen';
+export { kindChoices, pujasResource } from './resource';
+export { PUJA_KINDS, type Puja, type PujaKind } from './types';

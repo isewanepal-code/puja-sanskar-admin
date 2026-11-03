@@ -1,106 +1,126 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import { useEffect } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { Field } from '@/components/forms';
 import { useToast } from '@/components/overlays';
-import { useApiForm } from '@/hooks/use-api-form';
-import { browserApi, unwrap, type Schema } from '@/lib/api';
-import { required } from '@/lib/forms';
+import { Button, IconButton } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { isApiError, request, type Schema } from '@/lib/api';
 
 type Level = Schema<'PujaGroupLevelResponse'>;
 
-// The API allows ten levels; the form follows.
+// The API names at most ten levels.
 const MAX_LEVELS = 10;
 
-export function LevelsForm({ levels }: { levels: Level[] }) {
+const schema = z.object({
+  levels: z
+    .array(
+      z.object({
+        nameNe: z.string().trim().min(1, 'Required').max(80),
+        nameEn: z.string().trim().min(1, 'Required').max(80),
+      }),
+    )
+    .max(MAX_LEVELS),
+});
+type Values = z.infer<typeof schema>;
+
+// The heading of each depth, in order: the first row is level 0.
+export function LevelsForm() {
   const t = useTranslations('pujas.levels');
   const tf = useTranslations('forms');
-  const router = useRouter();
   const toast = useToast();
-  const { run, pending, error } = useApiForm();
-  const [count, setCount] = useState(Math.max(levels.length, 1));
+  const queryClient = useQueryClient();
 
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const body = {
-      levels: Array.from({ length: count }, (_, depth) => ({
-        depth,
-        nameNe: required(form, `nameNe-${depth}`),
-        nameEn: required(form, `nameEn-${depth}`),
-      })),
-    };
-    if (await run(() => unwrap(browserApi.PUT('/api/v1/admin/puja-group-levels', { body })))) {
-      toast.success(tf('saved'));
-      router.refresh();
+  const levels = useQuery({
+    queryKey: ['puja-groups', 'levels'],
+    queryFn: () => request<Level[]>('GET', '/admin/puja-group-levels'),
+  });
+
+  const form = useForm<Values>({ resolver: zodResolver(schema), defaultValues: { levels: [] } });
+  const rows = useFieldArray({ control: form.control, name: 'levels' });
+
+  useEffect(() => {
+    if (levels.data) {
+      form.reset({
+        levels: levels.data.length
+          ? levels.data.map(({ nameNe, nameEn }) => ({ nameNe, nameEn }))
+          : [{ nameNe: '', nameEn: '' }],
+      });
     }
-  }
+  }, [levels.data, form]);
+
+  const save = useMutation({
+    mutationFn: ({ levels: list }: Values) =>
+      request('PUT', '/admin/puja-group-levels', {
+        body: { levels: list.map((level, depth) => ({ depth, ...level })) },
+      }),
+    onSuccess: async () => {
+      toast.success(tf('saved'));
+      await queryClient.invalidateQueries({ queryKey: ['puja-groups'] });
+    },
+    onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
+  });
+
+  const errors = form.formState.errors.levels;
 
   return (
-    <form onSubmit={onSubmit} className="grid max-w-3xl gap-6" noValidate>
+    <form
+      noValidate
+      onSubmit={form.handleSubmit((values) => save.mutate(values))}
+      className="grid max-w-3xl gap-5"
+    >
       <p className="text-sm text-muted-foreground">{t('intro')}</p>
-      <ol className="grid gap-5">
-        {Array.from({ length: count }, (_, depth) => {
-          const level = levels.find((l) => l.depth === depth);
-          return (
-            <li key={depth} className="grid gap-3 sm:grid-cols-[7rem_1fr_1fr] sm:items-end">
-              <span className="font-heading font-semibold text-primary sm:pb-2.5">
-                {t('depth', { depth })}
-              </span>
-              <Field label={t('nameNe')} htmlFor={`nameNe-${depth}`}>
-                <input
-                  id={`nameNe-${depth}`}
-                  name={`nameNe-${depth}`}
-                  required
-                  defaultValue={level?.nameNe}
-                  className="input"
-                />
-              </Field>
-              <Field label={t('nameEn')} htmlFor={`nameEn-${depth}`}>
-                <input
-                  id={`nameEn-${depth}`}
-                  name={`nameEn-${depth}`}
-                  required
-                  defaultValue={level?.nameEn}
-                  className="input"
-                />
-              </Field>
-            </li>
-          );
-        })}
+      <ol className="grid gap-4">
+        {rows.fields.map((row, depth) => (
+          <li key={row.id} className="grid items-start gap-3 sm:grid-cols-[6rem_1fr_1fr_2rem]">
+            <span className="pt-8 font-heading font-semibold text-primary">
+              {t('depth', { depth })}
+            </span>
+            <Field
+              label={t('nameNe')}
+              htmlFor={`level-ne-${depth}`}
+              error={errors?.[depth]?.nameNe?.message}
+            >
+              <Input id={`level-ne-${depth}`} {...form.register(`levels.${depth}.nameNe`)} />
+            </Field>
+            <Field
+              label={t('nameEn')}
+              htmlFor={`level-en-${depth}`}
+              error={errors?.[depth]?.nameEn?.message}
+            >
+              <Input id={`level-en-${depth}`} {...form.register(`levels.${depth}.nameEn`)} />
+            </Field>
+            {depth === rows.fields.length - 1 && depth > 0 ? (
+              <IconButton
+                icon="trash"
+                variant="danger"
+                label={t('remove')}
+                className="mt-6"
+                onClick={() => rows.remove(depth)}
+              />
+            ) : null}
+          </li>
+        ))}
       </ol>
-      <div className="flex gap-4 text-sm">
-        {count < MAX_LEVELS ? (
-          <button
-            type="button"
-            className="text-primary hover:underline"
-            onClick={() => setCount(count + 1)}
+      <div className="flex items-center gap-2">
+        {rows.fields.length < MAX_LEVELS ? (
+          <Button
+            variant="secondary"
+            icon="plus"
+            onClick={() => rows.append({ nameNe: '', nameEn: '' })}
           >
             {t('add')}
-          </button>
+          </Button>
         ) : null}
-        {count > 1 ? (
-          <button
-            type="button"
-            className="text-muted-foreground hover:underline"
-            onClick={() => setCount(count - 1)}
-          >
-            {t('remove')}
-          </button>
-        ) : null}
-      </div>
-      {error ? (
-        <p role="alert" className="text-sm text-destructive">
-          {error}
-        </p>
-      ) : null}
-      <div>
-        <button type="submit" className="btn btn-primary" disabled={pending}>
-          {pending ? tf('saving') : tf('save')}
-        </button>
+        <Button type="submit" disabled={save.isPending || levels.isPending}>
+          {save.isPending ? tf('saving') : tf('save')}
+        </Button>
       </div>
     </form>
   );

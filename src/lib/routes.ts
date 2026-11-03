@@ -14,14 +14,8 @@ export const routes = {
 
   // The tree, opened at a group.
   pujaGroups: (at?: string) => withQuery('/pujas', { at }),
-  newPujaGroup: (parentId?: string) => withQuery('/pujas/groups/new', { parent: parentId }),
-  pujaGroup: (id: string) => `/pujas/groups/${id}`,
-  pujas: (query: { q?: string; group?: string } = {}) => withQuery('/pujas/list', query),
-  newPuja: (groupId?: string) => withQuery('/pujas/list/new', { group: groupId }),
-  puja: (id: string) => `/pujas/list/${id}`,
+  pujas: () => '/pujas/list',
   ritualTypes: () => '/pujas/ritual-types',
-  newRitualType: () => '/pujas/ritual-types/new',
-  ritualType: (id: string) => `/pujas/ritual-types/${id}`,
   pujaLevels: () => '/pujas/levels',
   mantras: () => '/pujas/mantras',
 

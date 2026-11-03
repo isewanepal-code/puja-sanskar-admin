@@ -18,6 +18,7 @@ export default async function PujasLayout({ children, params }: LayoutProps<'/[l
             { href: routes.pujaGroups(), label: t('tabs.groups') },
             { href: routes.pujas(), label: t('tabs.list') },
             { href: routes.ritualTypes(), label: t('tabs.ritualTypes') },
+            { href: routes.mantras(), label: t('tabs.mantras') },
             { href: routes.pujaLevels(), label: t('tabs.levels') },
           ]}
         />

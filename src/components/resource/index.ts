@@ -1,3 +1,4 @@
+export { ActiveBadge } from './active-badge';
 export { BulkGrid } from './bulk-grid';
 export { ConfirmDelete } from './confirm-delete';
 export { schemaFor, toBody, toFormValues, type FormValues } from './form-values';

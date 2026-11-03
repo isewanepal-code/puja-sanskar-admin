@@ -178,106 +178,34 @@
       "groups": "Groups",
       "list": "Pujas",
       "ritualTypes": "Ritual types",
+      "mantras": "Mantras",
       "levels": "Levels"
     },
-    "browser": {
+    "tree": {
+      "loading": "Loading the tree...",
+      "failed": "The tree could not load.",
+      "empty": "No groups yet. Start with a main group such as हिन्दु (H), or add them all at once.",
       "level": "Level {depth}",
-      "add": "Add",
-      "addTop": "Add a main group",
-      "empty": "Nothing here yet.",
-      "emptyTree": "No groups yet. Start with a main group such as Hindu (H).",
+      "none": "Nothing here yet.",
+      "add": "Add a group",
+      "addMany": "Add many groups",
+      "addTop": "New main group",
+      "addUnder": "New group under {code}",
       "pujasIn": "Pujas in {code}",
       "noPujas": "No pujas filed here.",
       "addPuja": "Add a puja",
-      "edit": "Edit",
-      "off": "Off"
-    },
-    "group": {
-      "newTitle": "New group",
-      "newUnder": "New group under {code}",
-      "editTitle": "Group {code}",
-      "code": "Code",
-      "codeHint": "Capital letters, such as H. Groups below it are numbered from it: H1, then H1.1.",
-      "numbered": "The code is numbered from {code} when you save.",
-      "nameNe": "Name in Nepali",
-      "nameEn": "Name in English",
-      "nameRomanized": "Romanized name",
-      "ritualType": "Ritual type",
-      "inherit": "Same as the group above",
-      "sortOrder": "Order",
-      "words": "On the website",
-      "summaryNe": "Summary in Nepali",
-      "summaryEn": "Summary in English",
-      "descriptionNe": "Description in Nepali",
-      "descriptionEn": "Description in English",
-      "markdown": "Markdown",
-      "imageUrl": "Image address",
-      "seo": "Search engines",
-      "slug": "Address",
-      "slugHint": "Made from the English name when left empty. Old addresses keep working.",
-      "metaTitle": "Title",
-      "metaDescription": "Description",
-      "place": "Place in the tree",
-      "parent": "Under {name}",
-      "top": "Main group (level 0)"
-    },
-    "list": {
-      "search": "Search by code or name",
-      "searchButton": "Search",
-      "empty": "No pujas match.",
-      "add": "Add a puja",
-      "count": "{total, plural, one {# puja} other {# pujas}}",
-      "columns": {
-        "code": "Code",
-        "name": "Name",
-        "group": "Group",
-        "type": "Type",
-        "status": "Status"
-      },
-      "unfiled": "Not filed",
-      "on": "On",
-      "off": "Off"
-    },
-    "puja": {
-      "newTitle": "New puja",
-      "editTitle": "Puja {code}",
-      "code": "Code",
-      "codeHint": "Capital letters, digits or _, such as K1.",
-      "type": "Kind",
-      "group": "Group",
-      "noGroup": "Not filed in a group"
-    },
-    "types": {
-      "PUJA": "Puja",
-      "FESTIVAL": "Festival",
-      "SAMSKARA": "Sanskar",
-      "VRAT": "Vrat",
-      "SHANTI": "Shanti",
-      "SHRADDHA": "Shraddha",
-      "PATH": "Path",
-      "HOMA": "Hom"
-    },
-    "ritualTypes": {
-      "add": "Add a ritual type",
-      "newTitle": "New ritual type",
-      "editTitle": "Ritual type {code}",
-      "empty": "No ritual types yet. Add Puja (PUJ), Sanskar (SAN) and the rest.",
-      "code": "Code",
-      "codeHint": "Capital letters, such as PUJ.",
-      "columns": {
-        "code": "Code",
-        "name": "Name",
-        "order": "Order",
-        "status": "Status"
-      }
+      "addManyPujas": "Add many pujas",
+      "addPujaIn": "New puja in {code}",
+      "bulkUnder": "Each row becomes a group under {code}, numbered in order. Paste rows from a spreadsheet into the first cell.",
+      "bulkPujasIn": "Each row becomes a puja filed in {code}. Paste rows from a spreadsheet into the first cell."
     },
     "levels": {
-      "intro": "The heading of each level of the group tree, as the groups browser and the website show it.",
+      "intro": "The heading of each level of the group tree, top level first. The tree and the website show them.",
       "depth": "Level {depth}",
       "nameNe": "Name in Nepali",
       "nameEn": "Name in English",
       "add": "Add a level",
-      "remove": "Remove"
+      "remove": "Remove the last level"
     }
   },
   "table": {
@@ -289,7 +217,9 @@
     "actions": "Actions",
     "previous": "Previous",
     "next": "Next",
-    "page": "Page {page} of {total}"
+    "page": "Page {page} of {total}",
+    "on": "On",
+    "off": "Off"
   },
   "password": {
     "title": "Change password",
@@ -318,5 +248,132 @@
     "failed": "Not saved",
     "row": "Row {row}"
   },
-  "resources": {}
+  "resources": {
+    "ritualTypes": {
+      "title": "Ritual types",
+      "add": "Add a ritual type",
+      "empty": "No ritual types yet. Add Puja (PUJ), Sanskar (SAN) and the rest.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "sortOrder": "Order",
+        "isActive": "Shown on the website"
+      },
+      "hints": {
+        "code": "Capital letters, such as PUJ. It cannot change later."
+      }
+    },
+    "puja-groups": {
+      "title": "Groups",
+      "add": "Add a group",
+      "empty": "No groups yet.",
+      "none": "Same as the group above",
+      "fields": {
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "sortOrder": "Order",
+        "isActive": "Shown on the website",
+        "slug": "Web address",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description",
+        "summaryNe": "Summary in Nepali",
+        "summaryEn": "Summary in English",
+        "descriptionNe": "Description in Nepali",
+        "descriptionEn": "Description in English",
+        "imageUrl": "Image address",
+        "ritualTypeId": "Ritual type"
+      },
+      "hints": {
+        "code": "Capital letters, such as H. Groups below it are numbered from it: H1, then H1.1.",
+        "ritualTypeId": "Groups and pujas below take this type unless they name their own.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
+        "metaTitle": "Shown as the title in search results; up to 70 characters.",
+        "metaDescription": "Shown under the title in search results; up to 160 characters.",
+        "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags."
+      },
+      "sections": {
+        "names": "Names",
+        "website": "On the website",
+        "seo": "Search engines"
+      }
+    },
+    "pujas": {
+      "title": "Pujas",
+      "add": "Add a puja",
+      "empty": "No pujas match.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "isActive": "Shown on the website",
+        "slug": "Web address",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description",
+        "summaryNe": "Summary in Nepali",
+        "summaryEn": "Summary in English",
+        "descriptionNe": "Description in Nepali",
+        "descriptionEn": "Description in English",
+        "imageUrl": "Image address",
+        "groupId": "Group",
+        "type": "Kind",
+        "mantraId": "Mantra",
+        "traditions": "Traditions"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _, such as K1. It cannot change later.",
+        "traditions": "Words separated by commas, such as शैव, व्रत.",
+        "groupId": "Where it sits in the puja tree; its ritual type comes from there.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
+        "metaTitle": "Shown as the title in search results; up to 70 characters.",
+        "metaDescription": "Shown under the title in search results; up to 160 characters.",
+        "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags."
+      },
+      "sections": {
+        "names": "Names",
+        "website": "On the website",
+        "seo": "Search engines"
+      },
+      "kinds": {
+        "PUJA": "Puja",
+        "FESTIVAL": "Festival",
+        "SAMSKARA": "Sanskar",
+        "VRAT": "Vrat",
+        "SHANTI": "Shanti",
+        "SHRADDHA": "Shraddha",
+        "PATH": "Path",
+        "HOMA": "Hom"
+      }
+    },
+    "mantras": {
+      "title": "Mantras",
+      "add": "Add a mantra",
+      "empty": "No mantras yet.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "sortOrder": "Order",
+        "isActive": "Shown on the website",
+        "slug": "Web address",
+        "text": "Mantra",
+        "romanized": "In Roman letters",
+        "audioUrl": "Audio address",
+        "durationSeconds": "Length in seconds"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. It cannot change later.",
+        "audioUrl": "An MP3 the website plays only when asked.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+      }
+    }
+  }
 }
