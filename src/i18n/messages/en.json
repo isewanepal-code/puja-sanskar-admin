@@ -197,7 +197,9 @@
       "addManyPujas": "Add many pujas",
       "addPujaIn": "New puja in {code}",
       "bulkUnder": "Each row becomes a group under {code}, numbered in order. Paste rows from a spreadsheet into the first cell.",
-      "bulkPujasIn": "Each row becomes a puja filed in {code}. Paste rows from a spreadsheet into the first cell."
+      "bulkPujasIn": "Each row becomes a puja filed in {code}. Paste rows from a spreadsheet into the first cell.",
+      "one": "Add",
+      "many": "Add many"
     },
     "levels": {
       "intro": "The heading of each level of the group tree, top level first. The tree and the website show them.",

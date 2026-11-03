@@ -20,7 +20,7 @@ export function SectionTabs({ tabs, label }: { tabs: Tab[]; label: string }) {
           href={tab.href}
           aria-current={tab === current ? 'page' : undefined}
           className={cn(
-            'rounded-full px-4 py-1.5 text-sm whitespace-nowrap text-muted-foreground hover:bg-muted',
+            'rounded-md px-3.5 py-1.5 text-sm whitespace-nowrap text-muted-foreground hover:bg-muted',
             tab === current && 'bg-accent font-semibold text-primary',
           )}
         >

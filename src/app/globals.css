@@ -42,9 +42,10 @@
   --font-body: var(--font-noto-sans), system-ui, sans-serif;
   --font-head: var(--font-noto-serif), Georgia, serif;
 
-  --radius-sm: 8px;
-  --radius: 12px;
-  --radius-lg: 20px;
+  /* The admin is a working tool: small, even corners everywhere. */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 10px;
   --space: 16px;
   --container: 1240px;
   --header-h: 64px;

@@ -2,7 +2,7 @@
 
 import { Dialog } from '@base-ui/react/dialog';
 import { useTranslations } from 'next-intl';
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 
 import { Icon } from '@/components/icons';
 import { cn } from '@/lib/utils';
@@ -39,11 +39,16 @@ export function Modal({
   children,
 }: ModalProps) {
   const t = useTranslations('common');
+  const body = useRef<HTMLDivElement>(null);
+  // The cursor starts in the first field, not on the close button.
+  const firstField = () =>
+    body.current?.querySelector<HTMLElement>('input:not([type=hidden]), select, textarea') ?? true;
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/40 transition-opacity data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
         <Dialog.Popup
+          initialFocus={firstField}
           className={cn(
             'fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col rounded-lg bg-card shadow-xl transition-all data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0',
             WIDTH[size],
@@ -65,7 +70,9 @@ export function Modal({
               <Icon name="x" size={18} />
             </Dialog.Close>
           </header>
-          <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5">{children}</div>
+          <div ref={body} className="min-h-0 flex-1 overflow-y-auto px-5 pb-5">
+            {children}
+          </div>
           {footer ? (
             <footer className="flex items-center justify-end gap-2 border-t border-border px-5 py-3">
               {footer}

@@ -46,12 +46,12 @@ function Column({
 }) {
   return (
     <section className="flex w-72 shrink-0 flex-col gap-2">
-      <header className="flex items-end justify-between gap-2 px-2">
+      <header className="grid gap-2 px-2">
         <div className="min-w-0">
           <h2 className="font-heading text-base font-semibold text-primary">{title}</h2>
-          {subtitle ? <p className="truncate text-sm text-primary/80">{subtitle}</p> : null}
+          {subtitle ? <p className="text-sm text-primary/80">{subtitle}</p> : null}
         </div>
-        <div className="flex shrink-0">{actions}</div>
+        <div className="flex gap-1">{actions}</div>
       </header>
       <ul className="grid gap-px">{children}</ul>
     </section>
@@ -174,16 +174,24 @@ export function GroupTree() {
 
   const columnActions = (parent: GroupNode | null) => (
     <>
-      <IconButton
+      <Button
+        size="sm"
+        variant="ghost"
         icon="list"
-        label={t('addMany')}
+        title={t('addMany')}
         onClick={() => setBulk({ what: 'groups', parent })}
-      />
-      <IconButton
+      >
+        {t('many')}
+      </Button>
+      <Button
+        size="sm"
+        variant="secondary"
         icon="plus"
-        label={t('add')}
+        title={t('add')}
         onClick={() => setEditing({ what: 'group', parent })}
-      />
+      >
+        {t('one')}
+      </Button>
     </>
   );
 
@@ -297,16 +305,24 @@ export function GroupTree() {
               subtitle={opened.nameNe}
               actions={
                 <>
-                  <IconButton
+                  <Button
+                    size="sm"
+                    variant="ghost"
                     icon="list"
-                    label={t('addManyPujas')}
+                    title={t('addManyPujas')}
                     onClick={() => setBulk({ what: 'pujas', group: opened })}
-                  />
-                  <IconButton
+                  >
+                    {t('many')}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
                     icon="plus"
-                    label={t('addPuja')}
+                    title={t('addPuja')}
                     onClick={() => setEditing({ what: 'puja', group: opened })}
-                  />
+                  >
+                    {t('one')}
+                  </Button>
                 </>
               }
             >
