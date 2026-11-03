@@ -6,6 +6,7 @@ import { can, type Permission } from './permissions';
 export type NavSection = {
   key:
     | 'dashboard'
+    | 'reports'
     | 'orders'
     | 'customers'
     | 'pujas'
@@ -29,7 +30,10 @@ export type NavGroup = {
 export const navigation: NavGroup[] = [
   {
     key: 'overview',
-    sections: [{ key: 'dashboard', href: routes.dashboard(), icon: 'grid' }],
+    sections: [
+      { key: 'dashboard', href: routes.dashboard(), icon: 'grid' },
+      { key: 'reports', href: routes.salesBook(), icon: 'list', permission: 'reports:read' },
+    ],
   },
   {
     key: 'sales',

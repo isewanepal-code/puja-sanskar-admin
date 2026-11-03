@@ -13,7 +13,7 @@ describe('can', () => {
   it('should leave a staff member only the sections and groups they may open', () => {
     const groups = navigationFor(['reports:read']);
     expect(groups.map((group) => group.key)).toEqual(['overview']);
-    expect(groups[0]!.sections.map((section) => section.key)).toEqual(['dashboard']);
+    expect(groups[0]!.sections.map((section) => section.key)).toEqual(['dashboard', 'reports']);
   });
 
   it('should show catalogue sections to a content manager', () => {

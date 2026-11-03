@@ -54,6 +54,13 @@ export const routes = {
   businessProfile: () => '/settings/business',
 
   staff: () => '/staff',
+  activity: () => '/staff/activity',
+  dataTools: () => '/settings/data',
+
+  salesBook: () => '/reports',
+  vat: () => '/reports/vat',
+  dayBook: () => '/reports/day-book',
+  receivables: () => '/reports/receivables',
 } as const;
 
 export type RouteName = keyof typeof routes;

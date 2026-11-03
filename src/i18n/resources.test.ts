@@ -58,6 +58,7 @@ import {
   voidPaymentResource,
 } from '@/features/sales';
 import { usersResource } from '@/features/staff-accounts';
+import { activityResource } from '@/features/system';
 import { historyResource, movementResource, stockResource } from '@/features/stock';
 
 import messages from './messages/en.json';
@@ -125,6 +126,7 @@ const RESOURCES: Resource<never>[] = [
   listRequestsResource((key) => key),
   messagesResource((key) => key),
   remindersResource,
+  activityResource,
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>

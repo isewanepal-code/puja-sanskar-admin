@@ -74,7 +74,8 @@
       "marketing": "Pandits and offers",
       "settings": "Settings",
       "staff": "Staff",
-      "customers": "Customers"
+      "customers": "Customers",
+      "reports": "Reports"
     },
     "changePassword": "Change password",
     "groups": {
@@ -1475,6 +1476,19 @@
         "language": "Language",
         "createdAt": "Signed up"
       }
+    },
+    "activity": {
+      "title": "Activity",
+      "add": "—",
+      "empty": "Nothing recorded yet.",
+      "none": "—",
+      "fields": {
+        "occurredAt": "When",
+        "actor": "Who",
+        "action": "What",
+        "entityType": "On",
+        "outcome": "Result"
+      }
     }
   },
   "catalogue": {
@@ -1515,13 +1529,15 @@
       "deliveryZones": "Delivery areas",
       "deliverySlots": "Delivery times",
       "shop": "Shop",
-      "business": "Business profile"
+      "business": "Business profile",
+      "data": "Data"
     }
   },
   "staffSection": {
     "title": "Staff",
     "tabs": {
-      "users": "Staff accounts"
+      "users": "Staff accounts",
+      "activity": "Activity"
     }
   },
   "actions": {
@@ -1727,5 +1743,85 @@
     "readyTitle": "The list is ready",
     "copyLink": "Copy link",
     "copied": "Link copied"
+  },
+  "reportsSection": {
+    "title": "Reports",
+    "tabs": {
+      "salesBook": "Sales book",
+      "vat": "VAT",
+      "dayBook": "Day book",
+      "receivables": "Owed"
+    }
+  },
+  "reports": {
+    "from": "From",
+    "to": "To",
+    "fiscalYear": "Fiscal year",
+    "kind": "Show",
+    "kinds": {
+      "DUE": "Owed to the shop",
+      "REFUND": "Refunds the shop owes"
+    },
+    "show": "Show",
+    "export": "Download Excel",
+    "exporting": "Preparing...",
+    "empty": "Nothing in this period.",
+    "methods": {
+      "CASH": "Cash",
+      "QR": "QR",
+      "ESEWA": "eSewa",
+      "KHALTI": "Khalti",
+      "BANK_TRANSFER": "Bank transfer",
+      "CARD": "Card",
+      "OTHER": "Other"
+    },
+    "columns": {
+      "date": "Date",
+      "bill": "Bill",
+      "buyer": "Buyer",
+      "grossTotal": "Gross",
+      "discountTotal": "Discount",
+      "exemptTotal": "Exempt",
+      "taxableTotal": "Taxable",
+      "vatTotal": "VAT",
+      "bills": "Bills",
+      "month": "Month",
+      "method": "Paid by",
+      "count": "Payments",
+      "receipts": "Received",
+      "refunds": "Refunded",
+      "net": "Net",
+      "order": "Order",
+      "age": "Waiting",
+      "days": "{days, plural, one {# day} other {# days}}",
+      "orders": "Orders",
+      "outstanding": "Outstanding"
+    }
+  },
+  "system": {
+    "details": "Details",
+    "who": "Who",
+    "what": "On",
+    "from": "From",
+    "request": "Request",
+    "detailsLabel": "Details",
+    "importTitle": "Master dataset",
+    "importNote": "Upload the .xlsx. A dry run checks every sheet and changes nothing; run it without the dry run to write. Re-importing the same file is safe.",
+    "chooseFile": "Choose the .xlsx",
+    "dryRun": "Dry run (check only)",
+    "check": "Check the file",
+    "import": "Import",
+    "checked": "Checked; nothing was written",
+    "imported": "Imported",
+    "sheet": "Sheet",
+    "created": "New",
+    "updated": "Changed",
+    "unchanged": "Same",
+    "skipped": "Skipped",
+    "searchTitle": "Search",
+    "searchNote": "The search index refreshes itself; rebuild it after a large import.",
+    "reindex": "Rebuild the search index",
+    "reindexing": "Rebuilding...",
+    "reindexed": "{count} entries indexed"
   }
 }
