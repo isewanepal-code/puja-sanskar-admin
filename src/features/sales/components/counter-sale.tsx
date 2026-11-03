@@ -15,27 +15,43 @@ import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
 
 type Product = Schema<'AdminProductResponse'>;
+type Kit = Schema<'AdminKitResponse'>;
 type Order = Schema<'AdminOrderResponse'>;
-type Pack = { id: string; label: string; price: string };
+// A pack sold on its own, or a whole kit sold as one.
+type Pack = { id: string; label: string; price: string; kind: 'pack' | 'kit' };
 type Line = Pack & { quantity: number };
 
 const MONEY = /^\d{1,13}(\.\d{1,2})?$/;
 const PHONE = /^\+?[0-9]{7,15}$/;
 
-// Every pack on sale with its price, as "SKU · product · pack".
+// Every kit and pack on sale with its price; kits first, as the shop sells them most.
 async function loadPacks(): Promise<Pack[]> {
-  const page = await request<{ items: Product[] }>('GET', '/admin/products', {
-    query: { limit: 100, isActive: true },
-  });
-  return page.items.flatMap((product) =>
-    product.variants
-      .filter((variant) => variant.isActive)
-      .map((variant) => ({
-        id: variant.id,
-        label: `${variant.sku} · ${product.nameNe} · ${variant.label}`,
-        price: variant.price,
+  const [kits, page] = await Promise.all([
+    request<{ items: Kit[] }>('GET', '/admin/kits', { query: { limit: 100 } }),
+    request<{ items: Product[] }>('GET', '/admin/products', {
+      query: { limit: 100, isActive: true },
+    }),
+  ]);
+  return [
+    ...kits.items
+      .filter((kit) => kit.isActive)
+      .map((kit) => ({
+        id: kit.id,
+        label: `Kit · ${kit.code} · ${kit.nameNe}`,
+        price: kit.price,
+        kind: 'kit' as const,
       })),
-  );
+    ...page.items.flatMap((product) =>
+      product.variants
+        .filter((variant) => variant.isActive)
+        .map((variant) => ({
+          id: variant.id,
+          label: `${variant.sku} · ${product.nameNe} · ${variant.label}`,
+          price: variant.price,
+          kind: 'pack' as const,
+        })),
+    ),
+  ];
 }
 
 // A sale at the shop counter: packs and quantities, then the order it becomes takes the payment.
@@ -69,7 +85,13 @@ export function CounterSale() {
       z
         .object({
           lines: z
-            .array(z.object({ variantId: z.string(), quantity: z.number().int().min(1).max(999) }))
+            .array(
+              z.object({
+                id: z.string(),
+                kind: z.string(),
+                quantity: z.number().int().min(1).max(999),
+              }),
+            )
             .min(1, t('noLines')),
           contactName: z.string().max(120),
           contactPhone: z.union([z.literal(''), z.string().regex(PHONE, t('phone'))]),
@@ -128,7 +150,7 @@ export function CounterSale() {
 
   function submit() {
     const values = {
-      lines: lines.map((line) => ({ variantId: line.id, quantity: line.quantity })),
+      lines: lines.map((line) => ({ id: line.id, kind: line.kind, quantity: line.quantity })),
       contactName: contactName.trim(),
       contactPhone: contactPhone.trim(),
       couponCode: couponCode.trim(),
@@ -147,7 +169,12 @@ export function CounterSale() {
     }
     setErrors({});
     sell.mutate({
-      lines: values.lines,
+      lines: values.lines
+        .filter((line) => line.kind === 'pack')
+        .map((line) => ({ variantId: line.id, quantity: line.quantity })),
+      kits: values.lines
+        .filter((line) => line.kind === 'kit')
+        .map((line) => ({ kitId: line.id, quantity: line.quantity })),
       ...(values.contactName && { contactName: values.contactName }),
       ...(values.contactPhone && { contactPhone: values.contactPhone }),
       ...(values.couponCode && { couponCode: values.couponCode.toUpperCase() }),
@@ -169,10 +196,16 @@ export function CounterSale() {
           <Field label={t('pack')} htmlFor="sale-pack" className="min-w-72 flex-1">
             <Select id="sale-pack" value={packId} onChange={(e) => setPackId(e.target.value)}>
               <option value="">{packs.isPending ? t('loading') : t('choose')}</option>
-              {(packs.data ?? []).map((pack) => (
-                <option key={pack.id} value={pack.id}>
-                  {pack.label} — {formatMoney(pack.price, 'en')}
-                </option>
+              {(['kit', 'pack'] as const).map((kind) => (
+                <optgroup key={kind} label={t(kind === 'kit' ? 'kits' : 'packs')}>
+                  {(packs.data ?? [])
+                    .filter((pack) => pack.kind === kind)
+                    .map((pack) => (
+                      <option key={pack.id} value={pack.id}>
+                        {pack.label} — {formatMoney(pack.price, 'en')}
+                      </option>
+                    ))}
+                </optgroup>
               ))}
             </Select>
           </Field>

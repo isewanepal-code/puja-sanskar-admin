@@ -16,7 +16,6 @@ export default async function OrdersLayout({ children, params }: LayoutProps<'/[
           label={t('title')}
           tabs={[
             { href: routes.orders(), label: t('tabs.orders') },
-            { href: routes.counterSale(), label: t('tabs.counterSale') },
             { href: routes.bills(), label: t('tabs.bills') },
           ]}
         />

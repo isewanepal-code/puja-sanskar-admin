@@ -4436,6 +4436,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/reports/item-sales': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Item sales: bought, sold online and at the counter, damaged and in stock
+     * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither. Packs with no movement and no stock are left out.
+     */
+    get: operations['AdminReportController_itemSales'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/reports/item-sales/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Item sales as Excel
+     * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither.
+     */
+    get: operations['AdminReportController_exportItemSales'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/reports/profit-and-loss': {
     parameters: {
       query?: never;
@@ -4808,6 +4848,26 @@ export interface paths {
     put?: never;
     /** Void an expense entered by mistake (kept on record) */
     post: operations['AdminExpenseController_void'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Add an item in one step
+     * @description Makes the samagri (unless one is given), the product and its first pack, and brings in opening stock at the X-Branch branch.
+     */
+    post: operations['AdminItemController_add'];
     delete?: never;
     options?: never;
     head?: never;
@@ -7027,6 +7087,14 @@ export interface components {
       metaTitle: string | null;
       /** @description Search engine description */
       metaDescription: string | null;
+      /** @example 33074100 */
+      hsCode: string | null;
+      /**
+       * @example [
+       *       "diwali"
+       *     ]
+       */
+      tags: string[];
       variants: components['schemas']['VariantResponse'][];
     };
     CategoryFacetResponse: {
@@ -7113,6 +7181,14 @@ export interface components {
       metaTitle: string | null;
       /** @description Search engine description */
       metaDescription: string | null;
+      /** @example 33074100 */
+      hsCode: string | null;
+      /**
+       * @example [
+       *       "diwali"
+       *     ]
+       */
+      tags: string[];
       variants: components['schemas']['VariantResponse'][];
       /** @description Goes well with: those on sale, in the order staff set */
       pairs: components['schemas']['ProductCardResponse'][];
@@ -7186,6 +7262,14 @@ export interface components {
       metaTitle: string | null;
       /** @description Search engine description */
       metaDescription: string | null;
+      /** @example 33074100 */
+      hsCode: string | null;
+      /**
+       * @example [
+       *       "diwali"
+       *     ]
+       */
+      tags: string[];
       /** @example PRD001 */
       code: string;
       /**
@@ -7218,6 +7302,15 @@ export interface components {
       altText?: string | null;
     };
     CreateProductDto: {
+      /** @example 33074100 */
+      hsCode?: string | null;
+      /**
+       * @example [
+       *       "diwali",
+       *       "bestseller"
+       *     ]
+       */
+      tags?: string[];
       /** @example PRD001 */
       code: string;
       /** @description Generated from nameEn when omitted */
@@ -7249,6 +7342,15 @@ export interface components {
       metaDescription?: string | null;
     };
     UpdateProductDto: {
+      /** @example 33074100 */
+      hsCode?: string | null;
+      /**
+       * @example [
+       *       "diwali",
+       *       "bestseller"
+       *     ]
+       */
+      tags?: string[];
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /** @example Kapur */
@@ -9420,6 +9522,12 @@ export interface components {
       /** @example 2 */
       quantity: number;
     };
+    StoreSaleKitDto: {
+      /** Format: uuid */
+      kitId: string;
+      /** @example 1 */
+      quantity: number;
+    };
     CounterDiscountDto: {
       /** @enum {string} */
       kind: 'PERCENT' | 'FLAT';
@@ -9429,7 +9537,10 @@ export interface components {
       reason: string;
     };
     StoreSaleDto: {
+      /** @description Packs sold on their own; may be empty when kits are sold */
       lines: components['schemas']['StoreSaleLineDto'][];
+      /** @description Whole kits: their included items, at this branch’s prices less the kit discount */
+      kits?: components['schemas']['StoreSaleKitDto'][];
       /** @example Walk-in customer */
       contactName?: string | null;
       /** @example +9779801234567 */
@@ -10320,6 +10431,8 @@ export interface components {
       descriptionEn: string;
       /** @example कपूर */
       descriptionNe: string | null;
+      /** @example 33074100 */
+      hsCode: string | null;
       /** @example 3 */
       quantity: number;
       /** @example 120.00 */
@@ -11247,6 +11360,95 @@ export interface components {
       items: components['schemas']['SalesBookRowResponse'][];
       meta: components['schemas']['PageMetaResponse'];
     };
+    ItemSalesFiguresResponse: {
+      /**
+       * @description Bought from suppliers
+       * @example 40
+       */
+      bought: number;
+      /** @example 3 */
+      onlineSingle: number;
+      /**
+       * @description Inside kits sold online
+       * @example 4
+       */
+      onlineInKits: number;
+      /** @example 12 */
+      counterSingle: number;
+      /**
+       * @description Inside kits sold at the counter
+       * @example 6
+       */
+      counterInKits: number;
+      /** @example 0 */
+      returned: number;
+      /** @example 1 */
+      damaged: number;
+      /**
+       * @description After discounts, VAT included
+       * @example 3000.00
+       */
+      salesValue: string;
+      /**
+       * @description Now, not at the end of the period
+       * @example 14
+       */
+      inStock: number;
+    };
+    ItemSalesRowResponse: {
+      /**
+       * @description Bought from suppliers
+       * @example 40
+       */
+      bought: number;
+      /** @example 3 */
+      onlineSingle: number;
+      /**
+       * @description Inside kits sold online
+       * @example 4
+       */
+      onlineInKits: number;
+      /** @example 12 */
+      counterSingle: number;
+      /**
+       * @description Inside kits sold at the counter
+       * @example 6
+       */
+      counterInKits: number;
+      /** @example 0 */
+      returned: number;
+      /** @example 1 */
+      damaged: number;
+      /**
+       * @description After discounts, VAT included
+       * @example 3000.00
+       */
+      salesValue: string;
+      /**
+       * @description Now, not at the end of the period
+       * @example 14
+       */
+      inStock: number;
+      /** Format: uuid */
+      variantId: string;
+      /** @example LOBAN-50 */
+      sku: string;
+      /** @example 50 g */
+      packLabel: string;
+      /** @example DHUP_LOBAN */
+      productCode: string;
+      /** @example लोबान धूप */
+      productNameNe: string;
+      /** @example Loban incense */
+      productNameEn: string;
+    };
+    ItemSalesResponse: {
+      period: components['schemas']['PeriodResponse'];
+      /** @description Over every matching pack */
+      totals: components['schemas']['ItemSalesFiguresResponse'];
+      items: components['schemas']['ItemSalesRowResponse'][];
+      meta: components['schemas']['PageMetaResponse'];
+    };
     ExpenseLineResponse: {
       /** @example RENT */
       code: string;
@@ -11710,6 +11912,66 @@ export interface components {
       note?: string | null;
       /** @example https://media.pujasanskar.com/receipts/nea.jpg */
       receiptUrl?: string | null;
+    };
+    OpeningStockDto: {
+      /** @example 40 */
+      quantity: number;
+      /** @example 45.00 */
+      unitCost?: string | null;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      day?: string | null;
+    };
+    QuickItemDto: {
+      /** @example DHUP_LOBAN */
+      code: string;
+      /** @example धूप */
+      nameNe: string;
+      /** @example Incense */
+      nameEn: string;
+      /** @example dhup */
+      nameRomanized?: string | null;
+      /**
+       * Format: uuid
+       * @description An existing samagri; else one is made in categoryId
+       */
+      materialId?: string;
+      /**
+       * Format: uuid
+       * @description Needed when no samagri is given
+       */
+      categoryId?: string;
+      /** @example LOBAN-50 */
+      sku: string;
+      /** @example 50 g */
+      packLabel: string;
+      /** @example 50 */
+      packQuantity?: number;
+      /** Format: uuid */
+      packUnitId?: string;
+      /** @example 120.00 */
+      price: string;
+      /** @example 150.00 */
+      compareAtPrice?: string | null;
+      /** @example 33074100 */
+      hsCode?: string | null;
+      /**
+       * @example [
+       *       "diwali"
+       *     ]
+       */
+      tags?: string[];
+      /** @example Pure loban from Bhaktapur */
+      description?: string | null;
+      /**
+       * @description Shown and sold on the website
+       * @default true
+       */
+      showOnWebsite: boolean;
+      /** @description Stock brought in now, at the X-Branch branch */
+      openingStock?: components['schemas']['OpeningStockDto'];
     };
     OrderMessageResponse: {
       /**
@@ -32314,6 +32576,138 @@ export interface operations {
       };
     };
   };
+  AdminReportController_itemSales: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+        page?: number;
+        limit?: number;
+        /** @description SKU, code or name */
+        q?: string;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ItemSalesResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminReportController_exportItemSales: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+        page?: number;
+        limit?: number;
+        /** @description SKU, code or name */
+        q?: string;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminReportController_profitAndLoss: {
     parameters: {
       query?: {
@@ -34206,6 +34600,92 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['ExpenseResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminItemController_add: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['QuickItemDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminProductResponse'];
           };
         };
       };

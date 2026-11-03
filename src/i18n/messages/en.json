@@ -67,27 +67,32 @@
     "signOut": "Sign out",
     "sections": {
       "dashboard": "Dashboard",
-      "orders": "Orders",
-      "pujas": "Pujas",
-      "catalogue": "Catalogue",
-      "content": "Content",
-      "marketing": "Pandits and offers",
-      "settings": "Settings",
-      "staff": "Staff",
+      "counterSale": "Counter sale",
+      "orders": "Orders and bills",
       "customers": "Customers",
-      "reports": "Reports",
+      "items": "Items",
+      "kits": "Kits",
+      "stock": "Stock",
+      "buying": "Buying",
+      "suppliers": "Suppliers",
       "money": "Cash and bank",
-      "purchases": "Purchases",
-      "expenses": "Expenses"
+      "expenses": "Expenses",
+      "reports": "Reports",
+      "pujas": "Pujas",
+      "content": "Pages and banners",
+      "marketing": "Pandits and offers",
+      "catalogue": "Categories and units",
+      "settings": "Settings and branches",
+      "staff": "Staff"
     },
     "changePassword": "Change password",
     "groups": {
       "overview": "Overview",
-      "sales": "Sales",
-      "catalogue": "Pujas and samagri",
-      "site": "Website",
-      "admin": "Administration",
-      "accounts": "Accounts"
+      "sell": "Sell",
+      "stock": "Stock",
+      "money": "Money",
+      "website": "Website",
+      "setup": "Setup"
     },
     "showMenu": "Show the menu",
     "hideMenu": "Hide the menu",
@@ -109,7 +114,13 @@
     "waiting": "Waiting to be confirmed",
     "seeAll": "See all",
     "noneWaiting": "No orders are waiting.",
-    "noReports": "Your role can't see the sales figures."
+    "noReports": "Your role can't see the sales figures.",
+    "byChannel": "Online and counter",
+    "channels": {
+      "ONLINE": "Sold online",
+      "STORE": "Sold at the counter"
+    },
+    "channelNote": "{bills, plural, one {# bill} other {# bills}}; one shared stock"
   },
   "orders": {
     "title": "Orders",
@@ -666,9 +677,9 @@
       }
     },
     "products": {
-      "title": "Products",
-      "add": "Add a product",
-      "empty": "No products match.",
+      "title": "Items",
+      "add": "Add an item",
+      "empty": "No items match.",
       "none": "—",
       "fields": {
         "images": "Images",
@@ -684,7 +695,9 @@
         "variants": "Packs",
         "fromPrice": "From",
         "metaTitle": "Search title",
-        "metaDescription": "Search description"
+        "metaDescription": "Search description",
+        "hsCode": "HS code",
+        "tags": "Tags"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as PRD001. It cannot change later.",
@@ -694,7 +707,9 @@
         "images": "The first image is the main one.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
-        "metaDescription": "Shown under the title in search results; up to 160 characters."
+        "metaDescription": "Shown under the title in search results; up to 160 characters.",
+        "hsCode": "The customs code printed on bills, 4 to 8 digits.",
+        "tags": "Words to find it by, such as diwali, tihar; separated by commas."
       },
       "sections": {
         "website": "On the website",
@@ -1765,6 +1780,49 @@
         "quantity": "How many",
         "note": "Note"
       }
+    },
+    "quickItem": {
+      "title": "Add an item",
+      "add": "Add an item",
+      "empty": "",
+      "fields": {
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "categoryId": "Category",
+        "materialId": "Or an existing samagri",
+        "packLabel": "Pack size",
+        "packQuantity": "Amount in the pack",
+        "packUnitId": "Unit",
+        "price": "Selling price",
+        "compareAtPrice": "Price before discount",
+        "openingQuantity": "Opening stock",
+        "openingUnitCost": "Cost price of one",
+        "openingDay": "Bought on",
+        "hsCode": "HS code",
+        "tags": "Tags",
+        "description": "Description",
+        "showOnWebsite": "Sell on the website",
+        "code": "Item code",
+        "sku": "Pack code (SKU)"
+      },
+      "hints": {
+        "categoryId": "Where it shows on the website.",
+        "materialId": "Only when this is another pack of a samagri you already have.",
+        "packLabel": "How it is sold, such as 50 g, 1 packet or 1 piece.",
+        "price": "What the customer pays, VAT included.",
+        "openingQuantity": "How many you have now; leave empty to add stock later through Buying.",
+        "openingUnitCost": "What one cost you, before VAT. It sets the profit in reports.",
+        "openingDay": "Today when left empty.",
+        "hsCode": "The customs code printed on bills, 4 to 8 digits.",
+        "tags": "Words to find it by, such as diwali, tihar; separated by commas.",
+        "code": "Left empty, it is made from the English name.",
+        "sku": "Left empty, it is made from the item code and pack size."
+      },
+      "sections": {
+        "pack": "Pack and price",
+        "stock": "Stock you have now",
+        "more": "More (optional)"
+      }
     }
   },
   "catalogue": {
@@ -1887,7 +1945,10 @@
     "sendToBranchOf": "Send {name} to another branch",
     "sendToBranchNote": "Leaves this branch and arrives at the other at its average cost.",
     "send": "Send",
-    "sent": "Sent"
+    "sent": "Sent",
+    "addItem": "Add an item",
+    "addItemNote": "Fill what you know; codes are made from the English name when left empty. Opening stock is added to the branch chosen at the top.",
+    "itemAdded": "Item added"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -1970,16 +2031,16 @@
     "popup": "Allow pop-ups for this site to print."
   },
   "counterSale": {
-    "pack": "Pack",
-    "choose": "Choose a pack",
-    "loading": "Loading packs...",
+    "pack": "Item or kit",
+    "choose": "Choose an item or kit",
+    "loading": "Loading items and kits...",
     "quantity": "Qty",
     "add": "Add",
     "price": "Price",
     "total": "Total",
     "remove": "Remove",
-    "empty": "Add the first pack.",
-    "noLines": "Add at least one pack",
+    "empty": "Add the first item or kit.",
+    "noLines": "Add at least one item or kit",
     "subtotal": "Subtotal",
     "customer": "Customer name",
     "phone": "Phone",
@@ -1993,7 +2054,9 @@
     "note": "Note",
     "sell": "Record sale",
     "sold": "Sale {number} recorded",
-    "afterNote": "The sale opens as an order, where payment is taken and the bill issued."
+    "afterNote": "The sale opens as an order, where payment is taken and the bill issued.",
+    "kits": "Kits (sold whole)",
+    "packs": "Single items"
   },
   "customersSection": {
     "title": "Customers",
@@ -2041,7 +2104,8 @@
       "dayBook": "Day book",
       "receivables": "Owed",
       "profitAndLoss": "Profit and loss",
-      "purchaseBook": "Purchases"
+      "purchaseBook": "Purchases",
+      "itemSales": "Item sales"
     }
   },
   "reports": {
@@ -2100,6 +2164,22 @@
       "totalExpenses": "Total expenses",
       "netProfit": "Net profit",
       "vatPayable": "VAT to pay"
+    },
+    "search": "Search",
+    "searchItems": "Name, code or tag",
+    "items": {
+      "item": "Item",
+      "bought": "Bought",
+      "online": "Sold online",
+      "counter": "Sold at the counter",
+      "onlineSingle": "Online",
+      "onlineInKits": "Online in kits",
+      "counterSingle": "Counter",
+      "counterInKits": "Counter in kits",
+      "returned": "Returned",
+      "damaged": "Damaged",
+      "salesValue": "Sales value",
+      "inStock": "In stock now"
     }
   },
   "system": {
@@ -2245,5 +2325,27 @@
     "voidTitle": "Void this expense",
     "voidNote": "It stays listed as voided and the money returns to the account.",
     "voided": "Voided"
+  },
+  "shopFloor": {
+    "counter": {
+      "title": "Counter sale",
+      "intro": "Sell to a customer in the shop. Pick single items or whole kits; the stock goes down at once."
+    },
+    "items": {
+      "title": "Items",
+      "intro": "Everything the shop sells. Add an item once with its price and opening stock; it is sold online and at the counter."
+    },
+    "stock": {
+      "title": "Stock",
+      "intro": "How many of each item this branch holds. Online orders and counter sales take from the same count."
+    },
+    "kits": {
+      "title": "Kits",
+      "intro": "A puja kit is a list of items sold together. A kit has no stock of its own: selling one takes each item out of stock."
+    },
+    "suppliers": {
+      "title": "Suppliers",
+      "intro": "The people and shops you buy from, and what you still owe them."
+    }
   }
 }

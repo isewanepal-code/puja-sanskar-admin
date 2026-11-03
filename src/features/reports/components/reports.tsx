@@ -17,6 +17,8 @@ type DayRow = Schema<'DayBookRowResponse'>;
 type Receivables = Schema<'ReceivablesResponse'>;
 type Receivable = Schema<'ReceivableRowResponse'>;
 type Totals = Schema<'SalesTotalsResponse'>;
+type ItemSales = Schema<'ItemSalesResponse'>;
+type ItemSalesRow = Schema<'ItemSalesRowResponse'>;
 
 const money = (amount: string) => formatMoney(amount, 'en');
 const amount = <T,>(key: keyof T & string, header: string) => ({
@@ -359,6 +361,76 @@ export function ProfitAndLossReport() {
           ),
           align: 'right',
           filterValue: null,
+        },
+      ]}
+    />
+  );
+}
+
+const count = <T,>(key: keyof T & string, header: string) => ({
+  key,
+  header,
+  cell: (row: T) => (Number(row[key]) === 0 ? '—' : String(row[key])),
+  sortValue: (row: T) => Number(row[key]),
+  align: 'right' as const,
+});
+
+// Each pack: how many came in, went out online and at the counter (alone and in kits), and what is left.
+export function ItemSalesReport() {
+  const t = useTranslations('reports.items');
+  return (
+    <ReportScreen<ItemSales, ItemSalesRow>
+      path="/admin/reports/item-sales"
+      paged
+      filters={['range', 'search']}
+      rows={(data) => data.items}
+      rowKey={(row) => row.variantId}
+      summary={({ totals }) => (
+        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <Figure label={t('bought')} value={String(totals.bought)} />
+          <Figure label={t('online')} value={String(totals.onlineSingle + totals.onlineInKits)} />
+          <Figure
+            label={t('counter')}
+            value={String(totals.counterSingle + totals.counterInKits)}
+          />
+          <Figure label={t('returned')} value={String(totals.returned)} />
+          <Figure label={t('damaged')} value={String(totals.damaged)} />
+          <Figure label={t('salesValue')} value={money(totals.salesValue)} />
+        </div>
+      )}
+      initialSort={{ key: 'salesValue', direction: 'desc' }}
+      columns={[
+        {
+          key: 'item',
+          header: t('item'),
+          cell: (row) => (
+            <>
+              <div>
+                {row.productNameNe} · {row.packLabel}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {row.sku} · {row.productNameEn}
+              </div>
+            </>
+          ),
+          sortValue: (row) => row.productNameNe,
+        },
+        count<ItemSalesRow>('bought', t('bought')),
+        count<ItemSalesRow>('onlineSingle', t('onlineSingle')),
+        count<ItemSalesRow>('onlineInKits', t('onlineInKits')),
+        count<ItemSalesRow>('counterSingle', t('counterSingle')),
+        count<ItemSalesRow>('counterInKits', t('counterInKits')),
+        count<ItemSalesRow>('returned', t('returned')),
+        count<ItemSalesRow>('damaged', t('damaged')),
+        amount<ItemSalesRow>('salesValue', t('salesValue')),
+        {
+          key: 'inStock',
+          header: t('inStock'),
+          cell: (row) => (
+            <Badge tone={row.inStock > 0 ? 'success' : 'warning'}>{row.inStock}</Badge>
+          ),
+          sortValue: (row) => row.inStock,
+          align: 'right' as const,
         },
       ]}
     />

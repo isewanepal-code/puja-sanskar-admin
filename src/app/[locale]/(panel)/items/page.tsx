@@ -6,13 +6,13 @@ import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
   params,
-}: PageProps<'/[locale]/catalogue/products'>): Promise<Metadata> {
+}: PageProps<'/[locale]/items'>): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'catalogue.tabs' });
-  return { title: t('products') };
+  const t = await getTranslations({ locale, namespace: 'shopFloor.items' });
+  return { title: t('title') };
 }
 
-export default async function ProductsPage({ params }: PageProps<'/[locale]/catalogue/products'>) {
+export default async function ItemsPage({ params }: PageProps<'/[locale]/items'>) {
   await resolveLocale(params);
   return <ProductsScreen />;
 }

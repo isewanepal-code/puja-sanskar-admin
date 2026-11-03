@@ -10,7 +10,7 @@ export const routes = {
   dashboard: () => '/',
   orders: () => '/orders',
   order: (id: string) => `/orders/${id}`,
-  counterSale: () => '/orders/counter',
+  counterSale: () => '/counter',
   bills: () => '/orders/bills',
   login: (next?: string) => (next ? `/login?next=${encodeURIComponent(next)}` : '/login'),
 
@@ -20,12 +20,12 @@ export const routes = {
   ritualTypes: () => '/pujas/ritual-types',
   pujaLevels: () => '/pujas/levels',
   mantras: () => '/pujas/mantras',
-  kits: () => '/pujas/kits',
+  kits: () => '/kits',
 
   categories: () => '/catalogue',
   materials: () => '/catalogue/samagri',
-  products: () => '/catalogue/products',
-  stock: () => '/catalogue/stock',
+  products: () => '/items',
+  stock: () => '/stock',
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
 
@@ -56,7 +56,7 @@ export const routes = {
 
   moneyAccounts: () => '/money',
   purchaseBills: () => '/purchases',
-  suppliers: () => '/purchases/suppliers',
+  suppliers: () => '/suppliers',
   supplierPayments: () => '/purchases/payments',
   expenses: () => '/expenses',
   expenseCategories: () => '/expenses/categories',
@@ -71,6 +71,7 @@ export const routes = {
   receivables: () => '/reports/receivables',
   profitAndLoss: () => '/reports/profit-and-loss',
   purchaseBook: () => '/reports/purchase-book',
+  itemSales: () => '/reports/items',
 } as const;
 
 export type RouteName = keyof typeof routes;

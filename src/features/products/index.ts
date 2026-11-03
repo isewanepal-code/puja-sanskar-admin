@@ -5,6 +5,7 @@ export {
   packChoices,
   productChoices,
   productsResource,
+  quickItemResource,
   variantsResource,
   type Product,
 } from './resources';

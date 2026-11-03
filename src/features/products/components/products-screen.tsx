@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { ActionModal, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
-import { IconButton } from '@/components/ui/button';
+import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { request } from '@/lib/api';
 
@@ -13,11 +13,12 @@ import {
   gradesResource,
   pairingsResource,
   productsResource,
+  quickItemResource,
   variantsResource,
   type Product,
 } from '../resources';
 
-type Open = { what: 'packs' | 'grades' | 'pairings'; id: string } | null;
+type Open = { what: 'packs' | 'grades' | 'pairings'; id: string } | { what: 'new' } | null;
 
 // The product as it is now, so grades added a moment ago reach its packs' form.
 function useProduct(id: string | undefined) {
@@ -31,10 +32,11 @@ function useProduct(id: string | undefined) {
 export function ProductsScreen() {
   const t = useTranslations('actions');
   const [open, setOpen] = useState<Open>(null);
-  const product = useProduct(open?.id);
+  const id = open && 'id' in open ? open.id : undefined;
+  const product = useProduct(id);
   const pairings = useQuery({
-    queryKey: ['products', 'pairings', open?.id],
-    queryFn: () => request<Product[]>('GET', `/admin/products/${open!.id}/pairings`),
+    queryKey: ['products', 'pairings', id],
+    queryFn: () => request<Product[]>('GET', `/admin/products/${id}/pairings`),
     enabled: open?.what === 'pairings',
   });
   const close = () => setOpen(null);
@@ -45,13 +47,18 @@ export function ProductsScreen() {
       <ResourceScreen
         resource={productsResource}
         toolbar={
-          <WorkbookUploadButton
-            path="/admin/products/import"
-            templatePath="/admin/products/import/template"
-            title={t('uploadProducts')}
-            description={t('uploadProductsNote')}
-            refresh={['products', 'stock']}
-          />
+          <>
+            <WorkbookUploadButton
+              path="/admin/products/import"
+              templatePath="/admin/products/import/template"
+              title={t('uploadProducts')}
+              description={t('uploadProductsNote')}
+              refresh={['products', 'stock']}
+            />
+            <Button icon="plus" onClick={() => setOpen({ what: 'new' })}>
+              {t('addItem')}
+            </Button>
+          </>
         }
         rowActions={(row) => (
           <>
@@ -88,6 +95,16 @@ export function ProductsScreen() {
           <ResourceScreen resource={gradesResource(product.data)} />
         ) : null}
       </Modal>
+
+      <ActionModal
+        resource={open?.what === 'new' ? quickItemResource : null}
+        size="lg"
+        title={t('addItem')}
+        description={t('addItemNote')}
+        submitLabel={t('addItem')}
+        doneMessage={t('itemAdded')}
+        onClose={close}
+      />
 
       <ActionModal
         resource={

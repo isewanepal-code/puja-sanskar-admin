@@ -36,6 +36,7 @@ import {
   gradesResource,
   pairingsResource,
   productsResource,
+  quickItemResource,
   variantsResource,
   type Product,
 } from '@/features/products';
@@ -110,6 +111,7 @@ const RESOURCES: Resource<never>[] = [
   deliverySlotsResource,
   usersResource((key) => key),
   productsResource,
+  quickItemResource,
   variantsResource(PRODUCT),
   gradesResource(PRODUCT),
   pairingsResource(PRODUCT),

@@ -18,6 +18,7 @@ export default async function ReportsLayout({
         <SectionTabs
           label={t('title')}
           tabs={[
+            { href: routes.itemSales(), label: t('tabs.itemSales') },
             { href: routes.salesBook(), label: t('tabs.salesBook') },
             { href: routes.vat(), label: t('tabs.vat') },
             { href: routes.dayBook(), label: t('tabs.dayBook') },

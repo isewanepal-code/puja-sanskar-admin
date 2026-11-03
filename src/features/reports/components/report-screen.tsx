@@ -11,7 +11,7 @@ import { DataTable, type Column } from '@/components/ui/data-table';
 import { Input, Select } from '@/components/ui/input';
 import { download, isApiError, request } from '@/lib/api';
 
-export type Filter = 'range' | 'fiscalYear' | 'kind';
+export type Filter = 'range' | 'fiscalYear' | 'kind' | 'search';
 type Query = Record<string, string | undefined>;
 
 type ReportScreenProps<D, R> = {
@@ -51,7 +51,8 @@ export function ReportScreen<D, R>({
     Object.entries(query).filter(
       ([key]) =>
         filters.includes(key as Filter) ||
-        ((key === 'from' || key === 'to') && filters.includes('range')),
+        ((key === 'from' || key === 'to') && filters.includes('range')) ||
+        (key === 'q' && filters.includes('search')),
     ),
   );
 
@@ -118,6 +119,18 @@ export function ReportScreen<D, R>({
               <option value="DUE">{t('kinds.DUE')}</option>
               <option value="REFUND">{t('kinds.REFUND')}</option>
             </Select>
+          </label>
+        ) : null}
+        {filters.includes('search') ? (
+          <label className="grid gap-1 text-sm">
+            {t('search')}
+            <Input
+              type="search"
+              value={draft.q ?? ''}
+              className="w-56"
+              placeholder={t('searchItems')}
+              onChange={(e) => setDraft({ ...draft, q: e.target.value || undefined })}
+            />
           </label>
         ) : null}
         <Button type="submit" variant="secondary">

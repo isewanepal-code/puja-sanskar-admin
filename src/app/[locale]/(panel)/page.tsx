@@ -83,6 +83,30 @@ export default async function DashboardPage({ params }: PageProps<'/[locale]'>) 
           </section>
 
           <section className="grid gap-3">
+            <h2 className="font-semibold">{t('byChannel')}</h2>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {(['ONLINE', 'STORE'] as const).map((channel) => {
+                const sold = summary.sales.byChannel.find((row) => row.channel === channel);
+                return (
+                  <Link
+                    key={channel}
+                    href={`${routes.orders()}?channel=${channel}`}
+                    className="panel hover:border-primary"
+                  >
+                    <div className="text-sm text-muted-foreground">{t(`channels.${channel}`)}</div>
+                    <div className="mt-1 font-heading text-2xl font-semibold">
+                      {money(sold?.grossTotal ?? '0')}
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {t('channelNote', { bills: sold?.bills ?? 0 })}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="grid gap-3">
             <h2 className="font-semibold">{t('byStatus')}</h2>
             <div className="flex flex-wrap gap-3">
               {summary.ordersByStatus.map(({ status, orders }) => (
