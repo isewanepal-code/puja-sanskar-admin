@@ -4,7 +4,8 @@ import { getTranslations } from 'next-intl/server';
 import { EmptyState } from '@/components/feedback';
 import { can } from '@/config/permissions';
 import { getSummary } from '@/features/dashboard';
-import { listOrders, OrdersTable, StatusChip } from '@/features/orders';
+import { listOrders } from '@/features/orders';
+import { OrdersPreview, OrderStatusBadge } from '@/features/sales';
 import { getMe } from '@/features/staff';
 import { Link } from '@/i18n/navigation';
 import { resolveLocale } from '@/i18n/server';
@@ -90,7 +91,7 @@ export default async function DashboardPage({ params }: PageProps<'/[locale]'>) 
                   href={`${routes.orders()}?status=${status}`}
                   className="panel flex items-center gap-3 !py-3 hover:border-primary"
                 >
-                  <StatusChip status={status} />
+                  <OrderStatusBadge status={status} />
                   <span className="font-heading text-xl font-semibold">{orders}</span>
                 </Link>
               ))}
@@ -110,7 +111,7 @@ export default async function DashboardPage({ params }: PageProps<'/[locale]'>) 
             </Link>
           </div>
           {waiting.items.length > 0 ? (
-            <OrdersTable orders={waiting.items} />
+            <OrdersPreview orders={waiting.items} />
           ) : (
             <EmptyState title={t('noneWaiting')} icon="check" />
           )}

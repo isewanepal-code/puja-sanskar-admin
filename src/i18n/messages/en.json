@@ -103,20 +103,6 @@
   },
   "orders": {
     "title": "Orders",
-    "search": "Search by number, name or phone",
-    "searchButton": "Search",
-    "all": "All",
-    "empty": "No orders match.",
-    "emptyHint": "Clear the search or pick another status.",
-    "count": "{total, plural, one {# order} other {# orders}}",
-    "columns": {
-      "number": "Order",
-      "customer": "Customer",
-      "placed": "Placed",
-      "channel": "Channel",
-      "status": "Status",
-      "total": "Total"
-    },
     "status": {
       "PENDING": "Pending",
       "CONFIRMED": "Confirmed",
@@ -1515,6 +1501,42 @@
         "action": "What",
         "entityType": "On",
         "outcome": "Result"
+      }
+    },
+    "orders": {
+      "title": "Orders",
+      "add": "Add an order",
+      "empty": "No orders match. Clear the search or a filter.",
+      "fields": {
+        "number": "Order",
+        "customer": "Customer",
+        "createdAt": "Placed",
+        "channel": "Channel",
+        "paymentPlan": "Payment",
+        "status": "Status",
+        "total": "Total"
+      },
+      "filters": {
+        "status": "Every status",
+        "channel": "Every channel",
+        "checkoutMethod": "Every checkout"
+      },
+      "channels": {
+        "ONLINE": "Online",
+        "STORE": "Counter"
+      },
+      "fulfilments": {
+        "DELIVERY": "Delivery",
+        "PICKUP": "Pickup"
+      },
+      "checkouts": {
+        "ACCOUNT": "With an account",
+        "QUICK_PAY": "Quick pay"
+      },
+      "plans": {
+        "PAY_NOW": "Pay now",
+        "CASH_ON_DELIVERY": "Cash on delivery",
+        "SOMEONE_ELSE": "Someone else pays"
       }
     }
   },

@@ -50,6 +50,7 @@ import {
 import {
   billsResource,
   deliveryFeeResource,
+  ordersResource,
   issueBillResource,
   receivePaymentResource,
   refundResource,
@@ -118,6 +119,7 @@ const RESOURCES: Resource<never>[] = [
   issueBillResource(ORDER),
   voidBillResource(ANY),
   billsResource((key) => key),
+  ordersResource({}, (key) => key),
   businessProfileResource,
   shopSettingsResource((key) => key),
   customersResource('NEWEST', (key) => key),

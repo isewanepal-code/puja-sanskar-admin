@@ -1,12 +1,106 @@
 import type { Resource } from '@/components/resource';
+import { Link } from '@/i18n/navigation';
 import { Badge } from '@/components/ui/badge';
 import type { Schema } from '@/lib/api';
-import { formatDate, formatMoney } from '@/lib/format';
+import { formatDate, formatDateTime, formatMoney } from '@/lib/format';
+import { routes } from '@/lib/routes';
+
+import { OrderStatusBadge } from './components/order-status-badge';
 
 export type Order = Schema<'AdminOrderResponse'>;
 export type Payment = Schema<'PaymentResponse'>;
 export type Invoice = Schema<'InvoiceResponse'>;
 type Name = (key: string) => string;
+
+export type OrderStatus = Order['status'];
+export const ORDER_STATUSES = [
+  'PENDING',
+  'CONFIRMED',
+  'PACKED',
+  'OUT_FOR_DELIVERY',
+  'READY_FOR_PICKUP',
+  'COMPLETED',
+  'CANCELLED',
+] as const satisfies readonly OrderStatus[];
+export const ORDER_CHANNELS = ['ONLINE', 'STORE'] as const satisfies readonly Order['channel'][];
+export const CHECKOUT_METHODS = ['ACCOUNT', 'QUICK_PAY'] as const;
+
+export type OrderFilter = { status?: string; channel?: string; checkoutMethod?: string };
+
+const money = (amount: string) => formatMoney(amount, 'en');
+
+// Every order, newest first, narrowed by status, channel and checkout; read-only here,
+// the order page is where it is worked on.
+export function ordersResource(filter: OrderFilter, name: Name): Resource<Order> {
+  return {
+    key: 'orders',
+    path: '/admin/orders',
+    exportPath: '/admin/orders/export',
+    list: 'paged',
+    listQuery: Object.fromEntries(Object.entries(filter).filter(([, value]) => !!value)),
+    canCreate: false,
+    canEdit: false,
+    canDelete: false,
+    rowId: (row) => row.id,
+    rowLabel: (row) => row.number,
+    initialSort: { key: 'createdAt', direction: 'desc' },
+    columns: [
+      {
+        key: 'number',
+        cell: (row) => (
+          <Link href={routes.order(row.id)} className="font-semibold text-primary hover:underline">
+            {row.number}
+          </Link>
+        ),
+        sortValue: (row) => row.number,
+      },
+      {
+        key: 'customer',
+        cell: (row) => (
+          <>
+            <div>{row.contactName ?? row.customer?.fullName ?? '—'}</div>
+            <div className="text-xs text-muted-foreground">{row.contactPhone}</div>
+          </>
+        ),
+        sortValue: (row) => row.contactName ?? row.customer?.fullName ?? '',
+      },
+      {
+        key: 'createdAt',
+        cell: (row) => formatDateTime(row.createdAt, 'en'),
+        sortValue: (row) => row.createdAt,
+      },
+      {
+        key: 'channel',
+        cell: (row) => (
+          <>
+            <div>{name(`channels.${row.channel}`)}</div>
+            <div className="text-xs text-muted-foreground">
+              {name(`fulfilments.${row.fulfilment}`)}
+            </div>
+          </>
+        ),
+        sortValue: (row) => row.channel,
+      },
+      {
+        key: 'paymentPlan',
+        cell: (row) => name(`plans.${row.paymentPlan}`),
+        sortValue: (row) => row.paymentPlan,
+      },
+      {
+        key: 'status',
+        cell: (row) => <OrderStatusBadge status={row.status} />,
+        sortValue: (row) => ORDER_STATUSES.indexOf(row.status),
+      },
+      {
+        key: 'total',
+        cell: (row) => <span className="font-semibold">{money(row.total)}</span>,
+        sortValue: (row) => Number(row.total),
+        align: 'right',
+      },
+    ],
+    fields: [],
+  };
+}
 
 const METHODS = ['CASH', 'QR', 'ESEWA', 'KHALTI', 'BANK_TRANSFER', 'CARD', 'OTHER'] as const;
 const PAN = { regex: /^\d{9}$/, message: 'A PAN is 9 digits' };

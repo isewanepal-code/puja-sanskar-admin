@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { getOrder, StatusChip } from '@/features/orders';
-import { OrderActions } from '@/features/sales';
+import { getOrder } from '@/features/orders';
+import { OrderActions, OrderStatusBadge } from '@/features/sales';
 import { Link } from '@/i18n/navigation';
 import { resolveLocale } from '@/i18n/server';
 import { isApiError } from '@/lib/api';
@@ -48,7 +48,7 @@ export default async function OrderPage({ params }: PageProps<'/[locale]/orders/
 
       <header className="flex flex-wrap items-center gap-3">
         <h1 className="font-heading text-2xl font-semibold">{order.number}</h1>
-        <StatusChip status={order.status} />
+        <OrderStatusBadge status={order.status} />
         <span className="text-sm text-muted-foreground">
           {formatDateTime(order.createdAt, 'en')} · {t(`channel.${order.channel}`)} ·{' '}
           {t(`fulfilment.${order.fulfilment}`)}
@@ -141,7 +141,7 @@ export default async function OrderPage({ params }: PageProps<'/[locale]/orders/
               {order.history.map((change, i) => (
                 <li key={i} className="grid gap-1">
                   <div className="flex items-center gap-2">
-                    <StatusChip status={change.status} />
+                    <OrderStatusBadge status={change.status} />
                     <span className="text-xs text-muted-foreground">
                       {formatDateTime(change.at, 'en')}
                     </span>
