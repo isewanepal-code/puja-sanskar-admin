@@ -72,6 +72,8 @@ export type Resource<T> = {
   canDelete?: boolean;
   // Extra query sent with every list request.
   listQuery?: Record<string, string>;
+  // A record as its form edits it, when the API nests what the form sends as ids.
+  formRow?: (row: T) => Record<string, unknown>;
   // Fields offered as columns of the bulk-entry grid; leave out for no bulk entry.
   bulk?: string[];
 };

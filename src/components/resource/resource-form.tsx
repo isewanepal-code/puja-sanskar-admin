@@ -3,8 +3,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { Fragment, useId } from 'react';
-import { useForm, type UseFormRegister } from 'react-hook-form';
+import { Fragment, useEffect, useId } from 'react';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 
 import { Field as FieldShell } from '@/components/forms';
 import { useToast } from '@/components/overlays';
@@ -26,13 +26,13 @@ const INPUT_TYPE: Partial<Record<Field['kind'], string>> = {
 function Control({
   field,
   id,
-  register,
+  form,
   invalid,
   t,
 }: {
   field: Field;
   id: string;
-  register: UseFormRegister<FormValues>;
+  form: UseFormReturn<FormValues>;
   invalid: boolean;
   t: Translate;
 }) {
@@ -43,6 +43,12 @@ function Control({
     staleTime: 5 * 60 * 1000,
   });
   const choices = field.options ?? options.data ?? [];
+  const { register, getValues, setValue } = form;
+
+  // A select whose choices arrive after the form starts shows its value once they do.
+  useEffect(() => {
+    if (options.data) setValue(field.name, getValues(field.name));
+  }, [options.data, field.name, getValues, setValue]);
   const common = { id, 'aria-invalid': invalid || undefined, ...register(field.name) };
 
   switch (field.kind) {
@@ -120,7 +126,10 @@ export function ResourceForm<T>({
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schemaFor(fields)) as never,
-    defaultValues: toFormValues(fields, (row as Record<string, unknown> | undefined) ?? defaults),
+    defaultValues: toFormValues(
+      fields,
+      row ? (resource.formRow?.(row) ?? (row as Record<string, unknown>)) : defaults,
+    ),
   });
 
   const save = useMutation({
@@ -174,7 +183,7 @@ export function ResourceForm<T>({
             ) : null}
             {field.kind === 'switch' ? (
               <div className="flex items-center sm:col-span-2">
-                <Control field={field} id={id} register={form.register} invalid={!!message} t={t} />
+                <Control field={field} id={id} form={form} invalid={!!message} t={t} />
               </div>
             ) : (
               <FieldShell
@@ -191,7 +200,7 @@ export function ResourceForm<T>({
                     : undefined
                 }
               >
-                <Control field={field} id={id} register={form.register} invalid={!!message} t={t} />
+                <Control field={field} id={id} form={form} invalid={!!message} t={t} />
               </FieldShell>
             )}
           </Fragment>

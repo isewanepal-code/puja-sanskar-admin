@@ -31,6 +31,7 @@ export const navigation: NavGroup[] = [
     key: 'catalogue',
     sections: [
       { key: 'pujas', href: routes.pujaGroups(), icon: 'temple', permission: 'catalogue:read' },
+      { key: 'catalogue', href: routes.categories(), icon: 'leaf', permission: 'catalogue:read' },
     ],
   },
 ];

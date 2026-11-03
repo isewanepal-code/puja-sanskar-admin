@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import type { Resource } from '@/components/resource';
+import {
+  categoriesResource,
+  materialsResource,
+  sourcesResource,
+  unitsResource,
+} from '@/features/catalogue';
 import { mantrasResource } from '@/features/mantras';
 import { pujaGroupResource, ritualTypesResource } from '@/features/puja-groups';
 import { pujasResource } from '@/features/pujas';
@@ -16,6 +22,10 @@ const RESOURCES: Resource<never>[] = [
     (kind) => kind,
   ),
   mantrasResource,
+  categoriesResource(() => undefined),
+  materialsResource,
+  unitsResource,
+  sourcesResource,
 ] as unknown as Resource<never>[];
 
 const lookup = (path: string[]) =>

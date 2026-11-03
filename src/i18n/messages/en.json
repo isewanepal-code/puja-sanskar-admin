@@ -374,6 +374,99 @@
         "audioUrl": "An MP3 the website plays only when asked.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working."
       }
+    },
+    "categories": {
+      "title": "Categories",
+      "add": "Add a category",
+      "empty": "No categories match.",
+      "none": "Top level",
+      "fields": {
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "sortOrder": "Order",
+        "isActive": "Shown on the website",
+        "slug": "Web address",
+        "parentId": "Under",
+        "taxClassId": "Tax class"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _, such as CAT005. It cannot change later.",
+        "parentId": "Changing it moves the category with everything below it.",
+        "taxClassId": "Empty takes the category above it, then the shop default.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+      }
+    },
+    "materials": {
+      "title": "Samagri",
+      "add": "Add a samagri",
+      "empty": "No samagri match.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "isActive": "Shown on the website",
+        "slug": "Web address",
+        "categoryId": "Category",
+        "defaultUnitId": "Unit",
+        "aliases": "Other names",
+        "specification": "Specification",
+        "notes": "Notes",
+        "isSellable": "Sold in the shop",
+        "isComposite": "Made of other samagri"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _, such as M062. It cannot change later.",
+        "aliases": "Other names people search by, separated by commas: कर्पुर, camphor.",
+        "isSellable": "Off for things a puja needs that the shop never sells, such as dakshina.",
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+      }
+    },
+    "units": {
+      "title": "Units",
+      "add": "Add a unit",
+      "empty": "No units match.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "isActive": "Shown on the website",
+        "symbol": "Symbol"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. It cannot change later.",
+        "symbol": "As requirements write it: g, ml, pcs."
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "add": "Add a source",
+      "empty": "No sources match.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "name": "Name",
+        "topic": "Topic",
+        "url": "Web address",
+        "note": "Note",
+        "isActive": "In use"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. It cannot change later."
+      }
+    }
+  },
+  "catalogue": {
+    "title": "Catalogue",
+    "tabs": {
+      "categories": "Categories",
+      "materials": "Samagri",
+      "units": "Units",
+      "sources": "Sources"
     }
   }
 }
