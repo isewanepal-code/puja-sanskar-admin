@@ -117,6 +117,8 @@ export const productsResource: Resource<Product> = {
     { name: 'images', kind: 'images', section: 'website' },
     { name: 'description', kind: 'html', max: 4000 },
     { name: 'slug', kind: 'slug', max: 160, section: 'seo', wide: true },
+    { name: 'metaTitle', kind: 'text', max: 70, wide: true },
+    { name: 'metaDescription', kind: 'textarea', max: 160 },
     { name: 'isActive', kind: 'switch' },
   ],
 };

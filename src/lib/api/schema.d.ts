@@ -441,6 +441,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/customers/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Customer accounts as Excel
+     * @description Same filters as the list, every match up to 50,000 rows.
+     */
+    get: operations['AdminCustomerController_export'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/customers/{id}': {
     parameters: {
       query?: never;
@@ -1449,6 +1469,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/products/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Products and their packs as Excel
+     * @description Two sheets, Products and Packs, in the layout the product import reads. Same filters as the list.
+     */
+    get: operations['AdminProductController_export'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/products/{id}': {
     parameters: {
       query?: never;
@@ -1665,6 +1705,26 @@ export interface paths {
      * @description Lowest stock first. SKUs never stocked are not listed.
      */
     get: operations['AdminStockLevelController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/stock-levels/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Stock by SKU as Excel
+     * @description Same filters and order as the list, every match up to 50,000 rows.
+     */
+    get: operations['AdminStockLevelController_export'];
     put?: never;
     post?: never;
     delete?: never;
@@ -2866,6 +2926,26 @@ export interface paths {
     };
     /** List orders, newest first */
     get: operations['AdminOrderController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/orders/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Orders as Excel
+     * @description Same filters as the list, every match up to 50,000 rows.
+     */
+    get: operations['AdminOrderController_export'];
     put?: never;
     post?: never;
     delete?: never;
@@ -4192,6 +4272,80 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/products/import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Add or update products and packs from Excel
+     * @description Sheets Products and Packs, as GET /admin/products/export writes them. Products match by code, packs by sku; blank cells keep the saved value and prices are taken as sold. Every row is checked first; nothing is written if any is invalid.
+     */
+    post: operations['AdminProductImportController_import'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/products/import/template': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** The upload layout with one example row */
+    get: operations['AdminProductImportController_template'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/stock-levels/import': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Record stock movements from Excel
+     * @description Sheet Movements with columns sku, type (PURCHASE, RETURN, DAMAGE or ADJUSTMENT), quantity, unit_cost, reference and note. All rows are recorded together or none are.
+     */
+    post: operations['AdminStockImportController_import'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/stock-levels/import/template': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** The upload layout with one example row */
+    get: operations['AdminStockImportController_template'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/activity': {
     parameters: {
       query?: never;
@@ -4884,6 +5038,10 @@ export interface components {
       depth: number;
       /** @example 0 */
       sortOrder: number;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
     };
     CategoryTreeResponse: {
       /** Format: uuid */
@@ -4905,6 +5063,10 @@ export interface components {
       depth: number;
       /** @example 0 */
       sortOrder: number;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       children: components['schemas']['CategoryTreeResponse'][];
     };
     CategoryDetailResponse: {
@@ -4927,6 +5089,10 @@ export interface components {
       depth: number;
       /** @example 0 */
       sortOrder: number;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       /** @description From the top-level category down to the parent */
       breadcrumbs: components['schemas']['CategoryResponse'][];
       children: components['schemas']['CategoryResponse'][];
@@ -4951,6 +5117,10 @@ export interface components {
       depth: number;
       /** @example 0 */
       sortOrder: number;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       /** @example CAT005 */
       code: string;
       /**
@@ -4986,6 +5156,10 @@ export interface components {
       depth: number;
       /** @example 0 */
       sortOrder: number;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       /** @example CAT005 */
       code: string;
       /**
@@ -5027,6 +5201,10 @@ export interface components {
       sortOrder: number;
       /** @default true */
       isActive: boolean;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     UpdateCategoryDto: {
       /** @example Incense & Lamps */
@@ -5051,6 +5229,10 @@ export interface components {
       sortOrder: number;
       /** @default true */
       isActive: boolean;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     UnitResponse: {
       /** Format: uuid */
@@ -5176,6 +5358,10 @@ export interface components {
       isSellable: boolean;
       category: components['schemas']['CategorySummary'];
       defaultUnit: components['schemas']['UnitSummary'] | null;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
     };
     AdminMaterialResponse: {
       /** Format: uuid */
@@ -5200,6 +5386,10 @@ export interface components {
       isSellable: boolean;
       category: components['schemas']['CategorySummary'];
       defaultUnit: components['schemas']['UnitSummary'] | null;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       /** @example M062 */
       code: string;
       /**
@@ -5257,6 +5447,10 @@ export interface components {
       isSellable: boolean;
       /** @default true */
       isActive: boolean;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     UpdateMaterialDto: {
       /** @example Camphor */
@@ -5297,6 +5491,10 @@ export interface components {
       isSellable: boolean;
       /** @default true */
       isActive: boolean;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     MantraResponse: {
       /** @example mahalakshmi-mantra */
@@ -6151,6 +6349,10 @@ export interface components {
       rating: components['schemas']['RatingResponse'];
       /** @description Grades in order; packs name theirs with gradeId */
       grades: components['schemas']['ProductGradeResponse'][];
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       variants: components['schemas']['VariantResponse'][];
     };
     CategoryFacetResponse: {
@@ -6233,6 +6435,10 @@ export interface components {
       rating: components['schemas']['RatingResponse'];
       /** @description Grades in order; packs name theirs with gradeId */
       grades: components['schemas']['ProductGradeResponse'][];
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       variants: components['schemas']['VariantResponse'][];
       /** @description Goes well with: those on sale, in the order staff set */
       pairs: components['schemas']['ProductCardResponse'][];
@@ -6302,6 +6508,10 @@ export interface components {
       rating: components['schemas']['RatingResponse'];
       /** @description Grades in order; packs name theirs with gradeId */
       grades: components['schemas']['ProductGradeResponse'][];
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       /** @example PRD001 */
       code: string;
       /**
@@ -6359,6 +6569,10 @@ export interface components {
        * @description Tax class of this product; leave out or null to use its category's, then the shop default
        */
       taxClassId?: string | null;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     UpdateProductDto: {
       /** @description Generated from nameEn when omitted */
@@ -6379,6 +6593,10 @@ export interface components {
        * @description Tax class of this product; leave out or null to use its category's, then the shop default
        */
       taxClassId?: string | null;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
       /** @description true makes this the material's default product; it cannot be unset directly */
       isDefault?: boolean;
     };
@@ -6984,6 +7202,10 @@ export interface components {
       currency: string;
       /** @description Every included item is on sale and in stock */
       isAvailable: boolean;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       items: components['schemas']['KitLineResponse'][];
     };
     KitPackageResponse: {
@@ -7041,6 +7263,10 @@ export interface components {
       currency: string;
       /** @description Every included item is on sale and in stock */
       isAvailable: boolean;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       items: components['schemas']['KitLineResponse'][];
       /** @description The puja's Basic, Standard and Premium kits on sale, this one included; empty when it stands alone */
       packages: components['schemas']['KitPackageResponse'][];
@@ -7153,6 +7379,10 @@ export interface components {
       currency: string;
       /** @description Every included item is on sale and in stock */
       isAvailable: boolean;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       /** @example KIT001 */
       code: string;
       /**
@@ -7203,6 +7433,10 @@ export interface components {
       sortOrder: number;
       /** @default true */
       isActive: boolean;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     KitFromPujaResponse: {
       kit: components['schemas']['AdminKitResponse'];
@@ -7256,6 +7490,10 @@ export interface components {
       sortOrder: number;
       /** @default true */
       isActive: boolean;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     AddKitItemDto: {
       /**
@@ -8462,6 +8700,10 @@ export interface components {
        * @example 5.00
        */
       customerDiscountPercent: string;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       /**
        * @description Orders families placed with the code
        * @example 140
@@ -8487,6 +8729,10 @@ export interface components {
        * @example 5.00
        */
       customerDiscountPercent: string;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
     };
     SavePanditDto: {
       /** @example PANDIT-RAM */
@@ -8511,6 +8757,10 @@ export interface components {
        * @example 5.00
        */
       customerDiscountPercent: string;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
       /**
        * @description Orders families placed with the code
        * @example 140
@@ -8562,6 +8812,10 @@ export interface components {
       isActive: boolean;
       /** @default 0 */
       sortOrder: number;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     UpdatePanditDto: {
       /** @description Generated from nameEn when omitted */
@@ -8588,6 +8842,10 @@ export interface components {
       isActive: boolean;
       /** @default 0 */
       sortOrder: number;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
     };
     DiscountRuleResponse: {
       /** Format: uuid */
@@ -11721,6 +11979,51 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminCustomerController_export: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches name, email or phone */
+        q?: string;
+        status?: 'ACTIVE' | 'DISABLED';
+        sort?: 'NEWEST' | 'NAME' | 'TOP_PAYING' | 'RECENT_ORDER';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
         };
       };
       /** @description UNAUTHORIZED */
@@ -17036,6 +17339,62 @@ export interface operations {
       };
     };
   };
+  AdminProductController_export: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+        /** @description Products of samagri filed in this category or below it */
+        categoryId?: string;
+        materialId?: string;
+        sort?:
+          | 'CODE'
+          | 'NAME'
+          | 'PRICE_LOW'
+          | 'PRICE_HIGH'
+          | 'NEWEST'
+          | 'TOP_RATED'
+          | 'POPULAR'
+          | 'RELEVANCE';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminProductController_get: {
     parameters: {
       query?: never;
@@ -18186,6 +18545,60 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockLevelController_export: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Only this product's SKUs */
+        productId?: string;
+        /** @description Only SKUs at or below their reorder level */
+        lowStock?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
         };
       };
     };
@@ -24058,6 +24471,64 @@ export interface operations {
       };
     };
   };
+  AdminOrderController_export: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        status?:
+          | 'PENDING'
+          | 'CONFIRMED'
+          | 'PACKED'
+          | 'OUT_FOR_DELIVERY'
+          | 'READY_FOR_PICKUP'
+          | 'COMPLETED'
+          | 'CANCELLED';
+        channel?: 'ONLINE' | 'STORE';
+        /** @description QUICK_PAY lists orders waiting on a chat payment */
+        checkoutMethod?: 'ACCOUNT' | 'QUICK_PAY';
+        /** @description One customer's orders */
+        customerId?: string;
+        /** @description Orders placed with this pandit's code */
+        panditId?: string;
+        /** @description Order number (PS-000123), phone or contact name */
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminOrderController_get: {
     parameters: {
       query?: never;
@@ -29271,6 +29742,236 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminProductImportController_import: {
+    parameters: {
+      query?: {
+        /** @description Validate and report without writing anything */
+        dryRun?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ImportReportResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description PAYLOAD_TOO_LARGE */
+      413: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminProductImportController_template: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockImportController_import: {
+    parameters: {
+      query?: {
+        /** @description Validate and report without writing anything */
+        dryRun?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ImportReportResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description PAYLOAD_TOO_LARGE */
+      413: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockImportController_template: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
         headers: {
           [name: string]: unknown;
         };

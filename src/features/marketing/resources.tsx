@@ -75,7 +75,9 @@ export const panditsResource: Resource<Pandit> = {
     { name: 'bioNe', kind: 'html', max: 1000 },
     { name: 'bioEn', kind: 'html', max: 1000 },
     { name: 'sortOrder', kind: 'number' },
-    { name: 'slug', kind: 'slug', max: 160 },
+    { name: 'slug', kind: 'slug', max: 160, section: 'seo', wide: true },
+    { name: 'metaTitle', kind: 'text', max: 70, wide: true },
+    { name: 'metaDescription', kind: 'textarea', max: 160 },
     { name: 'isActive', kind: 'switch' },
   ],
 };

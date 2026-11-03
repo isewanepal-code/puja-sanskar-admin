@@ -394,13 +394,20 @@
         "isActive": "Shown on the website",
         "slug": "Web address",
         "parentId": "Under",
-        "taxClassId": "Tax class"
+        "taxClassId": "Tax class",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as CAT005. It cannot change later.",
         "parentId": "Changing it moves the category with everything below it.",
         "taxClassId": "Empty takes the category above it, then the shop default.",
-        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
+        "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
+        "metaDescription": "Shown under the title in search results; up to 160 characters."
+      },
+      "sections": {
+        "seo": "Search engines"
       }
     },
     "materials": {
@@ -421,13 +428,20 @@
         "specification": "Specification",
         "notes": "Notes",
         "isSellable": "Sold in the shop",
-        "isComposite": "Made of other samagri"
+        "isComposite": "Made of other samagri",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as M062. It cannot change later.",
         "aliases": "Other names people search by, separated by commas: कर्पुर, camphor.",
         "isSellable": "Off for things a puja needs that the shop never sells, such as dakshina.",
-        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
+        "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
+        "metaDescription": "Shown under the title in search results; up to 160 characters."
+      },
+      "sections": {
+        "seo": "Search engines"
       }
     },
     "units": {
@@ -537,16 +551,21 @@
         "slug": "Web address",
         "isActive": "Shown on the website",
         "ordersBrought": "Orders",
-        "salesBrought": "Sales"
+        "salesBrought": "Sales",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description"
       },
       "hints": {
         "referralCode": "Customers type it at checkout, such as PANDIT-RAM.",
         "bioNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
-        "bioEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags."
+        "bioEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
+        "metaDescription": "Shown under the title in search results; up to 160 characters."
       },
       "sections": {
         "terms": "Discount and commission",
-        "profile": "Profile"
+        "profile": "Profile",
+        "seo": "Search engines"
       }
     },
     "taxClasses": {
@@ -655,7 +674,9 @@
         "slug": "Web address",
         "isActive": "Shown on the website",
         "variants": "Packs",
-        "fromPrice": "From"
+        "fromPrice": "From",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as PRD001. It cannot change later.",
@@ -663,7 +684,9 @@
         "taxClassId": "Empty takes the samagri's category, then the shop default.",
         "description": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "images": "The first image is the main one.",
-        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
+        "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
+        "metaDescription": "Shown under the title in search results; up to 160 characters."
       },
       "sections": {
         "website": "On the website",
@@ -779,14 +802,18 @@
         "isActive": "Shown on the website",
         "items": "Items",
         "salePrice": "Price",
-        "isAvailable": "Stock"
+        "isAvailable": "Stock",
+        "metaTitle": "Search title",
+        "metaDescription": "Search description"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as KIT001. It cannot change later.",
         "tier": "Basic, Standard or Premium; a puja offers one kit of each.",
         "discountPercent": "Off the sum of the packs inside.",
         "description": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
-        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
+        "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
+        "metaDescription": "Shown under the title in search results; up to 160 characters."
       },
       "sections": {
         "website": "On the website",
