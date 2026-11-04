@@ -21,10 +21,11 @@ import {
 } from '../resources';
 
 import { AccountBook } from './account-book';
+import { MerchantQrModal } from './merchant-qr-modal';
 
 type Method = Schema<'MethodAccountResponse'>;
 type Open =
-  | { what: 'book' | 'adjust' | 'close'; account: MoneyAccount }
+  | { what: 'book' | 'adjust' | 'close' | 'qr'; account: MoneyAccount }
   | { what: 'transfer' | 'methods' }
   | null;
 
@@ -123,9 +124,18 @@ export function MoneyScreen() {
               label={tm('adjust')}
               onClick={() => setOpen({ what: 'adjust', account: row })}
             />
+            {row.kind !== 'CASH' ? (
+              <IconButton
+                icon="qr"
+                label={tm('qr.button')}
+                onClick={() => setOpen({ what: 'qr', account: row })}
+              />
+            ) : null}
           </>
         )}
       />
+
+      <MerchantQrModal account={open?.what === 'qr' ? account : null} onClose={close} />
 
       <Modal
         open={open?.what === 'book'}

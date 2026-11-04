@@ -3988,6 +3988,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/payment-qr': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * A QR for any amount (a quick payment at the counter)
+     * @description Made from the X-Branch branch's QR account, else the shop's merchant QR (2.42). Nothing is recorded.
+     */
+    post: operations['AdminPaymentQrController_forAmount'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/payment-qr/read': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Read a merchant QR from a photo or screenshot
+     * @description Returns its text and payee once it checks out, for saving on an account or the shop.
+     */
+    post: operations['AdminPaymentQrController_read'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/orders/{id}/invoices': {
     parameters: {
       query?: never;
@@ -10919,6 +10959,20 @@ export interface components {
       /** @example Fonepay – Puja Sanskar */
       label: string | null;
     };
+    QuickQrDto: {
+      /** @example 450.00 */
+      amount: string;
+      /** @example Walk-in 3 */
+      reference?: string | null;
+    };
+    MerchantQrResponse: {
+      /** @description The QR text, to save on the account or the shop */
+      payload: string;
+      /** @example PUJA SANSKAR */
+      payeeName: string | null;
+      /** @example KATHMANDU */
+      city: string | null;
+    };
     IssueInvoiceDto: {
       /**
        * @description Buyer's PAN for a business bill
@@ -11255,6 +11309,9 @@ export interface components {
        * @example 18450.00
        */
       balance: string;
+      /** @description Its merchant QR text, for QR payments */
+      qrPayload: string | null;
+      qrLabel: string | null;
       isActive: boolean;
     };
     MethodAccountResponse: {
@@ -11381,12 +11438,20 @@ export interface components {
       name: string;
       /** @example 25000.00 */
       openingBalance?: string | null;
+      /** @example 000201010211…6304ABCD */
+      qrPayload?: string | null;
+      /** @example Fonepay · Nabil Bank */
+      qrLabel?: string | null;
     };
     UpdateMoneyAccountDto: {
       /** @example Nabil Bank current */
       name?: string | null;
       /** @example 25000.00 */
       openingBalance?: string | null;
+      /** @example 000201010211…6304ABCD */
+      qrPayload?: string | null;
+      /** @example Fonepay · Nabil Bank */
+      qrLabel?: string | null;
       /** @description A closed account takes no new money */
       isActive?: boolean;
     };
@@ -31111,6 +31176,142 @@ export interface operations {
       };
       /** @description NOT_FOUND */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPaymentQrController_forAmount: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['QuickQrDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PaymentQrResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPaymentQrController_read: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MerchantQrResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
         headers: {
           [name: string]: unknown;
         };

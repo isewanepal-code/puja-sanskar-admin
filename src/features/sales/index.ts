@@ -16,3 +16,4 @@ export {
   ORDER_STATUSES,
   type OrderStatus,
 } from './resources';
+export { QuickQr } from './components/quick-qr';

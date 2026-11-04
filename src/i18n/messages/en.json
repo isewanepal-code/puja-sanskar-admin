@@ -2103,7 +2103,15 @@
     "sold": "Sale {number} recorded",
     "afterNote": "The sale opens as an order, where payment is taken and the bill issued.",
     "kits": "Kits (sold whole)",
-    "packs": "Single items"
+    "packs": "Single items",
+    "quickQr": {
+      "button": "Quick QR",
+      "title": "QR for an amount",
+      "note": "For a payment without an order. The server makes the QR from this branch's merchant QR; record the payment on the order as usual.",
+      "amount": "Amount (Rs)",
+      "reference": "Reference (optional)",
+      "make": "Make QR"
+    }
   },
   "customersSection": {
     "title": "Customers",
@@ -2326,7 +2334,19 @@
     "adjust": "Correct the balance",
     "adjustOf": "Correct {name}",
     "adjustNote": "Positive adds, negative takes away. Say why.",
-    "adjusted": "Balance corrected"
+    "adjusted": "Balance corrected",
+    "qr": {
+      "button": "Merchant QR",
+      "title": "Merchant QR of {name}",
+      "note": "QR payments at this branch are made out to the account that takes QR payments. Upload a photo or screenshot of its Fonepay or NepalPay QR.",
+      "has": "Set: {label}",
+      "none": "No QR yet: the shop's QR from Business settings is used.",
+      "photo": "Photo of the QR",
+      "reading": "Reading the QR…",
+      "found": "Pays {payee} · {city}",
+      "label": "Name shown under the QR (optional)",
+      "remove": "Remove QR"
+    }
   },
   "purchases": {
     "title": "Purchases",
