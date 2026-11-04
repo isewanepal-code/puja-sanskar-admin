@@ -3003,6 +3003,26 @@ export interface paths {
     patch: operations['AdminReviewController_moderate'];
     trace?: never;
   };
+  '/api/v1/reviews': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The shop's rating and its best recent reviews
+     * @description Published reviews of four stars or more with words, each with the product bought.
+     */
+    get: operations['ShopReviewController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/orders/track': {
     parameters: {
       query?: never;
@@ -7789,8 +7809,12 @@ export interface components {
        * @example STANDARD
        */
       tier: string | null;
+      /** @enum {string} */
+      discountKind: 'PERCENT' | 'FLAT';
       /** @example 10.00 */
       discountPercent: string;
+      /** @example 0.00 */
+      discountAmount: string;
       /** @description Still sold as a kit; if not, checkout waits */
       isListable: boolean;
     };
@@ -8100,10 +8124,20 @@ export interface components {
        */
       price: string;
       /**
-       * @description Off the items as a kit
+       * @description How the kit discount is given
+       * @enum {string}
+       */
+      discountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off the items as a kit, when PERCENT
        * @example 10.00
        */
       discountPercent: string;
+      /**
+       * @description Rupees off one kit, when FLAT
+       * @example 0.00
+       */
+      discountAmount: string;
       /**
        * @description One kit after its discount: what the cart charges
        * @example 1305.00
@@ -8161,10 +8195,20 @@ export interface components {
        */
       price: string;
       /**
-       * @description Off the items as a kit
+       * @description How the kit discount is given
+       * @enum {string}
+       */
+      discountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off the items as a kit, when PERCENT
        * @example 10.00
        */
       discountPercent: string;
+      /**
+       * @description Rupees off one kit, when FLAT
+       * @example 0.00
+       */
+      discountAmount: string;
       /**
        * @description One kit after its discount: what the cart charges
        * @example 1305.00
@@ -8277,10 +8321,20 @@ export interface components {
        */
       price: string;
       /**
-       * @description Off the items as a kit
+       * @description How the kit discount is given
+       * @enum {string}
+       */
+      discountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off the items as a kit, when PERCENT
        * @example 10.00
        */
       discountPercent: string;
+      /**
+       * @description Rupees off one kit, when FLAT
+       * @example 0.00
+       */
+      discountAmount: string;
       /**
        * @description One kit after its discount: what the cart charges
        * @example 1305.00
@@ -8339,8 +8393,16 @@ export interface components {
        * @enum {string|null}
        */
       tier?: 'BASIC' | 'STANDARD' | 'PREMIUM' | null;
+      /**
+       * @description PERCENT takes discountPercent off the items; FLAT takes discountAmount rupees
+       * @default PERCENT
+       * @enum {string}
+       */
+      discountKind: 'PERCENT' | 'FLAT';
       /** @example 10.00 */
       discountPercent?: string | null;
+      /** @example 150.00 */
+      discountAmount?: string | null;
       images?: components['schemas']['ImageDto'][];
       /**
        * @description Lower comes first
@@ -8396,8 +8458,16 @@ export interface components {
        * @enum {string|null}
        */
       tier?: 'BASIC' | 'STANDARD' | 'PREMIUM' | null;
+      /**
+       * @description PERCENT takes discountPercent off the items; FLAT takes discountAmount rupees
+       * @default PERCENT
+       * @enum {string}
+       */
+      discountKind: 'PERCENT' | 'FLAT';
       /** @example 10.00 */
       discountPercent?: string | null;
+      /** @example 150.00 */
+      discountAmount?: string | null;
       images?: components['schemas']['ImageDto'][];
       /**
        * @description Lower comes first
@@ -9138,6 +9208,37 @@ export interface components {
       /** @example Mentions a phone number */
       note?: string | null;
     };
+    ReviewedProductResponse: {
+      /** @example brass-bell */
+      slug: string;
+      /** @example पित्तलको घण्टी */
+      nameNe: string;
+      /** @example Brass bell */
+      nameEn: string;
+      imageUrl: string | null;
+    };
+    ShopReviewResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Sita S. */
+      authorName: string;
+      /** @example 5 */
+      rating: number;
+      title: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      product: components['schemas']['ReviewedProductResponse'] | null;
+    };
+    ShopReviewsResponse: {
+      /** @example 4.8 */
+      average: number | null;
+      /** @example 1240 */
+      count: number;
+      reviews: components['schemas']['ShopReviewResponse'][];
+    };
     TrackedStepResponse: {
       /** @enum {string} */
       status:
@@ -9623,10 +9724,20 @@ export interface components {
       bioEn: string | null;
       bioNe: string | null;
       /**
-       * @description Off for families using the code
+       * @description How the code discount is given
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off for families using the code, when PERCENT
        * @example 5.00
        */
       customerDiscountPercent: string;
+      /**
+       * @description Rupees off the order, when FLAT
+       * @example 0.00
+       */
+      customerDiscountAmount: string;
       /** @description Search engine title */
       metaTitle: string | null;
       /** @description Search engine description */
@@ -9652,10 +9763,20 @@ export interface components {
       bioEn: string | null;
       bioNe: string | null;
       /**
-       * @description Off for families using the code
+       * @description How the code discount is given
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off for families using the code, when PERCENT
        * @example 5.00
        */
       customerDiscountPercent: string;
+      /**
+       * @description Rupees off the order, when FLAT
+       * @example 0.00
+       */
+      customerDiscountAmount: string;
       /** @description Search engine title */
       metaTitle: string | null;
       /** @description Search engine description */
@@ -9680,10 +9801,20 @@ export interface components {
       bioEn: string | null;
       bioNe: string | null;
       /**
-       * @description Off for families using the code
+       * @description How the code discount is given
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off for families using the code, when PERCENT
        * @example 5.00
        */
       customerDiscountPercent: string;
+      /**
+       * @description Rupees off the order, when FLAT
+       * @example 0.00
+       */
+      customerDiscountAmount: string;
       /** @description Search engine title */
       metaTitle: string | null;
       /** @description Search engine description */
@@ -9731,8 +9862,16 @@ export interface components {
       bioNe?: string | null;
       /** @example +9779801234567 */
       phone?: string | null;
+      /**
+       * @description PERCENT gives customerDiscountPercent off; FLAT gives customerDiscountAmount rupees
+       * @default PERCENT
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
       /** @example 5.00 */
       customerDiscountPercent?: string | null;
+      /** @example 100.00 */
+      customerDiscountAmount?: string | null;
       /** @example 5.00 */
       commissionPercent?: string | null;
       /** @default true */
@@ -9761,8 +9900,16 @@ export interface components {
       bioNe?: string | null;
       /** @example +9779801234567 */
       phone?: string | null;
+      /**
+       * @description PERCENT gives customerDiscountPercent off; FLAT gives customerDiscountAmount rupees
+       * @default PERCENT
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
       /** @example 5.00 */
       customerDiscountPercent?: string | null;
+      /** @example 100.00 */
+      customerDiscountAmount?: string | null;
       /** @example 5.00 */
       commissionPercent?: string | null;
       /** @default true */
@@ -10413,7 +10560,7 @@ export interface components {
        * Format: uuid
        * @description A top item of the same place; its sub-menu or footer column
        */
-      parentId?: Record<string, never>;
+      parentId?: string | null;
       /** @example पूजा किट */
       labelNe: string;
       /** @example Puja kits */
@@ -26624,6 +26771,42 @@ export interface operations {
       };
       /** @description NOT_FOUND */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ShopReviewController_list: {
+    parameters: {
+      query?: {
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ShopReviewsResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
         headers: {
           [name: string]: unknown;
         };

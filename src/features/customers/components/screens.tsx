@@ -129,7 +129,7 @@ export function CartsScreen() {
         title={ta('cartTitle', { total: open ? formatMoney(open.subtotal, 'en') : '' })}
       >
         {open ? (
-          <div className="grid gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <ul className="grid gap-1 text-sm">
               {open.items.map((line) => (
                 <li key={line.variant.id} className="flex gap-3">
@@ -196,7 +196,7 @@ export function ListRequestsScreen() {
         title={ta('readyTitle')}
       >
         {ready ? (
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <pre className="rounded-md bg-muted p-3 text-sm whitespace-pre-wrap">
               {ready.message}
             </pre>

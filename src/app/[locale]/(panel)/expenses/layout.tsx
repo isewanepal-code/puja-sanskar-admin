@@ -9,7 +9,7 @@ export default async function Layout({ children, params }: LayoutProps<'/[locale
   const t = await getTranslations({ locale, namespace: 'expensesSection' });
 
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <PageHeader
         title={t('title')}
         tabs={[

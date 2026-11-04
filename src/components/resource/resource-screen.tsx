@@ -47,7 +47,14 @@ export function ResourceScreen<T>({
   const formId = useId();
 
   const [search, setSearch] = useState('');
-  const query = useDeferredValue(search.trim());
+  // Text typed under the headings of a paged list joins the search box: the API looks on every page.
+  const [columnText, setColumnText] = useState<Record<string, string>>({});
+  const query = useDeferredValue(
+    [search, ...Object.values(columnText)]
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .join(' '),
+  );
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(20);
   const [editing, setEditing] = useState<T | 'new' | null>(null);
@@ -130,7 +137,7 @@ export function ResourceScreen<T>({
   });
 
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       <div className="flex flex-wrap items-center gap-3">
         {resource.searchable !== false ? (
           <Input
@@ -150,7 +157,7 @@ export function ResourceScreen<T>({
             {tt('count', { total: meta.total })}
           </span>
         ) : null}
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
           {toolbar}
           {resource.exportPath ? (
             <ExportButton
@@ -185,6 +192,14 @@ export function ResourceScreen<T>({
         initialSort={resource.initialSort}
         empty={t('empty')}
         onRowClick={canEdit ? (row) => setEditing(row) : undefined}
+        onTextSearch={
+          resource.list === 'paged' && resource.searchable !== false
+            ? (texts) => {
+                setColumnText(texts);
+                setPage(1);
+              }
+            : undefined
+        }
         actions={
           hasActions
             ? (row) => (

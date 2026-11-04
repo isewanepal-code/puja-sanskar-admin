@@ -66,7 +66,7 @@ export function ListItemsEditor({
   });
 
   return (
-    <div className="grid gap-5">
+    <div className="grid grid-cols-1 gap-5">
       <div className="flex gap-3 overflow-x-auto">
         {list.photos.map((photo, i) => (
           <a

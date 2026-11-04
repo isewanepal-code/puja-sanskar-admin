@@ -34,7 +34,7 @@ export function AccountBook({ accountId }: { accountId: string }) {
   const data = book.data;
 
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       <div className="flex flex-wrap items-end gap-3">
         <label className="grid gap-1 text-sm">
           {t('from')}

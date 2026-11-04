@@ -33,6 +33,9 @@ type DataTableProps<T> = {
   columnSearch?: boolean;
   // Keeps the first column in view while the table scrolls sideways (on by default).
   pinFirst?: boolean;
+  // For a list that comes a page at a time: text typed under a heading goes here (the API
+  // searches every page) instead of narrowing only the rows on screen.
+  onTextSearch?: (texts: Record<string, string>) => void;
 };
 
 const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
@@ -67,6 +70,7 @@ export function DataTable<T>({
   initialSort,
   columnSearch = true,
   pinFirst = true,
+  onTextSearch,
 }: DataTableProps<T>) {
   const t = useTranslations('table');
   const [sort, setSort] = useState(initialSort);
@@ -96,9 +100,32 @@ export function DataTable<T>({
     const value = rows[0] ? filterOf(column)?.(rows[0]) : undefined;
     return typeof value === 'boolean';
   };
+  const yesNoKeys = useMemo(
+    () =>
+      new Set(
+        columns
+          .filter((column) => {
+            const value = rows[0] ? filterOf(column)?.(rows[0]) : undefined;
+            return typeof value === 'boolean';
+          })
+          .map((column) => column.key),
+      ),
+    [columns, rows],
+  );
+  const setFilter = (key: string, value: string) => {
+    const next = { ...filters, [key]: value };
+    setFilters(next);
+    if (onTextSearch && !yesNoKeys.has(key)) {
+      onTextSearch(
+        Object.fromEntries(Object.entries(next).filter(([k, v]) => !yesNoKeys.has(k) && v.trim())),
+      );
+    }
+  };
 
   const sorted = useMemo(() => {
-    const active = Object.entries(filters).filter(([, value]) => value.trim() !== '');
+    const active = Object.entries(filters).filter(
+      ([key, value]) => value.trim() !== '' && !(onTextSearch && !yesNoKeys.has(key)),
+    );
     const filtered = active.length
       ? rows.filter((row) =>
           active.every(([key, wanted]) => {
@@ -114,7 +141,7 @@ export function DataTable<T>({
     const by = column.sortValue;
     const sign = sort.direction === 'asc' ? 1 : -1;
     return [...filtered].sort((a, b) => sign * compare(by(a), by(b)));
-  }, [rows, columns, sort, filters]);
+  }, [rows, columns, sort, filters, onTextSearch, yesNoKeys]);
   const filtering = Object.values(filters).some((value) => value.trim() !== '');
 
   const toggle = (key: string) =>
@@ -129,7 +156,7 @@ export function DataTable<T>({
     <div
       ref={scroller}
       onScroll={(event) => measure(event.currentTarget)}
-      className="max-h-[calc(100dvh-14rem)] min-h-40 overflow-auto rounded-md border border-border bg-card"
+      className="max-h-[calc(100dvh-14rem)] overflow-auto rounded-md border border-border bg-card"
     >
       <table className="w-full border-separate border-spacing-0 text-left text-sm">
         <thead className="sticky top-0 z-20">
@@ -186,9 +213,7 @@ export function DataTable<T>({
                         label={t('searchColumn', { column: column.header })}
                         value={filters[column.key] ?? ''}
                         yesNo={isYesNo(column)}
-                        onChange={(next) =>
-                          setFilters((current) => ({ ...current, [column.key]: next }))
-                        }
+                        onChange={(next) => setFilter(column.key, next)}
                       />
                     ) : null}
                   </span>

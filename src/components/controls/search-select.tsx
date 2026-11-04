@@ -236,6 +236,28 @@ export function SearchSelect({
             <span className="truncate">{labelOf(values[0]!)}</span>
           )}
         </span>
+        {!required && !disabled && values.length > 0 ? (
+          // Empties an optional choice without opening the list.
+          <span
+            role="button"
+            tabIndex={0}
+            aria-label={t('clear')}
+            title={t('clear')}
+            onClick={(event) => {
+              event.stopPropagation();
+              onChange(multiple ? [] : '', []);
+            }}
+            onKeyDown={(event) => {
+              if (event.key !== 'Enter' && event.key !== ' ') return;
+              event.preventDefault();
+              event.stopPropagation();
+              onChange(multiple ? [] : '', []);
+            }}
+            className="grid size-5 shrink-0 place-items-center rounded-sm text-muted-foreground hover:bg-muted hover:text-destructive"
+          >
+            <Icon name="x" size={12} />
+          </span>
+        ) : null}
         <Icon name="down" size={14} className="shrink-0 text-muted-foreground" />
       </Popover.Trigger>
       <Popover.Portal>

@@ -11,7 +11,7 @@ export default async function CounterLayout({
   const t = await getTranslations({ locale, namespace: 'shopFloor.counter' });
 
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <PageHeader title={t('title')} intro={t('intro')} />
       {children}
     </div>

@@ -1,4 +1,4 @@
-import { activeColumn, recordColumn, type Resource } from '@/components/resource';
+import { activeColumn, discountFields, recordColumn, type Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
@@ -14,6 +14,13 @@ const money = (amount: string | null | undefined) => (amount ? formatMoney(amoun
 const tierChoices = (name: Name) =>
   TIERS.map((tier) => ({ value: tier, label: name(`tiers.${tier}`) }));
 
+const discount = discountFields({
+  kind: 'discountKind',
+  percent: 'discountPercent',
+  amount: 'discountAmount',
+  value: 'discountValue',
+});
+
 export function kitsResource(name: Name): Resource<Kit> {
   return {
     key: 'kits',
@@ -23,7 +30,8 @@ export function kitsResource(name: Name): Resource<Kit> {
     rowLabel: (row) => `${row.code} · ${row.nameNe}`,
     initialSort: { key: 'sortOrder', direction: 'asc' },
     modalSize: 'lg',
-    formRow: (row) => ({ ...row, pujaId: row.puja?.id }),
+    formRow: (row) => discount.formRow({ ...row, pujaId: row.puja?.id }),
+    shapeBody: discount.shapeBody,
     columns: [
       recordColumn<Kit>('item', {
         image: (row) => row.images[0]?.url,
@@ -72,7 +80,7 @@ export function kitsResource(name: Name): Resource<Kit> {
       { name: 'nameEn', kind: 'text', required: true, max: 160 },
       { name: 'nameRomanized', kind: 'text', max: 160 },
       { name: 'tier', kind: 'select', options: tierChoices(name) },
-      { name: 'discountPercent', kind: 'percent' },
+      ...discount.fields,
       { name: 'sortOrder', kind: 'number' },
       { name: 'images', kind: 'images', section: 'website' },
       { name: 'description', kind: 'html', max: 4000 },

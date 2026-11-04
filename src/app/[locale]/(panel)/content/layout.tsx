@@ -12,7 +12,7 @@ export default async function ContentLayout({
   const t = await getTranslations({ locale, namespace: 'contentSection' });
 
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <PageHeader
         title={t('title')}
         tabs={[

@@ -8,7 +8,7 @@ export default async function KitsLayout({ children, params }: LayoutProps<'/[lo
   const t = await getTranslations({ locale, namespace: 'shopFloor.kits' });
 
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <PageHeader title={t('title')} intro={t('intro')} />
       {children}
     </div>

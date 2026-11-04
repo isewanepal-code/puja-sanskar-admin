@@ -276,7 +276,7 @@ export function GroupTree() {
           </div>
         </div>
       ) : (
-        <div className="grid gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <LevelPath path={path} onOpen={open} />
           <div className="flex w-fit max-w-full overflow-x-auto rounded-lg border border-border bg-card">
             {columns.map((list, depth) => {

@@ -576,14 +576,17 @@
         "ordersBrought": "Orders",
         "salesBrought": "Sales",
         "metaTitle": "Search title",
-        "metaDescription": "Search description"
+        "metaDescription": "Search description",
+        "customerDiscountKind": "Family's discount",
+        "customerDiscountValue": "Discount (% or Rs)"
       },
       "hints": {
         "referralCode": "Customers type it at checkout, such as PANDIT-RAM.",
         "bioNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "bioEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
-        "metaDescription": "Shown under the title in search results; up to 160 characters."
+        "metaDescription": "Shown under the title in search results; up to 160 characters.",
+        "customerDiscountValue": "Percent off the order (after other discounts), or flat rupees off it."
       },
       "sections": {
         "terms": "Discount and commission",
@@ -835,7 +838,9 @@
         "isAvailable": "Stock",
         "metaTitle": "Search title",
         "metaDescription": "Search description",
-        "item": "Kit"
+        "item": "Kit",
+        "discountKind": "Kit discount",
+        "discountValue": "Discount (% or Rs)"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as KIT001. It cannot change later.",
@@ -844,7 +849,8 @@
         "description": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
-        "metaDescription": "Shown under the title in search results; up to 160 characters."
+        "metaDescription": "Shown under the title in search results; up to 160 characters.",
+        "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit."
       },
       "sections": {
         "website": "On the website",
@@ -2396,6 +2402,7 @@
     "noMatch": "Nothing matches",
     "failed": "Could not load the list",
     "none": "— None —",
-    "remove": "Remove {name}"
+    "remove": "Remove {name}",
+    "clear": "Clear"
   }
 }

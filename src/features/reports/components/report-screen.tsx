@@ -74,7 +74,7 @@ export function ReportScreen<D, R>({
   });
 
   return (
-    <div className="grid gap-5">
+    <div className="grid grid-cols-1 gap-5">
       <form
         className="flex flex-wrap items-end gap-3"
         onSubmit={(event) => {

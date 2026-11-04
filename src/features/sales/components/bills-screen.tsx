@@ -91,7 +91,7 @@ export function BillsScreen() {
         title={t('shareTitle', { number: open?.bill.number ?? '' })}
       >
         {share.data ? (
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <pre className="rounded-md bg-muted p-3 text-sm whitespace-pre-wrap">
               {share.data.message}
             </pre>

@@ -41,7 +41,7 @@ export default async function OrderPage({ params }: PageProps<'/[locale]/orders/
   const person = order.customer;
 
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <Link href={routes.orders()} className="text-sm text-primary">
         ← {t('detail.back')}
       </Link>

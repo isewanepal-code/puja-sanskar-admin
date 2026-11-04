@@ -119,7 +119,7 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
         </>
       }
     >
-      <div className="grid gap-5">
+      <div className="grid grid-cols-1 gap-5">
         <div className="grid gap-4 sm:grid-cols-3">
           <Field label={t('supplier')} htmlFor="bill-supplier">
             <SearchSelect

@@ -1,8 +1,18 @@
-import { activeColumn, type Resource } from '@/components/resource';
+import { activeColumn, discountFields, type Resource } from '@/components/resource';
 import { formatMoney } from '@/lib/format';
 import type { Schema } from '@/lib/api';
 
 type Pandit = Schema<'AdminPanditResponse'>;
+
+const discount = discountFields(
+  {
+    kind: 'customerDiscountKind',
+    percent: 'customerDiscountPercent',
+    amount: 'customerDiscountAmount',
+    value: 'customerDiscountValue',
+  },
+  'terms',
+);
 
 export const panditsResource: Resource<Pandit> = {
   key: 'pandits',
@@ -13,6 +23,8 @@ export const panditsResource: Resource<Pandit> = {
   initialSort: { key: 'sortOrder', direction: 'asc' },
   modalSize: 'lg',
   bulk: ['code', 'referralCode', 'nameNe', 'nameEn', 'area', 'phone'],
+  formRow: discount.formRow,
+  shapeBody: discount.shapeBody,
   columns: [
     {
       key: 'code',
@@ -65,7 +77,7 @@ export const panditsResource: Resource<Pandit> = {
       kind: 'text',
       pattern: { regex: /^\+?[0-9]{7,15}$/, message: 'Digits only, such as 9801234567' },
     },
-    { name: 'customerDiscountPercent', kind: 'percent', section: 'terms' },
+    ...discount.fields,
     { name: 'commissionPercent', kind: 'percent' },
     { name: 'photoUrl', kind: 'image', max: 2048, section: 'profile', wide: true },
     { name: 'bioNe', kind: 'html', max: 1000 },

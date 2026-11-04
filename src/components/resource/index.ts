@@ -11,3 +11,4 @@ export type { Cell, Field, FieldKind, Option, Resource } from './types';
 export { ExportButton } from './export-button';
 export { WorkbookUpload, WorkbookUploadButton } from './workbook-upload';
 export { activeColumn, codeColumn, recordColumn } from './columns';
+export { discountFields } from './discount-fields';
