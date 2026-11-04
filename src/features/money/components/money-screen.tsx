@@ -4,10 +4,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
+import { SearchSelect } from '@/components/controls';
 import { useToast } from '@/components/overlays';
 import { ActionModal, ResourceScreen, useResourceText } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
-import { Select } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
@@ -60,16 +60,16 @@ function MethodAccounts({ accounts }: { accounts: MoneyAccount[] }) {
       {(methods.data ?? []).map((row) => (
         <label key={row.method} className="grid grid-cols-[10rem_1fr] items-center gap-3 text-sm">
           <span className="font-medium">{t(`methods.${row.method}`)}</span>
-          <Select
+          <SearchSelect
             value={row.accountId ?? ''}
-            onChange={(event) => set.mutate({ method: row.method, accountId: event.target.value })}
-          >
-            {open.map((account) => (
-              <option key={account.id} value={account.id}>
-                {account.branch.code} · {account.name}
-              </option>
-            ))}
-          </Select>
+            required
+            options={open.map((account) => ({
+              value: account.id,
+              label: account.name,
+              detail: account.branch.code,
+            }))}
+            onChange={(value) => set.mutate({ method: row.method, accountId: String(value) })}
+          />
         </label>
       ))}
     </div>

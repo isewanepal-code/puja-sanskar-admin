@@ -4,10 +4,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
+import { SearchSelect } from '@/components/controls';
 import { useToast } from '@/components/overlays';
 import { ResourceScreen, useResourceText } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
-import { Select } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
@@ -48,18 +48,14 @@ export function CustomersScreen() {
       <ResourceScreen
         resource={resource}
         toolbar={
-          <Select
+          <SearchSelect
             value={sort}
+            required
+            options={SORTS.map((value) => ({ value, label: t(`sorts.${value}`) }))}
             aria-label={ta('sort')}
             className="w-48"
-            onChange={(e) => setSort(e.target.value as typeof sort)}
-          >
-            {SORTS.map((value) => (
-              <option key={value} value={value}>
-                {t(`sorts.${value}`)}
-              </option>
-            ))}
-          </Select>
+            onChange={(value) => setSort(value as typeof sort)}
+          />
         }
         rowActions={(row) => (
           <IconButton icon="user" label={ta('details')} onClick={() => setOpen(row)} />

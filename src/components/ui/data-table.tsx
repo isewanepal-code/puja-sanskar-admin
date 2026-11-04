@@ -2,7 +2,7 @@
 
 import { Popover } from '@base-ui/react/popover';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { Icon } from '@/components/icons';
 import { cn } from '@/lib/utils';
@@ -70,6 +70,24 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   const t = useTranslations('table');
   const [sort, setSort] = useState(initialSort);
+  // Whether rows run under the pinned first column or actions, so they cast a shadow.
+  const [under, setUnder] = useState({ left: false, right: false });
+  const observer = useRef<ResizeObserver | null>(null);
+  const measure = useCallback((el: HTMLElement) => {
+    const left = el.scrollLeft > 0;
+    const right = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+    setUnder((was) => (was.left === left && was.right === right ? was : { left, right }));
+  }, []);
+  const scroller = useCallback(
+    (el: HTMLDivElement | null) => {
+      observer.current?.disconnect();
+      if (!el) return;
+      observer.current = new ResizeObserver(() => measure(el));
+      observer.current.observe(el);
+      if (el.firstElementChild) observer.current.observe(el.firstElementChild);
+    },
+    [measure],
+  );
   const [filters, setFilters] = useState<Record<string, string>>({});
 
   const searchable = columnSearch && columns.some((column) => filterOf(column));
@@ -108,7 +126,11 @@ export function DataTable<T>({
 
   return (
     // Scrolls both ways inside itself, so the heading stays on top and the first column at left.
-    <div className="max-h-[calc(100dvh-14rem)] min-h-40 overflow-auto rounded-md border border-border bg-card">
+    <div
+      ref={scroller}
+      onScroll={(event) => measure(event.currentTarget)}
+      className="max-h-[calc(100dvh-14rem)] min-h-40 overflow-auto rounded-md border border-border bg-card"
+    >
       <table className="w-full border-separate border-spacing-0 text-left text-sm">
         <thead className="sticky top-0 z-20">
           <tr className="text-xs text-muted-foreground uppercase">
@@ -174,7 +196,12 @@ export function DataTable<T>({
               );
             })}
             {actions ? (
-              <th className="sticky right-0 z-10 w-px border-b border-border bg-muted px-3 py-2.5 shadow-[-1px_0_0_var(--color-border)]">
+              <th
+                className={cn(
+                  'sticky right-0 z-10 w-px border-b border-border bg-muted px-3 py-2.5',
+                  under.right && 'shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.18)]',
+                )}
+              >
                 <span className="sr-only">{t('actions')}</span>
               </th>
             ) : null}
@@ -212,9 +239,11 @@ export function DataTable<T>({
                     className={cn(
                       'border-r border-b border-border px-3 py-2.5 align-middle group-last/row:border-b-0',
                       column.align === 'right' && 'text-right',
+                      pinFirst && index === 0 && 'pin sticky left-0 z-[5] whitespace-nowrap',
                       pinFirst &&
                         index === 0 &&
-                        'pin sticky left-0 z-[5] shadow-[1px_0_0_var(--color-border)]',
+                        under.left &&
+                        'shadow-[6px_0_8px_-6px_rgb(0_0_0/0.18)]',
                       column.className,
                     )}
                   >
@@ -223,7 +252,10 @@ export function DataTable<T>({
                 ))}
                 {actions ? (
                   <td
-                    className="pin sticky right-0 z-[5] border-b border-border px-3 py-1.5 text-right whitespace-nowrap shadow-[-1px_0_0_var(--color-border)] group-last/row:border-b-0"
+                    className={cn(
+                      'pin sticky right-0 z-[5] border-b border-border px-3 py-1.5 text-right whitespace-nowrap group-last/row:border-b-0',
+                      under.right && 'shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.18)]',
+                    )}
                     onClick={(e) => e.stopPropagation()}
                   >
                     {actions(row)}

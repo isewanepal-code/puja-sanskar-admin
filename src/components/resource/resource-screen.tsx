@@ -99,6 +99,8 @@ export function ResourceScreen<T>({
   const meta = list.data?.meta;
   const canCreate = resource.canCreate !== false;
   const canEdit = resource.canEdit !== false;
+  // No buttons on any row: no actions column.
+  const hasActions = !!rowActions || canEdit || resource.canDelete !== false;
 
   // A column showing an on/off field of the form becomes a switch staff flip in the list.
   const switches = new Set(
@@ -183,22 +185,26 @@ export function ResourceScreen<T>({
         initialSort={resource.initialSort}
         empty={t('empty')}
         onRowClick={canEdit ? (row) => setEditing(row) : undefined}
-        actions={(row) => (
-          <div className="inline-flex items-center gap-0.5">
-            {rowActions?.(row)}
-            {canEdit ? (
-              <IconButton icon="edit" label={tf('edit')} onClick={() => setEditing(row)} />
-            ) : null}
-            {resource.canDelete !== false ? (
-              <IconButton
-                icon="trash"
-                variant="danger"
-                label={tf('delete')}
-                onClick={() => setRemoving(row)}
-              />
-            ) : null}
-          </div>
-        )}
+        actions={
+          hasActions
+            ? (row) => (
+                <div className="inline-flex items-center gap-0.5">
+                  {rowActions?.(row)}
+                  {canEdit ? (
+                    <IconButton icon="edit" label={tf('edit')} onClick={() => setEditing(row)} />
+                  ) : null}
+                  {resource.canDelete !== false ? (
+                    <IconButton
+                      icon="trash"
+                      variant="danger"
+                      label={tf('delete')}
+                      onClick={() => setRemoving(row)}
+                    />
+                  ) : null}
+                </div>
+              )
+            : undefined
+        }
       />
 
       {meta && resource.list === 'paged' && meta.total > 0 ? (

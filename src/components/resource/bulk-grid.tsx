@@ -289,33 +289,17 @@ export function BulkGrid<T>({
                   {fields.map((field, c) => (
                     <td key={field.name} className="border-r border-b border-border p-0">
                       {field.kind === 'select' ? (
-                        field.optionsFrom ? (
-                          <SearchSelect
-                            bare
-                            source={field.optionsFrom}
-                            value={row[field.name] ?? ''}
-                            disabled={done}
-                            required={field.required}
-                            placeholder=" "
-                            aria-label={`${t(`fields.${field.name}`)} ${r + 1}`}
-                            onChange={(value) => setCell(r, field.name, String(value))}
-                          />
-                        ) : (
-                          <select
-                            value={row[field.name] ?? ''}
-                            disabled={done}
-                            aria-label={`${t(`fields.${field.name}`)} ${r + 1}`}
-                            onChange={(event) => setCell(r, field.name, event.target.value)}
-                            className="h-8 w-full bg-transparent px-2 outline-none focus:bg-primary/5"
-                          >
-                            <option value="" />
-                            {(field.options ?? []).map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        )
+                        <SearchSelect
+                          bare
+                          source={field.optionsFrom}
+                          options={field.options}
+                          value={row[field.name] ?? ''}
+                          disabled={done}
+                          required={field.required}
+                          placeholder=" "
+                          aria-label={`${t(`fields.${field.name}`)} ${r + 1}`}
+                          onChange={(value) => setCell(r, field.name, String(value))}
+                        />
                       ) : (
                         <input
                           value={row[field.name] ?? ''}

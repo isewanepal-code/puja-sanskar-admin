@@ -5,11 +5,15 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { SearchSelect } from '@/components/controls';
 import { Icon } from '@/components/icons';
 import { request, type Schema } from '@/lib/api';
 import { BRANCH_COOKIE } from '@/lib/session/cookies';
 
 type Branch = Schema<'BranchResponse'>;
+
+// The choice that reads across every branch the user may see.
+const ALL = '*';
 
 const remember = (code: string) => {
   document.cookie = code
@@ -48,22 +52,24 @@ export function BranchSwitcher({ current }: { current: string }) {
     );
   }
   return (
-    <label className="flex items-center gap-2 rounded-md border border-border bg-card py-1 pr-1 pl-2.5 text-sm">
+    <div className="flex items-center gap-1 rounded-md border border-border bg-card py-0.5 pl-2.5 text-sm">
       <Icon name="store" size={16} className="text-muted-foreground" />
-      <span className="sr-only">{t('branch')}</span>
-      <select
-        value={chosen}
-        onChange={(event) => choose(event.target.value)}
-        className="h-7 bg-transparent pr-1 font-medium focus:outline-none"
-      >
-        <option value="">{t('allBranches')}</option>
-        {list.map((branch) => (
-          <option key={branch.id} value={branch.code}>
-            {branch.name}
-            {branch.servesOnline ? ` · ${t('online')}` : ''}
-          </option>
-        ))}
-      </select>
-    </label>
+      <SearchSelect
+        bare
+        required
+        value={chosen || ALL}
+        options={[
+          { value: ALL, label: t('allBranches') },
+          ...list.map((branch) => ({
+            value: branch.code,
+            label: branch.name,
+            detail: branch.servesOnline ? t('online') : undefined,
+          })),
+        ]}
+        onChange={(value) => choose(value === ALL ? '' : String(value))}
+        aria-label={t('branch')}
+        className="h-7 min-w-44 font-medium"
+      />
+    </div>
   );
 }

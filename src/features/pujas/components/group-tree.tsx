@@ -41,7 +41,7 @@ function Column({
   actions,
   children,
 }: {
-  // The level number shown in the badge; none for the pujas column.
+  // The level number; none for the pujas pane.
   depth?: number;
   title: string;
   subtitle?: string;
@@ -49,24 +49,23 @@ function Column({
   children: ReactNode;
 }) {
   return (
-    <section className="flex max-h-[calc(100dvh-16rem)] w-80 shrink-0 flex-col overflow-hidden rounded-lg border border-border bg-card">
-      <header className="flex flex-wrap items-center gap-x-2.5 gap-y-2 border-b border-border bg-muted/50 px-3 py-2.5">
+    <section className="flex w-76 shrink-0 flex-col border-r border-border last:border-r-0">
+      <header className="flex h-14 items-center gap-2 border-b border-border px-3">
         <span
           aria-hidden
-          className={cn(
-            'grid size-7 shrink-0 place-items-center rounded-full text-xs font-bold',
-            depth === undefined ? 'bg-accent text-primary' : 'bg-primary text-primary-foreground',
-          )}
+          className="grid size-6 shrink-0 place-items-center rounded-full bg-primary/10 text-xs font-bold text-primary"
         >
-          {depth ?? <Icon name="temple" size={14} />}
+          {depth ?? <Icon name="temple" size={13} />}
         </span>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 leading-tight">
           <h2 className="truncate text-sm font-semibold">{title}</h2>
           {subtitle ? <p className="truncate text-xs text-muted-foreground">{subtitle}</p> : null}
         </div>
-        <div className="flex w-full gap-1 pl-9">{actions}</div>
+        <div className="flex shrink-0 items-center">{actions}</div>
       </header>
-      <ul className="grid content-start gap-px overflow-y-auto p-1.5">{children}</ul>
+      <ul className="grid max-h-[calc(100dvh-20rem)] content-start gap-px overflow-y-auto p-1.5">
+        {children}
+      </ul>
     </section>
   );
 }
@@ -215,24 +214,16 @@ export function GroupTree() {
 
   const columnActions = (parent: GroupNode | null) => (
     <>
-      <Button
-        size="sm"
-        variant="ghost"
+      <IconButton
         icon="list"
-        title={t('addMany')}
+        label={t('addMany')}
         onClick={() => setBulk({ what: 'groups', parent })}
-      >
-        {t('many')}
-      </Button>
-      <Button
-        size="sm"
-        variant="secondary"
+      />
+      <IconButton
         icon="plus"
-        title={t('add')}
+        label={t('add')}
         onClick={() => setEditing({ what: 'group', parent })}
-      >
-        {t('one')}
-      </Button>
+      />
     </>
   );
 
@@ -287,7 +278,7 @@ export function GroupTree() {
       ) : (
         <div className="grid gap-3">
           <LevelPath path={path} onOpen={open} />
-          <div className="flex items-start gap-3 overflow-x-auto pb-4">
+          <div className="flex w-fit max-w-full overflow-x-auto rounded-lg border border-border bg-card">
             {columns.map((list, depth) => {
               const parent = path[depth - 1] ?? null;
               return (

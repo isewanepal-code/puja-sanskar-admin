@@ -10,7 +10,7 @@ import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
 import { useToast } from '@/components/overlays';
 import { Button, IconButton } from '@/components/ui/button';
-import { Input, Select } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { fieldErrors, isApiError, request, type Schema } from '@/lib/api';
 import { PAGE_SIZE, type Choice, type ChoiceSource } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
@@ -339,14 +339,16 @@ export function CounterSale() {
             />
           </Field>
           <Field label={t('discountKind')} htmlFor="sale-discount-kind">
-            <Select
+            <SearchSelect
               id="sale-discount-kind"
               value={discountKind}
-              onChange={(e) => setDiscountKind(e.target.value as 'PERCENT' | 'FLAT')}
-            >
-              <option value="PERCENT">%</option>
-              <option value="FLAT">Rs</option>
-            </Select>
+              required
+              options={[
+                { value: 'PERCENT', label: '%' },
+                { value: 'FLAT', label: 'Rs' },
+              ]}
+              onChange={(value) => setDiscountKind(value as 'PERCENT' | 'FLAT')}
+            />
           </Field>
         </div>
         {discountValue ? (

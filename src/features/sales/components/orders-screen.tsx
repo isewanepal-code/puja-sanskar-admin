@@ -3,9 +3,9 @@
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
+import { SearchSelect } from '@/components/controls';
 import { ResourceScreen, useResourceText } from '@/components/resource';
 import { DataTable } from '@/components/ui/data-table';
-import { Select } from '@/components/ui/input';
 
 import {
   CHECKOUT_METHODS,
@@ -36,20 +36,15 @@ export function OrdersScreen({ status }: { status?: OrderStatus }) {
     <ResourceScreen
       resource={resource}
       toolbar={FILTERS.map(([key, values, group]) => (
-        <Select
+        <SearchSelect
           key={key}
           value={filter[key] ?? ''}
-          onChange={(event) => setFilter((current) => ({ ...current, [key]: event.target.value }))}
+          options={values.map((value) => ({ value, label: label(group, value) }))}
+          onChange={(value) => setFilter((current) => ({ ...current, [key]: String(value) }))}
+          placeholder={t(`filters.${key}`)}
           aria-label={t(`filters.${key}`)}
           className="w-44"
-        >
-          <option value="">{t(`filters.${key}`)}</option>
-          {values.map((value) => (
-            <option key={value} value={value}>
-              {label(group, value)}
-            </option>
-          ))}
-        </Select>
+        />
       ))}
     />
   );

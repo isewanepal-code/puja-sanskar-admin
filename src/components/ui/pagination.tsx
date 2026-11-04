@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 
+import { SearchSelect } from '@/components/controls';
 import { Icon, type IconName } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
@@ -57,17 +58,14 @@ export function Pagination({
         <span>{t('showing', { from, to, total })}</span>
         <label className="flex items-center gap-2">
           {t('perPage')}
-          <select
-            value={pageSize}
-            onChange={(event) => onPageSize(Number(event.target.value))}
-            className="h-8 rounded-md border border-border bg-card px-2 text-sm text-foreground"
-          >
-            {PAGE_SIZES.map((size) => (
-              <option key={size} value={size}>
-                {size}
-              </option>
-            ))}
-          </select>
+          <SearchSelect
+            value={String(pageSize)}
+            required
+            options={PAGE_SIZES.map((size) => ({ value: String(size), label: String(size) }))}
+            onChange={(value) => onPageSize(Number(value))}
+            aria-label={t('perPage')}
+            className="h-8 min-h-8 w-20 text-foreground"
+          />
         </label>
       </div>
       {totalPages > 1 ? (

@@ -10,7 +10,7 @@ import { SearchSelect } from '@/components/controls';
 import { Field as FieldShell } from '@/components/forms';
 import { useToast } from '@/components/overlays';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
-import { Input, Select, Switch, Textarea } from '@/components/ui/input';
+import { Input, Switch, Textarea } from '@/components/ui/input';
 import { fieldErrors, isApiError, request } from '@/lib/api';
 
 import { schemaFor, toBody, toFormValues, type FormValues } from './form-values';
@@ -40,20 +40,20 @@ function Control({
   t: Translate;
   record?: Record<string, unknown>;
 }) {
-  const choices = field.options ?? [];
   const { register, getValues, setValue } = form;
   const common = { id, 'aria-invalid': invalid || undefined, ...register(field.name) };
 
   const setByPicker = (value: string) =>
     setValue(field.name, value, { shouldDirty: true, shouldValidate: true });
 
-  if (field.optionsFrom && (field.kind === 'select' || field.kind === 'multiselect')) {
+  if (field.kind === 'select' || field.kind === 'multiselect') {
     const multiple = field.kind === 'multiselect';
     const value = form.watch(field.name);
     return (
       <SearchSelect
         id={id}
         source={field.optionsFrom}
+        options={field.options}
         multiple={multiple}
         value={multiple ? (Array.isArray(value) ? value : []) : String(value ?? '')}
         known={record && field.known ? field.known(record) : undefined}
@@ -96,28 +96,6 @@ function Control({
       return <Textarea rows={3} maxLength={field.max} {...common} />;
     case 'html':
       return <Textarea rows={6} className="font-mono text-[0.8rem]" {...common} />;
-    case 'select':
-      return (
-        <Select {...common}>
-          <option value="">{field.required ? '—' : t.has('none') ? t('none') : '—'}</option>
-          {choices.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </Select>
-      );
-    case 'multiselect':
-      return (
-        <div className="grid max-h-48 gap-1 overflow-y-auto rounded-md border border-border p-2 sm:grid-cols-2">
-          {choices.map((option) => (
-            <label key={option.value} className="flex items-center gap-2 text-sm">
-              <input type="checkbox" value={option.value} {...register(field.name)} />
-              {option.label}
-            </label>
-          ))}
-        </div>
-      );
     default:
       return (
         <Input

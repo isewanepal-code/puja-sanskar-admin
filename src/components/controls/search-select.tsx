@@ -24,8 +24,13 @@ function useDebounced<T>(value: T, ms = 250): T {
   return settled;
 }
 
+// Fewer choices than this show no search box.
+const SEARCH_FROM = 8;
+
 type Props = {
-  source: ChoiceSource;
+  // Where long or shared lists come from; a fixed list is given as `options` instead.
+  source?: ChoiceSource;
+  options?: Choice[];
   value: string | string[];
   onChange: (value: string | string[], chosen: Choice[]) => void;
   multiple?: boolean;
@@ -47,6 +52,7 @@ type Props = {
 // the API as staff type and pages in more on scroll, so nothing loads every record.
 export function SearchSelect({
   source,
+  options,
   value,
   onChange,
   multiple = false,
@@ -72,17 +78,17 @@ export function SearchSelect({
   const endRef = useRef<HTMLLIElement>(null);
 
   const values = useMemo(() => (Array.isArray(value) ? value : value ? [value] : []), [value]);
-  const remote = 'search' in source ? source : null;
+  const remote = source && 'search' in source ? source : null;
 
   // A whole list loads once (or as soon as a value needs its label) and is searched here.
   const whole = useQuery({
-    queryKey: ['options', source.key],
-    queryFn: () => ('load' in source ? source.load() : Promise.resolve<Choice[]>([])),
-    enabled: !remote && (open || values.length > 0),
+    queryKey: ['options', source?.key],
+    queryFn: () => (source && 'load' in source ? source.load() : Promise.resolve<Choice[]>([])),
+    enabled: !options && !remote && (open || values.length > 0),
     staleTime: 5 * 60 * 1000,
   });
   const results = useInfiniteQuery({
-    queryKey: ['options', source.key, 'search', q],
+    queryKey: ['options', source?.key, 'search', q],
     queryFn: ({ pageParam }) => remote!.search(q, pageParam),
     initialPageParam: 1,
     getNextPageParam: (last, pages) => (last.more ? pages.length + 1 : undefined),
@@ -94,19 +100,22 @@ export function SearchSelect({
   const choices = useMemo(() => {
     if (remote) return results.data?.pages.flatMap((page) => page.choices) ?? [];
     const words = needle.split(/\s+/).filter(Boolean);
-    return (whole.data ?? []).filter((choice) => matches(choice, words));
-  }, [remote, results.data, whole.data, needle]);
+    return (options ?? whole.data ?? []).filter((choice) => matches(choice, words));
+  }, [remote, results.data, whole.data, options, needle]);
+  const searchable = !!remote || (options ?? whole.data ?? []).length >= SEARCH_FROM;
 
   const shown = useMemo(
     () =>
       new Map(
-        [...(known ?? []), ...(whole.data ?? []), ...choices, ...picked].map((c) => [c.value, c]),
+        [...(known ?? []), ...(options ?? []), ...(whole.data ?? []), ...choices, ...picked].map(
+          (c) => [c.value, c],
+        ),
       ),
-    [known, whole.data, choices, picked],
+    [known, options, whole.data, choices, picked],
   );
   const missing = values.filter((v) => !shown.has(v));
   const found = useQuery({
-    queryKey: ['options', source.key, 'find', missing],
+    queryKey: ['options', source?.key, 'find', missing],
     queryFn: async () =>
       (await Promise.all(missing.map((v) => remote!.find!(v).catch(() => null)))).filter(
         (choice): choice is Choice => choice !== null,
@@ -134,7 +143,7 @@ export function SearchSelect({
     return () => observer.disconnect();
   }, [open, hasNextPage, isFetchingNextPage, fetchNextPage, choices.length]);
 
-  const loadingLabels = found.isFetching || (!remote && whole.isPending);
+  const loadingLabels = found.isFetching || (!options && !remote && whole.isPending);
   const labelOf = (v: string) => labels.get(v)?.label ?? (loadingLabels ? t('loading') : v);
   const chosen = (vs: string[]) =>
     vs.map((v) => labels.get(v)).filter((c): c is Choice => c !== undefined);
@@ -166,7 +175,7 @@ export function SearchSelect({
       ?.scrollIntoView({ block: 'nearest' });
   };
 
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault();
       move(Math.min(active + 1, choices.length - 1));
@@ -179,8 +188,9 @@ export function SearchSelect({
     }
   };
 
-  const loading = (remote ? results.isPending : whole.isPending) || isFetchingNextPage;
-  const failed = remote ? results.isError : whole.isError;
+  const loading =
+    !options && ((remote ? results.isPending : whole.isPending) || isFetchingNextPage);
+  const failed = !options && (remote ? results.isError : whole.isError);
 
   return (
     <Popover.Root open={open} onOpenChange={(next) => !disabled && setOpen(next)}>
@@ -230,32 +240,41 @@ export function SearchSelect({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner sideOffset={4} align="start" className="z-[60]">
-          <Popover.Popup className="w-[var(--anchor-width)] min-w-72 overflow-hidden rounded-md bg-card shadow-lg ring-1 ring-border outline-none">
-            <div className="flex items-center gap-2 border-b border-border px-2.5">
-              <Icon name="search" size={14} className="text-muted-foreground" />
-              <input
-                autoFocus
-                type="search"
-                value={text}
-                onChange={(event) => {
-                  setText(event.target.value);
-                  setActive(0);
-                }}
-                onKeyDown={onKeyDown}
-                placeholder={t('search')}
-                role="combobox"
-                aria-expanded
-                aria-controls={listId}
-                aria-activedescendant={choices[active] ? `${listId}-${active}` : undefined}
-                className="h-10 w-full bg-transparent text-sm outline-none"
-              />
-            </div>
+          <Popover.Popup className="w-[var(--anchor-width)] min-w-48 overflow-hidden rounded-md bg-card shadow-lg ring-1 ring-border outline-none">
+            {searchable ? (
+              <div className="flex items-center gap-2 border-b border-border px-2.5">
+                <Icon name="search" size={14} className="text-muted-foreground" />
+                <input
+                  autoFocus
+                  type="search"
+                  value={text}
+                  onChange={(event) => {
+                    setText(event.target.value);
+                    setActive(0);
+                  }}
+                  onKeyDown={onKeyDown}
+                  placeholder={t('search')}
+                  role="combobox"
+                  aria-expanded
+                  aria-controls={listId}
+                  aria-activedescendant={choices[active] ? `${listId}-${active}` : undefined}
+                  className="h-10 w-full bg-transparent text-sm outline-none"
+                />
+              </div>
+            ) : null}
             <ul
               ref={listRef}
               id={listId}
               role="listbox"
               aria-multiselectable={multiple || undefined}
-              className="max-h-72 overflow-y-auto py-1"
+              // Without a search box the list itself takes the arrow keys.
+              tabIndex={searchable ? undefined : 0}
+              autoFocus={!searchable}
+              onKeyDown={searchable ? undefined : onKeyDown}
+              aria-activedescendant={
+                !searchable && choices[active] ? `${listId}-${active}` : undefined
+              }
+              className="max-h-72 overflow-y-auto py-1 outline-none"
             >
               {!multiple && !required && values.length > 0 && !needle ? (
                 <li

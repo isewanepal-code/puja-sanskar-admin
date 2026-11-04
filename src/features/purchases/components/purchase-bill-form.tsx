@@ -10,7 +10,7 @@ import { Icon } from '@/components/icons';
 import { useToast } from '@/components/overlays';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { Button, IconButton } from '@/components/ui/button';
-import { Input, Select } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 import { isApiError, request } from '@/lib/api';
 import { choices } from '@/lib/choices';
@@ -198,15 +198,19 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
                     />
                   </td>
                   <td className="border-r border-border p-1.5">
-                    <Select
+                    <SearchSelect
                       aria-label={t('vat')}
-                      value={line.vatRate}
-                      onChange={(e) => change(index, { vatRate: e.target.value })}
-                    >
-                      <option value="">{t('vatAuto')}</option>
-                      <option value="13">13%</option>
-                      <option value="0">{t('vatNone')}</option>
-                    </Select>
+                      value={line.vatRate || 'AUTO'}
+                      required
+                      options={[
+                        { value: 'AUTO', label: t('vatAuto') },
+                        { value: '13', label: '13%' },
+                        { value: '0', label: t('vatNone') },
+                      ]}
+                      onChange={(value) =>
+                        change(index, { vatRate: value === 'AUTO' ? '' : String(value) })
+                      }
+                    />
                   </td>
                   <td className="border-r border-border px-2 text-right">
                     {money(amountOf(line) + vatOf(line))}

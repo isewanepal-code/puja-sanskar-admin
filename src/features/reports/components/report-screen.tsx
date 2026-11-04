@@ -4,11 +4,12 @@ import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 
+import { SearchSelect } from '@/components/controls';
 import { useToast } from '@/components/overlays';
 import { Button } from '@/components/ui/button';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { DataTable, type Column } from '@/components/ui/data-table';
-import { Input, Select } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
 import { download, isApiError, request } from '@/lib/api';
 
@@ -118,14 +119,16 @@ export function ReportScreen<D, R>({
         {filters.includes('kind') ? (
           <label className="grid gap-1 text-sm">
             {t('kind')}
-            <Select
-              value={draft.kind}
+            <SearchSelect
+              value={draft.kind ?? 'DUE'}
+              required
+              options={(['DUE', 'REFUND'] as const).map((kind) => ({
+                value: kind,
+                label: t(`kinds.${kind}`),
+              }))}
               className="w-56"
-              onChange={(e) => setDraft({ ...draft, kind: e.target.value })}
-            >
-              <option value="DUE">{t('kinds.DUE')}</option>
-              <option value="REFUND">{t('kinds.REFUND')}</option>
-            </Select>
+              onChange={(value) => setDraft({ ...draft, kind: String(value) })}
+            />
           </label>
         ) : null}
         {filters.includes('search') ? (
