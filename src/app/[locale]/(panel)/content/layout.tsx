@@ -16,6 +16,7 @@ export default async function ContentLayout({
       <PageHeader
         title={t('title')}
         tabs={[
+          { href: routes.menus(), label: t('tabs.menus') },
           { href: routes.faqs(), label: t('tabs.faqs') },
           { href: routes.festivals(), label: t('tabs.festivals') },
           { href: routes.articles(), label: t('tabs.articles') },

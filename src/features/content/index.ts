@@ -5,7 +5,8 @@ export {
   HomeSectionsScreen,
   ReviewsScreen,
 } from './components/editorial-screens';
-export { FaqsScreen, StoriesScreen } from './components/screens';
+export { FaqsScreen, MenusScreen, StoriesScreen } from './components/screens';
+export { menusResource } from './menus';
 export {
   articleCheckResource,
   articlesResource,

@@ -30,6 +30,7 @@ export const routes = {
   sources: () => '/catalogue/sources',
 
   faqs: () => '/content',
+  menus: () => '/content/menus',
   stories: () => '/content/stories',
   media: () => '/content/media',
   festivals: () => '/content/festivals',

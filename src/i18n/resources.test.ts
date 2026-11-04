@@ -19,6 +19,7 @@ import {
   homeSectionsResource,
   reviewsResource,
   storiesResource,
+  menusResource,
 } from '@/features/content';
 import {
   cartActivityResource,
@@ -162,6 +163,7 @@ const RESOURCES: Resource<never>[] = [
   supplierPaymentsResource((key) => key),
   voidSupplierPaymentResource(ANY),
   expenseCategoriesResource,
+  menusResource((key) => key),
   expensesResource((key) => key, new Map()),
   voidExpenseResource(ANY),
   transferStockResource(LEVEL),

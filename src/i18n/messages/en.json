@@ -1831,6 +1831,37 @@
         "stock": "Stock you have now",
         "more": "More (optional)"
       }
+    },
+    "menuItems": {
+      "title": "Menus",
+      "add": "Add a menu link",
+      "empty": "No menu links yet.",
+      "heading": "Heading",
+      "none": "— None (a top link) —",
+      "places": {
+        "HEADER": "Header",
+        "HEADER_SIDE": "Header side links",
+        "FOOTER": "Footer",
+        "MOBILE_BAR": "Phone bottom bar"
+      },
+      "fields": {
+        "place": "Menu",
+        "parentId": "Under",
+        "labelNe": "Name in Nepali",
+        "labelEn": "Name in English",
+        "href": "Opens",
+        "icon": "Icon",
+        "sortOrder": "Order",
+        "isHighlighted": "Highlighted",
+        "isActive": "Shown"
+      },
+      "hints": {
+        "parentId": "Leave empty for a header link or a footer heading; pick a heading to put this link in its column or sub-menu.",
+        "href": "A page of the site such as /kits or /pages/privacy, or a full https:// address. Leave empty for a footer heading.",
+        "icon": "For side links and the phone bar: camera, truck, users, info, home, diya, box, grid.",
+        "isHighlighted": "Drawn in the accent colour, like Offers.",
+        "sortOrder": "Smaller numbers come first."
+      }
     }
   },
   "catalogue": {
@@ -1854,7 +1885,8 @@
       "articles": "Articles",
       "banners": "Banners",
       "homeSections": "Home rows",
-      "reviews": "Reviews"
+      "reviews": "Reviews",
+      "menus": "Menus"
     }
   },
   "marketing": {

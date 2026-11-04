@@ -3816,6 +3816,62 @@ export interface paths {
     patch: operations['AdminFaqController_update'];
     trace?: never;
   };
+  '/api/v1/navigation': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The website's menus
+     * @description Header, its side links, footer columns and the phone bar, each in order (2.41).
+     */
+    get: operations['NavigationController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/menu-items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Every menu link, shown or not, in order */
+    get: operations['AdminMenuItemController_list'];
+    put?: never;
+    /** Add a menu link, heading or sub-menu link */
+    post: operations['AdminMenuItemController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/menu-items/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a link and the links under it */
+    delete: operations['AdminMenuItemController_delete'];
+    options?: never;
+    head?: never;
+    /** Rename, relink, reorder, show or hide a link */
+    patch: operations['AdminMenuItemController_update'];
+    trace?: never;
+  };
   '/api/v1/admin/billing/profile': {
     parameters: {
       query?: never;
@@ -10309,6 +10365,93 @@ export interface components {
       answerEn?: string;
       /** @example मिल्छ। किटको पेजमा "आफैं मिलाउनुहोस्" छान्नुहोस्… */
       answerNe?: string;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    MenuLinkResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example पूजा किट */
+      labelNe: string;
+      /** @example Puja kits */
+      labelEn: string;
+      /** @example /kits */
+      href: string | null;
+      /** @example truck */
+      icon: string | null;
+      isHighlighted: boolean;
+      children: components['schemas']['MenuLinkResponse'][];
+    };
+    NavigationResponse: {
+      header: components['schemas']['MenuLinkResponse'][];
+      headerSide: components['schemas']['MenuLinkResponse'][];
+      /** @description Headings, each with its links */
+      footer: components['schemas']['MenuLinkResponse'][];
+      mobileBar: components['schemas']['MenuLinkResponse'][];
+    };
+    AdminMenuItemResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @enum {string} */
+      place: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
+      /** Format: uuid */
+      parentId: string | null;
+      labelNe: string;
+      labelEn: string;
+      href: string | null;
+      icon: string | null;
+      isHighlighted: boolean;
+      isActive: boolean;
+      sortOrder: number;
+    };
+    CreateMenuItemDto: {
+      /** @enum {string} */
+      place: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
+      /**
+       * Format: uuid
+       * @description A top item of the same place; its sub-menu or footer column
+       */
+      parentId?: Record<string, never>;
+      /** @example पूजा किट */
+      labelNe: string;
+      /** @example Puja kits */
+      labelEn: string;
+      /**
+       * @description A site path or an https address; none for a heading
+       * @example /kits
+       */
+      href?: string | null;
+      /** @example truck */
+      icon?: string | null;
+      /**
+       * @description Drawn in the accent
+       * @default false
+       */
+      isHighlighted: boolean;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    UpdateMenuItemDto: {
+      /** @example पूजा किट */
+      labelNe?: string;
+      /** @example Puja kits */
+      labelEn?: string;
+      /**
+       * @description A site path or an https address; none for a heading
+       * @example /kits
+       */
+      href?: string | null;
+      /** @example truck */
+      icon?: string | null;
+      /**
+       * @description Drawn in the accent
+       * @default false
+       */
+      isHighlighted: boolean;
       /** @default true */
       isActive: boolean;
       /** @default 0 */
@@ -29954,6 +30097,281 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['AdminFaqResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  NavigationController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['NavigationResponse'];
+          };
+        };
+      };
+    };
+  };
+  AdminMenuItemController_list: {
+    parameters: {
+      query?: {
+        place?: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminMenuItemResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMenuItemController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateMenuItemDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminMenuItemResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMenuItemController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMenuItemController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateMenuItemDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminMenuItemResponse'];
           };
         };
       };
