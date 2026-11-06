@@ -1,0 +1,59 @@
+name: Deploy staging (admin)
+
+on:
+  push:
+    branches: [staging-admin]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging-admin
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  APP: admin
+  SITE_URL: https://staging-admin.isewa.com.np
+  API_URL: https://staging-api.isewa.com.np
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Node version must be >= 22.12
+        run: node -e "const [a,b]=process.versions.node.split('.').map(Number); if(a<22||(a===22&&b<12)){process.exit(1)}"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm audit --omit=dev --audit-level=high
+      - name: Build (needs the staging API to be live)
+        run: npm run build && node scripts-pack.mjs "$APP"
+        env:
+          API_URL: ${{ env.API_URL }}
+          MEDIA_URL: ${{ env.API_URL }}/media
+          NEXT_PUBLIC_SITE_URL: ${{ env.SITE_URL }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
+      - name: SSH setup
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "${{ secrets.STAGING_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "${{ secrets.STAGING_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Upload, restart, verify (rollback on failure)
+        run: |
+          T=${{ secrets.STAGING_USER }}@${{ secrets.STAGING_HOST }}
+          ssh $T "rsync -a --delete /opt/puja-$APP/ /opt/puja-$APP.prev/"
+          rsync -az --delete deploy/$APP/ $T:/opt/puja-$APP/
+          ssh $T "cd /opt/puja-api/ops/staging && docker compose up -d --build $APP
+            for i in \$(seq 1 12); do curl -fsS --max-time 5 -o /dev/null $SITE_URL && exit 0; sleep 5; done
+            echo 'unhealthy, rolling back'; rsync -a --delete /opt/puja-$APP.prev/ /opt/puja-$APP/
+            docker compose up -d --build $APP; exit 1"
