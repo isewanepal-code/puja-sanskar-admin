@@ -2,7 +2,7 @@ name: Deploy staging (admin)
 
 on:
   push:
-    branches: [staging-admin]
+    branches: [staging]
   workflow_dispatch:
 
 concurrency:
