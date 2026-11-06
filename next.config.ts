@@ -18,6 +18,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // A self-contained server folder: it is what gets uploaded to the host.
+  output: 'standalone',
   agentRules: false,
   images: {
     formats: [...mediaConfig.image.formats],
