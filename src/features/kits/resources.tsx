@@ -210,6 +210,21 @@ export function kitItemsResource(kitId: string): Resource<Line> {
         align: 'right',
       },
       {
+        key: 'available',
+        // Red when this branch cannot cover the kit's own quantity, so the short item is plain to see.
+        cell: (row) => (
+          <Badge
+            tone={
+              row.available <= 0 ? 'danger' : row.available < row.quantity ? 'warning' : 'success'
+            }
+          >
+            {row.available}
+          </Badge>
+        ),
+        sortValue: (row) => row.available,
+        align: 'right',
+      },
+      {
         key: 'lineTotal',
         cell: (row) => money(row.lineTotal),
         sortValue: (row) => Number(row.lineTotal),

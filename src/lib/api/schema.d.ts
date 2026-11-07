@@ -2386,7 +2386,7 @@ export interface paths {
     };
     /**
      * List kits
-     * @description q matches code or names.
+     * @description q matches code or names. Stock is read at the chosen branch (X-Branch), else the website's.
      */
     get: operations['AdminKitController_list'];
     put?: never;
@@ -3263,6 +3263,26 @@ export interface paths {
      * @description Priced at today's prices; stock leaves at once and the order is COMPLETED.
      */
     post: operations['AdminStoreSaleController_sell'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/store-sales/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Items the counter can sell at this branch
+     * @description Each active pack with the units that can be sold here now, so staff see what is short before the sale.
+     */
+    get: operations['AdminStoreShelfController_items'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -8464,6 +8484,11 @@ export interface components {
       choices: components['schemas']['KitSkuResponse'][];
       /** Format: uuid */
       id: string;
+      /**
+       * @description Units that can be sold now, at the branch being viewed
+       * @example 12
+       */
+      available: number;
       sortOrder: number;
     };
     AdminKitResponse: {
@@ -9938,6 +9963,33 @@ export interface components {
       couponCode?: string;
       /** @description Taken off after any automatic discount or coupon; above the shop limit it needs discounts:override */
       discount?: components['schemas']['CounterDiscountDto'];
+    };
+    ShelfPackResponse: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example KAP-050 */
+      sku: string;
+      /** @example 50 g */
+      label: string;
+      /** @example 120.00 */
+      price: string;
+      /**
+       * @description Units that can be sold now at this branch
+       * @example 18
+       */
+      available: number;
+    };
+    ShelfItemResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example KAPUR */
+      code: string;
+      /** @example Camphor */
+      nameEn: string;
+      /** @example कपूर */
+      nameNe: string;
+      imageUrl: string | null;
+      packs: components['schemas']['ShelfPackResponse'][];
     };
     PanditCardResponse: {
       /** @example pt-ramprasad-adhikari */
@@ -23832,7 +23884,10 @@ export interface operations {
         isActive?: boolean;
         pujaId?: string;
       };
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path?: never;
       cookie?: never;
     };
@@ -23970,7 +24025,10 @@ export interface operations {
   AdminKitController_get: {
     parameters: {
       query?: never;
-      header?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
       path: {
         id: string;
       };
@@ -28213,6 +28271,69 @@ export interface operations {
        *     UNPROCESSABLE_ENTITY
        */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStoreShelfController_items: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code, names or a SKU */
+        q?: string;
+      };
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['ShelfItemResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
         headers: {
           [name: string]: unknown;
         };

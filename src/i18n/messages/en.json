@@ -1072,6 +1072,7 @@
       "fields": {
         "variantId": "Pack",
         "quantity": "How many",
+        "available": "In stock here",
         "lineTotal": "Total",
         "isOptional": "Optional",
         "note": "Note",
@@ -2339,7 +2340,15 @@
     "discountSection": "Coupon and discount",
     "noteSection": "Note",
     "estimated": "Total",
-    "shortcuts": "Press / to search · Ctrl + Enter to record"
+    "shortcuts": "Press / to search · Ctrl + Enter to record",
+    "showShort": "Show kits that are short here",
+    "shortHidden": "{count, plural, one {# kit} other {# kits}} hidden: an item in them has run out at this branch",
+    "needs": "Needs: {items}",
+    "loadFailed": "The shelf could not be loaded.",
+    "noneHere": "None left at this branch.",
+    "onlyHere": "Only {count} left at this branch.",
+    "fixStock": "Lower the quantity or remove what is short to record the sale.",
+    "notEnough": "Not enough stock at this branch: {items}"
   },
   "customersSection": {
     "title": "Customers",

@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { z } from 'zod';
 
 import { useToast } from '@/components/overlays';
-import { fieldErrors, isApiError, request, type Schema } from '@/lib/api';
+import { fieldErrors, isApiError, request, type ApiError, type Schema } from '@/lib/api';
 import { routes } from '@/lib/routes';
 
 import { CataloguePanel } from './counter/catalogue-panel';
@@ -15,6 +15,28 @@ import { TicketPanel } from './counter/ticket-panel';
 import { EMPTY_FORM, type Line, type Pack, type SaleForm } from './counter/types';
 
 type Order = Schema<'AdminOrderResponse'>;
+type Short = {
+  sku?: string | null;
+  name?: string | null;
+  label?: string | null;
+  requested?: number;
+  available?: number;
+};
+
+// "Not enough stock" says which packs, how many are wanted and how many are here.
+function shortMessage(
+  error: ApiError,
+  t: (key: 'notEnough', values: { items: string }) => string,
+): string {
+  if (error.code !== 'INVENTORY_INSUFFICIENT_STOCK' || error.details.length === 0)
+    return error.message;
+  const items = (error.details as Short[])
+    .map((d) =>
+      `${d.name ?? d.sku ?? ''} ${d.label ?? ''}: ${d.requested ?? '?'} wanted, ${d.available ?? 0} here`.trim(),
+    )
+    .join('; ');
+  return t('notEnough', { items });
+}
 
 const MONEY = /^\d{1,13}(\.\d{1,2})?$/;
 const PHONE = /^\+?[0-9]{7,15}$/;
@@ -92,7 +114,7 @@ export function CounterSale() {
     },
     onError: (error) => {
       setErrors(fieldErrors(error));
-      toast.error(isApiError(error) ? error.message : tf('failed'));
+      toast.error(isApiError(error) ? shortMessage(error, t) : tf('failed'));
     },
   });
 

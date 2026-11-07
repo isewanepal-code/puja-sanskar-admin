@@ -6,13 +6,14 @@ import { useEffect, useMemo, useState, type RefObject } from 'react';
 
 import { Icon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
-import { request, type Schema } from '@/lib/api';
+import { Switch } from '@/components/ui/input';
+import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 import type { Pack } from './types';
 
-type Product = Schema<'AdminProductResponse'>;
+type Shelf = Schema<'ShelfItemResponse'>;
 type Kit = Schema<'AdminKitResponse'>;
 type Page<T> = { items: T[]; meta: { page: number; totalPages: number } };
 type Tab = 'kits' | 'items';
@@ -29,12 +30,17 @@ function useDebounced(value: string, ms = 250) {
   return debounced;
 }
 
-function usePaged<T>(path: string, q: string, enabled: boolean) {
+function usePaged<T>(
+  path: string,
+  q: string,
+  enabled: boolean,
+  extra: Record<string, unknown> = {},
+) {
   return useInfiniteQuery({
     queryKey: ['counter', path, q],
     queryFn: ({ pageParam }) =>
       request<Page<T>>('GET', path, {
-        query: { q: q || undefined, page: pageParam, limit: LIMIT, isActive: true },
+        query: { q: q || undefined, page: pageParam, limit: LIMIT, ...extra },
       }),
     initialPageParam: 1,
     getNextPageParam: (last) =>
@@ -52,21 +58,26 @@ const kitPack = (kit: Kit): Pack => ({
   price: kit.salePrice,
   listPrice: kit.salePrice !== kit.price ? kit.price : undefined,
   image: kit.images[0]?.url,
+  available: kit.availableCount,
 });
 
-const packsOf = (product: Product): (Pack & { inStock: boolean })[] =>
-  product.variants
-    .filter((variant) => variant.isActive)
-    .map((variant) => ({
-      id: variant.id,
-      kind: 'pack' as const,
-      name: product.nameNe,
-      detail: `${variant.label} · ${product.nameEn}`,
-      code: variant.sku,
-      price: variant.price,
-      image: product.images[0]?.url,
-      inStock: variant.inStock,
-    }));
+// What stops a kit being sold here: the items it holds that this branch cannot cover.
+const lacking = (kit: Kit) =>
+  kit.items
+    .filter((item) => !item.isOptional && item.available < item.quantity)
+    .map((item) => `${item.product.nameEn} ${item.sku.label} (${item.available}/${item.quantity})`);
+
+const packsOf = (item: Shelf): Pack[] =>
+  item.packs.map((pack) => ({
+    id: pack.variantId,
+    kind: 'pack' as const,
+    name: item.nameNe,
+    detail: `${pack.label} · ${item.nameEn}`,
+    code: pack.sku,
+    price: pack.price,
+    image: item.imageUrl ?? undefined,
+    available: pack.available,
+  }));
 
 type CataloguePanelProps = {
   onAdd: (pack: Pack) => void;
@@ -79,14 +90,18 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
   const [tab, setTab] = useState<Tab>('kits');
   const [text, setText] = useState('');
   const q = useDebounced(text.trim());
-  const kitsQuery = usePaged<Kit>('/admin/kits', q, tab === 'kits');
-  const itemsQuery = usePaged<Product>('/admin/products', q, tab === 'items');
+  // Kits that cannot be made from this branch's shelf stay out of the way unless asked for.
+  const [showShort, setShowShort] = useState(false);
+  const kitsQuery = usePaged<Kit>('/admin/kits', q, tab === 'kits', { isActive: true });
+  const itemsQuery = usePaged<Shelf>('/admin/store-sales/items', q, tab === 'items');
   const query = tab === 'kits' ? kitsQuery : itemsQuery;
 
-  const kits = useMemo(
+  const allKits = useMemo(
     () => kitsQuery.data?.pages.flatMap((page) => page.items) ?? [],
     [kitsQuery.data],
   );
+  const shortKits = allKits.filter((kit) => kit.availableCount <= 0).length;
+  const kits = showShort ? allKits : allKits.filter((kit) => kit.availableCount > 0);
   const products = useMemo(
     () => itemsQuery.data?.pages.flatMap((page) => page.items) ?? [],
     [itemsQuery.data],
@@ -96,7 +111,7 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
   function enter() {
     const wanted = text.trim().toLowerCase();
     if (!wanted) return;
-    const packs = products.flatMap(packsOf).filter((pack) => pack.inStock);
+    const packs = products.flatMap(packsOf).filter((pack) => pack.available > 0);
     const exact = packs.find((pack) => pack.code.toLowerCase() === wanted);
     if (exact) {
       onAdd(exact);
@@ -107,7 +122,10 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
     if (tab === 'kits' && kits.length === 1) onAdd(kitPack(kits[0]!));
   }
 
-  const empty = !query.isPending && (tab === 'kits' ? kits.length === 0 : products.length === 0);
+  const empty =
+    !query.isPending &&
+    !query.isError &&
+    (tab === 'kits' ? kits.length === 0 : products.length === 0);
 
   return (
     <section className="flex min-h-0 flex-col gap-3">
@@ -162,8 +180,26 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+        {tab === 'kits' && !query.isPending ? (
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm">
+            <Switch
+              label={t('showShort')}
+              checked={showShort}
+              onChange={(event) => setShowShort(event.target.checked)}
+            />
+            {!showShort && shortKits > 0 ? (
+              <span className="text-xs text-muted-foreground">
+                {t('shortHidden', { count: shortKits })}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
         {query.isPending ? (
           <p className="py-10 text-center text-sm text-muted-foreground">{t('loading')}</p>
+        ) : query.isError ? (
+          <p role="alert" className="py-10 text-center text-sm text-destructive">
+            {isApiError(query.error) ? query.error.message : t('loadFailed')}
+          </p>
         ) : empty ? (
           <p className="py-10 text-center text-sm text-muted-foreground">{t('noResults')}</p>
         ) : tab === 'kits' ? (
@@ -171,6 +207,7 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
             {kits.map((kit) => {
               const pack = kitPack(kit);
               const short = kit.availableCount <= 0;
+              const missing = short ? lacking(kit) : [];
               return (
                 <li key={kit.id}>
                   <button
@@ -186,6 +223,12 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
                         {kit.tier ? `${t(`tiers.${kit.tier}`)} · ` : ''}
                         {t('itemsIn', { count: kit.items.length })}
                       </div>
+                      {missing.length > 0 ? (
+                        <div className="mt-1 text-xs text-destructive">
+                          {t('needs', { items: missing.slice(0, 2).join(', ') })}
+                          {missing.length > 2 ? ` +${missing.length - 2}` : ''}
+                        </div>
+                      ) : null}
                     </div>
                     <div className="flex items-end justify-between gap-2">
                       <div>
@@ -218,19 +261,18 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
           </ul>
         ) : (
           <ul className="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-3">
-            {products.map((product) => {
-              const packs = packsOf(product);
-              if (packs.length === 0) return null;
+            {products.map((item) => {
+              const packs = packsOf(item);
               return (
                 <li
-                  key={product.id}
+                  key={item.id}
                   className="grid content-start gap-2 rounded-xl border border-border bg-card p-3"
                 >
                   <div className="flex items-center gap-3">
-                    <Tile image={product.images[0]?.url} name={product.nameNe} small />
+                    <Tile image={item.imageUrl ?? undefined} name={item.nameNe} small />
                     <div className="min-w-0">
-                      <div className="truncate font-semibold">{product.nameNe}</div>
-                      <div className="truncate text-xs text-muted-foreground">{product.nameEn}</div>
+                      <div className="truncate font-semibold">{item.nameNe}</div>
+                      <div className="truncate text-xs text-muted-foreground">{item.nameEn}</div>
                     </div>
                   </div>
                   <ul className="flex flex-wrap gap-2">
@@ -238,14 +280,28 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
                       <li key={pack.id}>
                         <button
                           type="button"
-                          disabled={!pack.inStock}
+                          disabled={pack.available <= 0}
                           onClick={() => onAdd(pack)}
                           title={pack.code}
                           className="grid min-w-24 rounded-lg border border-border px-3 py-1.5 text-left transition-all hover:border-primary hover:bg-primary/5 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
                         >
                           <span className="text-sm font-medium">{pack.detail.split(' · ')[0]}</span>
                           <span className="text-xs text-muted-foreground tabular-nums">
-                            {pack.inStock ? formatMoney(pack.price, 'en') : t('outOfStock')}
+                            {formatMoney(pack.price, 'en')}
+                          </span>
+                          <span
+                            className={cn(
+                              'text-xs font-semibold',
+                              pack.available <= 0
+                                ? 'text-destructive'
+                                : pack.available <= 3
+                                  ? 'text-warning'
+                                  : 'text-success',
+                            )}
+                          >
+                            {pack.available <= 0
+                              ? t('outOfStock')
+                              : t('left', { count: pack.available })}
                           </span>
                         </button>
                       </li>
@@ -273,7 +329,7 @@ export function CataloguePanel({ onAdd, searchRef }: CataloguePanelProps) {
 }
 
 function Tile({ image, name, small }: { image?: string; name: string; small?: boolean }) {
-  const size = small ? 'size-12' : 'aspect-[4/3] w-full';
+  const size = small ? 'size-12' : 'aspect-[16/9] w-full';
   return image ? (
     // eslint-disable-next-line @next/next/no-img-element -- an uploaded photo, already resized by the API
     <img src={image} alt="" className={cn(size, 'shrink-0 rounded-lg bg-muted object-cover')} />

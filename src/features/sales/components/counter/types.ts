@@ -11,6 +11,8 @@ export type Pack = {
   // The price before a kit's own discount, shown struck through.
   listPrice?: string;
   image?: string;
+  // How many can be sold from this branch's shelf now.
+  available: number;
 };
 
 export type Line = Pack & { quantity: number };

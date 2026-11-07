@@ -86,6 +86,8 @@ export function TicketPanel({
   const toggle = (name: 'customer' | 'discount' | 'note') => setOpen(open === name ? null : name);
 
   const count = lines.reduce((sum, line) => sum + line.quantity, 0);
+  // Asking for more than this branch's shelf holds stops the sale until it is fixed.
+  const over = lines.filter((line) => line.quantity > line.available);
   const subtotal = lines.reduce((sum, line) => sum + Number(line.price) * line.quantity, 0);
   const off = discountOf(subtotal, form);
   const total = subtotal - off;
@@ -120,7 +122,13 @@ export function TicketPanel({
         ) : (
           <ul className="divide-y divide-border">
             {lines.map((line) => (
-              <li key={line.id} className="grid gap-2 px-4 py-3">
+              <li
+                key={line.id}
+                className={cn(
+                  'grid gap-2 px-4 py-3',
+                  line.quantity > line.available && 'bg-destructive/5',
+                )}
+              >
                 <div className="flex items-start gap-2">
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-medium">{line.name}</div>
@@ -137,6 +145,11 @@ export function TicketPanel({
                     <Icon name="x" size={16} />
                   </button>
                 </div>
+                {line.quantity > line.available ? (
+                  <p role="alert" className="text-xs font-medium text-destructive">
+                    {line.available <= 0 ? t('noneHere') : t('onlyHere', { count: line.available })}
+                  </p>
+                ) : null}
                 <div className="flex items-center justify-between gap-3">
                   <div className="inline-flex items-center rounded-lg border border-border">
                     <button
@@ -297,11 +310,16 @@ export function TicketPanel({
           size="lg"
           icon="check"
           title={t('shortcuts')}
-          disabled={pending || lines.length === 0}
+          disabled={pending || lines.length === 0 || over.length > 0}
           onClick={onSell}
         >
           {pending ? tf('saving') : t('sell')}
         </Button>
+        {over.length > 0 ? (
+          <p role="alert" className="text-center text-xs font-medium text-destructive">
+            {t('fixStock')}
+          </p>
+        ) : null}
         <p className="text-center text-xs text-muted-foreground">{t('afterNote')}</p>
       </footer>
     </aside>
