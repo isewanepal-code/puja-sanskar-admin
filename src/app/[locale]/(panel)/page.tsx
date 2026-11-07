@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { EmptyState } from '@/components/feedback';
 import { can } from '@/config/permissions';
-import { getSummary } from '@/features/dashboard';
+import { getShopCounts, getSummary, ShopCounts } from '@/features/dashboard';
 import { listOrders } from '@/features/orders';
 import { OrdersPreview, OrderStatusBadge } from '@/features/sales';
 import { getMe } from '@/features/staff';
@@ -34,10 +34,13 @@ export default async function DashboardPage({ params }: PageProps<'/[locale]'>) 
   const me = await getMe();
   const showReports = can(me.permissions, 'reports:read');
   const showOrders = can(me.permissions, 'orders:read');
+  const showCatalogue = can(me.permissions, 'catalogue:read');
+  const showStock = can(me.permissions, 'inventory:read');
 
-  const [summary, waiting] = await Promise.all([
+  const [summary, waiting, counts] = await Promise.all([
     showReports ? getSummary() : null,
     showOrders ? listOrders({ page: 1, status: 'PENDING' }, 5) : null,
+    getShopCounts({ kits: showCatalogue, items: showCatalogue, stock: showStock }),
   ]);
   const money = (amount: string) => formatMoney(amount, 'en');
 
@@ -55,6 +58,8 @@ export default async function DashboardPage({ params }: PageProps<'/[locale]'>) 
           </p>
         ) : null}
       </header>
+
+      <ShopCounts counts={counts} />
 
       {summary ? (
         <>

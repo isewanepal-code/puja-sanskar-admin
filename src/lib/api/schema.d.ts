@@ -8481,6 +8481,11 @@ export interface components {
       previousSlugs: string[];
       isActive: boolean;
       sortOrder: number;
+      /**
+       * @description Whole kits that can be sold from the stock on hand
+       * @example 12
+       */
+      availableCount: number;
       items: components['schemas']['AdminKitLineResponse'][];
       /** Format: date-time */
       createdAt: string;
@@ -21397,6 +21402,8 @@ export interface operations {
         productId?: string;
         /** @description Only SKUs at or below their reorder level */
         lowStock?: boolean;
+        /** @description Only SKUs with nothing on hand */
+        outOfStock?: boolean;
       };
       header?: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
@@ -21471,6 +21478,8 @@ export interface operations {
         productId?: string;
         /** @description Only SKUs at or below their reorder level */
         lowStock?: boolean;
+        /** @description Only SKUs with nothing on hand */
+        outOfStock?: boolean;
       };
       header?: {
         /** @description Branch code to narrow to; left out, every branch the user may see */

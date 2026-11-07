@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Field } from '@/components/forms';
+import { Icon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { routes } from '@/lib/routes';
@@ -67,14 +68,14 @@ export function LoginForm() {
   const errors = form.formState.errors;
 
   return (
-    <form
-      onSubmit={form.handleSubmit(signIn)}
-      noValidate
-      className="grid w-full max-w-sm gap-5 rounded-lg bg-card p-8 shadow-sm ring-1 ring-border"
-    >
-      <div>
-        <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
-        <h1 className="font-heading text-2xl font-semibold">{t('title')}</h1>
+    <form onSubmit={form.handleSubmit(signIn)} noValidate className="grid w-full max-w-sm gap-5">
+      <div className="grid gap-1.5">
+        <span className="inline-flex items-center gap-2 text-sm font-medium text-primary lg:hidden">
+          <Icon name="diya" size={18} aria-hidden="true" />
+          {t('subtitle')}
+        </span>
+        <h1 className="font-heading text-3xl font-semibold">{t('title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('welcome')}</p>
       </div>
       <Field label={t('email')} htmlFor="email" error={errors.email?.message}>
         <Input id="email" type="email" autoComplete="username" {...form.register('email')} />

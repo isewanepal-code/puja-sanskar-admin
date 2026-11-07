@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { LoginForm } from '@/features/auth';
+import { LoginForm, LoginShowcase } from '@/features/auth';
 import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
@@ -17,10 +17,13 @@ export default async function LoginPage({ params }: PageProps<'/[locale]/login'>
   await resolveLocale(params);
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-4">
-      <Suspense>
-        <LoginForm />
-      </Suspense>
+    <main className="grid min-h-screen bg-background lg:grid-cols-[1.1fr_1fr]">
+      <LoginShowcase />
+      <div className="flex items-center justify-center px-4 py-10">
+        <Suspense>
+          <LoginForm />
+        </Suspense>
+      </div>
     </main>
   );
 }

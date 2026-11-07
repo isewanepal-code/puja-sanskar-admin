@@ -60,7 +60,20 @@
     "disabled": "This staff account is turned off. Ask an administrator.",
     "network": "The server can't be reached. Check that the API is running.",
     "emailInvalid": "Enter an email address",
-    "passwordRequired": "Enter your password"
+    "passwordRequired": "Enter your password",
+    "welcome": "Welcome back. Sign in to run the shop.",
+    "showcase": {
+      "brand": "Puja Sanskar",
+      "headline": "The whole shop, from one place.",
+      "lead": "Kits, items, orders, stock and money in step, so what the website shows is what is on the shelf.",
+      "areas": {
+        "catalogue": { "title": "Kits and items", "note": "Packs, prices and what each kit holds" },
+        "orders": { "title": "Orders", "note": "From the website to the doorstep" },
+        "counter": { "title": "Counter and stock", "note": "Sell in the shop, count what is left" },
+        "money": { "title": "Money and reports", "note": "Collections, dues and daily books" }
+      },
+      "staffOnly": "For Puja Sanskar staff only."
+    }
   },
   "panel": {
     "menu": "Admin sections",
@@ -120,7 +133,27 @@
       "ONLINE": "Sold online",
       "STORE": "Sold at the counter"
     },
-    "channelNote": "{bills, plural, one {# bill} other {# bills}}; one shared stock"
+    "channelNote": "{bills, plural, one {# bill} other {# bills}}; one shared stock",
+    "counts": {
+      "kits": "Kits",
+      "kitsMade": "Kits made",
+      "kitsActive": "{count} shown on the website",
+      "kitsReady": "Ready to sell",
+      "kitsReadyNote": "Every item in the kit is on the shelf",
+      "kitsShort": "Short of stock",
+      "kitsShortNote": "Shown on the website, but an item has run out",
+      "kitsLeft": "Kits left, fewest first",
+      "left": "{count} left",
+      "items": "Items and stock",
+      "itemsTotal": "Items",
+      "itemsActive": "{count} shown on the website",
+      "packsTracked": "Packs with stock",
+      "packsTrackedNote": "Counted in the branch you are viewing",
+      "low": "Running low",
+      "lowNote": "At or below their reorder level",
+      "out": "Out of stock",
+      "outNote": "Nothing on the shelf"
+    }
   },
   "orders": {
     "title": "Orders",
