@@ -226,6 +226,27 @@
       "remove": "Remove the last level"
     }
   },
+  "notes": {
+    "title": "Notes for testing",
+    "titleFor": "Notes · {screen}",
+    "note": "Write what needs fixing on this screen, add screenshots, and tick it when it is done. Everyone on the team sees the same list.",
+    "placeholder": "What is wrong or missing here?",
+    "addImages": "Add screenshots",
+    "pasteHint": "or paste or drop an image",
+    "uploading": "Uploading…",
+    "imagesOnly": "Only images can be added.",
+    "add": "Add note",
+    "added": "Note added",
+    "open": "To do",
+    "done": "Done",
+    "allScreens": "All screens",
+    "noneOpen": "Nothing to do here. Add a note above.",
+    "noneDone": "Nothing is done yet.",
+    "markDone": "Mark as done",
+    "reopen": "Move back to to do",
+    "openImage": "Open the screenshot",
+    "removeImage": "Remove the screenshot"
+  },
   "table": {
     "search": "Search",
     "count": "{total, plural, one {# item} other {# items}}",

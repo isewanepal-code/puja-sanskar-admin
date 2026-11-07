@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { Icon } from '@/components/icons';
+import { NotesButton } from '@/features/notes';
 import { routes } from '@/lib/routes';
 
 import { BranchSwitcher } from './branch-switcher';
@@ -53,6 +54,7 @@ export function HeaderBar({ staff, branch }: HeaderBarProps) {
         <Icon name="sidebar" size={18} />
       </button>
       <div className="ml-auto flex items-center gap-3">
+        <NotesButton />
         <BranchSwitcher current={branch} />
         <Menu.Root>
           <Menu.Trigger className="flex items-center gap-2.5 rounded-md py-1 pr-2 pl-1 text-sm hover:bg-muted">
