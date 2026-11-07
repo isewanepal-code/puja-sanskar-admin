@@ -67,10 +67,22 @@
       "headline": "The whole shop, from one place.",
       "lead": "Kits, items, orders, stock and money in step, so what the website shows is what is on the shelf.",
       "areas": {
-        "catalogue": { "title": "Kits and items", "note": "Packs, prices and what each kit holds" },
-        "orders": { "title": "Orders", "note": "From the website to the doorstep" },
-        "counter": { "title": "Counter and stock", "note": "Sell in the shop, count what is left" },
-        "money": { "title": "Money and reports", "note": "Collections, dues and daily books" }
+        "catalogue": {
+          "title": "Kits and items",
+          "note": "Packs, prices and what each kit holds"
+        },
+        "orders": {
+          "title": "Orders",
+          "note": "From the website to the doorstep"
+        },
+        "counter": {
+          "title": "Counter and stock",
+          "note": "Sell in the shop, count what is left"
+        },
+        "money": {
+          "title": "Money and reports",
+          "note": "Collections, dues and daily books"
+        }
       },
       "staffOnly": "For Puja Sanskar staff only."
     }
@@ -156,7 +168,11 @@
       "title": "Cash and bank",
       "open": "Open",
       "none": "No accounts yet.",
-      "kinds": { "CASH": "Cash", "BANK": "Bank", "WALLET": "Wallet" }
+      "kinds": {
+        "CASH": "Cash",
+        "BANK": "Bank",
+        "WALLET": "Wallet"
+      }
     },
     "pujas": {
       "title": "Pujas",
@@ -2105,7 +2121,11 @@
     "passwordReset": "Password reset",
     "packs": "Packs",
     "showStock": "Show",
-    "show": { "all": "All packs", "low": "Running low", "out": "Out of stock" },
+    "show": {
+      "all": "All packs",
+      "low": "Running low",
+      "out": "Out of stock"
+    },
     "packsOf": "Packs of {name}",
     "packsAndPrices": "Packs and prices",
     "packsNote": "Each pack is its own SKU with its own price and stock. The cheapest active pack is the default.",
@@ -2261,13 +2281,13 @@
   "counterSale": {
     "pack": "Item or kit",
     "choose": "Choose an item or kit",
-    "loading": "Loading items and kits...",
+    "loading": "Loading…",
     "quantity": "Qty",
     "add": "Add",
     "price": "Price",
     "total": "Total",
     "remove": "Remove",
-    "empty": "Add the first item or kit.",
+    "empty": "Tap a kit or an item to start the sale.",
     "noLines": "Add at least one item or kit",
     "subtotal": "Subtotal",
     "customer": "Customer name",
@@ -2292,7 +2312,34 @@
       "amount": "Amount (Rs)",
       "reference": "Reference (optional)",
       "make": "Make QR"
-    }
+    },
+    "search": "Search by name, code or scan a SKU",
+    "shelf": "What to show",
+    "tabKits": "Kits",
+    "tabItems": "Items",
+    "noResults": "Nothing matches. Try another name or code.",
+    "loadMore": "Show more",
+    "outOfStock": "Out",
+    "short": "Short",
+    "left": "{count} left",
+    "itemsIn": "{count, plural, one {# item} other {# items}}",
+    "tiers": {
+      "BASIC": "Basic",
+      "STANDARD": "Standard",
+      "PREMIUM": "Premium"
+    },
+    "currentSale": "Current sale",
+    "itemsCount": "{count, plural, =0 {Nothing added yet} one {# thing} other {# things}}",
+    "clear": "Clear",
+    "clearConfirm": "Clear this sale?",
+    "less": "One less",
+    "more": "One more",
+    "each": "{price} each",
+    "customerSection": "Customer",
+    "discountSection": "Coupon and discount",
+    "noteSection": "Note",
+    "estimated": "Total",
+    "shortcuts": "Press / to search · Ctrl + Enter to record"
   },
   "customersSection": {
     "title": "Customers",
