@@ -109,6 +109,8 @@ export type Resource<T> = {
   idempotent?: boolean;
   // How a new record is sent; PUT for a list that replaces the old one.
   submitMethod?: 'POST' | 'PUT' | 'PATCH';
+  // The order shown on the website is set by dragging rows, not by typing numbers.
+  reorder?: boolean;
   // Fields offered as columns of the bulk-entry grid; leave out for no bulk entry.
   bulk?: string[];
 };

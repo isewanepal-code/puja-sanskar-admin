@@ -100,6 +100,7 @@ export const deliveryZonesResource: Resource<Zone> = {
       .toLowerCase()
       .includes(q),
   initialSort: { key: 'sortOrder', direction: 'asc' },
+  reorder: true,
   modalSize: 'lg',
   columns: [
     {

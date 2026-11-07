@@ -79,6 +79,7 @@ export function storiesResource(name: Name): Resource<Story> {
         .toLowerCase()
         .includes(q),
     initialSort: { key: 'sortOrder', direction: 'asc' },
+    reorder: true,
     modalSize: 'lg',
     columns: [
       { key: 'kind', cell: (row) => name(`kinds.${row.kind}`), sortValue: (row) => row.kind },

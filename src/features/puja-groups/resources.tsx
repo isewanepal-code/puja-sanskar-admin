@@ -42,6 +42,7 @@ export const ritualTypesResource: Resource<RitualType> = {
   rowLabel: (row) => `${row.code} · ${row.nameNe}`,
   matches: (row, q) => `${row.code} ${row.nameNe} ${row.nameEn}`.toLowerCase().includes(q),
   initialSort: { key: 'sortOrder', direction: 'asc' },
+  reorder: true,
   modalSize: 'sm',
   bulk: ['code', 'nameNe', 'nameEn'],
   columns: [

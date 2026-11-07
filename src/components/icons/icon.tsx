@@ -2,6 +2,16 @@ import type { SVGProps } from 'react';
 
 // The approved design's line icons, drawn on a 24px grid with the current colour.
 const PATHS = {
+  grip: (
+    <>
+      <circle cx="9" cy="6" r="1.2" />
+      <circle cx="15" cy="6" r="1.2" />
+      <circle cx="9" cy="12" r="1.2" />
+      <circle cx="15" cy="12" r="1.2" />
+      <circle cx="9" cy="18" r="1.2" />
+      <circle cx="15" cy="18" r="1.2" />
+    </>
+  ),
   search: (
     <>
       <circle cx="11" cy="11" r="7" />

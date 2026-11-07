@@ -16,6 +16,7 @@ import { BulkGrid } from './bulk-grid';
 import { ExportButton } from './export-button';
 import { InlineToggle } from './inline-toggle';
 import { ConfirmDelete } from './confirm-delete';
+import { ReorderModal } from './reorder-modal';
 import { ResourceForm } from './resource-form';
 import { useResourceText } from './translate';
 import type { Resource } from './types';
@@ -30,6 +31,8 @@ type ResourceScreenProps<T> = {
   toolbar?: ReactNode;
   // After a new record is saved: open what comes next for it (a kit's items…).
   onCreated?: (row: T) => void;
+  // Under the form of a saved record: what belongs to it (an item's packs and prices…).
+  editFooter?: (row: T) => ReactNode;
 };
 
 // Any resource's list with search, sorting, paging and its create, edit and delete modals.
@@ -38,6 +41,7 @@ export function ResourceScreen<T>({
   rowActions,
   toolbar,
   onCreated,
+  editFooter,
 }: ResourceScreenProps<T>) {
   const t = useResourceText(resource.key);
   const tf = useTranslations('forms');
@@ -61,6 +65,7 @@ export function ResourceScreen<T>({
   const [removing, setRemoving] = useState<T | null>(null);
   const [saving, setSaving] = useState(false);
   const [bulk, setBulk] = useState(false);
+  const [arranging, setArranging] = useState(false);
 
   const list = useQuery({
     queryKey: [
@@ -136,6 +141,11 @@ export function ResourceScreen<T>({
     };
   });
 
+  // The order is dragged, so the form has no number to type.
+  const formResource = resource.reorder
+    ? { ...resource, fields: resource.fields.filter((field) => field.name !== 'sortOrder') }
+    : resource;
+
   return (
     <div className="grid grid-cols-1 gap-4">
       <div className="flex flex-wrap items-center gap-3">
@@ -164,6 +174,11 @@ export function ResourceScreen<T>({
               path={resource.exportPath}
               query={{ ...resource.listQuery, ...(resource.searchable !== false && { q: query }) }}
             />
+          ) : null}
+          {resource.reorder && !resource.singleton ? (
+            <Button variant="secondary" icon="list" onClick={() => setArranging(true)}>
+              {tf('arrange')}
+            </Button>
           ) : null}
           {resource.bulk ? (
             <Button variant="secondary" icon="list" onClick={() => setBulk(true)}>
@@ -259,7 +274,7 @@ export function ResourceScreen<T>({
         {editing !== null ? (
           <ResourceForm
             key={editing === 'new' ? 'new' : resource.rowId(editing)}
-            resource={resource}
+            resource={formResource}
             row={editing === 'new' ? undefined : editing}
             formId={formId}
             onPendingChange={setSaving}
@@ -269,7 +284,12 @@ export function ResourceScreen<T>({
             }}
           />
         ) : null}
+        {editing !== null && editing !== 'new' ? editFooter?.(editing) : null}
       </Modal>
+
+      {resource.reorder ? (
+        <ReorderModal resource={resource} open={arranging} onOpenChange={setArranging} />
+      ) : null}
 
       {resource.bulk ? <BulkGrid resource={resource} open={bulk} onOpenChange={setBulk} /> : null}
 

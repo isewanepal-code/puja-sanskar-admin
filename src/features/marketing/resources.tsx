@@ -21,6 +21,7 @@ export const panditsResource: Resource<Pandit> = {
   rowId: (row) => row.id,
   rowLabel: (row) => `${row.code} · ${row.nameNe}`,
   initialSort: { key: 'sortOrder', direction: 'asc' },
+  reorder: true,
   modalSize: 'lg',
   bulk: ['code', 'referralCode', 'nameNe', 'nameEn', 'area', 'phone'],
   formRow: discount.formRow,

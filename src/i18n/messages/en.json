@@ -179,7 +179,13 @@
     "created": "Created",
     "edit": "Edit",
     "editing": "Edit {name}",
-    "bulkAdd": "Add many"
+    "bulkAdd": "Add many",
+    "arrange": "Arrange order",
+    "arrangeNote": "Drag a row by its handle. The website shows them in this order, top first.",
+    "arrangeHandle": "Drag to move {name}",
+    "saveOrder": "Save order",
+    "orderSaved": "Order saved",
+    "nothingToArrange": "Nothing to arrange yet."
   },
   "pujas": {
     "title": "Pujas",

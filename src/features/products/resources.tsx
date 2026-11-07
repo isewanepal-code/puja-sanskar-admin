@@ -268,6 +268,7 @@ export function gradesResource(product: Product): Resource<Grade> {
     rowId: (row) => row.id,
     rowLabel: (row) => row.nameNe,
     initialSort: { key: 'sortOrder', direction: 'asc' },
+    reorder: true,
     modalSize: 'sm',
     bulk: ['nameNe', 'nameEn'],
     columns: [

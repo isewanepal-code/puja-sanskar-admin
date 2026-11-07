@@ -29,6 +29,7 @@ export function kitsResource(name: Name): Resource<Kit> {
     rowId: (row) => row.id,
     rowLabel: (row) => `${row.code} · ${row.nameNe}`,
     initialSort: { key: 'sortOrder', direction: 'asc' },
+    reorder: true,
     modalSize: 'lg',
     formRow: (row) => discount.formRow({ ...row, pujaId: row.puja?.id }),
     shapeBody: discount.shapeBody,
@@ -126,6 +127,7 @@ export function kitItemsResource(kitId: string): Resource<Line> {
     matches: (row, q) =>
       `${row.sku.sku} ${row.product.nameNe} ${row.product.nameEn}`.toLowerCase().includes(q),
     initialSort: { key: 'sortOrder', direction: 'asc' },
+    reorder: true,
     modalSize: 'sm',
     bulk: ['variantId', 'quantity'],
     columns: [
