@@ -4588,6 +4588,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/reports/sales-trend': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Sales for every day of a period, for a chart
+     * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither.
+     */
+    get: operations['AdminReportController_salesTrend'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/reports/sales-book': {
     parameters: {
       query?: never;
@@ -11796,6 +11816,32 @@ export interface components {
       outstanding: components['schemas']['OutstandingResponse'];
       /** @description Orders placed in the period */
       ordersByStatus: components['schemas']['StatusCountResponse'][];
+    };
+    TrendDayResponse: {
+      /**
+       * @description Shop day, AD
+       * @example 2026-11-07
+       */
+      day: string;
+      /** @example 4 */
+      bills: number;
+      /** @example 12500.00 */
+      grossTotal: string;
+      /**
+       * @description Sold at the counter
+       * @example 9000.00
+       */
+      storeTotal: string;
+      /**
+       * @description Sold on the website
+       * @example 3500.00
+       */
+      onlineTotal: string;
+    };
+    SalesTrendResponse: {
+      period: components['schemas']['PeriodResponse'];
+      /** @description Every day of the period, zero when nothing was sold */
+      days: components['schemas']['TrendDayResponse'][];
     };
     SalesTotalsResponse: {
       /**
@@ -33794,6 +33840,75 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['SummaryResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminReportController_salesTrend: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SalesTrendResponse'];
           };
         };
       };

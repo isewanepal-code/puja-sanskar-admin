@@ -3,9 +3,20 @@ import 'server-only';
 import { unwrap } from '@/lib/api';
 import { sessionApi } from '@/lib/api/server';
 
-// Sales, collections and order counts for the current fiscal year so far.
-export async function getSummary() {
-  return unwrap((await sessionApi()).GET('/api/v1/admin/reports/summary'));
+type Days = { from: string; to: string };
+
+// Sales, collections and order counts for the days given; the current fiscal year without them.
+export async function getSummary(days?: Days) {
+  return unwrap(
+    (await sessionApi()).GET('/api/v1/admin/reports/summary', { params: { query: days } }),
+  );
+}
+
+// Sales for every day of the period, to draw.
+export async function getSalesTrend(days: Days) {
+  return unwrap(
+    (await sessionApi()).GET('/api/v1/admin/reports/sales-trend', { params: { query: days } }),
+  );
 }
 
 // How many kits and items the shop has, and how many are left to sell.

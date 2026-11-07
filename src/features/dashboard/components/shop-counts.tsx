@@ -5,6 +5,7 @@ import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
 import type { getShopCounts } from '../api/server';
+import { BarRow } from './bar-row';
 
 type Counts = Awaited<ReturnType<typeof getShopCounts>>;
 
@@ -41,6 +42,43 @@ function Count({
   );
 }
 
+// Out and running low as shares of the packs counted, the rest being fine. A pack can be both
+// (nothing left and under its reorder level), so the low share leaves out what is already out.
+async function StockHealth({ stock }: { stock: { tracked: number; low: number; out: number } }) {
+  const t = await getTranslations('dashboard.counts');
+  const pct = (n: number) => (n / stock.tracked) * 100;
+  const out = pct(stock.out);
+  const low = Math.min(pct(stock.low), 100 - out);
+  return (
+    <div className="panel grid gap-3">
+      <div className="text-sm font-medium">{t('health')}</div>
+      <div className="flex h-3 overflow-hidden rounded-full bg-success/25" aria-hidden="true">
+        <div className="bg-destructive" style={{ width: `${out}%` }} />
+        <div className="bg-warning" style={{ width: `${low}%` }} />
+      </div>
+      <dl className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-muted-foreground">
+        <div className="flex items-center gap-1.5">
+          <span className="size-2 rounded-full bg-destructive" />
+          <dt>{t('out')}</dt>
+          <dd className="font-semibold text-foreground tabular-nums">{stock.out}</dd>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="size-2 rounded-full bg-warning" />
+          <dt>{t('low')}</dt>
+          <dd className="font-semibold text-foreground tabular-nums">{stock.low}</dd>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="size-2 rounded-full bg-success/50" />
+          <dt>{t('fine')}</dt>
+          <dd className="font-semibold text-foreground tabular-nums">
+            {Math.max(0, stock.tracked - stock.out - stock.low)}
+          </dd>
+        </div>
+      </dl>
+    </div>
+  );
+}
+
 // Kits and items at a glance: how many there are, how many can be sold, how many are left.
 export async function ShopCounts({ counts }: { counts: Counts }) {
   const t = await getTranslations('dashboard.counts');
@@ -51,8 +89,8 @@ export async function ShopCounts({ counts }: { counts: Counts }) {
     <section className="grid gap-4">
       {kits ? (
         <div className="grid gap-3">
-          <h2 className="font-semibold">{t('kits')}</h2>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <h2 className="text-base font-semibold">{t('kits')}</h2>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <Count
               label={t('kitsMade')}
               value={kits.total}
@@ -75,35 +113,27 @@ export async function ShopCounts({ counts }: { counts: Counts }) {
             />
           </div>
           {kits.left.length > 0 ? (
-            <div className="panel overflow-hidden !p-0">
-              <div className="border-b border-border px-4 py-2.5 text-sm font-medium">
-                {t('kitsLeft')}
-              </div>
-              <ul className="divide-y divide-border">
-                {kits.left.map((kit) => (
-                  <li key={kit.id} className="flex items-center gap-3 px-4 py-2.5 text-sm">
-                    <span className="min-w-0 flex-1 truncate">
+            <div className="panel grid gap-3">
+              <div className="text-sm font-medium">{t('kitsLeft')}</div>
+              {kits.left.map((kit) => (
+                <BarRow
+                  key={kit.id}
+                  label={
+                    <>
                       {kit.nameEn}
                       {kit.tier ? (
                         <span className="ml-2 text-xs text-muted-foreground">{kit.tier}</span>
                       ) : null}
-                    </span>
-                    <span className="text-xs text-muted-foreground">{kit.code}</span>
-                    <span
-                      className={cn(
-                        'w-20 text-right font-semibold tabular-nums',
-                        kit.availableCount === 0
-                          ? TONE.bad
-                          : kit.availableCount <= 3
-                            ? TONE.warn
-                            : TONE.good,
-                      )}
-                    >
-                      {t('left', { count: kit.availableCount })}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+                    </>
+                  }
+                  value={kit.availableCount}
+                  max={Math.max(...kits.left.map((k) => k.availableCount), 1)}
+                  display={t('left', { count: kit.availableCount })}
+                  tone={
+                    kit.availableCount === 0 ? 'bad' : kit.availableCount <= 3 ? 'warn' : 'good'
+                  }
+                />
+              ))}
             </div>
           ) : null}
         </div>
@@ -111,7 +141,7 @@ export async function ShopCounts({ counts }: { counts: Counts }) {
 
       {items || stock ? (
         <div className="grid gap-3">
-          <h2 className="font-semibold">{t('items')}</h2>
+          <h2 className="text-base font-semibold">{t('items')}</h2>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {items ? (
               <Count
@@ -146,6 +176,7 @@ export async function ShopCounts({ counts }: { counts: Counts }) {
               </>
             ) : null}
           </div>
+          {stock && stock.tracked > 0 ? <StockHealth stock={stock} /> : null}
         </div>
       ) : null}
     </section>
