@@ -2423,6 +2423,26 @@ export interface paths {
     patch: operations['AdminKitController_update'];
     trace?: never;
   };
+  '/api/v1/admin/kits/set': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Create a puja's Basic, Standard and Premium kits together
+     * @description One name, one set of photos and one description for all three; each starts with the puja's default samagri.
+     */
+    post: operations['AdminKitController_createSet'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/kits/from-puja': {
     parameters: {
       query?: never;
@@ -3834,6 +3854,42 @@ export interface paths {
     head?: never;
     /** Change a question */
     patch: operations['AdminFaqController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/notes': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** To-do notes left on admin screens */
+    get: operations['AdminPageNoteController_list'];
+    put?: never;
+    /** Leave a note, with screenshots, on a screen */
+    post: operations['AdminPageNoteController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/notes/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a note */
+    delete: operations['AdminPageNoteController_delete'];
+    options?: never;
+    head?: never;
+    /** Edit a note, or mark it done or open again */
+    patch: operations['AdminPageNoteController_update'];
     trace?: never;
   };
   '/api/v1/navigation': {
@@ -5293,6 +5349,7 @@ export interface components {
         | 'expenses:read'
         | 'expenses:write'
         | 'expenses:manage'
+        | 'notes:use'
       )[];
     };
     CustomerSignupDto: {
@@ -8456,6 +8513,39 @@ export interface components {
       /** @example Pure camphor for aarti and havan, delivered home. */
       metaDescription?: string | null;
     };
+    KitSetResponse: {
+      /** @description Basic, Standard and Premium, in that order */
+      kits: components['schemas']['AdminKitResponse'][];
+      /** @description Samagri none of the kits could include */
+      skipped: components['schemas']['SkippedMaterialResponse'][];
+    };
+    KitSetDto: {
+      /** @example KIT001 */
+      code: string;
+      /** @example Satyanarayan Puja Kit */
+      nameEn: string;
+      /** @example सत्यनारायण पूजा सामग्री */
+      nameNe: string;
+      /** @example Satyanarayan Puja Samagri */
+      nameRomanized?: string | null;
+      /** @example Everything for a home Satyanarayan puja */
+      description?: string | null;
+      /**
+       * @description PERCENT takes discountPercent off the items; FLAT takes discountAmount rupees
+       * @default PERCENT
+       * @enum {string}
+       */
+      discountKind: 'PERCENT' | 'FLAT';
+      /** @example 10.00 */
+      discountPercent?: string | null;
+      /** @example 150.00 */
+      discountAmount?: string | null;
+      images?: components['schemas']['ImageDto'][];
+      /** @default true */
+      isActive: boolean;
+      /** Format: uuid */
+      pujaId: string;
+    };
     KitFromPujaResponse: {
       kit: components['schemas']['AdminKitResponse'];
       /** @description Samagri the kit could not include */
@@ -10556,6 +10646,34 @@ export interface components {
       isActive: boolean;
       /** @default 0 */
       sortOrder: number;
+    };
+    PageNoteResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example kits */
+      page: string;
+      body: string;
+      /** @enum {string} */
+      status: 'TODO' | 'DONE';
+      images: string[];
+      authorName: string;
+      /** Format: date-time */
+      doneAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CreatePageNoteDto: {
+      /** @example kits */
+      page: string;
+      /** @example The tier price is hidden on mobile. */
+      body: string;
+      images?: string[];
+    };
+    UpdatePageNoteDto: {
+      body?: string;
+      /** @enum {string} */
+      status?: 'TODO' | 'DONE';
+      images?: string[];
     };
     MenuLinkResponse: {
       /** Format: uuid */
@@ -23866,6 +23984,89 @@ export interface operations {
       };
     };
   };
+  AdminKitController_createSet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['KitSetDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['KitSetResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminKitController_createFromPuja: {
     parameters: {
       query?: never;
@@ -30345,6 +30546,239 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['AdminFaqResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPageNoteController_list: {
+    parameters: {
+      query?: {
+        page?: string;
+        status?: 'TODO' | 'DONE';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPageNoteController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePageNoteDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPageNoteController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPageNoteController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePageNoteDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'];
           };
         };
       };
