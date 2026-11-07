@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react';
 import { ActionModal, CountButton, ResourceScreen, useResourceText } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
+import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 
 import {
   kitFromPujaResource,
@@ -26,6 +27,7 @@ export function KitsScreen() {
   const [setOf, setSetOf] = useState<Kit | 'new' | null>(null);
   const [itemsOf, setItemsOf] = useState<Kit | null>(null);
   const [sending, setSending] = useState<Kit | null>(null);
+  const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
   // The items count opens the items, as the button on the row does.
   const resource = useMemo(() => {
     const base = kitsResource(tk);
@@ -67,6 +69,11 @@ export function KitsScreen() {
         rowActions={(row) => (
           <>
             <IconButton icon="truck" label={t('sendKit')} onClick={() => setSending(row)} />
+            <IconButton
+              icon="archive"
+              label={t('archive')}
+              onClick={() => setArchiving({ kind: 'kit', id: row.id, name: row.nameNe })}
+            />
             {row.puja && row.tier ? (
               <IconButton icon="grid" label={t('editSet')} onClick={() => setSetOf(row)} />
             ) : null}
@@ -95,6 +102,7 @@ export function KitsScreen() {
         doneMessage={t('setSaved')}
         onClose={() => setSetOf(null)}
       />
+      <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
       <ActionModal
         resource={sending ? kitTransferResource(sending) : null}
         size="md"

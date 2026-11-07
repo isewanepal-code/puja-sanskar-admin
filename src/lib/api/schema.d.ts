@@ -3916,6 +3916,151 @@ export interface paths {
     patch: operations['AdminFaqController_update'];
     trace?: never;
   };
+  '/api/v1/admin/archive/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** How many items and kits are archived, and what stock they hold */
+    get: operations['AdminArchiveController_summary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Archived items, latest first, with units still held */
+    get: operations['AdminArchiveController_items'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/kits': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Archived kits, latest first */
+    get: operations['AdminArchiveController_kits'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/suggestions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Items and kits not sold for a while, that could be archived
+     * @description Items inside a live kit are left out: archive the kit first.
+     */
+    get: operations['AdminArchiveController_suggestions'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/items/{id}/archive': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Archive an item
+     * @description Out of every list and sale, kept whole. Refused while live kits hold it, unless withKits archives them too.
+     */
+    post: operations['AdminArchiveController_archiveItem'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/items/{id}/restore': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Bring an item back */
+    post: operations['AdminArchiveController_restoreItem'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/kits/{id}/archive': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Archive a kit */
+    post: operations['AdminArchiveController_archiveKit'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/kits/{id}/restore': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Bring a kit back
+     * @description Refused while it holds archived items, unless withItems brings them back with it.
+     */
+    post: operations['AdminArchiveController_restoreKit'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/notes': {
     parameters: {
       query?: never;
@@ -10840,6 +10985,130 @@ export interface components {
       isActive: boolean;
       /** @default 0 */
       sortOrder: number;
+    };
+    ItemSummaryResponse: {
+      /** @example 12 */
+      archived: number;
+      /**
+       * @description Items still live
+       * @example 120
+       */
+      active: number;
+      /**
+       * @description Packs of the archived items
+       * @example 30
+       */
+      packs: number;
+      /**
+       * @description Units of archived items still held, in the branches in view
+       * @example 85
+       */
+      unitsOnHand: number;
+      /**
+       * @description What those units cost
+       * @example 12500.00
+       */
+      stockValue: string;
+    };
+    KitSummaryResponse: {
+      /** @example 4 */
+      archived: number;
+      /**
+       * @description Kits still live
+       * @example 30
+       */
+      active: number;
+      /**
+       * @description Item lines the archived kits hold
+       * @example 80
+       */
+      itemLines: number;
+    };
+    ArchiveSummaryResponse: {
+      items: components['schemas']['ItemSummaryResponse'];
+      kits: components['schemas']['KitSummaryResponse'];
+    };
+    ArchivedItemResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example TIHAR01 */
+      code: string;
+      nameEn: string;
+      nameNe: string;
+      imageUrl: string | null;
+      /** Format: date-time */
+      archivedAt: string;
+      archivedByName: string | null;
+      reason: string | null;
+      /** @example 3 */
+      packs: number;
+      /**
+       * @description Units still held
+       * @example 25
+       */
+      unitsOnHand: number;
+    };
+    ArchivedKitResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example TIHAR01 */
+      code: string;
+      nameEn: string;
+      nameNe: string;
+      imageUrl: string | null;
+      /** Format: date-time */
+      archivedAt: string;
+      archivedByName: string | null;
+      reason: string | null;
+      /** @example PREMIUM */
+      tier: string | null;
+      pujaName: string | null;
+      /** @example 19 */
+      itemLines: number;
+    };
+    SuggestionResponse: {
+      /** Format: uuid */
+      id: string;
+      code: string;
+      nameEn: string;
+      nameNe: string;
+      /**
+       * @description Null when never sold
+       * @example 2026-03-02
+       */
+      lastSoldOn: string | null;
+      /**
+       * @description Units held (items only)
+       * @example 12
+       */
+      unitsOnHand: number;
+    };
+    SuggestionsResponse: {
+      /** @example 180 */
+      days: number;
+      items: components['schemas']['SuggestionResponse'][];
+      kits: components['schemas']['SuggestionResponse'][];
+    };
+    ArchiveDto: {
+      /** @example Not stocked until next Tihar */
+      reason?: string | null;
+      /**
+       * @description Items only: also archive the live kits that hold it (otherwise it is refused while one does)
+       * @default false
+       */
+      withKits: boolean;
+    };
+    RestoreDto: {
+      /**
+       * @description Show it on the website at once; false brings it back hidden
+       * @default true
+       */
+      show: boolean;
+      /**
+       * @description Kits only: also bring back the archived items the kit holds (otherwise it is refused while any is archived)
+       * @default false
+       */
+      withItems: boolean;
     };
     PageNoteResponse: {
       /** Format: uuid */
@@ -20185,6 +20454,8 @@ export interface operations {
         /** @description Matches code or names */
         q?: string;
         isActive?: boolean;
+        /** @description Archived items are left out; only lists just them, include both */
+        archived?: 'only' | 'include';
         /** @description Products of samagri filed in this category or below it */
         categoryId?: string;
         materialId?: string;
@@ -20334,6 +20605,8 @@ export interface operations {
         /** @description Matches code or names */
         q?: string;
         isActive?: boolean;
+        /** @description Archived items are left out; only lists just them, include both */
+        archived?: 'only' | 'include';
         /** @description Products of samagri filed in this category or below it */
         categoryId?: string;
         materialId?: string;
@@ -24047,6 +24320,8 @@ export interface operations {
         /** @description Matches code or names */
         q?: string;
         isActive?: boolean;
+        /** @description Archived kits are left out; only lists just them, include both */
+        archived?: 'only' | 'include';
         pujaId?: string;
       };
       header?: {
@@ -31135,6 +31410,494 @@ export interface operations {
       };
       /** @description NOT_FOUND */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_summary: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ArchiveSummaryResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_items: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ArchivedItemResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_kits: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ArchivedKitResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_suggestions: {
+    parameters: {
+      query?: {
+        /** @description Days without a sale */
+        days?: number;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SuggestionsResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_archiveItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ArchiveDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminProductResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_restoreItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RestoreDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminProductResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_archiveKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ArchiveDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminKitResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_restoreKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RestoreDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminKitResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
         headers: {
           [name: string]: unknown;
         };

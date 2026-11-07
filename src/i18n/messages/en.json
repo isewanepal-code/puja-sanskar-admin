@@ -108,7 +108,8 @@
       "marketing": "Pandits and offers",
       "catalogue": "Categories and units",
       "settings": "Settings and branches",
-      "staff": "Staff"
+      "staff": "Staff",
+      "archive": "Archive"
     },
     "changePassword": "Change password",
     "groups": {
@@ -252,6 +253,15 @@
       "route": "{from} → {to}",
       "routeNote": "{units, plural, one {# unit} other {# units}} · {transfers, plural, one {# transfer} other {# transfers}}",
       "sendMore": "Send stock to a branch"
+    },
+    "archive": {
+      "title": "Archive",
+      "open": "Open",
+      "kits": "Kits archived",
+      "items": "Items archived",
+      "units": "Units still held",
+      "value": "Stock value",
+      "note": "Kept whole and out of use until needed, like a Tihar kit."
     }
   },
   "orders": {
@@ -2229,7 +2239,8 @@
     "addManyItemsNote": "One item per row: name, pack size and price are enough. Turn on more columns (category, opening stock, cost, HS code, tags) above the grid. Opening stock goes to the branch chosen at the top; empty rows are skipped.",
     "sendKit": "Send the stock for this kit to a branch",
     "sendKitOf": "Send stock for {name} to a branch",
-    "sendKitNote": "Moves every item the kit holds, times the number of kits, from the branch chosen at the top to the one below, at its average cost. Optional items stay behind."
+    "sendKitNote": "Moves every item the kit holds, times the number of kits, from the branch chosen at the top to the one below, at its average cost. Optional items stay behind.",
+    "archive": "Archive (keep it, take it out of use)"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -2693,5 +2704,59 @@
     "none": "— None —",
     "remove": "Remove {name}",
     "clear": "Clear"
+  },
+  "archive": {
+    "title": "Archive",
+    "intro": "Items and kits you are not using now. They are kept whole, with their stock, and come back with one click when needed, like a Tihar kit.",
+    "search": "Search the archive",
+    "tabs": {
+      "kits": "Kits",
+      "items": "Items",
+      "suggestions": "Suggestions"
+    },
+    "tiles": {
+      "kits": "Archived kits",
+      "kitsNote": "{active} live · {lines} item lines kept",
+      "items": "Archived items",
+      "itemsNote": "{active} live · {packs} packs kept",
+      "units": "Units still held",
+      "unitsNote": "Stock of archived items, at the branch in view",
+      "value": "Stock value",
+      "valueNote": "What those units cost",
+      "live": "Live in the shop",
+      "liveNote": "Kits and items on sale now"
+    },
+    "noKits": "No kits archived.",
+    "noItems": "No items archived.",
+    "itemLines": "{count, plural, one {# item} other {# items}} inside",
+    "packsCount": "{count, plural, one {# pack} other {# packs}}",
+    "stillHeld": "{count} still held",
+    "noStock": "No stock held",
+    "archivedOn": "Archived {date} by {by}",
+    "restore": "Restore",
+    "archive": "Archive",
+    "notSoldFor": "Not sold for",
+    "days": "{count} days",
+    "suggestionsNote": "Not sold in {days} days, alone or in a kit. Items inside a live kit are not listed: archive the kit first.",
+    "nothingToSuggest": "Nothing to suggest.",
+    "lastSold": "Last sold {date}",
+    "neverSold": "Never sold",
+    "archiveTitle": "Archive {name}",
+    "archiveItemNote": "It leaves the website, the counter and every list. Its stock stays on record and it can be restored any time.",
+    "archiveKitNote": "It leaves the website, the counter and every list, and keeps its items. Restore it when it is needed again.",
+    "reason": "Why (optional)",
+    "reasonHint": "Only sold at Tihar",
+    "safeNote": "Nothing is deleted: photos, prices, packs, kit items and stock history stay as they are.",
+    "heldByKits": "{count, plural, one {# live kit holds} other {# live kits hold}} this item:",
+    "archiveKitsToo": "Archive those kits too",
+    "archiveWithKits": "Archive item and kits",
+    "archived": "{name} archived",
+    "restored": "{name} restored",
+    "restoreTitle": "Restore {name}",
+    "restoreItemNote": "It comes back on the counter and, if switched on, the website.",
+    "restoreKitNote": "The kit comes back with its items, ready to sell again.",
+    "showNow": "Show on the website now",
+    "withItems": "Bring back the archived items it holds too",
+    "needsItems": "{count, plural, one {# archived item is} other {# archived items are}} in this kit:"
   }
 }

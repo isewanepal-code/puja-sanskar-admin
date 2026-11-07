@@ -7,10 +7,12 @@ import {
   addDays,
   BarRow,
   BranchFlow,
+  ArchivePanel,
   CashAndBank,
   changeOf,
   FlowPanels,
   getAccounts,
+  getArchiveSummary,
   getFlow,
   getPujaCounts,
   getSalesTrend,
@@ -57,19 +59,31 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
 
   const showMoney = can(me.permissions, 'money:read');
   const today = shopToday();
-  const [now, before, trend, trendBefore, waiting, counts, flowToday, flow, accounts, pujas] =
-    await Promise.all([
-      showReports ? getSummary(current) : null,
-      showReports ? getSummary(previous) : null,
-      showReports ? getSalesTrend(current) : null,
-      showReports ? getSalesTrend(previous) : null,
-      showOrders ? listOrders({ page: 1, status: 'PENDING' }, 5) : null,
-      getShopCounts({ kits: showCatalogue, items: showCatalogue, stock: showStock }),
-      showReports ? getFlow({ from: today, to: today }) : null,
-      showReports ? getFlow(current) : null,
-      showMoney ? getAccounts() : null,
-      showCatalogue ? getPujaCounts(today, addDays(today, 45)) : null,
-    ]);
+  const [
+    now,
+    before,
+    trend,
+    trendBefore,
+    waiting,
+    counts,
+    flowToday,
+    flow,
+    accounts,
+    pujas,
+    archive,
+  ] = await Promise.all([
+    showReports ? getSummary(current) : null,
+    showReports ? getSummary(previous) : null,
+    showReports ? getSalesTrend(current) : null,
+    showReports ? getSalesTrend(previous) : null,
+    showOrders ? listOrders({ page: 1, status: 'PENDING' }, 5) : null,
+    getShopCounts({ kits: showCatalogue, items: showCatalogue, stock: showStock }),
+    showReports ? getFlow({ from: today, to: today }) : null,
+    showReports ? getFlow(current) : null,
+    showMoney ? getAccounts() : null,
+    showCatalogue ? getPujaCounts(today, addDays(today, 45)) : null,
+    showCatalogue ? getArchiveSummary() : null,
+  ]);
   const money = (amount: string) => formatMoney(amount, 'en');
   const against = t('against', { days: range });
 
@@ -306,10 +320,11 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
 
       <ShopCounts counts={counts} />
 
-      {accounts || pujas ? (
-        <section className="grid gap-4 lg:grid-cols-2">
+      {accounts || pujas || archive ? (
+        <section className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
           {accounts ? <CashAndBank accounts={accounts} /> : null}
           {pujas ? <PujasPanel pujas={pujas} /> : null}
+          {archive ? <ArchivePanel archive={archive} /> : null}
         </section>
       ) : null}
     </div>

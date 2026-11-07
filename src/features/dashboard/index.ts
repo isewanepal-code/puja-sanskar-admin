@@ -1,5 +1,6 @@
 export {
   getAccounts,
+  getArchiveSummary,
   getFlow,
   getPujaCounts,
   getSalesTrend,
@@ -8,7 +9,7 @@ export {
 } from './api/server';
 export { BranchFlow } from './components/branch-flow';
 export { BarRow } from './components/bar-row';
-export { CashAndBank, PujasPanel } from './components/cash-and-pujas';
+export { ArchivePanel, CashAndBank, PujasPanel } from './components/cash-and-pujas';
 export { FlowPanels } from './components/flow-panels';
 export { KpiCard } from './components/kpi-card';
 export { RangeTabs } from './components/range-tabs';

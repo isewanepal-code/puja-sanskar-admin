@@ -4,10 +4,11 @@ import { Link } from '@/i18n/navigation';
 import { formatDate, formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
 
-import type { getAccounts, getPujaCounts } from '../api/server';
+import type { getAccounts, getArchiveSummary, getPujaCounts } from '../api/server';
 
 type Accounts = Awaited<ReturnType<typeof getAccounts>>;
 type Pujas = Awaited<ReturnType<typeof getPujaCounts>>;
+type Archive = Awaited<ReturnType<typeof getArchiveSummary>>;
 
 // What each cash and bank account holds now, and the total.
 export async function CashAndBank({ accounts }: { accounts: Accounts }) {
@@ -88,6 +89,47 @@ export async function PujasPanel({ pujas }: { pujas: Pujas }) {
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+// Retired items and kits, kept whole: how many, and what stock they still hold.
+export async function ArchivePanel({ archive }: { archive: Archive }) {
+  const t = await getTranslations('dashboard.archive');
+  const money = (amount: string) => formatMoney(amount, 'en');
+  return (
+    <div className="panel grid content-start gap-3">
+      <div className="flex items-baseline justify-between gap-2">
+        <h2 className="text-base font-semibold">{t('title')}</h2>
+        <Link href={routes.archive()} className="text-sm text-primary">
+          {t('open')}
+        </Link>
+      </div>
+      <div className="flex items-end gap-6">
+        <div>
+          <div className="font-heading text-2xl font-semibold tabular-nums">
+            {archive.kits.archived}
+          </div>
+          <div className="text-xs text-muted-foreground">{t('kits')}</div>
+        </div>
+        <div>
+          <div className="font-heading text-2xl font-semibold tabular-nums">
+            {archive.items.archived}
+          </div>
+          <div className="text-xs text-muted-foreground">{t('items')}</div>
+        </div>
+      </div>
+      <dl className="grid gap-1 text-sm">
+        <div className="flex justify-between">
+          <dt className="text-muted-foreground">{t('units')}</dt>
+          <dd className="font-semibold tabular-nums">{archive.items.unitsOnHand}</dd>
+        </div>
+        <div className="flex justify-between">
+          <dt className="text-muted-foreground">{t('value')}</dt>
+          <dd className="font-semibold tabular-nums">{money(archive.items.stockValue)}</dd>
+        </div>
+      </dl>
+      <p className="text-xs text-muted-foreground">{t('note')}</p>
     </div>
   );
 }

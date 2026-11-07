@@ -12,6 +12,7 @@ export type NavSection = {
     | 'items'
     | 'kits'
     | 'stock'
+    | 'archive'
     | 'buying'
     | 'suppliers'
     | 'money'
@@ -54,6 +55,7 @@ export const navigation: NavGroup[] = [
       { key: 'items', href: routes.products(), icon: 'leaf', permission: 'catalogue:read' },
       { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
       { key: 'stock', href: routes.stock(), icon: 'list', permission: 'inventory:read' },
+      { key: 'archive', href: routes.archive(), icon: 'archive', permission: 'catalogue:read' },
       { key: 'buying', href: routes.purchaseBills(), icon: 'truck', permission: 'purchases:read' },
       { key: 'suppliers', href: routes.suppliers(), icon: 'users', permission: 'purchases:read' },
     ],

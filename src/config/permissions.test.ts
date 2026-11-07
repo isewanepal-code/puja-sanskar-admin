@@ -20,6 +20,14 @@ describe('can', () => {
     const keys = navigationFor(['catalogue:read', 'catalogue:write']).flatMap((group) =>
       group.sections.map((section) => section.key),
     );
-    expect(keys).toEqual(['dashboard', 'items', 'kits', 'pujas', 'content', 'catalogue']);
+    expect(keys).toEqual([
+      'dashboard',
+      'items',
+      'kits',
+      'archive',
+      'pujas',
+      'content',
+      'catalogue',
+    ]);
   });
 });

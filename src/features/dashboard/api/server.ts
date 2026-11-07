@@ -103,3 +103,8 @@ export async function getPujaCounts(today: string, until: string) {
     .slice(0, 5);
   return { total: pujas.meta.total, active: active.meta.total, upcoming };
 }
+
+// What is retired: how many items and kits, and the stock they still hold.
+export async function getArchiveSummary() {
+  return unwrap((await sessionApi()).GET('/api/v1/admin/archive/summary'));
+}
