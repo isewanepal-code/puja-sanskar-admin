@@ -870,6 +870,50 @@
       "available": "In stock",
       "unavailable": "Short"
     },
+    "kitSet": {
+      "title": "Kit set",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "pujaId": "Puja",
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "images": "Photos",
+        "description": "Description",
+        "discountKind": "Kit discount",
+        "discountValue": "Discount (% or Rs)"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. Each package adds its tier: SATYA becomes SATYA_BASIC, SATYA_STANDARD and SATYA_PREMIUM.",
+        "images": "The same photos show on all three packages.",
+        "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit."
+      }
+    },
+    "kitSetEdit": {
+      "title": "Kit set",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "pujaId": "Puja",
+        "code": "Code",
+        "nameNe": "Name in Nepali",
+        "nameEn": "Name in English",
+        "nameRomanized": "Romanized name",
+        "images": "Photos",
+        "description": "Description",
+        "discountKind": "Kit discount",
+        "discountValue": "Discount (% or Rs)"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. Each package adds its tier: SATYA becomes SATYA_BASIC, SATYA_STANDARD and SATYA_PREMIUM.",
+        "images": "The same photos show on all three packages.",
+        "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit."
+      }
+    },
     "kitFromPuja": {
       "title": "Kit from a puja",
       "add": "—",
@@ -1961,6 +2005,14 @@
     "historyOf": "Stock history of {name}",
     "kitFromPuja": "Kit from a puja",
     "kitFromPujaNote": "Fills a kit with each samagri the puja lists, at its default pack. Samagri the shop does not sell are skipped.",
+    "newKitSet": "New kit set",
+    "newKitSetNote": "One name and one set of photos for a puja's Basic, Standard and Premium kits. Each starts with the puja's samagri; open each kit's items to choose better grades.",
+    "makeSet": "Make the three kits",
+    "setMade": "Basic, Standard and Premium kits made",
+    "editSet": "Edit the whole set",
+    "editSetNote": "The name, photos, description and discount below change in all three packages of this puja.",
+    "saveSet": "Save for all three",
+    "setSaved": "Saved for all three packages",
     "makeKit": "Make kit",
     "kitMade": "Kit made",
     "items": "Items",

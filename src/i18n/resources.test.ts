@@ -29,7 +29,13 @@ import {
   messagesResource,
   remindersResource,
 } from '@/features/customers';
-import { kitFromPujaResource, kitItemsResource, kitsResource } from '@/features/kits';
+import {
+  kitFromPujaResource,
+  kitItemsResource,
+  kitSetEditResource,
+  kitSetResource,
+  kitsResource,
+} from '@/features/kits';
 import { mantrasResource } from '@/features/mantras';
 import { discountsResource, panditsResource } from '@/features/marketing';
 import { pujaGroupResource, ritualTypesResource } from '@/features/puja-groups';
@@ -121,6 +127,8 @@ const RESOURCES: Resource<never>[] = [
   historyResource(LEVEL, (key) => key),
   kitsResource((key) => key),
   kitFromPujaResource((key) => key),
+  kitSetResource(),
+  kitSetEditResource('p'),
   kitItemsResource('k'),
   requirementsResource('p', (key) => key),
   verifyResource('p', { id: 'r', material: { nameNe: 'x' } } as never, (key) => key),

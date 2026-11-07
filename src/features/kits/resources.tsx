@@ -114,6 +114,66 @@ export function kitFromPujaResource(name: Name): Resource<never> {
   };
 }
 
+const SHARED_FIELDS: Resource<never>['fields'] = [
+  { name: 'nameNe', kind: 'text', required: true, max: 160 },
+  { name: 'nameEn', kind: 'text', required: true, max: 160 },
+  { name: 'nameRomanized', kind: 'text', max: 160 },
+  { name: 'images', kind: 'images', wide: true },
+  { name: 'description', kind: 'html', max: 4000 },
+  ...discount.fields,
+];
+
+// One name, photos and description for a puja's Basic, Standard and Premium kits at once.
+export function kitSetResource(): Resource<never> {
+  return {
+    key: 'kitSet',
+    scope: 'kits',
+    path: '/admin/kits/set',
+    list: 'all',
+    rowId: () => '',
+    rowLabel: () => '',
+    columns: [],
+    shapeBody: discount.shapeBody,
+    modalSize: 'lg',
+    fields: [
+      { name: 'pujaId', kind: 'select', required: true, optionsFrom: choices.pujas, wide: true },
+      // Each package adds its tier to the code: SATYA → SATYA_BASIC.
+      { name: 'code', kind: 'code', required: true, max: 22 },
+      ...SHARED_FIELDS,
+    ],
+  };
+}
+
+// What a puja's three kits share, changed in all of them together.
+export function kitSetEditResource(pujaId: string): Resource<never> {
+  return {
+    key: 'kitSetEdit',
+    scope: 'kits',
+    path: `/admin/kits/set/${pujaId}`,
+    list: 'all',
+    rowId: () => '',
+    rowLabel: () => '',
+    columns: [],
+    shapeBody: discount.shapeBody,
+    submitMethod: 'PATCH',
+    modalSize: 'lg',
+    fields: SHARED_FIELDS,
+  };
+}
+
+// The values a set's edit form starts with, taken from any one of its kits.
+export const kitSetDefaults = (kit: Kit) =>
+  discount.formRow({
+    nameNe: kit.nameNe,
+    nameEn: kit.nameEn,
+    nameRomanized: kit.nameRomanized,
+    description: kit.description,
+    images: kit.images,
+    discountKind: kit.discountKind,
+    discountPercent: kit.discountPercent,
+    discountAmount: kit.discountAmount,
+  });
+
 // The packs inside one kit; they come with the kit itself, so the list loads the kit.
 export function kitItemsResource(kitId: string): Resource<Line> {
   return {

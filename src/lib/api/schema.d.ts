@@ -2463,6 +2463,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/kits/set/{pujaId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Change what a puja's Basic, Standard and Premium kits share
+     * @description Name, photos, description or discount, applied to every packaged kit of the puja; images replaces the whole list.
+     */
+    patch: operations['AdminKitController_updateSet'];
+    trace?: never;
+  };
   '/api/v1/admin/kits/{kitId}/items': {
     parameters: {
       query?: never;
@@ -8566,6 +8586,29 @@ export interface components {
       description?: string | null;
       /** @enum {string|null} */
       tier?: 'BASIC' | 'STANDARD' | 'PREMIUM' | null;
+    };
+    KitSetChangesDto: {
+      /** @example Satyanarayan Puja Kit */
+      nameEn?: string;
+      /** @example सत्यनारायण पूजा सामग्री */
+      nameNe?: string;
+      /** @example Satyanarayan Puja Samagri */
+      nameRomanized?: string | null;
+      /** @example Everything for a home Satyanarayan puja */
+      description?: string | null;
+      /**
+       * @description PERCENT takes discountPercent off the items; FLAT takes discountAmount rupees
+       * @default PERCENT
+       * @enum {string}
+       */
+      discountKind: 'PERCENT' | 'FLAT';
+      /** @example 10.00 */
+      discountPercent?: string | null;
+      /** @example 150.00 */
+      discountAmount?: string | null;
+      images?: components['schemas']['ImageDto'][];
+      /** @default true */
+      isActive: boolean;
     };
     UpdateKitDto: {
       /** @description Generated from nameEn when omitted */
@@ -24091,6 +24134,91 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['KitFromPujaResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminKitController_updateSet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        pujaId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['KitSetChangesDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminKitResponse'][];
           };
         };
       };
