@@ -1941,6 +1941,7 @@
     "passwordReset": "Password reset",
     "packs": "Packs",
     "packsOf": "Packs of {name}",
+    "packsAndPrices": "Packs and prices",
     "packsNote": "Each pack is its own SKU with its own price and stock. The cheapest active pack is the default.",
     "grades": "Grades",
     "gradesOf": "Grades of {name}",

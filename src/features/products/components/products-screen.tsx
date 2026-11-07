@@ -2,9 +2,15 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import { ActionModal, BulkGrid, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
+import {
+  ActionModal,
+  BulkGrid,
+  CountButton,
+  ResourceScreen,
+  WorkbookUploadButton,
+} from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { request } from '@/lib/api';
@@ -29,6 +35,19 @@ function useProduct(id: string | undefined) {
   });
 }
 
+// Under an item's edit form: its packs, so a price changes in the same place.
+function EditPacks({ id }: { id: string }) {
+  const t = useTranslations('actions');
+  const product = useProduct(id);
+  return (
+    <section className="mt-6 grid gap-2 border-t border-border pt-4">
+      <h3 className="text-sm font-semibold">{t('packsAndPrices')}</h3>
+      <p className="text-sm text-muted-foreground">{t('packsNote')}</p>
+      {product.data ? <ResourceScreen resource={variantsResource(product.data)} /> : null}
+    </section>
+  );
+}
+
 export function ProductsScreen() {
   const t = useTranslations('actions');
   const tf = useTranslations('forms');
@@ -41,12 +60,35 @@ export function ProductsScreen() {
     enabled: open?.what === 'pairings',
   });
   const close = () => setOpen(null);
+  // The packs count opens the packs, as the pack button on the row does.
+  const resource = useMemo(
+    () => ({
+      ...productsResource,
+      columns: productsResource.columns.map((column) =>
+        column.key === 'variants'
+          ? {
+              ...column,
+              cell: (row: Product) => (
+                <CountButton
+                  label={t('packsOf', { name: row.nameNe })}
+                  onClick={() => setOpen({ what: 'packs', id: row.id })}
+                >
+                  {row.variants.length}
+                </CountButton>
+              ),
+            }
+          : column,
+      ),
+    }),
+    [t],
+  );
   const name = product.data ? `${product.data.code} · ${product.data.nameNe}` : '';
 
   return (
     <>
       <ResourceScreen
-        resource={productsResource}
+        resource={resource}
+        editFooter={(row) => <EditPacks id={row.id} />}
         toolbar={
           <>
             <WorkbookUploadButton

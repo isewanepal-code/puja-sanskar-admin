@@ -1,6 +1,7 @@
 export { ActionModal } from './action-modal';
 export { ActiveBadge } from './active-badge';
 export { BulkGrid } from './bulk-grid';
+export { CountButton } from './count-button';
 export { ConfirmDelete } from './confirm-delete';
 export { schemaFor, toBody, toFormValues, type FormValues } from './form-values';
 export { ResourceForm } from './resource-form';
