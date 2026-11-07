@@ -1,6 +1,7 @@
 import { activeColumn, discountFields, recordColumn, type Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
+import { branchChoices } from '@/features/branches';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 
@@ -173,6 +174,32 @@ export const kitSetDefaults = (kit: Kit) =>
     discountPercent: kit.discountPercent,
     discountAmount: kit.discountAmount,
   });
+
+// Sends a number of whole kits' worth of stock to another branch: every included item, in the
+// quantity the kit holds, from the branch chosen at the top. Optional items stay behind.
+export function kitTransferResource(kit: Kit): Resource<never> {
+  return {
+    key: 'kitTransfer',
+    scope: 'stock',
+    path: '/admin/stock-transfers',
+    list: 'all',
+    rowId: () => '',
+    rowLabel: () => kit.code,
+    columns: [],
+    fields: [
+      { name: 'toBranchId', kind: 'select', required: true, optionsFrom: branchChoices },
+      { name: 'kits', kind: 'number', required: true, defaultValue: '1' },
+      { name: 'note', kind: 'text', max: 500, wide: true },
+    ],
+    shapeBody: ({ toBranchId, kits, note }) => ({
+      toBranchId,
+      note,
+      lines: kit.items
+        .filter((item) => !item.isOptional)
+        .map((item) => ({ variantId: item.sku.variantId, quantity: item.quantity * Number(kits) })),
+    }),
+  };
+}
 
 // The packs inside one kit; they come with the kit itself, so the list loads the kit.
 export function kitItemsResource(kitId: string): Resource<Line> {

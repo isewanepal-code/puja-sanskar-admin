@@ -228,12 +228,30 @@
       "items": "Items and stock",
       "itemsTotal": "Items",
       "itemsActive": "{count} shown on the website",
-      "packsTracked": "Packs with stock",
-      "packsTrackedNote": "Counted in the branch you are viewing",
+      "packsTracked": "Packs in stock",
+      "packsTrackedNote": "of {packs} packs, at the branch in view",
       "low": "Running low",
       "lowNote": "At or below their reorder level",
       "out": "Out of stock",
-      "outNote": "Nothing on the shelf"
+      "outNote": "Nothing to sell here, packs never stocked included"
+    },
+    "branches": {
+      "title": "Stock by branch",
+      "note": "What each branch got and gave up in these days. Sent and received nets out across the shop.",
+      "branch": "Branch",
+      "bought": "Bought",
+      "returned": "Returned",
+      "transferIn": "From branches",
+      "transferOut": "Sent away",
+      "sold": "Sold",
+      "damaged": "Damaged",
+      "corrected": "Counted ±",
+      "net": "Net change",
+      "transfers": "Sent between branches",
+      "noTransfers": "No stock was sent between branches.",
+      "route": "{from} → {to}",
+      "routeNote": "{units, plural, one {# unit} other {# units}} · {transfers, plural, one {# transfer} other {# transfers}}",
+      "sendMore": "Send stock to a branch"
     }
   },
   "orders": {
@@ -2055,6 +2073,17 @@
         "isHighlighted": "Drawn in the accent colour, like Offers.",
         "sortOrder": "Smaller numbers come first."
       }
+    },
+    "kitTransfer": {
+      "title": "Send kit stock",
+      "add": "—",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "toBranchId": "To branch",
+        "kits": "How many kits",
+        "note": "Note"
+      }
     }
   },
   "catalogue": {
@@ -2197,7 +2226,10 @@
     "addItem": "Add an item",
     "addItemNote": "Fill what you know; codes are made from the English name when left empty. Opening stock is added to the branch chosen at the top.",
     "itemAdded": "Item added",
-    "addManyItemsNote": "One item per row: name, pack size and price are enough. Turn on more columns (category, opening stock, cost, HS code, tags) above the grid. Opening stock goes to the branch chosen at the top; empty rows are skipped."
+    "addManyItemsNote": "One item per row: name, pack size and price are enough. Turn on more columns (category, opening stock, cost, HS code, tags) above the grid. Opening stock goes to the branch chosen at the top; empty rows are skipped.",
+    "sendKit": "Send the stock for this kit to a branch",
+    "sendKitOf": "Send stock for {name} to a branch",
+    "sendKitNote": "Moves every item the kit holds, times the number of kits, from the branch chosen at the top to the one below, at its average cost. Optional items stay behind."
   },
   "media": {
     "pickTitle": "Choose an image",

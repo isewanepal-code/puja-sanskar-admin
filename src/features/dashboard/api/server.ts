@@ -23,14 +23,7 @@ export async function getSalesTrend(days: Days) {
 export async function getShopCounts(show: { kits: boolean; items: boolean; stock: boolean }) {
   const api = await sessionApi();
   const page = (limit: number) => ({ params: { query: { page: 1, limit } } });
-  const levels = (filters: { lowStock?: boolean; outOfStock?: boolean }) =>
-    unwrap(
-      api.GET('/api/v1/admin/stock-levels', {
-        params: { query: { page: 1, limit: 1, ...filters } },
-      }),
-    );
-
-  const [kitTotal, activeKits, itemTotal, activeItems, tracked, low, out] = await Promise.all([
+  const [kitTotal, activeKits, itemTotal, activeItems, stockSummary] = await Promise.all([
     show.kits ? unwrap(api.GET('/api/v1/admin/kits', page(1))) : null,
     show.kits
       ? unwrap(
@@ -47,9 +40,8 @@ export async function getShopCounts(show: { kits: boolean; items: boolean; stock
           }),
         )
       : null,
-    show.stock ? levels({}) : null,
-    show.stock ? levels({ lowStock: true }) : null,
-    show.stock ? levels({ outOfStock: true }) : null,
+    // Packs in stock, low and out at the branch in view; a pack never stocked there counts as out.
+    show.stock ? unwrap(api.GET('/api/v1/admin/stock-levels/summary')) : null,
   ]);
 
   const kits = activeKits?.items ?? [];
@@ -65,9 +57,7 @@ export async function getShopCounts(show: { kits: boolean; items: boolean; stock
         }
       : null,
     items: itemTotal ? { total: itemTotal.meta.total, active: activeItems?.meta.total ?? 0 } : null,
-    stock: tracked
-      ? { tracked: tracked.meta.total, low: low?.meta.total ?? 0, out: out?.meta.total ?? 0 }
-      : null,
+    stock: stockSummary,
   };
 }
 

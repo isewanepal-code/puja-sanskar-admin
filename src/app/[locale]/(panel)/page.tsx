@@ -6,6 +6,7 @@ import { can } from '@/config/permissions';
 import {
   addDays,
   BarRow,
+  BranchFlow,
   CashAndBank,
   changeOf,
   FlowPanels,
@@ -301,6 +302,7 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
       )}
 
       {flow ? <FlowPanels flow={flow} /> : null}
+      {flow ? <BranchFlow flow={flow} /> : null}
 
       <ShopCounts counts={counts} />
 

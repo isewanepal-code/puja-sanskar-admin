@@ -13,6 +13,7 @@ import {
   kitSetDefaults,
   kitSetEditResource,
   kitSetResource,
+  kitTransferResource,
   kitsResource,
   type Kit,
 } from '../resources';
@@ -24,6 +25,7 @@ export function KitsScreen() {
   // A new set, or the set a kit belongs to.
   const [setOf, setSetOf] = useState<Kit | 'new' | null>(null);
   const [itemsOf, setItemsOf] = useState<Kit | null>(null);
+  const [sending, setSending] = useState<Kit | null>(null);
   // The items count opens the items, as the button on the row does.
   const resource = useMemo(() => {
     const base = kitsResource(tk);
@@ -64,6 +66,7 @@ export function KitsScreen() {
         onCreated={setItemsOf}
         rowActions={(row) => (
           <>
+            <IconButton icon="truck" label={t('sendKit')} onClick={() => setSending(row)} />
             {row.puja && row.tier ? (
               <IconButton icon="grid" label={t('editSet')} onClick={() => setSetOf(row)} />
             ) : null}
@@ -91,6 +94,15 @@ export function KitsScreen() {
         submitLabel={t('saveSet')}
         doneMessage={t('setSaved')}
         onClose={() => setSetOf(null)}
+      />
+      <ActionModal
+        resource={sending ? kitTransferResource(sending) : null}
+        size="md"
+        title={t('sendKitOf', { name: sending?.nameNe ?? '' })}
+        description={t('sendKitNote')}
+        submitLabel={t('send')}
+        doneMessage={t('sent')}
+        onClose={() => setSending(null)}
       />
       <ActionModal
         resource={fromPuja ? kitFromPujaResource(tk) : null}

@@ -1871,6 +1871,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/stock-levels/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Packs in stock, running low and out, for the branch in view
+     * @description A pack never stocked at the branch counts as out. Without a branch, a pack is in stock when any branch has some.
+     */
+    get: operations['AdminStockLevelController_summary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/stock-levels/export': {
     parameters: {
       query?: never;
@@ -7856,6 +7876,28 @@ export interface components {
       /** Format: date-time */
       updatedAt: string | null;
     };
+    StockSummaryResponse: {
+      /**
+       * @description Active packs the shop sells
+       * @example 120
+       */
+      packs: number;
+      /**
+       * @description Packs with something to sell
+       * @example 96
+       */
+      inStock: number;
+      /**
+       * @description Packs at or below their reorder level
+       * @example 4
+       */
+      low: number;
+      /**
+       * @description Packs with nothing to sell, never-stocked ones included
+       * @example 24
+       */
+      out: number;
+    };
     UpdateStockLevelDto: {
       /**
        * @description Low-stock threshold; null stops tracking
@@ -11928,6 +11970,71 @@ export interface components {
        */
       out: string;
     };
+    FlowBranchResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example MAIN */
+      code: string;
+      /** @example Main branch */
+      name: string;
+    };
+    BranchStockFlowResponse: {
+      branch: components['schemas']['FlowBranchResponse'];
+      /**
+       * @description Bought from suppliers
+       * @example 120
+       */
+      purchased: number;
+      /**
+       * @description Put back on the shelf as returns
+       * @example 2
+       */
+      returned: number;
+      /**
+       * @description Arrived from another branch
+       * @example 30
+       */
+      transferIn: number;
+      /**
+       * @description Sent to another branch
+       * @example 40
+       */
+      transferOut: number;
+      /**
+       * @description Sold
+       * @example 55
+       */
+      sold: number;
+      /**
+       * @description Damaged or lost
+       * @example 3
+       */
+      damaged: number;
+      /**
+       * @description Counted and found more
+       * @example 1
+       */
+      adjustedUp: number;
+      /**
+       * @description Counted and found less
+       * @example 2
+       */
+      adjustedDown: number;
+    };
+    TransferRouteResponse: {
+      from: components['schemas']['FlowBranchResponse'];
+      to: components['schemas']['FlowBranchResponse'];
+      /**
+       * @description Units sent
+       * @example 40
+       */
+      units: number;
+      /**
+       * @description Separate transfers
+       * @example 2
+       */
+      transfers: number;
+    };
     StockFlowTypeResponse: {
       /** @enum {string} */
       type:
@@ -11946,6 +12053,9 @@ export interface components {
       unitsOut: number;
     };
     StockFlowResponse: {
+      byBranch: components['schemas']['BranchStockFlowResponse'][];
+      /** @description Who sent how much to whom, most first */
+      transfers: components['schemas']['TransferRouteResponse'][];
       /** @example 120 */
       unitsIn: number;
       /** @example 45 */
@@ -21646,6 +21756,61 @@ export interface operations {
       };
       /** @description NOT_FOUND */
       404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockLevelController_summary: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['StockSummaryResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
         headers: {
           [name: string]: unknown;
         };

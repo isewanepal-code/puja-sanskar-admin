@@ -6,6 +6,7 @@ export {
   getShopCounts,
   getSummary,
 } from './api/server';
+export { BranchFlow } from './components/branch-flow';
 export { BarRow } from './components/bar-row';
 export { CashAndBank, PujasPanel } from './components/cash-and-pujas';
 export { FlowPanels } from './components/flow-panels';

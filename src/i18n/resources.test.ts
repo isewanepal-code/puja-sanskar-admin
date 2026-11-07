@@ -34,6 +34,7 @@ import {
   kitItemsResource,
   kitSetEditResource,
   kitSetResource,
+  kitTransferResource,
   kitsResource,
 } from '@/features/kits';
 import { mantrasResource } from '@/features/mantras';
@@ -128,6 +129,7 @@ const RESOURCES: Resource<never>[] = [
   kitsResource((key) => key),
   kitFromPujaResource((key) => key),
   kitSetResource(),
+  kitTransferResource({ code: 'K', items: [] } as never),
   kitSetEditResource('p'),
   kitItemsResource('k'),
   requirementsResource('p', (key) => key),

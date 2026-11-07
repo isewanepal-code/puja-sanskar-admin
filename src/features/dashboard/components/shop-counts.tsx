@@ -44,11 +44,16 @@ function Count({
 
 // Out and running low as shares of the packs counted, the rest being fine. A pack can be both
 // (nothing left and under its reorder level), so the low share leaves out what is already out.
-async function StockHealth({ stock }: { stock: { tracked: number; low: number; out: number } }) {
+async function StockHealth({
+  stock,
+}: {
+  stock: { packs: number; inStock: number; low: number; out: number };
+}) {
   const t = await getTranslations('dashboard.counts');
-  const pct = (n: number) => (n / stock.tracked) * 100;
+  const pct = (n: number) => (n / stock.packs) * 100;
   const out = pct(stock.out);
   const low = Math.min(pct(stock.low), 100 - out);
+  const fine = Math.max(0, stock.inStock - stock.low);
   return (
     <div className="panel grid gap-3">
       <div className="text-sm font-medium">{t('health')}</div>
@@ -70,9 +75,7 @@ async function StockHealth({ stock }: { stock: { tracked: number; low: number; o
         <div className="flex items-center gap-1.5">
           <span className="size-2 rounded-full bg-success/50" />
           <dt>{t('fine')}</dt>
-          <dd className="font-semibold text-foreground tabular-nums">
-            {Math.max(0, stock.tracked - stock.out - stock.low)}
-          </dd>
+          <dd className="font-semibold text-foreground tabular-nums">{fine}</dd>
         </div>
       </dl>
     </div>
@@ -155,8 +158,8 @@ export async function ShopCounts({ counts }: { counts: Counts }) {
               <>
                 <Count
                   label={t('packsTracked')}
-                  value={stock.tracked}
-                  note={t('packsTrackedNote')}
+                  value={stock.inStock}
+                  note={t('packsTrackedNote', { packs: stock.packs })}
                   href={routes.stock()}
                 />
                 <Count
@@ -176,7 +179,7 @@ export async function ShopCounts({ counts }: { counts: Counts }) {
               </>
             ) : null}
           </div>
-          {stock && stock.tracked > 0 ? <StockHealth stock={stock} /> : null}
+          {stock && stock.packs > 0 ? <StockHealth stock={stock} /> : null}
         </div>
       ) : null}
     </section>
