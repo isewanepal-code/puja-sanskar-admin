@@ -70,3 +70,46 @@ export async function getShopCounts(show: { kits: boolean; items: boolean; stock
       : null,
   };
 }
+
+// Money and stock that came in and went out, for the days given.
+export async function getFlow(days: Days) {
+  return unwrap(
+    (await sessionApi()).GET('/api/v1/admin/reports/flow', { params: { query: days } }),
+  );
+}
+
+// Cash and bank accounts with what each holds now.
+export async function getAccounts() {
+  const accounts = await unwrap((await sessionApi()).GET('/api/v1/admin/money-accounts'));
+  return accounts.filter((account) => account.isActive);
+}
+
+// How many pujas the shop offers, and the festivals coming up.
+export async function getPujaCounts(today: string, until: string) {
+  const api = await sessionApi();
+  const [pujas, active, festivals] = await Promise.all([
+    unwrap(api.GET('/api/v1/admin/pujas', { params: { query: { page: 1, limit: 1 } } })),
+    unwrap(
+      api.GET('/api/v1/admin/pujas', { params: { query: { page: 1, limit: 1, isActive: true } } }),
+    ),
+    unwrap(
+      api.GET('/api/v1/admin/festivals', {
+        params: { query: { page: 1, limit: 100, isActive: true } },
+      }),
+    ),
+  ]);
+  const upcoming = festivals.items
+    .flatMap((festival) =>
+      festival.dates
+        .filter((date) => date.endsOn >= today && date.startsOn <= until)
+        .map((date) => ({
+          id: festival.id,
+          name: festival.nameEn,
+          on: date.startsOn,
+          to: date.endsOn,
+        })),
+    )
+    .sort((a, b) => a.on.localeCompare(b.on))
+    .slice(0, 5);
+  return { total: pujas.meta.total, active: active.meta.total, upcoming };
+}

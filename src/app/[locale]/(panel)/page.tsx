@@ -4,16 +4,25 @@ import { getTranslations } from 'next-intl/server';
 import { EmptyState } from '@/components/feedback';
 import { can } from '@/config/permissions';
 import {
+  addDays,
   BarRow,
+  CashAndBank,
   changeOf,
+  FlowPanels,
+  getAccounts,
+  getFlow,
+  getPujaCounts,
   getSalesTrend,
   getShopCounts,
   getSummary,
   KpiCard,
   parseRange,
   periodsFor,
+  PujasPanel,
   RangeTabs,
   ShopCounts,
+  shopToday,
+  TodayStrip,
   TrendChart,
 } from '@/features/dashboard';
 import { listOrders } from '@/features/orders';
@@ -45,14 +54,21 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
   const showCatalogue = can(me.permissions, 'catalogue:read');
   const showStock = can(me.permissions, 'inventory:read');
 
-  const [now, before, trend, trendBefore, waiting, counts] = await Promise.all([
-    showReports ? getSummary(current) : null,
-    showReports ? getSummary(previous) : null,
-    showReports ? getSalesTrend(current) : null,
-    showReports ? getSalesTrend(previous) : null,
-    showOrders ? listOrders({ page: 1, status: 'PENDING' }, 5) : null,
-    getShopCounts({ kits: showCatalogue, items: showCatalogue, stock: showStock }),
-  ]);
+  const showMoney = can(me.permissions, 'money:read');
+  const today = shopToday();
+  const [now, before, trend, trendBefore, waiting, counts, flowToday, flow, accounts, pujas] =
+    await Promise.all([
+      showReports ? getSummary(current) : null,
+      showReports ? getSummary(previous) : null,
+      showReports ? getSalesTrend(current) : null,
+      showReports ? getSalesTrend(previous) : null,
+      showOrders ? listOrders({ page: 1, status: 'PENDING' }, 5) : null,
+      getShopCounts({ kits: showCatalogue, items: showCatalogue, stock: showStock }),
+      showReports ? getFlow({ from: today, to: today }) : null,
+      showReports ? getFlow(current) : null,
+      showMoney ? getAccounts() : null,
+      showCatalogue ? getPujaCounts(today, addDays(today, 45)) : null,
+    ]);
   const money = (amount: string) => formatMoney(amount, 'en');
   const against = t('against', { days: range });
 
@@ -72,6 +88,17 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
           <RangeTabs current={range} label={(days) => t('lastDays', { days })} />
         ) : null}
       </header>
+
+      {flowToday && trend ? (
+        <TodayStrip
+          today={today}
+          flow={flowToday}
+          sold={{
+            bills: trend.days.at(-1)?.bills ?? 0,
+            total: trend.days.at(-1)?.grossTotal ?? '0',
+          }}
+        />
+      ) : null}
 
       {now && before && trend && trendBefore ? (
         <>
@@ -273,7 +300,16 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
         </>
       )}
 
+      {flow ? <FlowPanels flow={flow} /> : null}
+
       <ShopCounts counts={counts} />
+
+      {accounts || pujas ? (
+        <section className="grid gap-4 lg:grid-cols-2">
+          {accounts ? <CashAndBank accounts={accounts} /> : null}
+          {pujas ? <PujasPanel pujas={pujas} /> : null}
+        </section>
+      ) : null}
     </div>
   );
 }

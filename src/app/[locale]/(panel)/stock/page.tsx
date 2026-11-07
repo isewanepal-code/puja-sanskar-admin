@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { StockScreen } from '@/features/stock';
+import { parseStockShow, StockScreen } from '@/features/stock';
 import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
@@ -12,7 +12,9 @@ export async function generateMetadata({
   return { title: t('title') };
 }
 
-export default async function StockPage({ params }: PageProps<'/[locale]/stock'>) {
+export default async function StockPage({ params, searchParams }: PageProps<'/[locale]/stock'>) {
   await resolveLocale(params);
-  return <StockScreen />;
+  const show = parseStockShow((await searchParams).show?.toString());
+  // Keyed by the choice, so a link from the dashboard opens on the list it names.
+  return <StockScreen key={show} initialShow={show} />;
 }

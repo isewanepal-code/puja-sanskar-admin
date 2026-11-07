@@ -164,14 +164,14 @@ export async function ShopCounts({ counts }: { counts: Counts }) {
                   value={stock.low}
                   note={t('lowNote')}
                   tone={stock.low > 0 ? 'warn' : 'plain'}
-                  href={routes.stock()}
+                  href={routes.stock('low')}
                 />
                 <Count
                   label={t('out')}
                   value={stock.out}
                   note={t('outNote')}
                   tone={stock.out > 0 ? 'bad' : 'plain'}
-                  href={routes.stock()}
+                  href={routes.stock('out')}
                 />
               </>
             ) : null}

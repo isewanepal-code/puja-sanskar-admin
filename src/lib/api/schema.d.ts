@@ -4588,6 +4588,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/reports/flow': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Money in and out, and stock in and out, for a period
+     * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither.
+     */
+    get: operations['AdminReportController_flow'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/reports/sales-trend': {
     parameters: {
       query?: never;
@@ -7777,9 +7797,21 @@ export interface components {
       label: string;
       isActive: boolean;
     };
+    StockProductResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example KAPUR */
+      code: string;
+      /** @example Camphor */
+      nameEn: string;
+      /** @example कपूर */
+      nameNe: string;
+    };
     StockLevelResponse: {
       branch: components['schemas']['BranchSummary'];
       variant: components['schemas']['VariantSummary'];
+      /** @description The item the pack belongs to */
+      product: components['schemas']['StockProductResponse'];
       /** @example 42 */
       onHand: number;
       /**
@@ -11816,6 +11848,62 @@ export interface components {
       outstanding: components['schemas']['OutstandingResponse'];
       /** @description Orders placed in the period */
       ordersByStatus: components['schemas']['StatusCountResponse'][];
+    };
+    MoneyFlowResponse: {
+      /**
+       * @description Payments received
+       * @example 12500.00
+       */
+      receipts: string;
+      /**
+       * @description Paid back to customers
+       * @example 300.00
+       */
+      refunds: string;
+      /**
+       * @description Shop expenses
+       * @example 2000.00
+       */
+      expenses: string;
+      /**
+       * @description Paid to suppliers
+       * @example 5000.00
+       */
+      supplierPayments: string;
+      /**
+       * @description Expenses, supplier payments and refunds together
+       * @example 7300.00
+       */
+      out: string;
+    };
+    StockFlowTypeResponse: {
+      /** @enum {string} */
+      type:
+        'PURCHASE' | 'RETURN' | 'SALE' | 'DAMAGE' | 'ADJUSTMENT' | 'TRANSFER_OUT' | 'TRANSFER_IN';
+      /** @example 4 */
+      movements: number;
+      /**
+       * @description Units that came in
+       * @example 120
+       */
+      unitsIn: number;
+      /**
+       * @description Units that went out
+       * @example 0
+       */
+      unitsOut: number;
+    };
+    StockFlowResponse: {
+      /** @example 120 */
+      unitsIn: number;
+      /** @example 45 */
+      unitsOut: number;
+      byType: components['schemas']['StockFlowTypeResponse'][];
+    };
+    ShopFlowResponse: {
+      period: components['schemas']['PeriodResponse'];
+      money: components['schemas']['MoneyFlowResponse'];
+      stock: components['schemas']['StockFlowResponse'];
     };
     TrendDayResponse: {
       /**
@@ -33840,6 +33928,75 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['SummaryResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminReportController_flow: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ShopFlowResponse'];
           };
         };
       };

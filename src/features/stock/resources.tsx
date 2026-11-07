@@ -13,35 +13,57 @@ type Name = (key: string) => string;
 const MOVEMENT_KINDS = ['PURCHASE', 'RETURN', 'DAMAGE', 'ADJUSTMENT'] as const;
 
 // One product's packs, each with its stock: a new pack has no stock row until its first change.
-async function packsOf(productId: string, lowOnly: boolean): Promise<Level[]> {
+export type StockShow = 'all' | 'low' | 'out';
+
+export const STOCK_SHOWS: readonly StockShow[] = ['all', 'low', 'out'];
+
+export const parseStockShow = (value: string | undefined): StockShow =>
+  STOCK_SHOWS.find((show) => show === value) ?? 'all';
+
+async function packsOf(productId: string, show: StockShow): Promise<Level[]> {
   const product = await request<Product>('GET', `/admin/products/${productId}`);
   const levels = await Promise.all(
     product.variants.map((variant) => request<Level>('GET', `/admin/stock-levels/${variant.id}`)),
   );
-  return lowOnly ? levels.filter((level) => level.isLowStock) : levels;
+  if (show === 'low') return levels.filter((level) => level.isLowStock);
+  if (show === 'out') return levels.filter((level) => level.available <= 0);
+  return levels;
 }
 
 // Stock per pack; only the reorder level is set by hand, the rest follows movements.
-export function stockResource(lowOnly: boolean, productId?: string): Resource<Level> {
+export function stockResource(show: StockShow, productId?: string): Resource<Level> {
   return {
     key: 'stock',
     path: '/admin/stock-levels',
     exportPath: '/admin/stock-levels/export',
     list: productId ? 'all' : 'paged',
-    loadAll: productId ? () => packsOf(productId, lowOnly) : undefined,
+    loadAll: productId ? () => packsOf(productId, show) : undefined,
     // Part of the list's cache key too, so each filter keeps its own list.
     listQuery: {
-      ...(lowOnly && { lowStock: 'true' }),
+      ...(show === 'low' && { lowStock: 'true' }),
+      ...(show === 'out' && { outOfStock: 'true' }),
       ...(productId && { productId }),
     },
     searchable: false,
     canCreate: false,
     canDelete: false,
     rowId: (row) => row.variant.id,
-    rowLabel: (row) => `${row.variant.sku} · ${row.variant.label}`,
+    rowLabel: (row) => `${row.product.nameNe} · ${row.variant.label}`,
     initialSort: { key: 'available', direction: 'asc' },
     modalSize: 'xs',
     columns: [
+      {
+        key: 'product',
+        cell: (row) => (
+          <div className="min-w-0">
+            <div className="truncate font-medium">{row.product.nameNe}</div>
+            <div className="truncate text-xs text-muted-foreground">
+              {row.product.nameEn} · {row.product.code}
+            </div>
+          </div>
+        ),
+        sortValue: (row) => row.product.nameEn,
+      },
       {
         key: 'sku',
         cell: (row) => <span className="font-semibold">{row.variant.sku}</span>,

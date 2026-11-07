@@ -116,6 +116,56 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "today": {
+      "title": "Today",
+      "sold": "Sold today",
+      "bills": "{count, plural, one {# bill} other {# bills}}",
+      "moneyIn": "Money in",
+      "moneyInNote": "Payments received today",
+      "moneyOut": "Money out",
+      "moneyOutNote": "Expenses {expenses} · suppliers {suppliers}",
+      "stockIn": "Stock came in",
+      "stockInNote": "Bought, returned or sent in",
+      "stockOut": "Stock went out",
+      "stockOutNote": "Sold, damaged or sent away",
+      "units": "{count, plural, one {# unit} other {# units}}"
+    },
+    "flow": {
+      "money": "Money in and out",
+      "left": "Kept:",
+      "lines": {
+        "receipts": "Received from customers",
+        "expenses": "Expenses",
+        "supplierPayments": "Paid to suppliers",
+        "refunds": "Refunded to customers"
+      },
+      "stock": "Stock in and out",
+      "stockTotals": "{into} in · {out} out",
+      "noMovement": "No stock moved in these days.",
+      "types": {
+        "PURCHASE": "Bought",
+        "RETURN": "Returned",
+        "SALE": "Sold",
+        "DAMAGE": "Damaged",
+        "ADJUSTMENT": "Counted and corrected",
+        "TRANSFER_OUT": "Sent to a branch",
+        "TRANSFER_IN": "Received from a branch"
+      }
+    },
+    "cash": {
+      "title": "Cash and bank",
+      "open": "Open",
+      "none": "No accounts yet.",
+      "kinds": { "CASH": "Cash", "BANK": "Bank", "WALLET": "Wallet" }
+    },
+    "pujas": {
+      "title": "Pujas",
+      "open": "Open",
+      "total": "Pujas",
+      "shown": "Shown on the website",
+      "upcoming": "Festivals in the next 45 days",
+      "noneUpcoming": "No festival dates in the next 45 days."
+    },
     "range": "{from} – {to}",
     "lastDays": "Last {days} days",
     "against": "vs previous {days} days",
@@ -852,6 +902,7 @@
       "empty": "No packs to show.",
       "none": "—",
       "fields": {
+        "product": "Item",
         "sku": "SKU",
         "label": "Pack",
         "onHand": "On hand",
@@ -2053,6 +2104,8 @@
     "resetPasswordNote": "They are signed out everywhere and sign in with this password.",
     "passwordReset": "Password reset",
     "packs": "Packs",
+    "showStock": "Show",
+    "show": { "all": "All packs", "low": "Running low", "out": "Out of stock" },
     "packsOf": "Packs of {name}",
     "packsAndPrices": "Packs and prices",
     "packsNote": "Each pack is its own SKU with its own price and stock. The cheapest active pack is the default.",

@@ -122,7 +122,7 @@ const RESOURCES: Resource<never>[] = [
   variantsResource(PRODUCT),
   gradesResource(PRODUCT),
   pairingsResource(PRODUCT),
-  stockResource(false),
+  stockResource('all'),
   movementResource(LEVEL, (key) => key),
   historyResource(LEVEL, (key) => key),
   kitsResource((key) => key),

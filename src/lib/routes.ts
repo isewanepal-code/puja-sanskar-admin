@@ -25,7 +25,7 @@ export const routes = {
   categories: () => '/catalogue',
   materials: () => '/catalogue/samagri',
   products: () => '/items',
-  stock: () => '/stock',
+  stock: (show?: 'low' | 'out') => (show ? `/stock?show=${show}` : '/stock'),
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
 

@@ -11,31 +11,31 @@ import {
 } from '@/components/resource';
 import { IconButton } from '@/components/ui/button';
 import { SearchSelect } from '@/components/controls';
-import { Switch } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 import type { Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 
+import { cn } from '@/lib/utils';
+
 import {
   historyResource,
   movementResource,
+  STOCK_SHOWS,
   stockResource,
   transferStockResource,
+  type StockShow,
 } from '../resources';
 
 type Level = Schema<'StockLevelResponse'>;
 type Open = { what: 'record' | 'history' | 'transfer'; level: Level } | null;
 
-export function StockScreen() {
+export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }) {
   const t = useTranslations('actions');
   const tm = useResourceText('movements');
-  const [lowOnly, setLowOnly] = useState(false);
+  const [show, setShow] = useState<StockShow>(initialShow);
   const [productId, setProductId] = useState('');
   const [open, setOpen] = useState<Open>(null);
-  const resource = useMemo(
-    () => stockResource(lowOnly, productId || undefined),
-    [lowOnly, productId],
-  );
+  const resource = useMemo(() => stockResource(show, productId || undefined), [show, productId]);
   const name = open ? `${open.level.variant.sku} · ${open.level.variant.label}` : '';
 
   return (
@@ -52,11 +52,28 @@ export function StockScreen() {
               aria-label={t('product')}
               className="w-64"
             />
-            <Switch
-              label={t('lowOnly')}
-              checked={lowOnly}
-              onChange={(event) => setLowOnly(event.target.checked)}
-            />
+            <div
+              className="inline-flex rounded-lg bg-muted p-1"
+              role="group"
+              aria-label={t('showStock')}
+            >
+              {STOCK_SHOWS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  aria-pressed={show === option}
+                  onClick={() => setShow(option)}
+                  className={cn(
+                    'rounded-md px-3 py-1 text-sm font-medium transition-colors',
+                    show === option
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  {t(`show.${option}`)}
+                </button>
+              ))}
+            </div>
             <WorkbookUploadButton
               path="/admin/stock-levels/import"
               templatePath="/admin/stock-levels/import/template"
