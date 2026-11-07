@@ -45,7 +45,7 @@ async function loadEvery<T>(resource: Resource<T>): Promise<T[]> {
   const rows: T[] = [];
   for (let page = 1; ; page++) {
     const result = await request<Page<T>>('GET', resource.path, {
-      query: { ...resource.listQuery, page, pageSize: PAGE_SIZE },
+      query: { ...resource.listQuery, page, limit: PAGE_SIZE },
     });
     rows.push(...result.items);
     if (page >= result.meta.totalPages) return rows;
@@ -176,6 +176,10 @@ export function ReorderModal<T>({ resource, open, onOpenChange }: ReorderModalPr
     >
       {list.isPending ? (
         <p className="text-sm text-muted-foreground">…</p>
+      ) : list.isError ? (
+        <p role="alert" className="text-sm text-destructive">
+          {isApiError(list.error) ? list.error.message : tf('failed')}
+        </p>
       ) : rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">{tf('nothingToArrange')}</p>
       ) : (
