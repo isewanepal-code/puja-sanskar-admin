@@ -92,6 +92,8 @@ const action = (key: string, path: string, fields: Resource<never>['fields']): R
   rowLabel: () => '',
   columns: [],
   fields,
+  // Each moves money: one key per open form, so a retry cannot repeat it.
+  idempotent: true,
 });
 
 export const transferResource = () =>

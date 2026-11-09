@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { useToast } from '@/components/overlays';
 import { ActionModal, ConfirmDelete, ResourceScreen, useResourceText } from '@/components/resource';
@@ -36,9 +36,18 @@ export function PurchaseBillsScreen() {
   const [removing, setRemoving] = useState<PurchaseBill | null>(null);
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['purchaseBills'] });
 
+  // One key per bill until it is posted, so a double click or a retry posts it once.
+  const postKeys = useRef(new Map<string, string>());
   const post = useMutation({
-    mutationFn: (bill: PurchaseBill) => request('POST', `/admin/purchase-bills/${bill.id}/post`),
-    onSuccess: async () => {
+    mutationFn: (bill: PurchaseBill) => {
+      const key = postKeys.current.get(bill.id) ?? crypto.randomUUID();
+      postKeys.current.set(bill.id, key);
+      return request('POST', `/admin/purchase-bills/${bill.id}/post`, {
+        headers: { 'Idempotency-Key': key },
+      });
+    },
+    onSuccess: async (_data, bill) => {
+      postKeys.current.delete(bill.id);
       toast.success(tp('posted'));
       await Promise.all([refresh(), queryClient.invalidateQueries({ queryKey: ['stock'] })]);
     },

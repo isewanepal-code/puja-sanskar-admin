@@ -55,6 +55,7 @@ export function expensesResource(name: Name, categories: Map<string, string>): R
   return {
     key: 'expenses',
     path: '/admin/expenses',
+    idempotent: true,
     list: 'paged',
     canEdit: false,
     canDelete: false,

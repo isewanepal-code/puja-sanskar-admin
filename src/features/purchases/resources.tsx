@@ -132,6 +132,7 @@ export function supplierPaymentsResource(name: Name): Resource<SupplierPayment> 
   return {
     key: 'supplierPayments',
     path: '/admin/supplier-payments',
+    idempotent: true,
     list: 'paged',
     canEdit: false,
     canDelete: false,
