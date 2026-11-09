@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { serverEnv } from '@/lib/env/server';
+import { isSafeProxyPath, isSameOriginWrite } from '@/lib/security/request-guard';
 import {
   clearTokens,
   isExpiring,
@@ -19,6 +20,12 @@ const notFound = () =>
   NextResponse.json(
     { success: false, message: 'Not found', error: { code: 'NOT_FOUND', details: [] } },
     { status: 404 },
+  );
+
+const forbidden = () =>
+  NextResponse.json(
+    { success: false, message: 'Forbidden', error: { code: 'FORBIDDEN', details: [] } },
+    { status: 403 },
   );
 
 async function forward(
@@ -58,7 +65,10 @@ const tokenInvalid = async (response: Response) =>
   )?.error?.code === 'AUTH_TOKEN_INVALID';
 
 async function handle(request: NextRequest, { params }: RouteContext<'/api/proxy/[...path]'>) {
-  const path = (await params).path.join('/');
+  if (!isSameOriginWrite(request.method, request.headers)) return forbidden();
+  const segments = (await params).path;
+  if (!isSafeProxyPath(segments)) return notFound();
+  const path = segments.join('/');
   if (!allowed(path)) return notFound();
 
   const body = ['GET', 'HEAD'].includes(request.method) ? undefined : await request.arrayBuffer();

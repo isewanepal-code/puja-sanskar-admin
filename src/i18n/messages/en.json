@@ -371,7 +371,7 @@
   "notes": {
     "title": "Notes for testing",
     "titleFor": "Notes · {screen}",
-    "note": "Write what needs fixing on this screen, add screenshots, and tick it when it is done. Everyone on the team sees the same list.",
+    "note": "Write what needs fixing on this screen, add screenshots, and tick it when it is done. Everyone on the team sees the same list. Screenshots go to the public media library, so never capture customer details, payments or passwords.",
     "placeholder": "What is wrong or missing here?",
     "addImages": "Add screenshots",
     "pasteHint": "or paste or drop an image",

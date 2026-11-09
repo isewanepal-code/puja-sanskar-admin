@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { serverEnv } from '@/lib/env/server';
+import { isSameOriginWrite } from '@/lib/security/request-guard';
 import {
   clearTokens,
   refreshOnce,
@@ -18,6 +19,9 @@ const api = (path: string, body: unknown) =>
   });
 
 export async function POST(request: NextRequest, { params }: RouteContext<'/api/auth/[action]'>) {
+  if (!isSameOriginWrite(request.method, request.headers)) {
+    return NextResponse.json({ success: false }, { status: 403 });
+  }
   const { action } = await params;
 
   if (action === 'logout') {
