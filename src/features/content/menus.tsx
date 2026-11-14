@@ -109,6 +109,8 @@ export function menusResource(name: Name): Resource<MenuItem> {
       },
       { name: 'labelNe', kind: 'text', required: true, max: 80 },
       { name: 'labelEn', kind: 'text', required: true, max: 80 },
+      { name: 'tooltipNe', kind: 'text', max: 240, wide: true },
+      { name: 'tooltipEn', kind: 'text', max: 240, wide: true },
       { name: 'href', kind: 'text', max: 300, pattern: HREF, wide: true },
       { name: 'icon', kind: 'text', max: 30 },
       { name: 'sortOrder', kind: 'number' },

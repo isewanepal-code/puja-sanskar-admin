@@ -285,7 +285,11 @@ export interface paths {
     get: operations['AccountController_get'];
     put?: never;
     post?: never;
-    delete?: never;
+    /**
+     * Delete your account
+     * @description Removes your personal data and signs you out everywhere. Past orders stay in the shop accounts without your name. Blocked while an order is still open.
+     */
+    delete: operations['AccountController_erase'];
     options?: never;
     head?: never;
     /** Change name or contact phone */
@@ -306,6 +310,26 @@ export interface paths {
      * @description Does nothing once the email is verified.
      */
     post: operations['AccountController_resendVerification'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/account/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Download everything the shop holds about you
+     * @description Profile, addresses, wishlist, saved lists, reviews, list requests and orders.
+     */
+    get: operations['AccountController_export'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -694,6 +718,101 @@ export interface paths {
      * @description Takes effect at once for new orders and bills; bills already issued keep what they were issued under.
      */
     patch: operations['AdminSettingsController_update'];
+    trace?: never;
+  };
+  '/api/v1/site-texts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Website texts that were changed from the defaults
+     * @description The website keeps its built-in wording and overlays these, by message key and language.
+     */
+    get: operations['SiteTextController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/site-texts/edit-session': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Swap the one-time code from the admin for an editing session
+     * @description Used by the website only. The code works once, within a minute.
+     */
+    post: operations['SiteTextController_redeem'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/site-texts/edit-session/end': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** End the editing session */
+    post: operations['SiteTextController_end'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/site-texts/{key}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Change one text of the website, in one language */
+    put: operations['SiteTextController_save'];
+    post?: never;
+    /** Put one text back to the website default */
+    delete: operations['SiteTextController_reset'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/site-texts/edit-link': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Open the website with its editor switched on
+     * @description Returns an address that works once, for a minute. The website then shows a pencil next to each text.
+     */
+    post: operations['AdminSiteTextController_editLink'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   '/api/v1/admin/delivery-zones': {
@@ -5595,6 +5714,7 @@ export interface components {
         | 'expenses:write'
         | 'expenses:manage'
         | 'notes:use'
+        | 'site-texts:edit'
       )[];
     };
     CustomerSignupDto: {
@@ -5636,6 +5756,10 @@ export interface components {
       fullName?: string;
       /** @example +9779801234567 */
       phone?: string | null;
+    };
+    DeleteAccountDto: {
+      /** Format: password */
+      password?: string;
     };
     CreateUserDto: {
       /** @example admin@pujasanskar.com */
@@ -6035,6 +6159,30 @@ export interface components {
        *     ]
        */
       popularSearches?: string[];
+    };
+    SiteTextsResponse: {
+      /** @description Changed texts by message key, English */
+      en: {
+        [key: string]: string;
+      };
+      /** @description Changed texts by message key, Nepali */
+      ne: {
+        [key: string]: string;
+      };
+    };
+    EditSessionResponse: {
+      token: string;
+      expiresInSeconds: number;
+    };
+    RedeemEditCodeDto: Record<string, never>;
+    SaveSiteTextDto: {
+      /** @enum {string} */
+      locale: 'en' | 'ne';
+      value: string;
+    };
+    EditHandoffResponse: {
+      /** @description Open this address to start editing the website */
+      url: string;
     };
     DeliveryPlaceResponse: {
       /** @example Kathmandu */
@@ -11145,6 +11293,8 @@ export interface components {
       labelNe: string;
       /** @example Puja kits */
       labelEn: string;
+      tooltipNe: string | null;
+      tooltipEn: string | null;
       /** @example /kits */
       href: string | null;
       /** @example truck */
@@ -11168,6 +11318,8 @@ export interface components {
       parentId: string | null;
       labelNe: string;
       labelEn: string;
+      tooltipNe: string | null;
+      tooltipEn: string | null;
       href: string | null;
       icon: string | null;
       isHighlighted: boolean;
@@ -11186,6 +11338,16 @@ export interface components {
       labelNe: string;
       /** @example Puja kits */
       labelEn: string;
+      /**
+       * @description A short note shown when a visitor rests on the link (Nepali)
+       * @example मुख्य मुख्य पूजाहरूका तयारी किटहरू
+       */
+      tooltipNe?: string | null;
+      /**
+       * @description A short note shown when a visitor rests on the link (English)
+       * @example Ready kits for the main pujas
+       */
+      tooltipEn?: string | null;
       /**
        * @description A site path or an https address; none for a heading
        * @example /kits
@@ -11208,6 +11370,16 @@ export interface components {
       labelNe?: string;
       /** @example Puja kits */
       labelEn?: string;
+      /**
+       * @description A short note shown when a visitor rests on the link (Nepali)
+       * @example मुख्य मुख्य पूजाहरूका तयारी किटहरू
+       */
+      tooltipNe?: string | null;
+      /**
+       * @description A short note shown when a visitor rests on the link (English)
+       * @example Ready kits for the main pujas
+       */
+      tooltipEn?: string | null;
       /**
        * @description A site path or an https address; none for a heading
        * @example /kits
@@ -13883,6 +14055,45 @@ export interface operations {
       };
     };
   };
+  AccountController_erase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteAccountDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AccountController_update: {
     parameters: {
       query?: never;
@@ -13956,6 +14167,32 @@ export interface operations {
       };
       /** @description TOO_MANY_REQUESTS */
       429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountController_export: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
         headers: {
           [name: string]: unknown;
         };
@@ -15968,6 +16205,220 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  SiteTextController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SiteTextsResponse'];
+          };
+        };
+      };
+    };
+  };
+  SiteTextController_redeem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RedeemEditCodeDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['EditSessionResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  SiteTextController_end: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-edit-token': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SiteTextController_save: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-edit-token': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SaveSiteTextDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  SiteTextController_reset: {
+    parameters: {
+      query: {
+        locale: 'en' | 'ne';
+      };
+      header: {
+        'x-edit-token': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminSiteTextController_editLink: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['EditHandoffResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
         headers: {
           [name: string]: unknown;
         };
@@ -34454,9 +34905,11 @@ export interface operations {
   AdminMoneyController_transfer: {
     parameters: {
       query?: never;
-      header?: {
+      header: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
         'X-Branch'?: string;
+        /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
+        'Idempotency-Key': string;
       };
       path?: never;
       cookie?: never;
@@ -34517,7 +34970,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description CONFLICT */
+      /**
+       * @description CONFLICT
+       *
+       *     CONFLICT
+       */
       409: {
         headers: {
           [name: string]: unknown;
@@ -34526,7 +34983,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description UNPROCESSABLE_ENTITY */
+      /**
+       * @description UNPROCESSABLE_ENTITY
+       *
+       *     UNPROCESSABLE_ENTITY
+       */
       422: {
         headers: {
           [name: string]: unknown;
@@ -34776,9 +35237,11 @@ export interface operations {
   AdminMoneyController_adjust: {
     parameters: {
       query?: never;
-      header?: {
+      header: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
         'X-Branch'?: string;
+        /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
+        'Idempotency-Key': string;
       };
       path: {
         id: string;
@@ -34841,7 +35304,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description CONFLICT */
+      /**
+       * @description CONFLICT
+       *
+       *     CONFLICT
+       */
       409: {
         headers: {
           [name: string]: unknown;
@@ -34850,7 +35317,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description UNPROCESSABLE_ENTITY */
+      /**
+       * @description UNPROCESSABLE_ENTITY
+       *
+       *     UNPROCESSABLE_ENTITY
+       */
       422: {
         headers: {
           [name: string]: unknown;
@@ -34864,9 +35335,11 @@ export interface operations {
   AdminMoneyController_close: {
     parameters: {
       query?: never;
-      header?: {
+      header: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
         'X-Branch'?: string;
+        /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
+        'Idempotency-Key': string;
       };
       path: {
         id: string;
@@ -34929,7 +35402,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description CONFLICT */
+      /**
+       * @description CONFLICT
+       *
+       *     CONFLICT
+       */
       409: {
         headers: {
           [name: string]: unknown;
@@ -34938,7 +35415,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description UNPROCESSABLE_ENTITY */
+      /**
+       * @description UNPROCESSABLE_ENTITY
+       *
+       *     UNPROCESSABLE_ENTITY
+       */
       422: {
         headers: {
           [name: string]: unknown;
@@ -36616,9 +37097,11 @@ export interface operations {
   AdminPurchaseBillController_post: {
     parameters: {
       query?: never;
-      header?: {
+      header: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
         'X-Branch'?: string;
+        /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
+        'Idempotency-Key': string;
       };
       path: {
         id: string;
@@ -36677,7 +37160,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description CONFLICT */
+      /**
+       * @description CONFLICT
+       *
+       *     CONFLICT
+       */
       409: {
         headers: {
           [name: string]: unknown;
@@ -36686,7 +37173,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description UNPROCESSABLE_ENTITY */
+      /**
+       * @description UNPROCESSABLE_ENTITY
+       *
+       *     UNPROCESSABLE_ENTITY
+       */
       422: {
         headers: {
           [name: string]: unknown;
@@ -36753,9 +37244,11 @@ export interface operations {
   AdminSupplierPaymentController_pay: {
     parameters: {
       query?: never;
-      header?: {
+      header: {
         /** @description Branch code; may be left out when the user works at one branch only */
         'X-Branch'?: string;
+        /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
+        'Idempotency-Key': string;
       };
       path?: never;
       cookie?: never;
@@ -36816,7 +37309,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description CONFLICT */
+      /**
+       * @description CONFLICT
+       *
+       *     CONFLICT
+       */
       409: {
         headers: {
           [name: string]: unknown;
@@ -36825,7 +37322,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description UNPROCESSABLE_ENTITY */
+      /**
+       * @description UNPROCESSABLE_ENTITY
+       *
+       *     UNPROCESSABLE_ENTITY
+       */
       422: {
         headers: {
           [name: string]: unknown;
@@ -37194,9 +37695,11 @@ export interface operations {
   AdminExpenseController_record: {
     parameters: {
       query?: never;
-      header?: {
+      header: {
         /** @description Branch code; may be left out when the user works at one branch only */
         'X-Branch'?: string;
+        /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
+        'Idempotency-Key': string;
       };
       path?: never;
       cookie?: never;
@@ -37257,7 +37760,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description CONFLICT */
+      /**
+       * @description CONFLICT
+       *
+       *     CONFLICT
+       */
       409: {
         headers: {
           [name: string]: unknown;
@@ -37266,7 +37773,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description UNPROCESSABLE_ENTITY */
+      /**
+       * @description UNPROCESSABLE_ENTITY
+       *
+       *     UNPROCESSABLE_ENTITY
+       */
       422: {
         headers: {
           [name: string]: unknown;

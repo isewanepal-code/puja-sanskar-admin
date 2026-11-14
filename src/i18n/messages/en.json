@@ -2077,14 +2077,17 @@
         "icon": "Icon",
         "sortOrder": "Order",
         "isHighlighted": "Highlighted",
-        "isActive": "Shown"
+        "isActive": "Shown",
+        "tooltipNe": "Note on hover (Nepali)",
+        "tooltipEn": "Note on hover (English)"
       },
       "hints": {
         "parentId": "Leave empty for a header link or a footer heading; pick a heading to put this link in its column or sub-menu.",
         "href": "A page of the site such as /kits or /pages/privacy, or a full https:// address. Leave empty for a footer heading.",
         "icon": "For side links and the phone bar: camera, truck, users, info, home, diya, box, grid.",
         "isHighlighted": "Drawn in the accent colour, like Offers.",
-        "sortOrder": "Smaller numbers come first."
+        "sortOrder": "Smaller numbers come first.",
+        "tooltipNe": "A short line shown when a visitor rests the pointer on the link, such as what the page offers. Optional."
       }
     },
     "kitTransfer": {
