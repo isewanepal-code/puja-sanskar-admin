@@ -36,6 +36,7 @@ export const PERMISSIONS = [
   'expenses:read',
   'expenses:write',
   'expenses:manage',
+  'site-texts:edit',
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];

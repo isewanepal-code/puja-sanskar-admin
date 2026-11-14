@@ -10,6 +10,7 @@ import { NotesButton } from '@/features/notes';
 import { routes } from '@/lib/routes';
 
 import { BranchSwitcher } from './branch-switcher';
+import { EditWebsiteButton } from './edit-website-button';
 import { ChangePasswordModal } from './change-password-modal';
 import { usePanel } from './panel-shell';
 
@@ -17,6 +18,8 @@ type HeaderBarProps = {
   staff: { fullName: string; email: string; roles: string[] };
   // The branch code chosen, or empty for every branch.
   branch: string;
+  // May change the website's wording from the website itself.
+  canEditWebsite?: boolean;
 };
 
 const initials = (name: string) =>
@@ -30,7 +33,7 @@ const item =
   'flex w-full cursor-default items-center gap-2 rounded px-2.5 py-2 text-sm outline-none data-[highlighted]:bg-muted';
 
 // Who is signed in, with their password and sign-out, on every page.
-export function HeaderBar({ staff, branch }: HeaderBarProps) {
+export function HeaderBar({ staff, branch, canEditWebsite = false }: HeaderBarProps) {
   const t = useTranslations('panel');
   const router = useRouter();
   const [changing, setChanging] = useState(false);
@@ -54,6 +57,7 @@ export function HeaderBar({ staff, branch }: HeaderBarProps) {
         <Icon name="sidebar" size={18} />
       </button>
       <div className="ml-auto flex items-center gap-3">
+        {canEditWebsite ? <EditWebsiteButton /> : null}
         <NotesButton />
         <BranchSwitcher current={branch} />
         <Menu.Root>

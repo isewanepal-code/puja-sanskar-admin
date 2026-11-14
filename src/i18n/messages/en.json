@@ -125,7 +125,10 @@
     "closeMenu": "Close the menu",
     "branch": "Branch",
     "allBranches": "Every branch",
-    "online": "online"
+    "online": "online",
+    "editWebsite": "Edit website",
+    "editWebsiteHint": "Open the website and change its titles, descriptions and buttons right on the page",
+    "editWebsiteFailed": "Could not open the website editor. Please try again."
   },
   "dashboard": {
     "title": "Dashboard",

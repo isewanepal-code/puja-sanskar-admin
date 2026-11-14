@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { navigationFor } from '@/config/navigation';
+import { can } from '@/config/permissions';
 import { getMe, HeaderBar, PanelShell, Sidebar, SIDEBAR_COOKIE } from '@/features/staff';
 import { BRANCH_COOKIE } from '@/lib/session';
 import { resolveLocale } from '@/i18n/server';
@@ -25,7 +26,11 @@ export default async function PanelLayout({ children, params }: LayoutProps<'/[l
     <PanelShell initialCollapsed={collapsed}>
       <Sidebar groups={navigationFor(me.permissions)} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <HeaderBar staff={me} branch={branch} />
+        <HeaderBar
+          staff={me}
+          branch={branch}
+          canEditWebsite={can(me.permissions, 'site-texts:edit')}
+        />
         <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>
       </div>
     </PanelShell>
