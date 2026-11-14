@@ -22,7 +22,7 @@ import { PurchaseBillForm } from './purchase-bill-form';
 
 export function SuppliersScreen() {
   const resource = useMemo(() => suppliersResource(), []);
-  return <ResourceScreen resource={resource} />;
+  return <ResourceScreen resource={resource} deepLink />;
 }
 
 export function PurchaseBillsScreen() {

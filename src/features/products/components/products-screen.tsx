@@ -90,6 +90,7 @@ export function ProductsScreen() {
     <>
       <ResourceScreen
         resource={resource}
+        deepLink
         editFooter={(row) => <EditPacks id={row.id} />}
         toolbar={
           <>

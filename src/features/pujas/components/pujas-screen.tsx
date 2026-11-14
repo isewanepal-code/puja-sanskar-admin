@@ -40,6 +40,7 @@ export function PujasScreen() {
     <>
       <ResourceScreen
         resource={resource}
+        deepLink
         rowActions={(row) => (
           <IconButton icon="list" label={ta('samagriList')} onClick={() => setListOf(row)} />
         )}

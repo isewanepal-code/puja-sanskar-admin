@@ -47,6 +47,7 @@ export function CustomersScreen() {
     <>
       <ResourceScreen
         resource={resource}
+        deepLink
         toolbar={
           <SearchSelect
             value={sort}

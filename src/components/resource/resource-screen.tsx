@@ -2,6 +2,7 @@
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 import { useDeferredValue, useId, useState, type ReactNode } from 'react';
 
 import { useToast } from '@/components/overlays';
@@ -33,6 +34,8 @@ type ResourceScreenProps<T> = {
   onCreated?: (row: T) => void;
   // Under the form of a saved record: what belongs to it (an item's packs and prices…).
   editFooter?: (row: T) => ReactNode;
+  // A page of its own: `?q=` fills the search and `?open=<id>` opens that record (the global search links here).
+  deepLink?: boolean;
 };
 
 // Any resource's list with search, sorting, paging and its create, edit and delete modals.
@@ -42,6 +45,7 @@ export function ResourceScreen<T>({
   toolbar,
   onCreated,
   editFooter,
+  deepLink = false,
 }: ResourceScreenProps<T>) {
   const t = useResourceText(resource.key);
   const tf = useTranslations('forms');
@@ -50,7 +54,11 @@ export function ResourceScreen<T>({
   const queryClient = useQueryClient();
   const formId = useId();
 
-  const [search, setSearch] = useState('');
+  const params = useSearchParams();
+  const [search, setSearch] = useState(deepLink ? (params.get('q') ?? '') : '');
+  const openId = deepLink ? params.get('open') : null;
+  // The record a link asked for opens once, as soon as the list has it; closing it keeps it closed.
+  const [dismissed, setDismissed] = useState(false);
   // Text typed under the headings of a paged list joins the search box: the API looks on every page.
   const [columnText, setColumnText] = useState<Record<string, string>>({});
   const query = useDeferredValue(
@@ -61,7 +69,7 @@ export function ResourceScreen<T>({
   );
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(20);
-  const [editing, setEditing] = useState<T | 'new' | null>(null);
+  const [chosen, setEditing] = useState<T | 'new' | null>(null);
   const [removing, setRemoving] = useState<T | null>(null);
   const [saving, setSaving] = useState(false);
   const [bulk, setBulk] = useState(false);
@@ -98,6 +106,12 @@ export function ResourceScreen<T>({
       ? (list.data?.items ?? []).filter((row) => resource.matches!(row, query.toLowerCase()))
       : (list.data?.items ?? []);
 
+  const linked =
+    openId && !dismissed && resource.canEdit !== false
+      ? rows.find((row) => resource.rowId(row) === openId)
+      : undefined;
+  const editing = chosen ?? linked ?? null;
+
   const remove = useMutation({
     mutationFn: (row: T) => request('DELETE', `${resource.path}/${resource.rowId(row)}`),
     onSuccess: async () => {
@@ -107,6 +121,11 @@ export function ResourceScreen<T>({
     },
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
+
+  const closeEditing = () => {
+    setEditing(null);
+    setDismissed(true);
+  };
 
   const meta = list.data?.meta;
   const canCreate = resource.canCreate !== false;
@@ -253,7 +272,7 @@ export function ResourceScreen<T>({
 
       <Modal
         open={editing !== null}
-        onOpenChange={(open) => (open ? undefined : setEditing(null))}
+        onOpenChange={(open) => (open ? undefined : closeEditing())}
         size={resource.modalSize ?? 'md'}
         title={
           editing === 'new' || editing === null
@@ -262,7 +281,7 @@ export function ResourceScreen<T>({
         }
         footer={
           <>
-            <Button variant="secondary" onClick={() => setEditing(null)}>
+            <Button variant="secondary" onClick={closeEditing}>
               {tf('cancel')}
             </Button>
             <Button type="submit" form={formId} disabled={saving}>
@@ -280,7 +299,7 @@ export function ResourceScreen<T>({
             onPendingChange={setSaving}
             onDone={(saved) => {
               if (editing === 'new' && saved) onCreated?.(saved as T);
-              setEditing(null);
+              closeEditing();
             }}
           />
         ) : null}

@@ -55,6 +55,7 @@ export function KitsScreen() {
     <>
       <ResourceScreen
         resource={resource}
+        deepLink
         toolbar={
           <>
             <Button variant="secondary" icon="temple" onClick={() => setFromPuja(true)}>

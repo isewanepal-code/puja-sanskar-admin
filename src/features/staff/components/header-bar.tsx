@@ -11,11 +11,12 @@ import { routes } from '@/lib/routes';
 
 import { BranchSwitcher } from './branch-switcher';
 import { EditWebsiteButton } from './edit-website-button';
+import { GlobalSearch } from './global-search';
 import { ChangePasswordModal } from './change-password-modal';
 import { usePanel } from './panel-shell';
 
 type HeaderBarProps = {
-  staff: { fullName: string; email: string; roles: string[] };
+  staff: { fullName: string; email: string; roles: string[]; permissions: string[] };
   // The branch code chosen, or empty for every branch.
   branch: string;
   // May change the website's wording from the website itself.
@@ -56,7 +57,10 @@ export function HeaderBar({ staff, branch, canEditWebsite = false }: HeaderBarPr
       >
         <Icon name="sidebar" size={18} />
       </button>
-      <div className="ml-auto flex items-center gap-3">
+      <div className="mr-auto ml-3">
+        <GlobalSearch permissions={staff.permissions} />
+      </div>
+      <div className="flex items-center gap-3">
         {canEditWebsite ? <EditWebsiteButton /> : null}
         <NotesButton />
         <BranchSwitcher current={branch} />
