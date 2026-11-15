@@ -8,6 +8,7 @@ import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 
+import { KitPriceSummary } from './kit-price-summary';
 import {
   kitFromPujaResource,
   kitItemsResource,
@@ -129,7 +130,12 @@ export function KitsScreen() {
         title={t('itemsOf', { name: itemsOf ? `${itemsOf.code} · ${itemsOf.nameNe}` : '' })}
         description={t('itemsNote')}
       >
-        {itemsOf ? <ResourceScreen resource={kitItemsResource(itemsOf.id)} /> : null}
+        {itemsOf ? (
+          <>
+            <KitPriceSummary kitId={itemsOf.id} />
+            <ResourceScreen resource={kitItemsResource(itemsOf.id)} />
+          </>
+        ) : null}
       </Modal>
     </>
   );

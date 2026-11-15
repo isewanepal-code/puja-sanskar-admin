@@ -2896,5 +2896,11 @@
       "activity": "Setup",
       "dataTools": "Setup"
     }
+  },
+  "kitPrice": {
+    "separate": "Items bought separately",
+    "kit": "Kit price",
+    "saves": "Customer saves",
+    "notCheaper": "This kit is not cheaper than buying its items one by one. Raise the kit discount so that it is."
   }
 }
