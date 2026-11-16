@@ -12,6 +12,16 @@ const categories: ChoiceSource = pagedSource<Category>('group-categories', {
   toChoices: (row) => [{ value: row.id, label: row.nameNe, detail: row.code }],
 });
 
+// Item codes pasted from a sheet: split on spaces, commas, semicolons and new lines.
+const codesCodec = {
+  toText: (value: unknown) => (Array.isArray(value) ? value.join('\n') : ''),
+  fromText: (text: string) =>
+    text
+      .split(/[\s,;]+/)
+      .map((code) => code.trim())
+      .filter(Boolean),
+};
+
 export function priceGroupsResource(): Resource<PriceGroup> {
   return {
     key: 'priceGroups',
@@ -20,7 +30,7 @@ export function priceGroupsResource(): Resource<PriceGroup> {
     rowId: (row) => row.id,
     rowLabel: (row) => `${row.code} · ${row.name}`,
     initialSort: { key: 'name', direction: 'asc' },
-    modalSize: 'sm',
+    modalSize: 'lg',
     columns: [
       {
         key: 'code',
@@ -37,9 +47,31 @@ export function priceGroupsResource(): Resource<PriceGroup> {
       activeColumn(),
     ],
     fields: [
-      { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
-      { name: 'name', kind: 'text', required: true, max: 160 },
-      { name: 'isActive', kind: 'switch', defaultValue: true },
+      { name: 'name', kind: 'text', required: true, max: 160, wide: true },
+      // What goes in is chosen as the group is made; later, the group's list changes it.
+      {
+        name: 'categoryIds',
+        kind: 'multiselect',
+        optionsFrom: categories,
+        wide: true,
+        createOnly: true,
+      },
+      {
+        name: 'productIds',
+        kind: 'multiselect',
+        optionsFrom: choices.products,
+        wide: true,
+        createOnly: true,
+      },
+      {
+        name: 'kitIds',
+        kind: 'multiselect',
+        optionsFrom: choices.kits,
+        wide: true,
+        createOnly: true,
+      },
+      { name: 'codes', kind: 'textarea', wide: true, createOnly: true, codec: codesCodec },
+      { name: 'isActive', kind: 'switch', defaultValue: true, editOnly: true },
     ],
   };
 }
@@ -63,14 +95,7 @@ export function addMembersResource(groupId: string): Resource<never> {
         name: 'codes',
         kind: 'textarea',
         wide: true,
-        codec: {
-          toText: (value) => (Array.isArray(value) ? value.join('\n') : ''),
-          fromText: (text) =>
-            text
-              .split(/[\s,;]+/)
-              .map((code) => code.trim())
-              .filter(Boolean),
-        },
+        codec: codesCodec,
       },
     ],
   };

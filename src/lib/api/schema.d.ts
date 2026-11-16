@@ -8897,8 +8897,11 @@ export interface components {
       value: string;
     };
     CreatePriceOfferDto: {
-      /** @example TEEJ_2026 */
-      code: string;
+      /**
+       * @description Made from the name when left out
+       * @example TEEJ_2026
+       */
+      code?: string;
       /** @example Teej offer */
       name: string;
       /** @example Teej offer */
@@ -9019,12 +9022,22 @@ export interface components {
       members: components['schemas']['PriceGroupMemberResponse'][];
     };
     CreatePriceGroupDto: {
-      /** @example TEEJ_ITEMS */
-      code: string;
+      /**
+       * @description Made from the name when left out
+       * @example TEEJ_ITEMS
+       */
+      code?: string;
       /** @example Teej samagri */
       name: string;
       /** @default true */
       isActive: boolean;
+      /** @description Items to put in the group as it is made */
+      productIds?: string[];
+      kitIds?: string[];
+      /** @description Every item in these categories and below them */
+      categoryIds?: string[];
+      /** @description Item codes, as pasted from a sheet */
+      codes?: string[];
     };
     UpdatePriceGroupDto: {
       /** @example Teej samagri */

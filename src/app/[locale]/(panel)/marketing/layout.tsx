@@ -2,7 +2,6 @@ import { getTranslations } from 'next-intl/server';
 
 import { PageHeader } from '@/components/navigation';
 import { resolveLocale } from '@/i18n/server';
-import { routes } from '@/lib/routes';
 
 export default async function MarketingLayout({
   children,
@@ -13,15 +12,7 @@ export default async function MarketingLayout({
 
   return (
     <div className="grid grid-cols-1 gap-6">
-      <PageHeader
-        title={t('title')}
-        tabs={[
-          { href: routes.pandits(), label: t('tabs.pandits') },
-          { href: routes.offers(), label: t('tabs.offers') },
-          { href: routes.priceGroups(), label: t('tabs.groups') },
-          { href: routes.discounts(), label: t('tabs.discounts') },
-        ]}
-      />
+      <PageHeader title={t('title')} />
       {children}
     </div>
   );

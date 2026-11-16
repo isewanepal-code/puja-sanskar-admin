@@ -153,6 +153,13 @@ export function offersResource(name: Name): Resource<Offer> {
       weekdays: row.weekdays.map(String),
       dayFrom: clock(row.dayFromMinute),
       dayTo: clock(row.dayToMinute),
+      more:
+        row.targets.some((t) => t.excluded) ||
+        !!row.festivalId ||
+        !row.allowCoupons ||
+        row.priority !== 0 ||
+        !!row.titleEn ||
+        !!row.titleNe,
       aloneKind: row.alone?.kind ?? '',
       aloneValue: row.alone?.value ?? '',
       withKitKind: row.withKit?.kind ?? '',
@@ -179,6 +186,8 @@ export function offersResource(name: Name): Resource<Offer> {
       schedule,
       startsAt,
       endsAt,
+      // Only for the form: whether the extras are shown.
+      more: _more,
       ...body
     }) => {
       const some = (kind: Target['kind'], list: unknown, excluded = false) =>
@@ -255,12 +264,7 @@ export function offersResource(name: Name): Resource<Offer> {
       activeColumn(),
     ],
     fields: [
-      { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
-      { name: 'name', kind: 'text', required: true, max: 160 },
-      { name: 'titleNe', kind: 'text', max: 80 },
-      { name: 'titleEn', kind: 'text', max: 80 },
-      { name: 'isActive', kind: 'switch', defaultValue: true },
-      { name: 'priority', kind: 'number', defaultValue: '0' },
+      { name: 'name', kind: 'text', required: true, max: 160, wide: true },
       {
         name: 'schedule',
         kind: 'select',
@@ -269,34 +273,61 @@ export function offersResource(name: Name): Resource<Offer> {
         defaultValue: 'ALWAYS',
         options: SCHEDULES.map((s) => ({ value: s, label: name(`schedules.${s}`) })),
       },
-      { name: 'startsAt', kind: 'datetime' },
-      { name: 'endsAt', kind: 'datetime' },
+      { name: 'startsAt', kind: 'datetime', showWhen: (v) => v.schedule === 'RANGE' },
+      { name: 'endsAt', kind: 'datetime', showWhen: (v) => v.schedule === 'RANGE' },
       {
         name: 'weekdays',
         kind: 'multiselect',
+        showWhen: (v) => v.schedule === 'WEEKLY',
         options: WEEKDAYS.map((d) => ({ value: String(d), label: name(`weekdays.${d}`) })),
       },
-      { name: 'dayFrom', kind: 'time' },
-      { name: 'dayTo', kind: 'time' },
-      { name: 'festivalId', kind: 'select', optionsFrom: choices.festivals },
+      { name: 'dayFrom', kind: 'time', showWhen: (v) => v.schedule === 'WEEKLY' },
+      { name: 'dayTo', kind: 'time', showWhen: (v) => v.schedule === 'WEEKLY' },
       ...rule('alone'),
       ...rule('withKit'),
-      {
-        name: 'kitTiers',
-        kind: 'textarea',
-        wide: true,
-        codec: tiersCodec,
-      },
-      { name: 'allowCoupons', kind: 'switch', defaultValue: true },
+      { name: 'kitTiers', kind: 'textarea', wide: true, codec: tiersCodec },
       { name: 'everything', kind: 'switch', section: 'covers', defaultValue: false },
       { name: 'groupIds', kind: 'multiselect', optionsFrom: priceGroups },
       { name: 'categoryIds', kind: 'multiselect', optionsFrom: categories },
       { name: 'productIds', kind: 'multiselect', optionsFrom: choices.products },
       { name: 'variantIds', kind: 'multiselect', optionsFrom: choices.packs },
       { name: 'kitIds', kind: 'multiselect', optionsFrom: choices.kits },
-      { name: 'leaveOutProductIds', kind: 'multiselect', optionsFrom: choices.products },
-      { name: 'leaveOutKitIds', kind: 'multiselect', optionsFrom: choices.kits },
-      { name: 'leaveOutGroupIds', kind: 'multiselect', optionsFrom: priceGroups },
+      // The rest is out of the way until asked for.
+      { name: 'more', kind: 'switch', section: 'extra', defaultValue: false },
+      { name: 'titleNe', kind: 'text', max: 80, showWhen: (v) => v.more === true },
+      { name: 'titleEn', kind: 'text', max: 80, showWhen: (v) => v.more === true },
+      {
+        name: 'festivalId',
+        kind: 'select',
+        optionsFrom: choices.festivals,
+        showWhen: (v) => v.more === true,
+      },
+      {
+        name: 'allowCoupons',
+        kind: 'switch',
+        defaultValue: true,
+        showWhen: (v) => v.more === true,
+      },
+      { name: 'isActive', kind: 'switch', defaultValue: true, showWhen: (v) => v.more === true },
+      { name: 'priority', kind: 'number', defaultValue: '0', showWhen: (v) => v.more === true },
+      {
+        name: 'leaveOutProductIds',
+        kind: 'multiselect',
+        optionsFrom: choices.products,
+        showWhen: (v) => v.more === true,
+      },
+      {
+        name: 'leaveOutKitIds',
+        kind: 'multiselect',
+        optionsFrom: choices.kits,
+        showWhen: (v) => v.more === true,
+      },
+      {
+        name: 'leaveOutGroupIds',
+        kind: 'multiselect',
+        optionsFrom: priceGroups,
+        showWhen: (v) => v.more === true,
+      },
     ],
   };
 }

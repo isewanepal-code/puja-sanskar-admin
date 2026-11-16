@@ -29,7 +29,7 @@ export const routes = {
   stock: (show?: 'low' | 'out') => (show ? `/stock?show=${show}` : '/stock'),
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
-  optionTypes: () => '/catalogue/options',
+  optionTypes: () => '/options',
 
   faqs: () => '/content',
   menus: () => '/content/menus',
@@ -47,7 +47,7 @@ export const routes = {
   messages: () => '/customers/messages',
   reminders: () => '/customers/reminders',
 
-  pandits: () => '/marketing',
+  pandits: () => '/marketing/pandits',
   discounts: () => '/marketing/discounts',
   offers: () => '/marketing/offers',
   priceGroups: () => '/marketing/groups',

@@ -23,6 +23,7 @@ describe('can', () => {
     expect(keys).toEqual([
       'dashboard',
       'items',
+      'options',
       'kits',
       'archive',
       'pujas',

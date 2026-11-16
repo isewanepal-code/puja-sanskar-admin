@@ -19,7 +19,6 @@ export default async function CatalogueLayout({
           { href: routes.categories(), label: t('tabs.categories') },
           { href: routes.materials(), label: t('tabs.materials') },
           { href: routes.units(), label: t('tabs.units') },
-          { href: routes.optionTypes(), label: t('tabs.options') },
           { href: routes.sources(), label: t('tabs.sources') },
         ]}
       />

@@ -191,6 +191,8 @@ export function ResourceForm<T>({
   });
 
   const errors = form.formState.errors;
+  const held = form.watch() as Record<string, unknown>;
+  const shown = fields.filter((field) => !field.showWhen || field.showWhen(held));
 
   return (
     <form
@@ -206,7 +208,7 @@ export function ResourceForm<T>({
       })}
       className="grid gap-x-4 gap-y-4 sm:grid-cols-2"
     >
-      {fields.map((field) => {
+      {shown.map((field) => {
         const id = `${idBase}-${field.name}`;
         const message = errors[field.name]?.message;
         const hint = t.has(`hints.${field.name}`) ? t(`hints.${field.name}`) : undefined;

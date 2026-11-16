@@ -1,18 +1,8 @@
-import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { redirect } from 'next/navigation';
 
-import { PanditsScreen } from '@/features/marketing';
-import { resolveLocale } from '@/i18n/server';
+import { routes } from '@/lib/routes';
 
-export async function generateMetadata({
-  params,
-}: PageProps<'/[locale]/marketing'>): Promise<Metadata> {
-  const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'marketing.tabs' });
-  return { title: t('pandits') };
-}
-
-export default async function PanditsPage({ params }: PageProps<'/[locale]/marketing'>) {
-  await resolveLocale(params);
-  return <PanditsScreen />;
+// Marketing opens on its offers.
+export default function MarketingPage() {
+  redirect(routes.offers());
 }

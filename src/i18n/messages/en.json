@@ -105,11 +105,15 @@
       "reports": "Reports",
       "pujas": "Pujas",
       "content": "Pages and banners",
-      "marketing": "Pandits and offers",
       "catalogue": "Categories and units",
       "settings": "Settings and branches",
       "staff": "Staff",
-      "archive": "Archive"
+      "archive": "Archive",
+      "options": "Colours and sizes",
+      "offers": "Offers",
+      "priceGroups": "Item groups",
+      "discounts": "Coupons",
+      "pandits": "Pandits"
     },
     "changePassword": "Change password",
     "groups": {
@@ -118,7 +122,8 @@
       "stock": "Stock",
       "money": "Money",
       "website": "Website",
-      "setup": "Setup"
+      "setup": "Setup",
+      "marketing": "Marketing"
     },
     "showMenu": "Show the menu",
     "hideMenu": "Hide the menu",
@@ -2111,36 +2116,37 @@
       "none": "—",
       "fields": {
         "code": "Code",
-        "name": "Name",
+        "name": "Name of the offer",
         "when": "When",
         "prices": "Price",
         "targets": "Covers",
-        "allowCoupons": "Coupons allowed",
+        "allowCoupons": "Coupons can be used on top",
         "titleNe": "Badge in Nepali",
         "titleEn": "Badge in English",
-        "isActive": "In use",
+        "isActive": "Switched on",
         "priority": "Priority",
-        "schedule": "Runs",
+        "schedule": "When is it on?",
         "startsAt": "From",
         "endsAt": "Until",
         "weekdays": "On these days",
         "dayFrom": "From time",
         "dayTo": "Until time",
         "festivalId": "Only during a festival",
-        "aloneKind": "Item bought alone",
-        "aloneValue": "Amount",
-        "withKitKind": "Item bought with a kit",
-        "withKitValue": "Amount",
-        "kitTiers": "Kits bought (one tier a line)",
-        "everything": "Everything (all items and kits)",
-        "groupIds": "Groups",
-        "categoryIds": "Categories (and below)",
-        "productIds": "Items",
+        "aloneKind": "Price when bought alone",
+        "aloneValue": "How much",
+        "withKitKind": "Price when bought with a kit",
+        "withKitValue": "How much",
+        "kitTiers": "More kits, bigger offer",
+        "everything": "Everything in the shop",
+        "groupIds": "A group of items",
+        "categoryIds": "A whole category",
+        "productIds": "Particular items",
         "kitIds": "Kits",
         "leaveOutProductIds": "Leave out these items",
         "leaveOutKitIds": "Leave out these kits",
         "leaveOutGroupIds": "Leave out these groups",
-        "variantIds": "Packs (a colour, size or weight)"
+        "variantIds": "Particular packs (a colour or size)",
+        "more": "Show more options"
       },
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later.",
@@ -2148,17 +2154,18 @@
         "priority": "When two offers give the same price, the higher one is named on the order.",
         "schedule": "All the time, between two dates, or on chosen weekdays and hours.",
         "festivalId": "The offer is on only while this festival is, inside the times above.",
-        "aloneKind": "Percent off, rupees off, or the price itself. Leave empty for no change.",
-        "withKitKind": "Used instead when a kit is in the same cart; never above the alone price.",
-        "kitTiers": "One per line: 1: 5%  ·  2: 15%  ·  3: Rs 300. From that many kits, that much off each kit.",
+        "aloneKind": "Leave empty if this offer does not change an item bought alone.",
+        "withKitKind": "Leave empty if it does not change an item bought with a kit.",
+        "kitTiers": "One per line: 2: 10%  ·  3: 15%. From that many kits, that much off each kit.",
         "allowCoupons": "Off: a coupon is not taken on the items this offer prices.",
         "everything": "Or choose what it covers below.",
         "variantIds": "An offer on only these packs, such as one colour and size."
       },
       "sections": {
-        "when": "When it is on",
-        "price": "What it does to the price",
-        "covers": "What it covers"
+        "when": "1 · When",
+        "price": "2 · What it does to the price",
+        "covers": "3 · Which items",
+        "extra": "More"
       },
       "schedules": {
         "ALWAYS": "All the time",
@@ -2197,12 +2204,18 @@
       "none": "—",
       "fields": {
         "code": "Code",
-        "name": "Name",
+        "name": "Name of the group",
         "memberCount": "Items and kits",
-        "isActive": "In use"
+        "isActive": "Switched on",
+        "categoryIds": "Add a whole category",
+        "productIds": "Add items",
+        "kitIds": "Add kits",
+        "codes": "Or paste item codes"
       },
       "hints": {
-        "code": "Capital letters, digits or _. It cannot change later."
+        "name": "For example: Teej samagri.",
+        "categoryIds": "Every item inside the category and its sub-categories.",
+        "codes": "Separated by spaces, commas or new lines."
       },
       "sections": {}
     },
@@ -2281,8 +2294,7 @@
       "units": "Units",
       "sources": "Sources",
       "products": "Products",
-      "stock": "Stock",
-      "options": "Options"
+      "stock": "Stock"
     }
   },
   "contentSection": {
@@ -2300,7 +2312,7 @@
     }
   },
   "marketing": {
-    "title": "Pandits, offers and discounts",
+    "title": "Marketing",
     "tabs": {
       "pandits": "Pandits",
       "discounts": "Discounts",
@@ -3135,5 +3147,9 @@
     "addPhoto": "Add a photo",
     "removePhoto": "Remove photo",
     "close": "Close"
+  },
+  "optionsPage": {
+    "title": "Colours and sizes",
+    "intro": "What items come in: each colour, size, length or weight is set up once here, then ticked on an item."
   }
 }

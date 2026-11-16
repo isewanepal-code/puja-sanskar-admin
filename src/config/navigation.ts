@@ -20,7 +20,11 @@ export type NavSection = {
     | 'reports'
     | 'pujas'
     | 'content'
-    | 'marketing'
+    | 'offers'
+    | 'priceGroups'
+    | 'discounts'
+    | 'pandits'
+    | 'options'
     | 'catalogue'
     | 'settings'
     | 'staff';
@@ -31,7 +35,7 @@ export type NavSection = {
 };
 
 export type NavGroup = {
-  key: 'overview' | 'sell' | 'stock' | 'money' | 'website' | 'setup';
+  key: 'overview' | 'sell' | 'stock' | 'money' | 'marketing' | 'website' | 'setup';
   sections: NavSection[];
 };
 
@@ -53,6 +57,7 @@ export const navigation: NavGroup[] = [
     key: 'stock',
     sections: [
       { key: 'items', href: routes.products(), icon: 'leaf', permission: 'catalogue:read' },
+      { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
       { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
       { key: 'stock', href: routes.stock(), icon: 'list', permission: 'inventory:read' },
       { key: 'archive', href: routes.archive(), icon: 'archive', permission: 'catalogue:read' },
@@ -69,16 +74,24 @@ export const navigation: NavGroup[] = [
     ],
   },
   {
+    key: 'marketing',
+    sections: [
+      { key: 'offers', href: routes.offers(), icon: 'percent', permission: 'promotions:manage' },
+      {
+        key: 'priceGroups',
+        href: routes.priceGroups(),
+        icon: 'list',
+        permission: 'promotions:manage',
+      },
+      { key: 'discounts', href: routes.discounts(), icon: 'tag', permission: 'promotions:manage' },
+      { key: 'pandits', href: routes.pandits(), icon: 'users', permission: 'promotions:manage' },
+    ],
+  },
+  {
     key: 'website',
     sections: [
       { key: 'pujas', href: routes.pujaGroups(), icon: 'temple', permission: 'catalogue:read' },
       { key: 'content', href: routes.faqs(), icon: 'book', permission: 'catalogue:read' },
-      {
-        key: 'marketing',
-        href: routes.pandits(),
-        icon: 'percent',
-        permission: 'promotions:manage',
-      },
     ],
   },
   {

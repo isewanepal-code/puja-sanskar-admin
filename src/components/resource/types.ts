@@ -55,6 +55,8 @@ export type Field = {
   // A heading the field starts, from resources.<key>.sections.<section>.
   section?: string;
   defaultValue?: string | boolean | string[];
+  // Shown only while this is true of what the form holds now (dates only for a dated offer).
+  showWhen?: (values: Record<string, unknown>) => boolean;
 };
 
 export type Cell<T> = {

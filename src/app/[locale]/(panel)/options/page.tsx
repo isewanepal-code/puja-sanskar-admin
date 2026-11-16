@@ -6,15 +6,13 @@ import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
   params,
-}: PageProps<'/[locale]/catalogue/options'>): Promise<Metadata> {
+}: PageProps<'/[locale]/options'>): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'catalogue.tabs' });
-  return { title: t('options') };
+  const t = await getTranslations({ locale, namespace: 'optionsPage' });
+  return { title: t('title') };
 }
 
-export default async function OptionTypesPage({
-  params,
-}: PageProps<'/[locale]/catalogue/options'>) {
+export default async function OptionTypesPage({ params }: PageProps<'/[locale]/options'>) {
   await resolveLocale(params);
   return <OptionTypesScreen />;
 }
