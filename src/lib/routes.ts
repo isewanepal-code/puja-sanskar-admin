@@ -30,6 +30,7 @@ export const routes = {
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
   optionTypes: () => '/options',
+  dataReset: () => '/data-reset',
 
   faqs: () => '/content',
   menus: () => '/content/menus',

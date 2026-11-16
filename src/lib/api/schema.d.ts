@@ -4026,6 +4026,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/data-reset': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * What clearing the shop data would remove
+     * @description Rows per part of the shop, and whether clearing is switched on for this server.
+     */
+    get: operations['AdminDataResetController_preview'];
+    put?: never;
+    /**
+     * Clear the shop data (development only)
+     * @description Removes every item, kit, category, offer, order, cart, customer, stock and purchase record. Staff accounts, settings, the website menu, banners, texts, pujas and festivals stay. Needs DATA_RESET_ENABLED and the word DELETE.
+     */
+    post: operations['AdminDataResetController_clear'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/list-requests': {
     parameters: {
       query?: never;
@@ -6068,6 +6092,7 @@ export interface components {
         | 'expenses:manage'
         | 'notes:use'
         | 'site-texts:edit'
+        | 'data:reset'
       )[];
     };
     CustomerSignupDto: {
@@ -11709,6 +11734,24 @@ export interface components {
       channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
       /** Format: date-time */
       endsAt: string | null;
+    };
+    ResetCountResponse: {
+      /** @example catalogue */
+      key: string;
+      /** @example 120 */
+      rows: number;
+    };
+    DataResetPreviewResponse: {
+      /** @description Switched on for this server (DATA_RESET_ENABLED) */
+      enabled: boolean;
+      counts: components['schemas']['ResetCountResponse'][];
+    };
+    ConfirmDataResetDto: {
+      /**
+       * @description Type DELETE to confirm
+       * @example DELETE
+       */
+      confirm: string;
     };
     ListPujaResponse: {
       /** @example lakshmi-puja */
@@ -33503,6 +33546,105 @@ export interface operations {
             message: string;
             data: components['schemas']['OfferResponse'][];
           };
+        };
+      };
+    };
+  };
+  AdminDataResetController_preview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['DataResetPreviewResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminDataResetController_clear: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConfirmDataResetDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['DataResetPreviewResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
     };

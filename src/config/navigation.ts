@@ -25,6 +25,7 @@ export type NavSection = {
     | 'discounts'
     | 'pandits'
     | 'options'
+    | 'dataReset'
     | 'catalogue'
     | 'settings'
     | 'staff';
@@ -110,6 +111,7 @@ export const navigation: NavGroup[] = [
         permission: 'settings:manage',
       },
       { key: 'staff', href: routes.staff(), icon: 'users', permission: 'users:read' },
+      { key: 'dataReset', href: routes.dataReset(), icon: 'trash', permission: 'data:reset' },
     ],
   },
 ];

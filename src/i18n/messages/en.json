@@ -113,7 +113,8 @@
       "offers": "Offers",
       "priceGroups": "Item groups",
       "discounts": "Coupons",
-      "pandits": "Pandits"
+      "pandits": "Pandits",
+      "dataReset": "Clear data"
     },
     "changePassword": "Change password",
     "groups": {
@@ -157,7 +158,8 @@
       "content": "Website ka lekh, banner, menu ra FAQ.",
       "catalogue": "Samagri ko varga, samagri, naap ko unit ra srot.",
       "settings": "VAT, delivery, shakha ra pasal ka niyam.",
-      "staff": "Staff ra tinko role."
+      "staff": "Staff ra tinko role.",
+      "dataReset": "Dev ko lagi: sabai item, kit, order, customer ek patak ma hataune (super admin matra)."
     }
   },
   "dashboard": {
@@ -3552,5 +3554,50 @@
       "url": "https://…",
       "tags": "comma le chhuttayera"
     }
+  },
+  "dataReset": {
+    "title": "Clear data",
+    "intro": "Development ma dummy data hataera naya sera suru garna. Staff, settings ra website ko menu/banner/text jas ko tas rahancha.",
+    "removes": "Yo button thichda ke-ke hatchha",
+    "removesHelp": "Tala ka sabai ek patak ma hatchha, ek tira matra hataune milna. Hataepachhi phirta pauna sakinna.",
+    "groups": {
+      "catalogue": "Item, kit ra catalogue",
+      "pricing": "Offer, group ra coupon",
+      "stock": "Stock, kharid ra kharcha",
+      "orders": "Order, bill ra paisa ko chal-achal",
+      "carts": "Cart",
+      "customers": "Customer ko thegana, photo-list ra sandesh",
+      "activity": "Kam ko itihas (activity log)",
+      "customerAccounts": "Customer ka account",
+      "searchIndex": "Search ma dekhine item/kit"
+    },
+    "groupNotes": {
+      "catalogue": "Category, samagri, item, pack, rang/size, photo, kit",
+      "pricing": "Offers, item groups, discount rules",
+      "stock": "Stock, supplier, kharid bill, kharcha",
+      "orders": "Order, bill, payment, cash/bank ko transfer",
+      "carts": "Sabai cart (guest ra signed-in)",
+      "customers": "Thegana, saved list, wishlist, sandesh",
+      "activity": "Admin le gareko kam ko log",
+      "customerAccounts": "Staff haru chhunna",
+      "searchIndex": "Puja, festival ra lekh ko search rahancha"
+    },
+    "stays": "Yo chai rahancha",
+    "keeps": {
+      "staff": "Staff account ra tinko role",
+      "settings": "Pasal ko settings: VAT, delivery, shakha, bill ko bibaran",
+      "website": "Website ko menu, banner, lekh, FAQ ra site-text",
+      "pujas": "Puja, festival, mantra ra tinka sanga jodiyeko lekh",
+      "media": "Upload gareka photo (media library)"
+    },
+    "off": "Yo server ma yo suvidha band chha. Chalauna server ko setting ma DATA_RESET_ENABLED=true rakhera feri chalaunus.",
+    "button": "Sabai dummy data hataunus",
+    "nothing": "Hataune kehi chhaina.",
+    "confirmTitle": "Sabai data hatauna pakka?",
+    "confirmBody": "Jamma {rows} wota record hatchha: item, kit, offer, order, cart ra customer sabai.",
+    "cannotUndo": "Yo phirta pauna sakinna.",
+    "typeToConfirm": "Pakka bhaye tala DELETE lekhnus",
+    "confirmButton": "Haan, sabai hataunus",
+    "done": "{rows} wota record hatayo"
   }
 }
