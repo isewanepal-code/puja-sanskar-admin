@@ -29,6 +29,7 @@ export const routes = {
   stock: (show?: 'low' | 'out') => (show ? `/stock?show=${show}` : '/stock'),
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
+  optionTypes: () => '/catalogue/options',
 
   faqs: () => '/content',
   menus: () => '/content/menus',

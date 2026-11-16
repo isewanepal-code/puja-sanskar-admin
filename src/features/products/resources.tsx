@@ -4,6 +4,7 @@ import { type Schema } from '@/lib/api';
 import { choices, pagedSource } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 import { categoryChoices } from '@/features/catalogue';
+import { optionValueChoices } from './options';
 
 export type Product = Schema<'AdminProductResponse'>;
 type Variant = Schema<'AdminVariantResponse'>;
@@ -186,7 +187,12 @@ export function variantsResource(product: Product): Resource<Variant> {
     matches: (row, q) => `${row.sku} ${row.label}`.toLowerCase().includes(q),
     initialSort: { key: 'price', direction: 'asc' },
     bulk: ['sku', 'label', 'packQuantity', 'packUnitId', 'price'],
-    formRow: (row) => ({ ...row, packQuantity: row.pack?.quantity, packUnitId: row.pack?.unit.id }),
+    formRow: (row) => ({
+      ...row,
+      packQuantity: row.pack?.quantity,
+      packUnitId: row.pack?.unit.id,
+      optionValueIds: row.options.map((option) => option.valueId),
+    }),
     columns: [
       {
         key: 'sku',
@@ -206,6 +212,28 @@ export function variantsResource(product: Product): Resource<Variant> {
           </>
         ),
         sortValue: (row) => row.label,
+      },
+      {
+        key: 'options',
+        cell: (row) =>
+          row.options.length ? (
+            <span className="inline-flex flex-wrap items-center gap-1">
+              {row.options.map((option) => (
+                <Badge key={option.valueId}>
+                  {option.colorHex ? (
+                    <span
+                      className="mr-1 inline-block size-2.5 rounded-full border border-border"
+                      style={{ background: option.colorHex }}
+                    />
+                  ) : null}
+                  {option.valueEn}
+                </Badge>
+              ))}
+            </span>
+          ) : (
+            '—'
+          ),
+        sortValue: (row) => row.options.map((option) => option.valueEn).join(' '),
       },
       {
         key: 'packQuantity',
@@ -242,7 +270,8 @@ export function variantsResource(product: Product): Resource<Variant> {
     ],
     fields: [
       { name: 'sku', kind: 'code', required: true, pattern: SKU },
-      { name: 'label', kind: 'text', required: true, max: 80 },
+      { name: 'optionValueIds', kind: 'multiselect', optionsFrom: optionValueChoices, wide: true },
+      { name: 'label', kind: 'text', max: 80 },
       { name: 'packQuantity', kind: 'number', pattern: QUANTITY },
       { name: 'packUnitId', kind: 'select', optionsFrom: choices.units },
       {

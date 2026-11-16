@@ -1901,6 +1901,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/products/{productId}/variants/generate': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Make a pack for every combination of the chosen values
+     * @description For example colours × sizes. Combinations the product already has are left alone; each new pack gets the same price and a SKU made from its values, to be changed after.
+     */
+    post: operations['AdminProductVariantController_generate'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/products/{productId}/variants/{variantId}': {
     parameters: {
       query?: never;
@@ -2021,6 +2041,108 @@ export interface paths {
     post?: never;
     /** Back to the catalogue price and listing at this branch */
     delete: operations['AdminBranchPackController_reset'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/option-types': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** The kinds of difference (colour, size, weight …) with their values */
+    get: operations['AdminOptionTypeController_list'];
+    put?: never;
+    /**
+     * Add a kind of difference
+     * @description CHOICE (words), COLOR (a swatch) or NUMBER (an amount in a unit such as g or cm).
+     */
+    post: operations['AdminOptionTypeController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/option-types/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One kind of difference with its values */
+    get: operations['AdminOptionTypeController_get'];
+    put?: never;
+    post?: never;
+    /**
+     * Delete a kind of difference
+     * @description Only while no product uses it.
+     */
+    delete: operations['AdminOptionTypeController_delete'];
+    options?: never;
+    head?: never;
+    /** Rename, reorder or switch off a kind of difference */
+    patch: operations['AdminOptionTypeController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/option-types/{id}/values': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Add a value (Red, 500 g, 120 cm …) */
+    post: operations['AdminOptionTypeController_addValue'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/option-values/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * Delete a value
+     * @description Only while no pack has it.
+     */
+    delete: operations['AdminOptionValueController_delete'];
+    options?: never;
+    head?: never;
+    /** Change a value */
+    patch: operations['AdminOptionValueController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/products/{productId}/options': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** The kinds of difference a product has, with the values its packs come in */
+    get: operations['AdminProductOptionController_get'];
+    /**
+     * Choose the kinds of difference of a product
+     * @description Up to three, in the order shoppers choose them. A pack loses its value for a kind taken out.
+     */
+    put: operations['AdminProductOptionController_set'];
+    post?: never;
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -7867,6 +7989,11 @@ export interface components {
       url: string;
       /** @example Kapur, 50 g pack */
       altText: string | null;
+      /**
+       * Format: uuid
+       * @description The option value (a colour …) this photo shows; none: every pack
+       */
+      optionValueId: string | null;
     };
     RatingResponse: {
       /**
@@ -7888,10 +8015,49 @@ export interface components {
       noteNe: string | null;
       sortOrder: number;
     };
+    ProductOptionValueResponse: {
+      /** Format: uuid */
+      valueId: string;
+      valueEn: string;
+      valueNe: string;
+      colorHex: string | null;
+      numberValue: string | null;
+    };
+    ProductOptionResponse: {
+      /** Format: uuid */
+      optionTypeId: string;
+      /** @example COLOR */
+      code: string;
+      nameEn: string;
+      nameNe: string;
+      /** @enum {string} */
+      kind: 'CHOICE' | 'COLOR' | 'NUMBER';
+      unitSymbol: string | null;
+      values: components['schemas']['ProductOptionValueResponse'][];
+    };
     PackResponse: {
       /** @example 50 */
       quantity: number;
       unit: components['schemas']['UnitSummary'];
+    };
+    VariantOptionResponse: {
+      /** Format: uuid */
+      optionTypeId: string;
+      /** @example COLOR */
+      typeCode: string;
+      /** @example Colour */
+      typeNameEn: string;
+      /** @example रङ */
+      typeNameNe: string;
+      /** @enum {string} */
+      kind: 'CHOICE' | 'COLOR' | 'NUMBER';
+      unitSymbol: string | null;
+      /** Format: uuid */
+      valueId: string;
+      valueEn: string;
+      valueNe: string;
+      colorHex: string | null;
+      numberValue: string | null;
     };
     VariantResponse: {
       /** Format: uuid */
@@ -7924,6 +8090,8 @@ export interface components {
       offerTitleEn: string | null;
       /** @description The offer badge, Nepali */
       offerTitleNe: string | null;
+      /** @description What makes this pack differ: colour, size, weight … */
+      options: components['schemas']['VariantOptionResponse'][];
       /** @example NPR */
       currency: string;
       /** @description Picked when the product is added by material */
@@ -7965,6 +8133,8 @@ export interface components {
        *     ]
        */
       tags: string[];
+      /** @description The kinds of difference the packs have (colour, size …) with the values they come in */
+      options: components['schemas']['ProductOptionResponse'][];
       variants: components['schemas']['VariantResponse'][];
     };
     CategoryFacetResponse: {
@@ -8059,6 +8229,8 @@ export interface components {
        *     ]
        */
       tags: string[];
+      /** @description The kinds of difference the packs have (colour, size …) with the values they come in */
+      options: components['schemas']['ProductOptionResponse'][];
       variants: components['schemas']['VariantResponse'][];
       /** @description Goes well with: those on sale, in the order staff set */
       pairs: components['schemas']['ProductCardResponse'][];
@@ -8107,6 +8279,8 @@ export interface components {
       offerTitleEn: string | null;
       /** @description The offer badge, Nepali */
       offerTitleNe: string | null;
+      /** @description What makes this pack differ: colour, size, weight … */
+      options: components['schemas']['VariantOptionResponse'][];
       /** @example NPR */
       currency: string;
       /** @description Picked when the product is added by material */
@@ -8173,17 +8347,23 @@ export interface components {
       taxClassId: string | null;
       /** @description The class bills will use, and where it comes from */
       effectiveTax: components['schemas']['EffectiveTaxResponse'];
+      options: components['schemas']['ProductOptionResponse'][];
       variants: components['schemas']['AdminVariantResponse'][];
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
     };
-    ImageDto: {
+    ProductImageDto: {
       /** @example https://cdn.pujasanskar.com/products/kapur-50g.webp */
       url: string;
       /** @example Kapur, 50 g pack */
       altText?: string | null;
+      /**
+       * Format: uuid
+       * @description The option value this photo shows; none: for every pack
+       */
+      optionValueId?: string | null;
     };
     CreateProductDto: {
       /** @example 33074100 */
@@ -8212,7 +8392,7 @@ export interface components {
        * @description A sellable, active material; cannot be changed later
        */
       materialId: string;
-      images?: components['schemas']['ImageDto'][];
+      images?: components['schemas']['ProductImageDto'][];
       /** @default true */
       isActive: boolean;
       /**
@@ -8245,7 +8425,7 @@ export interface components {
       nameRomanized?: string | null;
       /** @example Pure camphor tablets for aarti */
       description?: string | null;
-      images?: components['schemas']['ImageDto'][];
+      images?: components['schemas']['ProductImageDto'][];
       /** @default true */
       isActive: boolean;
       /**
@@ -8264,7 +8444,9 @@ export interface components {
       /** @example KAP-050 */
       sku: string;
       /** @example 50 g */
-      label: string;
+      label?: string | null;
+      /** @description What makes this pack differ: one value for each kind of difference. The label is made from them when left out. */
+      optionValueIds?: string[];
       /**
        * @description Pack size; needs packUnitId
        * @example 50
@@ -8286,9 +8468,37 @@ export interface components {
       /** @default true */
       isActive: boolean;
     };
+    GeneratedVariantsResponse: {
+      created: components['schemas']['AdminVariantResponse'][];
+      /** @description Combinations the product already had */
+      skipped: number;
+    };
+    GenerateOptionDto: {
+      /** Format: uuid */
+      optionTypeId: string;
+      valueIds: string[];
+    };
+    GenerateVariantsDto: {
+      options: components['schemas']['GenerateOptionDto'][];
+      /** @example 120.00 */
+      price: string;
+      /** @example 150.00 */
+      compareAtPrice?: string | null;
+      /** @description false: the prices are before tax. Defaults to the shop setting. */
+      pricesIncludeTax?: boolean;
+      /**
+       * @description Starts every SKU; the product code when left out
+       * @example DHOTI
+       */
+      skuPrefix?: string;
+      /** @default true */
+      isActive: boolean;
+    };
     UpdateVariantDto: {
       /** @example 50 g */
-      label?: string;
+      label?: string | null;
+      /** @description What makes this pack differ: one value for each kind of difference. The label is made from them when left out. */
+      optionValueIds?: string[];
       /**
        * @description Pack size; needs packUnitId
        * @example 50
@@ -8386,6 +8596,8 @@ export interface components {
       offerTitleEn: string | null;
       /** @description The offer badge, Nepali */
       offerTitleNe: string | null;
+      /** @description What makes this pack differ: colour, size, weight … */
+      options: components['schemas']['VariantOptionResponse'][];
       /** @example NPR */
       currency: string;
       /** @description Picked when the product is added by material */
@@ -8405,6 +8617,109 @@ export interface components {
       price?: string | null;
       /** @example 150.00 */
       compareAtPrice?: string | null;
+    };
+    OptionValueResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example White */
+      valueEn: string;
+      /** @example सेतो */
+      valueNe: string;
+      /** @example #ffffff */
+      colorHex: string | null;
+      /** @example 500.000 */
+      numberValue: string | null;
+      sortOrder: number;
+    };
+    OptionTypeResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example COLOR */
+      code: string;
+      /** @example Colour */
+      nameEn: string;
+      /** @example रङ */
+      nameNe: string;
+      /** @enum {string} */
+      kind: 'CHOICE' | 'COLOR' | 'NUMBER';
+      /** Format: uuid */
+      unitId: string | null;
+      /** @example g */
+      unitSymbol: string | null;
+      sortOrder: number;
+      isActive: boolean;
+      values: components['schemas']['OptionValueResponse'][];
+    };
+    CreateOptionTypeDto: {
+      /** @example COLOR */
+      code: string;
+      /** @example Colour */
+      nameEn: string;
+      /** @example रङ */
+      nameNe: string;
+      /**
+       * @default CHOICE
+       * @enum {string}
+       */
+      kind: 'CHOICE' | 'COLOR' | 'NUMBER';
+      /**
+       * Format: uuid
+       * @description For a NUMBER option: the unit its values are in
+       */
+      unitId?: string | null;
+      /** @default 0 */
+      sortOrder: number;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdateOptionTypeDto: {
+      /** @example Colour */
+      nameEn?: string;
+      /** @example रङ */
+      nameNe?: string;
+      /**
+       * Format: uuid
+       * @description For a NUMBER option: the unit its values are in
+       */
+      unitId?: string | null;
+      /** @default 0 */
+      sortOrder: number;
+      /** @default true */
+      isActive: boolean;
+    };
+    CreateOptionValueDto: {
+      /** @example White */
+      valueEn: string;
+      /** @example सेतो */
+      valueNe: string;
+      /**
+       * @description A colour option: its swatch
+       * @example #ffffff
+       */
+      colorHex?: string | null;
+      /** @example 500 */
+      numberValue?: string | null;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    UpdateOptionValueDto: {
+      /** @example White */
+      valueEn?: string;
+      /** @example सेतो */
+      valueNe?: string;
+      /**
+       * @description A colour option: its swatch
+       * @example #ffffff
+       */
+      colorHex?: string | null;
+      /** @example 500 */
+      numberValue?: string | null;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    SetProductOptionsDto: {
+      /** @description The kinds of difference this product has, in the order shoppers choose them */
+      optionTypeIds: string[];
     };
     PopularSearchesResponse: {
       /**
@@ -8476,7 +8791,7 @@ export interface components {
     };
     OfferTargetResponse: {
       /** @enum {string} */
-      kind: 'ALL' | 'CATEGORY' | 'PRODUCT' | 'KIT' | 'GROUP';
+      kind: 'ALL' | 'CATEGORY' | 'PRODUCT' | 'VARIANT' | 'KIT' | 'GROUP';
       /** Format: uuid */
       refId: string | null;
       excluded: boolean;
@@ -8558,7 +8873,7 @@ export interface components {
     };
     OfferTargetDto: {
       /** @enum {string} */
-      kind: 'ALL' | 'CATEGORY' | 'PRODUCT' | 'KIT' | 'GROUP';
+      kind: 'ALL' | 'CATEGORY' | 'PRODUCT' | 'VARIANT' | 'KIT' | 'GROUP';
       /**
        * Format: uuid
        * @description The category, product, kit or group; none for ALL
@@ -9548,6 +9863,12 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    ImageDto: {
+      /** @example https://cdn.pujasanskar.com/products/kapur-50g.webp */
+      url: string;
+      /** @example Kapur, 50 g pack */
+      altText?: string | null;
     };
     CreateKitDto: {
       /** @example KIT001 */
@@ -22748,6 +23069,82 @@ export interface operations {
       };
     };
   };
+  AdminProductVariantController_generate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['GenerateVariantsDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['GeneratedVariantsResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminProductVariantController_remove: {
     parameters: {
       query?: never;
@@ -23509,6 +23906,714 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['BranchPackResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOptionTypeController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OptionTypeResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOptionTypeController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateOptionTypeDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OptionTypeResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOptionTypeController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OptionTypeResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOptionTypeController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOptionTypeController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateOptionTypeDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OptionTypeResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOptionTypeController_addValue: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateOptionValueDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OptionValueResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOptionValueController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOptionValueController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateOptionValueDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OptionValueResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminProductOptionController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ProductOptionResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminProductOptionController_set: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetProductOptionsDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ProductOptionResponse'][];
           };
         };
       };

@@ -913,12 +913,15 @@
         "compareAtPrice": "Was",
         "pricesIncludeTax": "Price includes VAT",
         "inStock": "In stock",
-        "isActive": "On sale"
+        "isActive": "On sale",
+        "optionValueIds": "Colour, size, weight …",
+        "options": "Options"
       },
       "hints": {
         "sku": "Capital letters, digits or -, such as KAP-050.",
         "label": "As the shopper reads it: 50 g, 1 पोका.",
-        "compareAtPrice": "Shown struck through when higher than the price."
+        "compareAtPrice": "Shown struck through when higher than the price.",
+        "optionValueIds": "One value for each kind of difference. The label is made from them when left empty."
       }
     },
     "grades": {
@@ -2136,7 +2139,8 @@
         "kitIds": "Kits",
         "leaveOutProductIds": "Leave out these items",
         "leaveOutKitIds": "Leave out these kits",
-        "leaveOutGroupIds": "Leave out these groups"
+        "leaveOutGroupIds": "Leave out these groups",
+        "variantIds": "Packs (a colour, size or weight)"
       },
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later.",
@@ -2148,7 +2152,8 @@
         "withKitKind": "Used instead when a kit is in the same cart; never above the alone price.",
         "kitTiers": "One per line: 1: 5%  ·  2: 15%  ·  3: Rs 300. From that many kits, that much off each kit.",
         "allowCoupons": "Off: a coupon is not taken on the items this offer prices.",
-        "everything": "Or choose what it covers below."
+        "everything": "Or choose what it covers below.",
+        "variantIds": "An offer on only these packs, such as one colour and size."
       },
       "sections": {
         "when": "When it is on",
@@ -2217,6 +2222,55 @@
         "categoryIds": "Items in the subcategories come too."
       },
       "sections": {}
+    },
+    "optionTypes": {
+      "title": "Options",
+      "add": "Add a kind of difference",
+      "empty": "No options yet.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "nameEn": "Name in English",
+        "nameNe": "Name in Nepali",
+        "kind": "Kind",
+        "unitId": "Unit",
+        "sortOrder": "Order",
+        "isActive": "In use",
+        "values": "Values"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. It cannot change later.",
+        "kind": "Words (Cotton), a colour with a swatch, or a number with a unit (500 g, 120 cm). It cannot change later.",
+        "unitId": "Only for a number: g, kg, cm …"
+      },
+      "sections": {},
+      "kinds": {
+        "CHOICE": "Words",
+        "COLOR": "Colour",
+        "NUMBER": "Number with a unit"
+      },
+      "rules": {
+        "unit": "A number option needs its unit",
+        "noUnit": "Only a number option has a unit"
+      }
+    },
+    "optionValues": {
+      "title": "Value",
+      "add": "Add",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "valueEn": "In English",
+        "valueNe": "In Nepali",
+        "colorHex": "Colour (#rrggbb)",
+        "numberValue": "Amount",
+        "sortOrder": "Order"
+      },
+      "hints": {
+        "colorHex": "For example #ffffff for white.",
+        "numberValue": "In the unit of this option."
+      },
+      "sections": {}
     }
   },
   "catalogue": {
@@ -2227,7 +2281,8 @@
       "units": "Units",
       "sources": "Sources",
       "products": "Products",
-      "stock": "Stock"
+      "stock": "Stock",
+      "options": "Options"
     }
   },
   "contentSection": {
@@ -2366,7 +2421,8 @@
     "sendKitOf": "Send stock for {name} to a branch",
     "sendKitNote": "Moves every item the kit holds, times the number of kits, from the branch chosen at the top to the one below, at its average cost. Optional items stay behind.",
     "archive": "Archive (keep it, take it out of use)",
-    "productOffers": "Offers for this item"
+    "productOffers": "Offers for this item",
+    "productOptions": "Colours, sizes and packs"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -2959,7 +3015,8 @@
       "activity": "Activity log",
       "dataTools": "Data tools",
       "offers": "Offers",
-      "priceGroups": "Price groups"
+      "priceGroups": "Price groups",
+      "optionTypes": "Options"
     },
     "pageGroups": {
       "dashboard": "Overview",
@@ -3050,5 +3107,33 @@
     "through": "through a group or category",
     "off": "switched off",
     "live": "on now"
+  },
+  "optionValues": {
+    "open": "Values",
+    "title": "Values of {name}",
+    "note": "What products can choose from: each colour, size or weight.",
+    "add": "Add a value",
+    "empty": "No values yet.",
+    "edit": "Change",
+    "remove": "Remove",
+    "addTitle": "Add a value",
+    "editTitle": "Change the value",
+    "saved": "Saved"
+  },
+  "productOptionsEditor": {
+    "title": "Colours, sizes and packs of {name}",
+    "note": "Tick what this item comes in. One pack is made for every combination, with the same price to change after.",
+    "kinds": "What it comes in",
+    "noValues": "No values yet. Add them under Catalogue → Options.",
+    "tooMany": "At most {n} kinds of difference.",
+    "price": "Price of each new pack",
+    "priceNote": "Makes {count, plural, one {# pack} other {# packs}}. Packs that already exist are left as they are.",
+    "make": "Make {count, plural, one {# pack} other {# packs}}",
+    "made": "{created} made, {skipped} already there",
+    "photos": "Photos by {kind}",
+    "photosNote": "Shoppers see these photos when they choose that value.",
+    "addPhoto": "Add a photo",
+    "removePhoto": "Remove photo",
+    "close": "Close"
   }
 }

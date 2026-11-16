@@ -15,6 +15,7 @@ import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 import { ProductOffers } from '@/features/marketing';
+import { ProductOptionsModal } from './product-options-modal';
 import { request } from '@/lib/api';
 
 import {
@@ -56,6 +57,7 @@ export function ProductsScreen() {
   const [open, setOpen] = useState<Open>(null);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
   const [offersOf, setOffersOf] = useState<Product | null>(null);
+  const [optionsOf, setOptionsOf] = useState<Product | null>(null);
   const id = open && 'id' in open ? open.id : undefined;
   const product = useProduct(id);
   const pairings = useQuery({
@@ -128,6 +130,7 @@ export function ProductsScreen() {
               label={t('pairings')}
               onClick={() => setOpen({ what: 'pairings', id: row.id })}
             />
+            <IconButton icon="grid" label={t('productOptions')} onClick={() => setOptionsOf(row)} />
             <IconButton
               icon="percent"
               label={t('productOffers')}
@@ -158,6 +161,13 @@ export function ProductsScreen() {
       </Modal>
 
       <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
+      {optionsOf ? (
+        <ProductOptionsModal
+          key={optionsOf.id}
+          product={optionsOf}
+          onClose={() => setOptionsOf(null)}
+        />
+      ) : null}
       <ProductOffers
         product={
           offersOf

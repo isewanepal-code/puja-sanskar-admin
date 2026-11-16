@@ -71,6 +71,12 @@ export const searchPages: SearchPage[] = [
   page('categories', 'categories', 'group classify', 'catalogue:read'),
   page('materials', 'materials', 'samagri', 'catalogue:read'),
   page('units', 'units', 'kg gram measure', 'catalogue:read'),
+  page(
+    'optionTypes',
+    'optionTypes',
+    'colour color size length weight variant attribute',
+    'catalogue:read',
+  ),
   page('sources', 'sources', 'origin', 'catalogue:read'),
   page('taxClasses', 'taxClasses', 'vat rate', 'settings:manage'),
   page('deliveryZones', 'deliveryZones', 'area charge', 'settings:manage'),

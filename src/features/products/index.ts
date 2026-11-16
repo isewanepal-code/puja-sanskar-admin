@@ -7,3 +7,4 @@ export {
   variantsResource,
   type Product,
 } from './resources';
+export { OptionTypesScreen } from './components/option-types-screen';
