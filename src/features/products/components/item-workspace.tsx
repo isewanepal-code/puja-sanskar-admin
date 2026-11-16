@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { gradesResource, pairingsResource, productsResource, variantsResource } from '../resources';
 import { OptionsPanel } from './options-panel';
 import { PhotosPanel } from './photos-panel';
+import { PriceGrid } from './price-grid';
 import { useProduct, type Product } from './use-product';
 
 const TABS = ['details', 'packs', 'options', 'photos', 'offers', 'quality', 'pairs'] as const;
@@ -101,7 +102,17 @@ export function ItemWorkspace({
           onDone={() => undefined}
         />
       ) : null}
-      {tab === 'packs' ? <ResourceScreen resource={variantsResource(product)} /> : null}
+      {tab === 'packs' ? (
+        <div className="grid gap-6">
+          <PriceGrid key={product.id} product={product} />
+          <details className="rounded-lg border border-border p-3">
+            <summary className="cursor-pointer text-sm font-medium">{t('morePacks')}</summary>
+            <div className="mt-3">
+              <ResourceScreen resource={variantsResource(product)} />
+            </div>
+          </details>
+        </div>
+      ) : null}
       {tab === 'options' ? <OptionsPanel key={product.id} product={product} /> : null}
       {tab === 'photos' ? <PhotosPanel product={product} /> : null}
       {tab === 'offers' ? (

@@ -3625,13 +3625,14 @@
     },
     "help": {
       "details": "Item ko naam, tax, tags, barnan ra website ma dekhine kura. Badalepachhi tala Save thichnus. Photo ra price yaha chhaina: tinko alag tab chha.",
-      "packs": "Item ka pack haru (50 g, 100 g, seto 120x129). Harek ko aafnai price ra stock. Price badalna row thichnus.",
+      "packs": "Yaha harek pack (jastai Seto · 120 cm · Premium) ko aafnai price lekhnus ra tala Save thichnus. Euta rang/size/quality ko sabai pack ma ek price halna mathi ko \"Same price for\" prayog garnus. Stock chai Stock screen ma.",
       "options": "Item rang, size, tauls jastai kura ma farak chha bhane tick garnus ra \"Make packs\" thichnus: sabai combination ek patak ma banchha. Rang/size ko value Colours and sizes ma banaunus.",
       "photos": "Item ka sabai photo ek thau ma. Pahilo photo mukhya hunchha. Photo kunai rang/size ko matra ho bhane \"Shown for\" ma tyo chunnus: customer le tyo rang chhanda tyahi photo dekhincha.",
       "offers": "Yo item ma kun-kun offer lagne bhanera tick garnus. Offer banauna Marketing → Offers ma jaanus. Tala pack anusar aajako price dekhincha.",
       "quality": "Item ko quality (sadharan, bishesh). Pack le tyo chhanchha. Nabhaye chhodidinus.",
       "pairs": "Yo item sanga kina jane aru item: product page ra cart ma \"yo pani kinnus\" bhanera dekhincha."
-    }
+    },
+    "morePacks": "More: add one pack by hand, change SKU or pack size, switch a pack off or delete it"
   },
   "itemPhotos": {
     "note": "Photo upload garnus. Pahilo photo mukhya (card ra page ma). Kunai photo ek rang/size ko matra bhaye \"Shown for\" ma chunnus.",
@@ -3644,5 +3645,25 @@
     "main": "Main photo",
     "makeMain": "Make main",
     "remove": "Remove"
+  },
+  "priceGrid": {
+    "note": "Harek pack ko price alag-alag halna milchha. Jastai Seto 500, Kalo 450, Premium quality 500, Regular 400.",
+    "forAll": "Same price for all packs with",
+    "choose": "Choose colour, size or quality",
+    "price": "Price",
+    "apply": "Fill in",
+    "pack": "Pack",
+    "sku": "SKU",
+    "priceCol": "Price (Rs)",
+    "was": "Old price (optional)",
+    "stock": "Stock",
+    "inStock": "In stock",
+    "noStock": "No stock",
+    "off": "Switched off",
+    "save": "{count, plural, =0 {Save} one {Save # price} other {Save # prices}}",
+    "undo": "Undo changes",
+    "saved": "{count} price saved",
+    "badPrice": "Price must be an amount above zero, such as 500 or 450.50",
+    "badCompare": "The old price must be more than the price"
   }
 }

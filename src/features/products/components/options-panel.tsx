@@ -14,7 +14,7 @@ import type { Product } from './use-product';
 
 type Picked = Record<string, string[]>;
 
-const MAX_OPTIONS = 3;
+const MAX_OPTIONS = 4;
 
 function Dot({ type, hex }: { type: OptionType; hex: string | null }) {
   return type.kind === 'COLOR' && hex ? (
