@@ -19,6 +19,7 @@ type Group = Schema<'PriceGroupResponse'>;
 const categories: ChoiceSource = pagedSource<Category>('offer-categories', {
   path: '/admin/categories',
   toChoices: (row) => [{ value: row.id, label: row.nameNe, detail: row.code }],
+  find: (id) => `/admin/categories/${id}`,
 });
 export const priceGroups: ChoiceSource = pagedSource<Group>('price-groups', {
   path: '/admin/price-groups',

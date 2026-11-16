@@ -8,6 +8,8 @@ export type Option = { value: string; label: string };
 export type FieldKind =
   | 'text'
   | 'password'
+  // A colour, chosen from a picker; sent as #rrggbb.
+  | 'color'
   | 'textarea'
   // Text the website shows as HTML: <p>, <br>, <strong> and lists.
   | 'html'

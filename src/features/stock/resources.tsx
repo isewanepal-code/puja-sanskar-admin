@@ -55,7 +55,7 @@ export function stockResource(show: StockShow, productId?: string): Resource<Lev
       {
         key: 'product',
         cell: (row) => (
-          <div className="min-w-0">
+          <div className="max-w-[11rem] min-w-0">
             <div className="truncate font-medium">{row.product.nameNe}</div>
             <div className="truncate text-xs text-muted-foreground">
               {row.product.nameEn} · {row.product.code}
@@ -66,7 +66,11 @@ export function stockResource(show: StockShow, productId?: string): Resource<Lev
       },
       {
         key: 'sku',
-        cell: (row) => <span className="font-semibold">{row.variant.sku}</span>,
+        cell: (row) => (
+          <span className="block max-w-[8.5rem] truncate font-semibold" title={row.variant.sku}>
+            {row.variant.sku}
+          </span>
+        ),
         sortValue: (row) => row.variant.sku,
       },
       { key: 'label', cell: (row) => row.variant.label, sortValue: (row) => row.variant.label },
@@ -92,11 +96,6 @@ export function stockResource(show: StockShow, productId?: string): Resource<Lev
         cell: (row) => row.reorderLevel ?? '—',
         sortValue: (row) => row.reorderLevel,
         align: 'right',
-      },
-      {
-        key: 'updatedAt',
-        cell: (row) => (row.updatedAt ? formatDateTime(row.updatedAt, 'en') : '—'),
-        sortValue: (row) => row.updatedAt,
       },
     ],
     fields: [{ name: 'reorderLevel', kind: 'number', required: true }],

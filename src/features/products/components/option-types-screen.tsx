@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 import { ActionModal, ConfirmDelete, ResourceScreen, useResourceText } from '@/components/resource';
 import { useToast } from '@/components/overlays';
 import { Button, IconButton } from '@/components/ui/button';
+import { InfoTip } from '@/components/ui/info-tip';
 import { Modal } from '@/components/ui/modal';
 import { isApiError, request } from '@/lib/api';
 
@@ -121,10 +122,33 @@ export function OptionTypesScreen() {
   const tv = useTranslations('optionValues');
   const resource = useMemo(() => optionTypesResource(t), [t]);
   const [open, setOpen] = useState<string | null>(null);
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  const defaults = useMutation({
+    mutationFn: () => request('POST', '/admin/option-types/defaults'),
+    onSuccess: async () => {
+      toast.success(tv('defaultsDone'));
+      await queryClient.invalidateQueries({ queryKey: ['optionTypes'] });
+    },
+    onError: (error) => toast.error(isApiError(error) ? error.message : 'Failed'),
+  });
   return (
     <>
       <ResourceScreen
         resource={resource}
+        toolbar={
+          <span className="inline-flex items-center gap-1.5">
+            <Button
+              variant="secondary"
+              icon="palette"
+              disabled={defaults.isPending}
+              onClick={() => defaults.mutate()}
+            >
+              {tv('defaults')}
+            </Button>
+            <InfoTip text={tv('defaultsNote')} align="right" />
+          </span>
+        }
         rowActions={(row) => (
           <IconButton icon="list" label={tv('open')} onClick={() => setOpen(row.id)} />
         )}

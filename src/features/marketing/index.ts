@@ -6,4 +6,4 @@ export {
 } from './components/screens';
 export { discountsResource } from './discounts';
 export { panditsResource } from './resources';
-export { ProductOffers } from './components/product-offers';
+export { ProductOffersPanel } from './components/product-offers';

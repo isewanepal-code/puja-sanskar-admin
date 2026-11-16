@@ -284,6 +284,20 @@ export function SearchSelect({
                 />
               </div>
             ) : null}
+            {multiple ? (
+              <div className="flex items-center justify-between border-b border-border px-3 py-1.5 text-xs text-muted-foreground">
+                <span>{t('picked', { count: values.length })}</span>
+                {values.length > 0 ? (
+                  <button
+                    type="button"
+                    className="text-primary hover:underline"
+                    onClick={() => onChange([], [])}
+                  >
+                    {t('clear')}
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
             <ul
               ref={listRef}
               id={listId}
@@ -332,6 +346,19 @@ export function SearchSelect({
                         selected && 'font-medium text-primary',
                       )}
                     >
+                      {multiple ? (
+                        <span
+                          aria-hidden="true"
+                          className={cn(
+                            'grid size-4 shrink-0 place-items-center rounded-sm border',
+                            selected
+                              ? 'border-primary bg-primary text-primary-foreground'
+                              : 'border-border',
+                          )}
+                        >
+                          {selected ? <Icon name="check" size={12} /> : null}
+                        </span>
+                      ) : null}
                       <span className="min-w-0 flex-1 truncate">
                         {choice.label}
                         {choice.detail ? (
@@ -340,7 +367,7 @@ export function SearchSelect({
                           </span>
                         ) : null}
                       </span>
-                      {selected ? <Icon name="check" size={14} /> : null}
+                      {multiple ? null : selected ? <Icon name="check" size={14} /> : null}
                     </div>
                   </li>
                 );

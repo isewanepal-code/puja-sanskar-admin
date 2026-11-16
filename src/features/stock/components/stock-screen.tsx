@@ -9,7 +9,8 @@ import {
   useResourceText,
   WorkbookUploadButton,
 } from '@/components/resource';
-import { IconButton } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
+import { RowMenu } from '@/components/ui/row-menu';
 import { SearchSelect } from '@/components/controls';
 import { Modal } from '@/components/ui/modal';
 import type { Schema } from '@/lib/api';
@@ -85,20 +86,30 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
         }
         rowActions={(row) => (
           <>
-            <IconButton
+            <Button
+              variant="secondary"
+              size="sm"
               icon="plus"
-              label={t('recordMovement')}
+              title={t('recordMovement')}
               onClick={() => setOpen({ what: 'record', level: row })}
-            />
-            <IconButton
-              icon="clock"
-              label={t('history')}
-              onClick={() => setOpen({ what: 'history', level: row })}
-            />
-            <IconButton
-              icon="truck"
-              label={t('sendToBranch')}
-              onClick={() => setOpen({ what: 'transfer', level: row })}
+            >
+              {t('stockUpdate')}
+            </Button>
+            <RowMenu
+              compact
+              label={t('moreActions')}
+              items={[
+                {
+                  icon: 'clock',
+                  label: t('stockHistory'),
+                  onSelect: () => setOpen({ what: 'history', level: row }),
+                },
+                {
+                  icon: 'truck',
+                  label: t('sendToBranch'),
+                  onSelect: () => setOpen({ what: 'transfer', level: row }),
+                },
+              ]}
             />
           </>
         )}

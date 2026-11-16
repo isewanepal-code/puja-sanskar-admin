@@ -46,6 +46,9 @@ export function optionTypesResource(name: Name): Resource<OptionType> {
       { key: 'sortOrder', cell: (row) => row.sortOrder, sortValue: (row) => row.sortOrder },
       activeColumn(),
     ],
+    // A unit goes only with a number option; a stale one must not be sent.
+    shapeBody: ({ unitId, kind, ...rest }) =>
+      kind === 'NUMBER' ? { ...rest, kind, unitId } : { ...rest, kind },
     fields: [
       { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
       { name: 'nameEn', kind: 'text', required: true, max: 80 },
@@ -58,7 +61,13 @@ export function optionTypesResource(name: Name): Resource<OptionType> {
         defaultValue: 'CHOICE',
         options: KINDS.map((kind) => ({ value: kind, label: name(`kinds.${kind}`) })),
       },
-      { name: 'unitId', kind: 'select', optionsFrom: choices.units },
+      {
+        name: 'unitId',
+        kind: 'select',
+        optionsFrom: choices.units,
+        // Only a number has a unit (g, cm …).
+        showWhen: (values) => values.kind === 'NUMBER',
+      },
       { name: 'sortOrder', kind: 'number', defaultValue: '0' },
       { name: 'isActive', kind: 'switch', defaultValue: true },
     ],
@@ -90,10 +99,10 @@ export function optionValueResource(type: OptionType, value?: OptionValue): Reso
         ? [
             {
               name: 'colorHex',
-              kind: 'text' as const,
+              kind: 'color' as const,
               required: true,
+              defaultValue: '#ffffff',
               max: 7,
-              pattern: { regex: /^#[0-9a-fA-F]{6}$/, message: 'A colour such as #ffffff' },
             },
           ]
         : []),

@@ -96,6 +96,27 @@ function Control({
           invalid={invalid}
         />
       );
+    case 'color': {
+      const hex = String(form.watch(field.name) ?? '');
+      return (
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            aria-label={t(`fields.${field.name}`)}
+            value={/^#[0-9a-fA-F]{6}$/.test(hex) ? hex : '#ffffff'}
+            onChange={(event) => setByPicker(event.target.value)}
+            className="h-9 w-14 shrink-0 cursor-pointer rounded-md border border-border bg-transparent p-1"
+          />
+          <Input
+            maxLength={7}
+            className="uppercase"
+            placeholder={placeholder}
+            autoComplete="off"
+            {...common}
+          />
+        </div>
+      );
+    }
     case 'switch':
       return <Switch label={t(`fields.${field.name}`)} {...register(field.name)} />;
     case 'textarea':

@@ -10,6 +10,7 @@ type Category = Schema<'AdminCategoryResponse'>;
 const categories: ChoiceSource = pagedSource<Category>('group-categories', {
   path: '/admin/categories',
   toChoices: (row) => [{ value: row.id, label: row.nameNe, detail: row.code }],
+  find: (id) => `/admin/categories/${id}`,
 });
 
 // Item codes pasted from a sheet: split on spaces, commas, semicolons and new lines.

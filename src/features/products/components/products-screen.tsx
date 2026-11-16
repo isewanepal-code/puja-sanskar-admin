@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
@@ -12,64 +12,34 @@ import {
   WorkbookUploadButton,
 } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
-import { Modal } from '@/components/ui/modal';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
-import { ProductOffers } from '@/features/marketing';
-import { ProductOptionsModal } from './product-options-modal';
-import { request } from '@/lib/api';
 
-import {
-  gradesResource,
-  pairingsResource,
-  productsResource,
-  quickItemResource,
-  variantsResource,
-  type Product,
-} from '../resources';
+import { productsResource, quickItemResource } from '../resources';
+import { ItemWorkspace, type WorkspaceTab } from './item-workspace';
+import { useProduct, type Product } from './use-product';
 
-type Open = { what: 'packs' | 'grades' | 'pairings'; id: string } | { what: 'new' | 'many' } | null;
-
-// The product as it is now, so grades added a moment ago reach its packs' form.
-function useProduct(id: string | undefined) {
-  return useQuery({
-    queryKey: ['products', 'one', id],
-    queryFn: () => request<Product>('GET', `/admin/products/${id}`),
-    enabled: !!id,
-  });
-}
-
-// Under an item's edit form: its packs, so a price changes in the same place.
-function EditPacks({ id }: { id: string }) {
-  const t = useTranslations('actions');
-  const product = useProduct(id);
-  return (
-    <section className="mt-6 grid gap-2 border-t border-border pt-4">
-      <h3 className="text-sm font-semibold">{t('packsAndPrices')}</h3>
-      <p className="text-sm text-muted-foreground">{t('packsNote')}</p>
-      {product.data ? <ResourceScreen resource={variantsResource(product.data)} /> : null}
-    </section>
-  );
-}
+type Creating = 'new' | 'many' | null;
 
 export function ProductsScreen() {
   const t = useTranslations('actions');
   const tf = useTranslations('forms');
-  const [open, setOpen] = useState<Open>(null);
+  const [creating, setCreating] = useState<Creating>(null);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
-  const [offersOf, setOffersOf] = useState<Product | null>(null);
-  const [optionsOf, setOptionsOf] = useState<Product | null>(null);
-  const id = open && 'id' in open ? open.id : undefined;
-  const product = useProduct(id);
-  const pairings = useQuery({
-    queryKey: ['products', 'pairings', id],
-    queryFn: () => request<Product[]>('GET', `/admin/products/${id}/pairings`),
-    enabled: open?.what === 'pairings',
-  });
-  const close = () => setOpen(null);
-  // The packs count opens the packs, as the pack button on the row does.
+  // One item opened in its workspace, on the tab asked for.
+  const [chosen, setWorkspace] = useState<{ product: Product; tab: WorkspaceTab } | null>(null);
+  // A link from the global search (?open=<id>) opens that item straight away.
+  const openId = useSearchParams().get('open');
+  const [dismissed, setDismissed] = useState(false);
+  const linked = useProduct(!dismissed ? (openId ?? undefined) : undefined);
+  const workspace =
+    chosen ??
+    (linked.data && !dismissed ? { product: linked.data, tab: 'details' as const } : null);
+
   const resource = useMemo(
     () => ({
       ...productsResource,
+      // The workspace is the one place an item is changed.
+      canEdit: false,
       columns: productsResource.columns.map((column) =>
         column.key === 'variants'
           ? {
@@ -77,7 +47,7 @@ export function ProductsScreen() {
               cell: (row: Product) => (
                 <CountButton
                   label={t('packsOf', { name: row.nameNe })}
-                  onClick={() => setOpen({ what: 'packs', id: row.id })}
+                  onClick={() => setWorkspace({ product: row, tab: 'packs' })}
                 >
                   {row.variants.length}
                 </CountButton>
@@ -88,14 +58,11 @@ export function ProductsScreen() {
     }),
     [t],
   );
-  const name = product.data ? `${product.data.code} · ${product.data.nameNe}` : '';
 
   return (
     <>
       <ResourceScreen
         resource={resource}
-        deepLink
-        editFooter={(row) => <EditPacks id={row.id} />}
         toolbar={
           <>
             <WorkbookUploadButton
@@ -105,37 +72,24 @@ export function ProductsScreen() {
               description={t('uploadProductsNote')}
               refresh={['products', 'stock']}
             />
-            <Button variant="secondary" icon="list" onClick={() => setOpen({ what: 'many' })}>
+            <Button variant="secondary" icon="list" onClick={() => setCreating('many')}>
               {tf('bulkAdd')}
             </Button>
-            <Button icon="plus" onClick={() => setOpen({ what: 'new' })}>
+            <Button icon="plus" onClick={() => setCreating('new')}>
               {t('addItem')}
             </Button>
           </>
         }
         rowActions={(row) => (
           <>
-            <IconButton
-              icon="box"
-              label={t('packs')}
-              onClick={() => setOpen({ what: 'packs', id: row.id })}
-            />
-            <IconButton
-              icon="star"
-              label={t('grades')}
-              onClick={() => setOpen({ what: 'grades', id: row.id })}
-            />
-            <IconButton
-              icon="share"
-              label={t('pairings')}
-              onClick={() => setOpen({ what: 'pairings', id: row.id })}
-            />
-            <IconButton icon="grid" label={t('productOptions')} onClick={() => setOptionsOf(row)} />
-            <IconButton
-              icon="percent"
-              label={t('productOffers')}
-              onClick={() => setOffersOf(row)}
-            />
+            <Button
+              variant="secondary"
+              size="sm"
+              icon="edit"
+              onClick={() => setWorkspace({ product: row, tab: 'details' })}
+            >
+              {t('openItem')}
+            </Button>
             <IconButton
               icon="archive"
               label={t('archive')}
@@ -145,72 +99,35 @@ export function ProductsScreen() {
         )}
       />
 
-      <Modal
-        open={open?.what === 'packs' || open?.what === 'grades'}
-        onOpenChange={(next) => (next ? undefined : close())}
-        size="xl"
-        title={open?.what === 'grades' ? t('gradesOf', { name }) : t('packsOf', { name })}
-        description={open?.what === 'grades' ? t('gradesNote') : t('packsNote')}
-      >
-        {product.data && open?.what === 'packs' ? (
-          <ResourceScreen resource={variantsResource(product.data)} />
-        ) : null}
-        {product.data && open?.what === 'grades' ? (
-          <ResourceScreen resource={gradesResource(product.data)} />
-        ) : null}
-      </Modal>
-
-      <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
-      {optionsOf ? (
-        <ProductOptionsModal
-          key={optionsOf.id}
-          product={optionsOf}
-          onClose={() => setOptionsOf(null)}
+      {workspace ? (
+        <ItemWorkspace
+          key={workspace.product.id}
+          product={workspace.product}
+          tab={workspace.tab}
+          onClose={() => {
+            setWorkspace(null);
+            setDismissed(true);
+          }}
         />
       ) : null}
-      <ProductOffers
-        product={
-          offersOf
-            ? {
-                id: offersOf.id,
-                nameNe: offersOf.nameNe,
-                variants: offersOf.variants.map((v) => ({ id: v.id, label: v.label })),
-              }
-            : null
-        }
-        onClose={() => setOffersOf(null)}
-      />
+
+      <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
 
       <BulkGrid
         resource={quickItemResource}
-        open={open?.what === 'many'}
-        onOpenChange={(next) => (next ? undefined : close())}
+        open={creating === 'many'}
+        onOpenChange={(next) => (next ? undefined : setCreating(null))}
         description={t('addManyItemsNote')}
       />
 
       <ActionModal
-        resource={open?.what === 'new' ? quickItemResource : null}
+        resource={creating === 'new' ? quickItemResource : null}
         size="lg"
         title={t('addItem')}
         description={t('addItemNote')}
         submitLabel={t('addItem')}
         doneMessage={t('itemAdded')}
-        onClose={close}
-      />
-
-      <ActionModal
-        resource={
-          open?.what === 'pairings' && product.data && pairings.data
-            ? pairingsResource(product.data)
-            : null
-        }
-        defaults={{ productIds: (pairings.data ?? []).map((paired) => paired.id) }}
-        size="lg"
-        title={t('pairingsOf', { name })}
-        description={t('pairingsNote')}
-        submitLabel={t('savePairings')}
-        doneMessage={t('pairingsSaved')}
-        onClose={close}
+        onClose={() => setCreating(null)}
       />
     </>
   );

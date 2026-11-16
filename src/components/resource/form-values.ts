@@ -18,6 +18,7 @@ const PATTERN: Partial<Record<Field['kind'], { regex: RegExp; message: string }>
   url: { regex: /^https?:\/\/\S+$/, message: 'A web address starting with https://' },
   image: { regex: /^https?:\/\/\S+$/, message: 'Choose an image' },
   time: { regex: /^([01]\d|2[0-3]):[0-5]\d$/, message: 'A time such as 09:30' },
+  color: { regex: /^#[0-9a-fA-F]{6}$/, message: 'A colour such as #ffffff' },
 };
 
 export type FormValues = Record<string, string | boolean | string[]>;

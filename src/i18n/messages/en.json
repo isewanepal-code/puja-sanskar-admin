@@ -2515,7 +2515,12 @@
     "sendKitNote": "Moves every item the kit holds, times the number of kits, from the branch chosen at the top to the one below, at its average cost. Optional items stay behind.",
     "archive": "Archive (keep it, take it out of use)",
     "productOffers": "Offers for this item",
-    "productOptions": "Colours, sizes and packs"
+    "productOptions": "Colours, sizes and packs",
+    "openItem": "Open",
+    "stockUpdate": "Update",
+    "stockHistory": "History",
+    "stockSend": "Send",
+    "moreActions": "More"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -2978,7 +2983,8 @@
     "failed": "Could not load the list",
     "none": "— None —",
     "remove": "Remove {name}",
-    "clear": "Clear"
+    "clear": "Clear",
+    "picked": "{count, plural, =0 {Tick to choose} one {# chosen} other {# chosen}}"
   },
   "archive": {
     "title": "Archive",
@@ -3211,13 +3217,16 @@
     "remove": "Remove",
     "addTitle": "Add a value",
     "editTitle": "Change the value",
-    "saved": "Saved"
+    "saved": "Saved",
+    "defaults": "Add common colours and sizes",
+    "defaultsNote": "Colour (seto, kalo, rato ...) ra Size (sano, madhyam, thulo ...) ek patak ma thapnus. Bhayeko lai chhuinna.",
+    "defaultsDone": "Colour ra Size taiyar bhayo"
   },
   "productOptionsEditor": {
     "title": "Colours, sizes and packs of {name}",
-    "note": "Tick what this item comes in. One pack is made for every combination, with the same price to change after.",
+    "note": "Item kun-kun ma aaucha tick garnus. Harek combination ko euta pack banchha, ek ai price sanga; pachhi Packs and prices ma alag-alag price/stock badalna milchha.",
     "kinds": "What it comes in",
-    "noValues": "No values yet. Add them under Catalogue → Options.",
+    "noValues": "Yaha value chhaina. Pahile \"Colours and sizes\" ma jaera \"Add common colours and sizes\" thichnus.",
     "tooMany": "At most {n} kinds of difference.",
     "price": "Price of each new pack",
     "priceNote": "Makes {count, plural, one {# pack} other {# packs}}. Packs that already exist are left as they are.",
@@ -3599,5 +3608,41 @@
     "typeToConfirm": "Pakka bhaye tala DELETE lekhnus",
     "confirmButton": "Haan, sabai hataunus",
     "done": "{rows} wota record hatayo"
+  },
+  "itemWorkspace": {
+    "tabs": "Parts of this item",
+    "close": "Close",
+    "helpLabel": "What is this tab",
+    "pairsSaved": "Saved",
+    "tab": {
+      "details": "Details",
+      "packs": "Packs and prices",
+      "options": "Colours and sizes",
+      "photos": "Photos",
+      "offers": "Offers",
+      "quality": "Quality",
+      "pairs": "Goes with"
+    },
+    "help": {
+      "details": "Item ko naam, tax, tags, barnan ra website ma dekhine kura. Badalepachhi tala Save thichnus. Photo ra price yaha chhaina: tinko alag tab chha.",
+      "packs": "Item ka pack haru (50 g, 100 g, seto 120x129). Harek ko aafnai price ra stock. Price badalna row thichnus.",
+      "options": "Item rang, size, tauls jastai kura ma farak chha bhane tick garnus ra \"Make packs\" thichnus: sabai combination ek patak ma banchha. Rang/size ko value Colours and sizes ma banaunus.",
+      "photos": "Item ka sabai photo ek thau ma. Pahilo photo mukhya hunchha. Photo kunai rang/size ko matra ho bhane \"Shown for\" ma tyo chunnus: customer le tyo rang chhanda tyahi photo dekhincha.",
+      "offers": "Yo item ma kun-kun offer lagne bhanera tick garnus. Offer banauna Marketing → Offers ma jaanus. Tala pack anusar aajako price dekhincha.",
+      "quality": "Item ko quality (sadharan, bishesh). Pack le tyo chhanchha. Nabhaye chhodidinus.",
+      "pairs": "Yo item sanga kina jane aru item: product page ra cart ma \"yo pani kinnus\" bhanera dekhincha."
+    }
+  },
+  "itemPhotos": {
+    "note": "Photo upload garnus. Pahilo photo mukhya (card ra page ma). Kunai photo ek rang/size ko matra bhaye \"Shown for\" ma chunnus.",
+    "add": "Add photos",
+    "uploading": "Uploading…",
+    "count": "{count} of {max} photos",
+    "none": "No photos yet. Add one so customers can see the item.",
+    "shownFor": "Shown for",
+    "all": "All colours and sizes",
+    "main": "Main photo",
+    "makeMain": "Make main",
+    "remove": "Remove"
   }
 }
