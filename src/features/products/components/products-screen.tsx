@@ -14,6 +14,7 @@ import {
 import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
+import { ProductOffers } from '@/features/marketing';
 import { request } from '@/lib/api';
 
 import {
@@ -54,6 +55,7 @@ export function ProductsScreen() {
   const tf = useTranslations('forms');
   const [open, setOpen] = useState<Open>(null);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
+  const [offersOf, setOffersOf] = useState<Product | null>(null);
   const id = open && 'id' in open ? open.id : undefined;
   const product = useProduct(id);
   const pairings = useQuery({
@@ -127,6 +129,11 @@ export function ProductsScreen() {
               onClick={() => setOpen({ what: 'pairings', id: row.id })}
             />
             <IconButton
+              icon="percent"
+              label={t('productOffers')}
+              onClick={() => setOffersOf(row)}
+            />
+            <IconButton
               icon="archive"
               label={t('archive')}
               onClick={() => setArchiving({ kind: 'item', id: row.id, name: row.nameNe })}
@@ -151,6 +158,18 @@ export function ProductsScreen() {
       </Modal>
 
       <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
+      <ProductOffers
+        product={
+          offersOf
+            ? {
+                id: offersOf.id,
+                nameNe: offersOf.nameNe,
+                variants: offersOf.variants.map((v) => ({ id: v.id, label: v.label })),
+              }
+            : null
+        }
+        onClose={() => setOffersOf(null)}
+      />
 
       <BulkGrid
         resource={quickItemResource}

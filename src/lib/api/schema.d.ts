@@ -795,6 +795,59 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/site-notes': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** To-do notes left on the website sections */
+    get: operations['SiteNoteController_list'];
+    put?: never;
+    /** Leave a note on a website section */
+    post: operations['SiteNoteController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/site-notes/screenshot': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Upload a screenshot of a section */
+    post: operations['SiteNoteController_screenshot'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/site-notes/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a note */
+    delete: operations['SiteNoteController_delete'];
+    options?: never;
+    head?: never;
+    /** Mark a note done or open again, or edit it */
+    patch: operations['SiteNoteController_update'];
+    trace?: never;
+  };
   '/api/v1/admin/site-texts/edit-link': {
     parameters: {
       query?: never;
@@ -809,6 +862,83 @@ export interface paths {
      * @description Returns an address that works once, for a minute. The website then shows a pencil next to each text.
      */
     post: operations['AdminSiteTextController_editLink'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/notes': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** To-do notes left on admin screens */
+    get: operations['AdminPageNoteController_list'];
+    put?: never;
+    /** Leave a note, with screenshots, on a screen */
+    post: operations['AdminPageNoteController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/notes/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a note */
+    delete: operations['AdminPageNoteController_delete'];
+    options?: never;
+    head?: never;
+    /** Edit a note, or mark it done or open again */
+    patch: operations['AdminPageNoteController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/media': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Uploaded images, newest first
+     * @description q matches file name or alt text.
+     */
+    get: operations['AdminMediaController_list'];
+    put?: never;
+    /**
+     * Upload an image
+     * @description JPEG, PNG, WebP, AVIF, GIF or TIFF up to 10 MB. Stored as WebP in three sizes with camera and GPS data removed; use the returned url in image fields.
+     */
+    post: operations['AdminMediaController_upload'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/media/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get an uploaded image */
+    get: operations['AdminMediaController_get'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -1964,6 +2094,184 @@ export interface paths {
      * @description Normally not needed: changes are picked up within 30 seconds.
      */
     post: operations['AdminSearchController_reindex'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-offers': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List price offers */
+    get: operations['AdminPriceOfferController_list'];
+    put?: never;
+    /**
+     * Create an offer
+     * @description A price for items alone and with a kit, and a rate by kits bought, for the items, categories, groups and kits it covers; always on, between two dates, on chosen weekdays and hours, or while a festival is.
+     */
+    post: operations['AdminPriceOfferController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-offers/for-product/{productId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Every offer and how it reaches a product
+     * @description For an item's page: ticked directly, reached through a group, a category or everything, and whether it is on now.
+     */
+    get: operations['AdminPriceOfferController_forProduct'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-offers/preview/{variantId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * What a pack costs now, alone and with a kit
+     * @description Names the offer that sets each price.
+     */
+    get: operations['AdminPriceOfferController_preview'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-offers/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a price offer */
+    get: operations['AdminPriceOfferController_get'];
+    put?: never;
+    post?: never;
+    /** Delete an offer */
+    delete: operations['AdminPriceOfferController_delete'];
+    options?: never;
+    head?: never;
+    /**
+     * Change an offer
+     * @description Targets and kit tiers, when sent, replace the old ones.
+     */
+    patch: operations['AdminPriceOfferController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/price-offers/{id}/products/{productId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Switch an offer on for one product */
+    put: operations['AdminPriceOfferController_addProduct'];
+    post?: never;
+    /** Switch an offer off for one product */
+    delete: operations['AdminPriceOfferController_removeProduct'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-groups': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List groups of items and kits */
+    get: operations['AdminPriceGroupController_list'];
+    put?: never;
+    /**
+     * Create a group
+     * @description A set of items and kits kept together so one offer can cover them all.
+     */
+    post: operations['AdminPriceGroupController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-groups/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** A group with its items and kits */
+    get: operations['AdminPriceGroupController_get'];
+    put?: never;
+    post?: never;
+    /** Delete a group */
+    delete: operations['AdminPriceGroupController_delete'];
+    options?: never;
+    head?: never;
+    /** Rename or switch a group off */
+    patch: operations['AdminPriceGroupController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/price-groups/{id}/members': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Add items and kits to a group
+     * @description By id, by whole category (with its subcategories), or by pasted product codes. Those already in are left alone.
+     */
+    post: operations['AdminPriceGroupController_addMembers'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-groups/{id}/members/remove': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Take items and kits out of a group */
+    post: operations['AdminPriceGroupController_removeMembers'];
     delete?: never;
     options?: never;
     head?: never;
@@ -3596,47 +3904,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/admin/media': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Uploaded images, newest first
-     * @description q matches file name or alt text.
-     */
-    get: operations['AdminMediaController_list'];
-    put?: never;
-    /**
-     * Upload an image
-     * @description JPEG, PNG, WebP, AVIF, GIF or TIFF up to 10 MB. Stored as WebP in three sizes with camera and GPS data removed; use the returned url in image fields.
-     */
-    post: operations['AdminMediaController_upload'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/media/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get an uploaded image */
-    get: operations['AdminMediaController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   '/api/v1/list-requests': {
     parameters: {
       query?: never;
@@ -4178,42 +4445,6 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/notes': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** To-do notes left on admin screens */
-    get: operations['AdminPageNoteController_list'];
-    put?: never;
-    /** Leave a note, with screenshots, on a screen */
-    post: operations['AdminPageNoteController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/notes/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete a note */
-    delete: operations['AdminPageNoteController_delete'];
-    options?: never;
-    head?: never;
-    /** Edit a note, or mark it done or open again */
-    patch: operations['AdminPageNoteController_update'];
     trace?: never;
   };
   '/api/v1/navigation': {
@@ -6180,6 +6411,65 @@ export interface components {
       locale: 'en' | 'ne';
       value: string;
     };
+    PageNoteResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example kits */
+      page: string;
+      body: string;
+      /** @enum {string} */
+      status: 'TODO' | 'DONE';
+      images: string[];
+      authorName: string;
+      /** Format: date-time */
+      doneAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CreatePageNoteDto: {
+      /** @example kits */
+      page: string;
+      /** @example The tier price is hidden on mobile. */
+      body: string;
+      images?: string[];
+    };
+    MediaUrlsResponse: {
+      /** @description 320 px, for lists and carts */
+      thumb: string;
+      /** @description 800 px, for cards */
+      medium: string;
+      /** @description 1600 px, for product pages */
+      large: string;
+    };
+    MediaResponse: {
+      /** Format: uuid */
+      id: string;
+      /**
+       * @description The large size: put this in image fields
+       * @example https://cdn.pujasanskar.com/images/2026/10/…/large.webp
+       */
+      url: string;
+      urls: components['schemas']['MediaUrlsResponse'];
+      /** @example 1600 */
+      width: number;
+      /** @example 1067 */
+      height: number;
+      /**
+       * @description All sizes together
+       * @example 183402
+       */
+      bytes: number;
+      originalName: string | null;
+      altText: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    UpdatePageNoteDto: {
+      body?: string;
+      /** @enum {string} */
+      status?: 'TODO' | 'DONE';
+      images?: string[];
+    };
     EditHandoffResponse: {
       /** @description Open this address to start editing the website */
       url: string;
@@ -7620,6 +7910,20 @@ export interface components {
       price: string;
       /** @example 150.00 */
       compareAtPrice: string | null;
+      /**
+       * @description Today price bought on its own under an offer that is on now; null when no offer lowers it
+       * @example 110.00
+       */
+      offerPrice: string | null;
+      /**
+       * @description Price when a kit is in the same cart, under an offer on now; null when it is no lower
+       * @example 100.00
+       */
+      kitPrice: string | null;
+      /** @description The offer badge, English */
+      offerTitleEn: string | null;
+      /** @description The offer badge, Nepali */
+      offerTitleNe: string | null;
       /** @example NPR */
       currency: string;
       /** @description Picked when the product is added by material */
@@ -7789,6 +8093,20 @@ export interface components {
       price: string;
       /** @example 150.00 */
       compareAtPrice: string | null;
+      /**
+       * @description Today price bought on its own under an offer that is on now; null when no offer lowers it
+       * @example 110.00
+       */
+      offerPrice: string | null;
+      /**
+       * @description Price when a kit is in the same cart, under an offer on now; null when it is no lower
+       * @example 100.00
+       */
+      kitPrice: string | null;
+      /** @description The offer badge, English */
+      offerTitleEn: string | null;
+      /** @description The offer badge, Nepali */
+      offerTitleNe: string | null;
       /** @example NPR */
       currency: string;
       /** @description Picked when the product is added by material */
@@ -8054,6 +8372,20 @@ export interface components {
       price: string;
       /** @example 150.00 */
       compareAtPrice: string | null;
+      /**
+       * @description Today price bought on its own under an offer that is on now; null when no offer lowers it
+       * @example 110.00
+       */
+      offerPrice: string | null;
+      /**
+       * @description Price when a kit is in the same cart, under an offer on now; null when it is no lower
+       * @example 100.00
+       */
+      kitPrice: string | null;
+      /** @description The offer badge, English */
+      offerTitleEn: string | null;
+      /** @description The offer badge, Nepali */
+      offerTitleNe: string | null;
       /** @example NPR */
       currency: string;
       /** @description Picked when the product is added by material */
@@ -8076,6 +8408,7 @@ export interface components {
     };
     PopularSearchesResponse: {
       /**
+       * @description Everything on offer: the festival names first, then the rest
        * @example [
        *       "dhup",
        *       "कपूर",
@@ -8083,6 +8416,22 @@ export interface components {
        *     ]
        */
       searches: string[];
+      /**
+       * @description The names the calendar makes timely; the website always shows these
+       * @example [
+       *       "तिहार",
+       *       "लक्ष्मी पूजा"
+       *     ]
+       */
+      festival: string[];
+      /**
+       * @description The rest: the shop list, what sells, pujas; mix them each time
+       * @example [
+       *       "कपूर",
+       *       "दियो"
+       *     ]
+       */
+      others: string[];
     };
     SearchHitResponse: {
       /** @enum {string} */
@@ -8118,6 +8467,273 @@ export interface components {
       rebuilt: boolean;
       /** @example 412 */
       documents: number | null;
+    };
+    OfferRuleResponse: {
+      /** @enum {string} */
+      kind: 'PERCENT' | 'FLAT' | 'PRICE';
+      /** @example 10.00 */
+      value: string;
+    };
+    OfferTargetResponse: {
+      /** @enum {string} */
+      kind: 'ALL' | 'CATEGORY' | 'PRODUCT' | 'KIT' | 'GROUP';
+      /** Format: uuid */
+      refId: string | null;
+      excluded: boolean;
+    };
+    KitTierResponse: {
+      /** @example 2 */
+      minKits: number;
+      /** @enum {string} */
+      kind: 'PERCENT' | 'FLAT';
+      /** @example 15.00 */
+      value: string;
+    };
+    PriceOfferResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example TEEJ_2026 */
+      code: string;
+      name: string;
+      titleEn: string | null;
+      titleNe: string | null;
+      isActive: boolean;
+      priority: number;
+      /** @enum {string} */
+      schedule: 'ALWAYS' | 'RANGE' | 'WEEKLY';
+      /** Format: date-time */
+      startsAt: string | null;
+      /** Format: date-time */
+      endsAt: string | null;
+      weekdays: number[];
+      dayFromMinute: number | null;
+      dayToMinute: number | null;
+      /** Format: uuid */
+      festivalId: string | null;
+      alone: components['schemas']['OfferRuleResponse'] | null;
+      withKit: components['schemas']['OfferRuleResponse'] | null;
+      allowCoupons: boolean;
+      targets: components['schemas']['OfferTargetResponse'][];
+      kitTiers: components['schemas']['KitTierResponse'][];
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OfferForProductResponse: {
+      offer: components['schemas']['PriceOfferResponse'];
+      /** @description Ticked for this product directly */
+      direct: boolean;
+      /** @description Reaches it through a group, category or all */
+      indirect: boolean;
+      /** @description On right now */
+      isLive: boolean;
+    };
+    ItemPriceResponse: {
+      /** @example 80.00 */
+      listPrice: string;
+      /** @example 75.00 */
+      price: string;
+      /** Format: uuid */
+      offerId: string | null;
+      offerName: string | null;
+      allowCoupons: boolean;
+    };
+    PricePreviewResponse: {
+      /** @example 80.00 */
+      listPrice: string;
+      /** @description Bought on its own */
+      alone: components['schemas']['ItemPriceResponse'];
+      /** @description With a kit in the cart */
+      withKit: components['schemas']['ItemPriceResponse'];
+    };
+    OfferRuleDto: {
+      /**
+       * @description PERCENT off, rupees off (FLAT), or the price itself (PRICE)
+       * @enum {string}
+       */
+      kind: 'PERCENT' | 'FLAT' | 'PRICE';
+      /** @example 10 */
+      value: string;
+    };
+    OfferTargetDto: {
+      /** @enum {string} */
+      kind: 'ALL' | 'CATEGORY' | 'PRODUCT' | 'KIT' | 'GROUP';
+      /**
+       * Format: uuid
+       * @description The category, product, kit or group; none for ALL
+       */
+      refId?: string | null;
+      /**
+       * @description Leave it out instead
+       * @default false
+       */
+      excluded: boolean;
+    };
+    KitTierDto: {
+      /**
+       * @description From this many kits
+       * @example 2
+       */
+      minKits: number;
+      /** @enum {string} */
+      kind: 'PERCENT' | 'FLAT';
+      /** @example 15 */
+      value: string;
+    };
+    CreatePriceOfferDto: {
+      /** @example TEEJ_2026 */
+      code: string;
+      /** @example Teej offer */
+      name: string;
+      /** @example Teej offer */
+      titleEn?: string | null;
+      /** @example तीज अफर */
+      titleNe?: string | null;
+      /** @default true */
+      isActive: boolean;
+      /**
+       * @description Higher names a tie
+       * @default 0
+       */
+      priority: number;
+      /**
+       * @default ALWAYS
+       * @enum {string}
+       */
+      schedule: 'ALWAYS' | 'RANGE' | 'WEEKLY';
+      startsAt?: string | null;
+      endsAt?: string | null;
+      /** @description 0 = Sunday ... 6 = Saturday; empty is every day */
+      weekdays?: number[];
+      /** @example 540 */
+      dayFromMinute?: number | null;
+      /** @example 1260 */
+      dayToMinute?: number | null;
+      /**
+       * Format: uuid
+       * @description On only while this festival is
+       */
+      festivalId?: string | null;
+      /** @description What an item costs bought on its own */
+      alone?: components['schemas']['OfferRuleDto'] | null;
+      /** @description What an item costs when a kit is in the cart */
+      withKit?: components['schemas']['OfferRuleDto'] | null;
+      /**
+       * @description Whether a coupon may also be used on what this prices
+       * @default true
+       */
+      allowCoupons: boolean;
+      targets?: components['schemas']['OfferTargetDto'][];
+      /** @description What a kit costs by how many are bought */
+      kitTiers?: components['schemas']['KitTierDto'][];
+    };
+    UpdatePriceOfferDto: {
+      /** @example Teej offer */
+      name?: string;
+      /** @example Teej offer */
+      titleEn?: string | null;
+      /** @example तीज अफर */
+      titleNe?: string | null;
+      /** @default true */
+      isActive: boolean;
+      /**
+       * @description Higher names a tie
+       * @default 0
+       */
+      priority: number;
+      /**
+       * @default ALWAYS
+       * @enum {string}
+       */
+      schedule: 'ALWAYS' | 'RANGE' | 'WEEKLY';
+      startsAt?: string | null;
+      endsAt?: string | null;
+      /** @description 0 = Sunday ... 6 = Saturday; empty is every day */
+      weekdays?: number[];
+      /** @example 540 */
+      dayFromMinute?: number | null;
+      /** @example 1260 */
+      dayToMinute?: number | null;
+      /**
+       * Format: uuid
+       * @description On only while this festival is
+       */
+      festivalId?: string | null;
+      /** @description What an item costs bought on its own */
+      alone?: components['schemas']['OfferRuleDto'] | null;
+      /** @description What an item costs when a kit is in the cart */
+      withKit?: components['schemas']['OfferRuleDto'] | null;
+      /**
+       * @description Whether a coupon may also be used on what this prices
+       * @default true
+       */
+      allowCoupons: boolean;
+      targets?: components['schemas']['OfferTargetDto'][];
+      /** @description What a kit costs by how many are bought */
+      kitTiers?: components['schemas']['KitTierDto'][];
+    };
+    PriceGroupResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example TEEJ_ITEMS */
+      code: string;
+      name: string;
+      isActive: boolean;
+      /** @example 40 */
+      memberCount: number;
+    };
+    PriceGroupMemberResponse: {
+      /** Format: uuid */
+      productId: string | null;
+      /** Format: uuid */
+      kitId: string | null;
+      code: string;
+      nameEn: string;
+      nameNe: string;
+    };
+    PriceGroupDetailResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example TEEJ_ITEMS */
+      code: string;
+      name: string;
+      isActive: boolean;
+      /** @example 40 */
+      memberCount: number;
+      members: components['schemas']['PriceGroupMemberResponse'][];
+    };
+    CreatePriceGroupDto: {
+      /** @example TEEJ_ITEMS */
+      code: string;
+      /** @example Teej samagri */
+      name: string;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdatePriceGroupDto: {
+      /** @example Teej samagri */
+      name?: string;
+      /** @default true */
+      isActive: boolean;
+    };
+    MembersChangedResponse: {
+      /** @description How many were added (or removed) */
+      count: number;
+      /** @description Pasted codes that match no product */
+      missingCodes: string[];
+    };
+    AddGroupMembersDto: {
+      productIds?: string[];
+      kitIds?: string[];
+      /** @description Every product in these categories and below them */
+      categoryIds?: string[];
+      /** @description Product codes, as pasted from a sheet */
+      codes?: string[];
+    };
+    RemoveGroupMembersDto: {
+      productIds?: string[];
+      kitIds?: string[];
     };
     VariantSummary: {
       /** Format: uuid */
@@ -8309,6 +8925,15 @@ export interface components {
       quantity: number;
       /** @example 240.00 */
       lineTotal: string;
+      /**
+       * @description The price before any offer; the variant price is what is charged
+       * @example 90.00
+       */
+      listPrice: string;
+      /** @description The offer that set the price */
+      offerName: string | null;
+      offerTitleEn: string | null;
+      offerTitleNe: string | null;
       /** @description The SKU and its product are still on sale */
       isAvailable: boolean;
       /** @enum {string} */
@@ -8580,6 +9205,20 @@ export interface components {
       url: string;
       altText: string | null;
     };
+    KitOfferTierResponse: {
+      /**
+       * @description From this many kits
+       * @example 2
+       */
+      minKits: number;
+      /** @enum {string} */
+      kind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Percent, or rupees off one kit
+       * @example 15.00
+       */
+      value: string;
+    };
     KitSkuResponse: {
       /** Format: uuid */
       variantId: string;
@@ -8667,6 +9306,8 @@ export interface components {
        * @example 1305.00
        */
       salePrice: string;
+      /** @description What buying more kits takes off, from offers on now: from this many kits, this much off */
+      offerTiers: components['schemas']['KitOfferTierResponse'][];
       /**
        * @description Price of the optional items
        * @example 300.00
@@ -8738,6 +9379,8 @@ export interface components {
        * @example 1305.00
        */
       salePrice: string;
+      /** @description What buying more kits takes off, from offers on now: from this many kits, this much off */
+      offerTiers: components['schemas']['KitOfferTierResponse'][];
       /**
        * @description Price of the optional items
        * @example 300.00
@@ -8869,6 +9512,8 @@ export interface components {
        * @example 1305.00
        */
       salePrice: string;
+      /** @description What buying more kits takes off, from offers on now: from this many kits, this much off */
+      offerTiers: components['schemas']['KitOfferTierResponse'][];
       /**
        * @description Price of the optional items
        * @example 300.00
@@ -10731,37 +11376,6 @@ export interface components {
       /** Format: date-time */
       endsAt: string | null;
     };
-    MediaUrlsResponse: {
-      /** @description 320 px, for lists and carts */
-      thumb: string;
-      /** @description 800 px, for cards */
-      medium: string;
-      /** @description 1600 px, for product pages */
-      large: string;
-    };
-    MediaResponse: {
-      /** Format: uuid */
-      id: string;
-      /**
-       * @description The large size: put this in image fields
-       * @example https://cdn.pujasanskar.com/images/2026/10/…/large.webp
-       */
-      url: string;
-      urls: components['schemas']['MediaUrlsResponse'];
-      /** @example 1600 */
-      width: number;
-      /** @example 1067 */
-      height: number;
-      /**
-       * @description All sizes together
-       * @example 183402
-       */
-      bytes: number;
-      originalName: string | null;
-      altText: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
     ListPujaResponse: {
       /** @example lakshmi-puja */
       slug: string;
@@ -11257,34 +11871,6 @@ export interface components {
        * @default false
        */
       withItems: boolean;
-    };
-    PageNoteResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example kits */
-      page: string;
-      body: string;
-      /** @enum {string} */
-      status: 'TODO' | 'DONE';
-      images: string[];
-      authorName: string;
-      /** Format: date-time */
-      doneAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    CreatePageNoteDto: {
-      /** @example kits */
-      page: string;
-      /** @example The tier price is hidden on mobile. */
-      body: string;
-      images?: string[];
-    };
-    UpdatePageNoteDto: {
-      body?: string;
-      /** @enum {string} */
-      status?: 'TODO' | 'DONE';
-      images?: string[];
     };
     MenuLinkResponse: {
       /** Format: uuid */
@@ -16385,6 +16971,256 @@ export interface operations {
       };
     };
   };
+  SiteNoteController_list: {
+    parameters: {
+      query?: {
+        page?: string;
+        status?: 'TODO' | 'DONE';
+      };
+      header: {
+        'x-edit-token': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  SiteNoteController_create: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-edit-token': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePageNoteDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  SiteNoteController_screenshot: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-edit-token': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MediaResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  SiteNoteController_delete: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-edit-token': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  SiteNoteController_update: {
+    parameters: {
+      query?: never;
+      header: {
+        'x-edit-token': string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePageNoteDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminSiteTextController_editLink: {
     parameters: {
       query?: never;
@@ -16419,6 +17255,441 @@ export interface operations {
       };
       /** @description FORBIDDEN */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPageNoteController_list: {
+    parameters: {
+      query?: {
+        page?: string;
+        status?: 'TODO' | 'DONE';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPageNoteController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePageNoteDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPageNoteController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPageNoteController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePageNoteDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PageNoteResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMediaController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['MediaResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMediaController_upload: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file: string;
+          altText?: string;
+        };
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MediaResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description PAYLOAD_TOO_LARGE */
+      413: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMediaController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MediaResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -22290,7 +23561,9 @@ export interface operations {
   };
   SearchController_popular: {
     parameters: {
-      query?: never;
+      query?: {
+        language?: 'ne' | 'en';
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -22404,6 +23677,1018 @@ export interface operations {
       };
       /** @description FORBIDDEN */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['PriceOfferResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePriceOfferDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PriceOfferResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_forProduct: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OfferForProductResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_preview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        variantId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PricePreviewResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PriceOfferResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePriceOfferDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PriceOfferResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_addProduct: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_removeProduct: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['PriceGroupResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePriceGroupDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PriceGroupResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PriceGroupDetailResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePriceGroupDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PriceGroupResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_addMembers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AddGroupMembersDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MembersChangedResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_removeMembers: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RemoveGroupMembersDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MembersChangedResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -30104,208 +32389,6 @@ export interface operations {
       };
     };
   };
-  AdminMediaController_list: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        /** @description Matches code or names */
-        q?: string;
-        isActive?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['MediaResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminMediaController_upload: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'multipart/form-data': {
-          /** Format: binary */
-          file: string;
-          altText?: string;
-        };
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['MediaResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description PAYLOAD_TOO_LARGE */
-      413: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminMediaController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['MediaResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
   ListRequestController_send: {
     parameters: {
       query?: never;
@@ -32349,239 +34432,6 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminPageNoteController_list: {
-    parameters: {
-      query?: {
-        page?: string;
-        status?: 'TODO' | 'DONE';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['PageNoteResponse'][];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminPageNoteController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreatePageNoteDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['PageNoteResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminPageNoteController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminPageNoteController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdatePageNoteDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['PageNoteResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
         headers: {
           [name: string]: unknown;
         };

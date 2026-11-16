@@ -2100,6 +2100,123 @@
         "kits": "How many kits",
         "note": "Note"
       }
+    },
+    "offers": {
+      "title": "Offers",
+      "add": "Add an offer",
+      "empty": "No offers yet.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "name": "Name",
+        "when": "When",
+        "prices": "Price",
+        "targets": "Covers",
+        "allowCoupons": "Coupons allowed",
+        "titleNe": "Badge in Nepali",
+        "titleEn": "Badge in English",
+        "isActive": "In use",
+        "priority": "Priority",
+        "schedule": "Runs",
+        "startsAt": "From",
+        "endsAt": "Until",
+        "weekdays": "On these days",
+        "dayFrom": "From time",
+        "dayTo": "Until time",
+        "festivalId": "Only during a festival",
+        "aloneKind": "Item bought alone",
+        "aloneValue": "Amount",
+        "withKitKind": "Item bought with a kit",
+        "withKitValue": "Amount",
+        "kitTiers": "Kits bought (one tier a line)",
+        "everything": "Everything (all items and kits)",
+        "groupIds": "Groups",
+        "categoryIds": "Categories (and below)",
+        "productIds": "Items",
+        "kitIds": "Kits",
+        "leaveOutProductIds": "Leave out these items",
+        "leaveOutKitIds": "Leave out these kits",
+        "leaveOutGroupIds": "Leave out these groups"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. It cannot change later.",
+        "titleNe": "A small badge on the website, such as Teej offer.",
+        "priority": "When two offers give the same price, the higher one is named on the order.",
+        "schedule": "All the time, between two dates, or on chosen weekdays and hours.",
+        "festivalId": "The offer is on only while this festival is, inside the times above.",
+        "aloneKind": "Percent off, rupees off, or the price itself. Leave empty for no change.",
+        "withKitKind": "Used instead when a kit is in the same cart; never above the alone price.",
+        "kitTiers": "One per line: 1: 5%  ·  2: 15%  ·  3: Rs 300. From that many kits, that much off each kit.",
+        "allowCoupons": "Off: a coupon is not taken on the items this offer prices.",
+        "everything": "Or choose what it covers below."
+      },
+      "sections": {
+        "when": "When it is on",
+        "price": "What it does to the price",
+        "covers": "What it covers"
+      },
+      "schedules": {
+        "ALWAYS": "All the time",
+        "RANGE": "Between two dates",
+        "WEEKLY": "Weekdays and hours"
+      },
+      "weekdays": {
+        "0": "Sunday",
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday",
+        "all": "Every day"
+      },
+      "rule": {
+        "PERCENT": "Percent off (%)",
+        "FLAT": "Rupees off (Rs)",
+        "PRICE": "Set the price (Rs)",
+        "price": "at",
+        "alone": "Alone",
+        "withKit": "With a kit",
+        "tiers": "kit tiers"
+      },
+      "rules": {
+        "dates": "A dated offer needs both dates",
+        "pair": "Give both the kind and the amount, or neither",
+        "empty": "Give a price for items or kit tiers"
+      }
+    },
+    "priceGroups": {
+      "title": "Groups",
+      "add": "Add a group",
+      "empty": "No groups yet.",
+      "none": "—",
+      "fields": {
+        "code": "Code",
+        "name": "Name",
+        "memberCount": "Items and kits",
+        "isActive": "In use"
+      },
+      "hints": {
+        "code": "Capital letters, digits or _. It cannot change later."
+      },
+      "sections": {}
+    },
+    "groupMembers": {
+      "title": "Add to group",
+      "add": "Add",
+      "empty": "—",
+      "none": "—",
+      "fields": {
+        "categoryIds": "Every item in these categories",
+        "productIds": "Items",
+        "kitIds": "Kits",
+        "codes": "Item codes (pasted from a sheet)"
+      },
+      "hints": {
+        "codes": "Separate with spaces, commas or new lines.",
+        "categoryIds": "Items in the subcategories come too."
+      },
+      "sections": {}
     }
   },
   "catalogue": {
@@ -2128,10 +2245,12 @@
     }
   },
   "marketing": {
-    "title": "Pandits and offers",
+    "title": "Pandits, offers and discounts",
     "tabs": {
       "pandits": "Pandits",
-      "discounts": "Discounts"
+      "discounts": "Discounts",
+      "offers": "Offers",
+      "groups": "Groups"
     }
   },
   "settings": {
@@ -2246,7 +2365,8 @@
     "sendKit": "Send the stock for this kit to a branch",
     "sendKitOf": "Send stock for {name} to a branch",
     "sendKitNote": "Moves every item the kit holds, times the number of kits, from the branch chosen at the top to the one below, at its average cost. Optional items stay behind.",
-    "archive": "Archive (keep it, take it out of use)"
+    "archive": "Archive (keep it, take it out of use)",
+    "productOffers": "Offers for this item"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -2837,7 +2957,9 @@
       "branches": "Branches",
       "staff": "Staff",
       "activity": "Activity log",
-      "dataTools": "Data tools"
+      "dataTools": "Data tools",
+      "offers": "Offers",
+      "priceGroups": "Price groups"
     },
     "pageGroups": {
       "dashboard": "Overview",
@@ -2902,5 +3024,31 @@
     "kit": "Kit price",
     "saves": "Customer saves",
     "notCheaper": "This kit is not cheaper than buying its items one by one. Raise the kit discount so that it is."
+  },
+  "groupMembers": {
+    "open": "Items and kits in this group",
+    "title": "{name}",
+    "note": "An offer put on this group covers everything here.",
+    "count": "{count} in the group",
+    "add": "Add items and kits",
+    "empty": "Nothing in this group yet.",
+    "kit": "Kit",
+    "item": "Item",
+    "remove": "Take out",
+    "addTitle": "Add to the group",
+    "addNote": "Pick items, whole categories, kits or paste item codes. Those already in stay as they are.",
+    "addSubmit": "Add",
+    "added": "Added to the group"
+  },
+  "productOffers": {
+    "title": "Offers for {name}",
+    "note": "Tick an offer to put it on this item. An offer can also reach it through a group, a category or everything.",
+    "list": "List price",
+    "alone": "Alone",
+    "withKit": "With a kit",
+    "none": "No offers yet. Make one under Marketing.",
+    "through": "through a group or category",
+    "off": "switched off",
+    "live": "on now"
   }
 }

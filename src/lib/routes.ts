@@ -48,6 +48,8 @@ export const routes = {
 
   pandits: () => '/marketing',
   discounts: () => '/marketing/discounts',
+  offers: () => '/marketing/offers',
+  priceGroups: () => '/marketing/groups',
 
   taxClasses: () => '/settings',
   deliveryZones: () => '/settings/delivery-zones',

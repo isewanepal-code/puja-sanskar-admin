@@ -17,6 +17,8 @@ export default async function MarketingLayout({
         title={t('title')}
         tabs={[
           { href: routes.pandits(), label: t('tabs.pandits') },
+          { href: routes.offers(), label: t('tabs.offers') },
+          { href: routes.priceGroups(), label: t('tabs.groups') },
           { href: routes.discounts(), label: t('tabs.discounts') },
         ]}
       />

@@ -66,6 +66,8 @@ export const searchPages: SearchPage[] = [
   page('reviews', 'reviews', 'ratings testimonials', 'catalogue:read'),
   page('pandits', 'pandits', 'priest referral', 'promotions:manage'),
   page('discounts', 'discounts', 'coupon promo code offer', 'promotions:manage'),
+  page('offers', 'offers', 'price offer season sale festival kit tier', 'promotions:manage'),
+  page('priceGroups', 'priceGroups', 'group set bundle items', 'promotions:manage'),
   page('categories', 'categories', 'group classify', 'catalogue:read'),
   page('materials', 'materials', 'samagri', 'catalogue:read'),
   page('units', 'units', 'kg gram measure', 'catalogue:read'),
