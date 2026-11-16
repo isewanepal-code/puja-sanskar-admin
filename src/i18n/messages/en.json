@@ -133,7 +133,32 @@
     "online": "online",
     "editWebsite": "Edit website",
     "editWebsiteHint": "Open the website and change its titles, descriptions and buttons right on the page",
-    "editWebsiteFailed": "Could not open the website editor. Please try again."
+    "editWebsiteFailed": "Could not open the website editor. Please try again.",
+    "sectionHelp": {
+      "dashboard": "Aaja ko bikri, order ra kam parne kura ek najar ma.",
+      "counterSale": "Pasal ma ubhera sidhai bechne (POS). Bill tayar huncha.",
+      "orders": "Online ra counter ka order, bill ra delivery.",
+      "customers": "Customer, tinka cart, photo-list ra sandesh.",
+      "items": "Bechne item, price, pack ra photo. Row ko icon bata rang/size, offer, archive.",
+      "options": "Rang, size, lambai, tauls jastai prakar ra tinka value. Yaha ek patak banaune, Items ma tick garne.",
+      "kits": "Tayar kit: puja ko lagi sabai samagri ek sath, chhut sahit.",
+      "stock": "Pratyek pack ko stock, kam bhayeko ra stock ko chal-achal.",
+      "archive": "Hataiyeka (archive) item/kit. Feri ullekh garna milchha.",
+      "buying": "Supplier bata kinera ayeko saman ko bill.",
+      "suppliers": "Saman kinne supplier haru.",
+      "money": "Cash ra bank account, ra tinbich ko paisa.",
+      "expenses": "Pasal ko kharcha.",
+      "reports": "Bikri, nafa-nokshan ra aru hisab.",
+      "offers": "Sasto price: sadhai, season, hapta ko din ya festival anusar. Item, group, category ra kit ma.",
+      "priceGroups": "Item ra kit ko set. Ek patak offer lagauna.",
+      "discounts": "Coupon code ra order ko chhut.",
+      "pandits": "Pandit ra referral code.",
+      "pujas": "Puja, tinko samagri suchi, mantra ra chadparva.",
+      "content": "Website ka lekh, banner, menu ra FAQ.",
+      "catalogue": "Samagri ko varga, samagri, naap ko unit ra srot.",
+      "settings": "VAT, delivery, shakha ra pasal ka niyam.",
+      "staff": "Staff ra tinko role."
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -335,7 +360,10 @@
     "arrangeHandle": "Drag to move {name}",
     "saveOrder": "Save order",
     "orderSaved": "Order saved",
-    "nothingToArrange": "Nothing to arrange yet."
+    "nothingToArrange": "Nothing to arrange yet.",
+    "aboutCreate": "Naya record banauna: tala ka kura bharnus ra \"Create\" thichnus. Pratyek khana ko wari ko (i) ma tyo khana ma ke lekhne bhanera lekhiyeko chha.",
+    "aboutEdit": "Badalnu parne kura matra badalera \"Save\" thichnus. Code jastai kura pachhi badalinna.",
+    "howItWorks": "Yo screen kasari chalchha"
   },
   "pujas": {
     "title": "Pujas",
@@ -468,7 +496,8 @@
       },
       "hints": {
         "code": "Capital letters, such as PUJ. It cannot change later."
-      }
+      },
+      "about": "Puja ko prakar (jastai griha puja, vrat). Puja haru lai varga ma chhutyaucha.\nNaya: \"Add\" thichnus. Badalna: row thichnus. Hataune: tokri icon."
     },
     "puja-groups": {
       "title": "Groups",
@@ -555,7 +584,8 @@
         "SHRADDHA": "Shraddha",
         "PATH": "Path",
         "HOMA": "Hom"
-      }
+      },
+      "about": "Website ma dekhine pujaharu ra tinko samagri suchi.\nNaya puja banaepachhi tyo ko samagri suchi (requirements) ra kit pani jodnus."
     },
     "mantras": {
       "title": "Mantras",
@@ -578,7 +608,8 @@
         "code": "Capital letters, digits or _. It cannot change later.",
         "audioUrl": "An MP3 the website plays only when asked.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working."
-      }
+      },
+      "about": "Mantra ko audio ra barnan. Audio halepachhi website ma music button ma bajchha."
     },
     "categories": {
       "title": "Categories",
@@ -608,7 +639,9 @@
       },
       "sections": {
         "seo": "Search engines"
-      }
+      },
+      "about": "Samagri ko varga (jastai dhup, diya). Mathillo varga ra sub-varga banauna milchha.\nCategory ma pareko sabai item ek patak offer/group ma halna sajilo hunchha.",
+      "aboutForm": "Tapai samagri ko varga banaudai hunuhunchha. Sub-varga ho bhane \"Parent\" chunnus."
     },
     "materials": {
       "title": "Samagri",
@@ -642,7 +675,8 @@
       },
       "sections": {
         "seo": "Search engines"
-      }
+      },
+      "about": "Samagri (kachho padarth): jastai \"kapur\". Product (bechne item) yahi samagri bata banchha.\nPahile samagri banaunus, tespachi Items ma product."
     },
     "units": {
       "title": "Units",
@@ -659,7 +693,9 @@
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later.",
         "symbol": "As requirements write it: g, ml, pcs."
-      }
+      },
+      "about": "Naap ko unit: g, kg, ml, pcs. Pack ra option ma prayog hunchha.",
+      "aboutForm": "Tapai naap ko unit banaudai hunuhunchha (g, kg, ml, pcs)."
     },
     "sources": {
       "title": "Sources",
@@ -676,7 +712,8 @@
       },
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later."
-      }
+      },
+      "about": "Samagri kata bata aayeko (srot): jastai local, import."
     },
     "faqs": {
       "title": "Questions",
@@ -702,7 +739,8 @@
         "DELIVERY": "Delivery",
         "PAYMENT": "Payment",
         "PANDITS": "Pandits"
-      }
+      },
+      "about": "Customer le sodhne prashna ra uttar. Website ko help page ma dekhincha."
     },
     "stories": {
       "title": "Stories",
@@ -728,7 +766,8 @@
       "kinds": {
         "CUSTOMER": "Customer",
         "PANDIT": "Pandit"
-      }
+      },
+      "about": "Website ma dekhine kahani/lekh."
     },
     "pandits": {
       "title": "Pandits",
@@ -769,7 +808,8 @@
         "terms": "Discount and commission",
         "profile": "Profile",
         "seo": "Search engines"
-      }
+      },
+      "about": "Pandit haru ra tinko referral code. Customer le code halda pandit lai commission jancha."
     },
     "taxClasses": {
       "title": "Tax",
@@ -793,7 +833,8 @@
         "STANDARD": "Standard",
         "ZERO_RATED": "Zero rated",
         "EXEMPT": "Exempt"
-      }
+      },
+      "about": "VAT ko varga ra tinko dar (mithi anusar). Bill ma lagne VAT yahi bata aauchha."
     },
     "deliveryZones": {
       "title": "Delivery areas",
@@ -813,7 +854,8 @@
         "areas": "One place per line, city then area: Kathmandu / Baneshwor.",
         "freeAbove": "Orders at or above this pay no delivery fee.",
         "expressFee": "Empty means same-day delivery is not offered here."
-      }
+      },
+      "about": "Delivery ilaka ra shulka. Customer ko ilaka anusar delivery shulka lagchha."
     },
     "deliverySlots": {
       "title": "Delivery times",
@@ -827,7 +869,8 @@
         "endsAt": "Until",
         "sortOrder": "Order",
         "isActive": "Offered"
-      }
+      },
+      "about": "Delivery ko samaya (jastai bihan, dinau). Customer le chhane."
     },
     "users": {
       "title": "Staff accounts",
@@ -860,7 +903,8 @@
       "statuses": {
         "ACTIVE": "Active",
         "DISABLED": "Switched off"
-      }
+      },
+      "about": "Staff haru ra tinko role. Role le kun kam garna paune tokchha."
     },
     "products": {
       "title": "Items",
@@ -901,7 +945,9 @@
       "sections": {
         "website": "On the website",
         "seo": "Search engines"
-      }
+      },
+      "about": "Pasal le bechne sabai item: price, pack ra stock yahi bata.\nRow ko icon haru: pack, quality, jodi, rang/size, offer, archive.",
+      "aboutForm": "Tapai item ko bibaran badaldai hunuhunchha. Price ra pack tala/row ko icon bata badlinchha."
     },
     "variants": {
       "title": "Packs",
@@ -927,7 +973,8 @@
         "label": "As the shopper reads it: 50 g, 1 पोका.",
         "compareAtPrice": "Shown struck through when higher than the price.",
         "optionValueIds": "One value for each kind of difference. The label is made from them when left empty."
-      }
+      },
+      "about": "Item ka pack haru (50 g, 100 g, seto 120x129). Harek ko aafnai price ra stock."
     },
     "grades": {
       "title": "Grades",
@@ -940,7 +987,8 @@
         "noteNe": "Note in Nepali",
         "noteEn": "Note in English",
         "sortOrder": "Order"
-      }
+      },
+      "about": "Item ko quality (sadharan, bishesh). Pack le tyo chhanchha."
     },
     "pairings": {
       "title": "Goes well with",
@@ -968,7 +1016,8 @@
       },
       "hints": {
         "reorderLevel": "The pack shows as low once what is available falls to this."
-      }
+      },
+      "about": "Pratyek pack ko stock. Kam bhayeko tala dekhincha."
     },
     "movements": {
       "title": "Stock changes",
@@ -1043,7 +1092,9 @@
         "PREMIUM": "Premium"
       },
       "available": "In stock",
-      "unavailable": "Short"
+      "unavailable": "Short",
+      "about": "Tayar kit: puja ko lagi sabai samagri ek sath, sasto dar ma.\nKit banepachhi \"items\" bata samagri thapnus. Kit ma chhut (%) rakhna milchha.",
+      "aboutForm": "Tapai tayar kit banaudai hunuhunchha. Naam, photo ra chhut halnus; save pachhi samagri (items) thapnus."
     },
     "kitSet": {
       "title": "Kit set",
@@ -1116,7 +1167,8 @@
         "isOptional": "Optional",
         "note": "Note",
         "sortOrder": "Order"
-      }
+      },
+      "about": "Kit bhitra ka samagri ra tinko matra. \"Optional\" bhaye customer le chaye matra thapne."
     },
     "requirements": {
       "title": "Samagri",
@@ -1203,7 +1255,8 @@
       "sections": {
         "website": "On the website",
         "seo": "Search engines"
-      }
+      },
+      "about": "Chadparva haru ra tinka mithi. Website ma \"chaleko\" festival aafai dekhincha, offer pani festival sanga jodna milchha."
     },
     "festivalDates": {
       "title": "Dates",
@@ -1278,7 +1331,8 @@
       },
       "rules": {
         "guide": "A guide belongs to a puja"
-      }
+      },
+      "about": "Blog/lekh haru."
     },
     "articleStatus": {
       "title": "Status",
@@ -1314,7 +1368,8 @@
       "statuses": {
         "PUBLISHED": "Published",
         "HIDDEN": "Hidden"
-      }
+      },
+      "about": "Customer ka review. Thik chha bhane publish garnus, galat bhaye lukaunus."
     },
     "banners": {
       "title": "Banners",
@@ -1341,7 +1396,8 @@
       "placements": {
         "HOME_HERO": "Home, top",
         "HOME_STRIP": "Home, strip"
-      }
+      },
+      "about": "Home page ma dekhine thulo photo/banner ra tinko link."
     },
     "homeSections": {
       "title": "Home rows",
@@ -1368,7 +1424,8 @@
       },
       "rules": {
         "kind": "Pick only items of the kind this row shows"
-      }
+      },
+      "about": "Home page ka section haru ra tinko kram."
     },
     "discounts": {
       "title": "Discounts",
@@ -1432,7 +1489,9 @@
         "percent": "A percentage is at most 100",
         "targets": "Pick what it covers",
         "scope": "Pick only items of the kind it covers"
-      }
+      },
+      "about": "Coupon code ra aafai lagne chhut (order ma). Item/kit ko aafnai price ko lagi Marketing → Offers prayog garnus.",
+      "aboutForm": "Tapai coupon ya aafai lagne order chhut banaudai hunuhunchha. Customer le type garne coupon code yaha lekhnus."
     },
     "orderStatus": {
       "title": "—",
@@ -1595,7 +1654,8 @@
       "sections": {
         "payment": "Payment",
         "chat": "Chat links"
-      }
+      },
+      "about": "Bill ma chhapine byabasayik bibaran: naam, PAN, thegana."
     },
     "shopSettings": {
       "title": "Shop",
@@ -1642,7 +1702,8 @@
       "unlisted": {
         "QUOTE": "Staff quote the fee",
         "REFUSE": "Checkout refuses it"
-      }
+      },
+      "about": "Pasal ko sadharan niyam: VAT, delivery, COD, search ma dekhine shabda."
     },
     "customers": {
       "title": "Customers",
@@ -1667,7 +1728,8 @@
       "statuses": {
         "ACTIVE": "Active",
         "DISABLED": "Switched off"
-      }
+      },
+      "about": "Customer haru ko suchi. Yaha herna matra milchha."
     },
     "carts": {
       "title": "Carts",
@@ -1687,7 +1749,8 @@
         "OPEN": "Open",
         "CHECKED_OUT": "Checked out",
         "MERGED": "Merged"
-      }
+      },
+      "about": "Customer ka cart haru. Herna matra milchha."
     },
     "cartActivity": {
       "title": "Activity",
@@ -1765,7 +1828,8 @@
         "phone": "Phone",
         "language": "Language",
         "createdAt": "Signed up"
-      }
+      },
+      "about": "Customer lai pathaune reminder haru."
     },
     "activity": {
       "title": "Activity",
@@ -1814,7 +1878,8 @@
         "PAY_NOW": "Pay now",
         "CASH_ON_DELIVERY": "Cash on delivery",
         "SOMEONE_ELSE": "Someone else pays"
-      }
+      },
+      "about": "Online ra counter ka order haru. Row thichera avastha badlana milchha."
     },
     "branches": {
       "title": "Branches",
@@ -1837,7 +1902,8 @@
       "hints": {
         "code": "2 to 6 capitals, such as BNS. It cannot change.",
         "billPrefix": "Printed before bill numbers, such as BNS-2083/84-000001. Left empty, the branch code."
-      }
+      },
+      "about": "Pasal/shakha haru. Harek ko aafnai stock ra order hunchha."
     },
     "staffBranches": {
       "title": "Branches",
@@ -1869,7 +1935,8 @@
       "hints": {
         "openingBalance": "What was in it before the shop started recording here.",
         "kind": "Accounts are opened at the branch chosen at the top."
-      }
+      },
+      "about": "Cash ra bank account haru. Aay-vyaya yahi bata hisab huncha."
     },
     "moneyTransfer": {
       "title": "Move money",
@@ -1922,7 +1989,8 @@
       },
       "hints": {
         "openingBalance": "What the shop owed them before recording here."
-      }
+      },
+      "about": "Saman kinne supplier haru."
     },
     "purchaseBills": {
       "title": "Bills",
@@ -1939,7 +2007,8 @@
         "vatTotal": "VAT",
         "total": "Total",
         "status": "Status"
-      }
+      },
+      "about": "Supplier bata kinera ayeko saman ko bill. Save garepachhi stock badhchha."
     },
     "supplierPayments": {
       "title": "Payments",
@@ -1975,7 +2044,8 @@
         "name": "Name",
         "code": "Code",
         "isActive": "In use"
-      }
+      },
+      "about": "Kharcha ka varga (jastai bijuli, tala)."
     },
     "expenses": {
       "title": "Expenses",
@@ -2001,7 +2071,8 @@
       "hints": {
         "amount": "Everything paid, VAT included.",
         "vatAmount": "From their VAT bill; it is set against the VAT you collect."
-      }
+      },
+      "about": "Pasal ko kharcha. Rakam, varga ra mithi halnus."
     },
     "voidExpense": {
       "title": "Void",
@@ -2096,7 +2167,8 @@
         "isHighlighted": "Drawn in the accent colour, like Offers.",
         "sortOrder": "Smaller numbers come first.",
         "tooltipNe": "A short line shown when a visitor rests the pointer on the link, such as what the page offers. Optional."
-      }
+      },
+      "about": "Website ko menu. Naam, link ra (mouse rakhda dekhine) sano barnan."
     },
     "kitTransfer": {
       "title": "Send kit stock",
@@ -2195,7 +2267,9 @@
         "dates": "A dated offer needs both dates",
         "pair": "Give both the kind and the amount, or neither",
         "empty": "Give a price for items or kit tiers"
-      }
+      },
+      "about": "Item ra kit ko sasto price: sadhai, season, hapta ko din ya festival anusar.\nTin step: kahile → price → kasko lagi. Dherai item ek patak ma halna Item groups prayog garnus.",
+      "aboutForm": "Tapai sasto price ko niyam (offer) banaudai hunuhunchha. 1) kahile chalne, 2) price kasari badlane, 3) kun item/kit ma lagne. Pahile naam halnus."
     },
     "priceGroups": {
       "title": "Groups",
@@ -2217,7 +2291,9 @@
         "categoryIds": "Every item inside the category and its sub-categories.",
         "codes": "Separated by spaces, commas or new lines."
       },
-      "sections": {}
+      "sections": {},
+      "about": "Item ra kit ko set (jastai \"Teej samagri\"). Ek patak offer lagauna.\nNaya group banaunda tyahi item pani chunna milchha; pachhi row ko list icon bata thapna/hataunu milchha.",
+      "aboutForm": "Tapai item/kit ko ek set banaudai hunuhunchha. Naam halnus, ani tyahi item chunnus (category, item, kit ya code paste). Pachhi yo group Offers ma chunera ek patak chhut dina milchha."
     },
     "groupMembers": {
       "title": "Add to group",
@@ -2265,7 +2341,9 @@
       "rules": {
         "unit": "A number option needs its unit",
         "noUnit": "Only a number option has a unit"
-      }
+      },
+      "about": "Item kasari farak hunchha: rang, size, lambai, tauls. Yaha ek patak banaune, tespachi Items ma tick garne.\nRow ko list icon bata tyasko value (seto, kalo, 500 g) thapnus.",
+      "aboutForm": "Tapai item kasari farak hunchha bhanne prakar (rang, size, tauls) banaudai hunuhunchha. Pachhi \"list\" icon bata tyasko value thapnus."
     },
     "optionValues": {
       "title": "Value",
@@ -2283,7 +2361,8 @@
         "colorHex": "For example #ffffff for white.",
         "numberValue": "In the unit of this option."
       },
-      "sections": {}
+      "sections": {},
+      "about": "Euta option ko value: jastai Rang ko \"Seto\". Rang bhaye hex code, tauls/lambai bhaye anka halnus."
     }
   },
   "catalogue": {
@@ -3151,5 +3230,327 @@
   "optionsPage": {
     "title": "Colours and sizes",
     "intro": "What items come in: each colour, size, length or weight is set up once here, then ticked on an item."
+  },
+  "fieldGuide": {
+    "placeholder": {
+      "name": "e.g. Teej samagri",
+      "nameEn": "e.g. Dhup",
+      "nameNe": "जस्तै: धूप",
+      "nameRomanized": "e.g. dhup",
+      "title": "e.g. Dashain special",
+      "titleEn": "e.g. Teej offer",
+      "titleNe": "जस्तै: तीज अफर",
+      "subtitle": "e.g. Fresh flowers daily",
+      "description": "e.g. Pure camphor tablets for aarati",
+      "descriptionEn": "English ma lekhnus",
+      "descriptionNe": "नेपालीमा लेख्नुहोस्",
+      "summaryEn": "One or two lines in English",
+      "summaryNe": "१-२ लाइनमा लेख्नुहोस्",
+      "note": "e.g. Keep in a cool place",
+      "notes": "Any extra detail",
+      "staffNote": "Only staff see this",
+      "reason": "Why is this needed?",
+      "slug": "auto from the name",
+      "metaTitle": "e.g. Dhup – buy online",
+      "metaDescription": "One line for Google",
+      "sortOrder": "e.g. 1",
+      "priority": "0",
+      "price": "e.g. 450",
+      "compareAtPrice": "e.g. 550",
+      "amount": "e.g. 1000",
+      "value": "e.g. 10",
+      "fee": "e.g. 100",
+      "deliveryFee": "e.g. 100",
+      "expressFee": "e.g. 300",
+      "freeAbove": "e.g. 2000",
+      "minSubtotal": "e.g. 500",
+      "maxDiscount": "e.g. 200",
+      "unitCost": "e.g. 40",
+      "openingUnitCost": "e.g. 40",
+      "openingBalance": "e.g. 0",
+      "counted": "e.g. 15000",
+      "cashOnDeliveryMax": "e.g. 5000",
+      "vatAmount": "e.g. 130",
+      "ratePercent": "e.g. 13",
+      "commissionPercent": "e.g. 5",
+      "counterDiscountMaxPercent": "e.g. 10",
+      "quantity": "e.g. 1",
+      "packQuantity": "e.g. 500",
+      "openingQuantity": "e.g. 50",
+      "reorderLevel": "e.g. 10",
+      "kits": "e.g. 1",
+      "usageLimit": "e.g. 100",
+      "perCustomerLimit": "e.g. 1",
+      "paymentWindowHours": "e.g. 48",
+      "durationSeconds": "e.g. 180",
+      "code": "made for you",
+      "sku": "made for you",
+      "couponCode": "e.g. DASHAIN10",
+      "billPrefix": "e.g. PS",
+      "symbol": "e.g. g",
+      "email": "name@example.com",
+      "phone": "e.g. 98XXXXXXXX",
+      "whatsappNumber": "e.g. 98XXXXXXXX",
+      "viberNumber": "e.g. 98XXXXXXXX",
+      "messengerPage": "e.g. pujasanskar",
+      "address": "e.g. Baneshwor, Kathmandu",
+      "place": "e.g. Pashupati Aryaghat",
+      "area": "e.g. Baneshwor",
+      "areas": "One area per line",
+      "panNumber": "e.g. 123456789",
+      "buyerPan": "e.g. 123456789",
+      "payeePan": "e.g. 123456789",
+      "legalName": "e.g. Puja Sanskar Pvt. Ltd.",
+      "fullName": "e.g. Sita Sharma",
+      "password": "At least 12 characters",
+      "url": "https://…",
+      "linkUrl": "/kits or https://…",
+      "href": "/kits or https://…",
+      "audioUrl": "https://…/mantra.mp3",
+      "youtubeId": "e.g. dQw4w9WgXcQ",
+      "tags": "e.g. diwali, bestseller",
+      "traditions": "e.g. Newar, Brahmin",
+      "popularSearches": "e.g. dhup, kapur",
+      "aliases": "e.g. camphor, kapoor",
+      "specification": "e.g. Pure, 99% camphor",
+      "hsCode": "e.g. 33074100",
+      "question": "e.g. How do I track my order?",
+      "questionEn": "e.g. How do I track my order?",
+      "questionNe": "जस्तै: अर्डर कसरी ट्र्याक गर्ने?",
+      "answerEn": "Write the answer",
+      "answerNe": "उत्तर लेख्नुहोस्",
+      "topic": "e.g. Delivery",
+      "topicEn": "e.g. Delivery",
+      "topicNe": "जस्तै: डेलिभरी",
+      "tooltipEn": "e.g. Ready kits for pujas",
+      "tooltipNe": "जस्तै: पूजाका तयारी किट",
+      "labelEn": "e.g. Kits",
+      "labelNe": "जस्तै: किट",
+      "label": "e.g. 100 g",
+      "packLabel": "e.g. 100 g",
+      "personEn": "e.g. Pandit Ram Sharma",
+      "personNe": "जस्तै: पण्डित राम शर्मा",
+      "bioEn": "A line or two about them",
+      "bioNe": "सानो परिचय",
+      "text": "Write the text",
+      "body": "Write the text",
+      "billFooter": "e.g. Thank you for shopping",
+      "qrLabel": "e.g. eSewa – Puja Sanskar",
+      "qrPayload": "Paste the QR text",
+      "payee": "e.g. Ram Traders",
+      "reference": "e.g. Receipt no. 123",
+      "dayFrom": "09:00",
+      "dayTo": "21:00",
+      "aloneValue": "e.g. 10",
+      "withKitValue": "e.g. 15",
+      "kitTiers": "2: 10%\n3: 15%",
+      "codes": "DEVP001 DEVP002",
+      "numberValue": "e.g. 500",
+      "valueEn": "e.g. White",
+      "valueNe": "जस्तै: सेतो",
+      "colorHex": "#ffffff"
+    },
+    "help": {
+      "name": "Yo record ko naam. Staff le chinna sajilo hune sano, spasta naam rakhnus.",
+      "nameEn": "English ma naam. Website ko English bhasha ma yahi dekhincha, ra code pani yahi bata aafai banchha.",
+      "nameNe": "Nepali ma naam (devanagari). Website ko Nepali bhasha ma yahi dekhincha.",
+      "nameRomanized": "Nepali naam Latin akshar ma. Customer le \"dhup\" lekhera khojda pani paiyos bhanera.",
+      "title": "Chhoto sirshak. Yo website ma tyo thau ma dekhincha.",
+      "titleEn": "English ma sirshak/badge.",
+      "titleNe": "Nepali ma sirshak/badge.",
+      "subtitle": "Sirshak ko tala ko sano line.",
+      "description": "Chhoto parichaya: yo ke ho, kasko lagi ho. Customer le product page ma padhchha.",
+      "descriptionEn": "English ma barnan. Bold, line-break jastai simple HTML chalchha.",
+      "descriptionNe": "Nepali ma barnan.",
+      "summaryEn": "1-2 line ko saransh. List ma yahi dekhincha.",
+      "summaryNe": "Nepali ma 1-2 line ko saransh.",
+      "note": "Aafno lagi tippani. Customer lai dekhaidaina (jaha \"website ma dekhine\" bhanyeko chhaina).",
+      "notes": "Aru kura lekhnu parne bhaye yaha lekhnus.",
+      "staffNote": "Staff le matra dekhne tippani; customer lai dekhaidaina.",
+      "reason": "Kina garyo bhanera chhoto karan lekhnus, pachhi herna sajilo hunchha.",
+      "slug": "Website ko link ma jane naam (jastai /kits/dashain-kit). Khali chhodnus bhane naam bata aafai banchha.",
+      "metaTitle": "Google ma dekhine sirshak. 60-70 akshar bhitra.",
+      "metaDescription": "Google ma sirshak muni dekhine barnan. 150 akshar bhitra.",
+      "sortOrder": "Website/list ma kun kram ma dekhine. Sano number pahile dekhincha.",
+      "isActive": "On: website/shop ma dekhincha ra chalchha. Off: lukcha tara data jogiyera rahancha (feri on garna milchha).",
+      "isPublic": "On: website ma sabai le dekhne.",
+      "isSellable": "On: yo samagri ko product banayera bechna milchha.",
+      "isOptional": "On: kit ma hunai parne chhaina, customer le chaye thapne.",
+      "isHighlighted": "On: sabai bhanda mathi / bishesh dekhaune.",
+      "isComposite": "On: yo samagri dherai samagri milera banyeko ho.",
+      "showOnWebsite": "On: website ma dekhaune.",
+      "pricesIncludeTax": "On: tapai le halne price ma VAT pahile nai chha. Off: VAT tapai le halne price ma pachhi jodinchha.",
+      "vatRegistered": "On: yo VAT darta bhayeko ho.",
+      "emailOrderUpdates": "On: order ko avastha badlida customer lai email jancha.",
+      "cashOnDelivery": "On: saman pugda paisa tirne (COD) chalchha.",
+      "issueBill": "On: bill pani banaune.",
+      "assignToMe": "On: yo kam malai nai tokne.",
+      "firstOrderOnly": "On: customer ko pahilo order ma matra.",
+      "allowCoupons": "Off: yo offer le sasto parekeko saman ma coupon lagdaina.",
+      "everything": "On: pasal ka sabai item ra kit ma lagchha (tala kehi chunnu pardaina).",
+      "more": "On gare aru (kam chaine) option haru dekhinchhan: badge, festival, priority ...",
+      "priority": "Dui offer ko price barabar bhaye, thulo number wala order ma naam aauchha. Samanyatah 0 nai rakhnus.",
+      "price": "Customer le tirne price (VAT sahit). Rupaiya ma.",
+      "compareAtPrice": "Purano/MRP price. Price bhanda thulo hunu parchha; website ma kateko dekhincha. Chaina bhane khali.",
+      "amount": "Rakam, rupaiya ma.",
+      "value": "Percent ho bhane % ko number, rupaiya ho bhane rakam.",
+      "fee": "Shulka, rupaiya ma.",
+      "deliveryFee": "Delivery shulka, rupaiya ma.",
+      "expressFee": "Aaja nai chaine (express) delivery ko thap shulka.",
+      "freeAbove": "Yo rakam bhanda mathi ko order ma delivery free.",
+      "minSubtotal": "Yo rakam pugepachhi matra lagchha. Chaina bhane khali.",
+      "maxDiscount": "Chhut yo rakam bhanda badhi hudaina. Chaina bhane khali.",
+      "unitCost": "Euta ko kharid mulya.",
+      "openingUnitCost": "Suru ko stock ko euta ko kharid mulya.",
+      "openingBalance": "Account suru garda bhayeko rakam.",
+      "counted": "Gananan garera pauneko rakam.",
+      "cashOnDeliveryMax": "COD yo rakam samma ko order ma matra. Chaina bhane khali.",
+      "vatAmount": "VAT ko rakam.",
+      "ratePercent": "Percent ma dar.",
+      "commissionPercent": "Pandit le paune commission percent.",
+      "counterDiscountMaxPercent": "Counter ma staff le dina sakne adhikatam chhut %.",
+      "quantity": "Kati ota.",
+      "packQuantity": "Pack ma kati (500 g ma 500). Naap ko unit tala chunnus.",
+      "openingQuantity": "Suru ma stock ma kati chha.",
+      "reorderLevel": "Stock yo bhanda kam bhayo bhane \"kam bhayo\" bhanera dekhaune.",
+      "kits": "Kati ota kit.",
+      "usageLimit": "Jamma kati patak prayog garna milne. Chaina bhane khali.",
+      "perCustomerLimit": "Ek customer le kati patak. Chaina bhane khali.",
+      "paymentWindowHours": "Order pachhi kati ghanta bhitra tirnu parne.",
+      "durationSeconds": "Audio kati second ko ho.",
+      "code": "Yo aafai banchha, lekhnu pardaina.",
+      "sku": "Yo pack ko chinari (SKU). Aafai banchha, lekhnu pardaina.",
+      "couponCode": "Customer le checkout ma type garne code. Capital akshar, number, - ra _ matra (3-32). Customer le yaad garna sajilo hune banaunus.",
+      "billPrefix": "Bill number ko suru ka akshar (jastai PS-000123).",
+      "symbol": "Chhoto chinha: g, kg, ml, pcs.",
+      "email": "Email thegana.",
+      "phone": "Mobile number.",
+      "whatsappNumber": "WhatsApp number (country code bina). Website ko WhatsApp button yahi ma jancha.",
+      "viberNumber": "Viber number.",
+      "messengerPage": "Facebook page ko naam/id. Website ko Messenger button yahi ma jancha.",
+      "address": "Thegana (tole, sahar).",
+      "place": "Thau ko naam.",
+      "area": "Ilaka ko naam.",
+      "areas": "Ilaka haru, ek line ma ek ota.",
+      "panNumber": "PAN number (9 ank).",
+      "buyerPan": "Kinne ko PAN number (bill ma chahiyema).",
+      "payeePan": "Paune ko PAN number.",
+      "legalName": "Bill ma chhapine kanuni naam.",
+      "fullName": "Pura naam.",
+      "password": "Kam se kam 12 akshar; akshar, number ra chinha milaunus.",
+      "roles": "Yo staff le kun kam garna paune bhanera role chunnus.",
+      "branchIds": "Yo staff kun-kun pasal ma kaam garne.",
+      "url": "Pura web thegana (https:// bata suru).",
+      "linkUrl": "Click garda jane thau: website ko path (/kits) ya pura link.",
+      "href": "Menu thichda jane thau: website ko path (/kits) ya pura link.",
+      "imageUrl": "Photo chunnus ya upload garnus. Photo spasta ra chhoto size ko (10 MB bhitra) bhaye ramro.",
+      "images": "Photo haru. Pahilo photo mukhya hunchha.",
+      "coverImageUrl": "Mathi ko thulo photo.",
+      "photoUrl": "Photo chunnus ya upload garnus.",
+      "receiptUrl": "Bill/rasid ko photo.",
+      "audioUrl": "Audio file ko link (mp3). Website ko music button yahi bajchha.",
+      "youtubeId": "YouTube link ko ant ma bhayeko id (v= pachhi ko).",
+      "tags": "Shabda haru comma le chhuttayera. Staff le khoj ra chhutyaunako lagi.",
+      "traditions": "Yo puja kun parampara ma garincha, comma le chhuttayera.",
+      "popularSearches": "Search box khali hunda dekhine shabda haru, comma le chhuttayera.",
+      "aliases": "Yo samagri ko aru naam, comma le chhuttayera.",
+      "specification": "Samagri ko bishesta/guna.",
+      "hsCode": "Bhansar ko HS code (4-8 ank). Bill ma chhapine.",
+      "question": "Customer le sodhne prashna.",
+      "questionEn": "English ma prashna.",
+      "questionNe": "Nepali ma prashna.",
+      "answerEn": "English ma uttar.",
+      "answerNe": "Nepali ma uttar.",
+      "topic": "Kun bishaya ma parchha.",
+      "topicEn": "English ma bishaya.",
+      "topicNe": "Nepali ma bishaya.",
+      "tooltipEn": "Menu ma mouse rakhda dekhine sano barnan (English).",
+      "tooltipNe": "Menu ma mouse rakhda dekhine sano barnan (Nepali).",
+      "labelEn": "English ma lekha.",
+      "labelNe": "Nepali ma lekha.",
+      "label": "Pack ko naam. Option bata aafai banchha, tara chaye lekhna milchha.",
+      "packLabel": "Pack ko naam.",
+      "personEn": "Naam (English).",
+      "personNe": "Naam (Nepali).",
+      "bioEn": "Parichaya (English).",
+      "bioNe": "Parichaya (Nepali).",
+      "text": "Lekha.",
+      "body": "Lekha.",
+      "billFooter": "Bill ko tala chhapine lekha.",
+      "qrLabel": "QR ko naam (kasko ho).",
+      "qrPayload": "QR bata padhera paiyeko lekha, yaha paste garnus.",
+      "payee": "Paisa paune ko naam.",
+      "reference": "Bank/eSewa ko reference ya rasid number.",
+      "startsAt": "Kahile dekhi shuru huncha.",
+      "endsAt": "Kahile samma chalchha.",
+      "startsOn": "Shuru hune mithi.",
+      "endsOn": "Sakine mithi.",
+      "day": "Mithi.",
+      "paidAt": "Paisa tireko samaya.",
+      "effectiveFrom": "Yo dar kahile dekhi lagu huncha.",
+      "openingDay": "Suru ko stock kun mithi dekhi.",
+      "dayFrom": "Dainik samaya: kati baje dekhi.",
+      "dayTo": "Dainik samaya: kati baje samma.",
+      "weekdays": "Kun-kun din chalne. Khali bhaye sabai din.",
+      "schedule": "Sadhai chalne, dui mithi bichako, ya hapta ko din/samaya anusar.",
+      "aloneKind": "Item aaphai kinda price kasari badlane: % kam, rupaiya kam, ya sidhai naya price. Kehi nabadlane bhaye khali.",
+      "aloneValue": "Tyo kind anusar number: 10 (%), 20 (rupaiya), ya 75 (naya price).",
+      "withKitKind": "Cart ma kit pani bhayeko bela item ko price kasari badlane. Kehi nabadlane bhaye khali.",
+      "withKitValue": "Tyo kind anusar number.",
+      "kitTiers": "Ek line ma ek tier: \"kati kit: kati chhut\". Jastai 2: 10% = 2 kit kinda pratyek kit ma 10% chhut.",
+      "festivalId": "Chunyo bhane yo festival chaleko bela matra lagchha.",
+      "groupIds": "Group ma bhayeka sabai item/kit ma lagchha. Group Marketing → Item groups ma banaunus.",
+      "categoryIds": "Category ra tyasko sabai sub-category ka sabai item.",
+      "productIds": "Khas item haru chunnus.",
+      "variantIds": "Khas pack (jastai kalo 120x129) matra chunnus.",
+      "kitIds": "Khas kit haru chunnus.",
+      "itemIds": "Item haru chunnus.",
+      "pujaIds": "Puja haru chunnus.",
+      "scopeIds": "Kun category/item ma lagne, chunnus.",
+      "codes": "Sheet bata item ko code paste garnus; space, comma ya naya line le chhuttaunus.",
+      "leaveOutProductIds": "Group/category ma pareni yo item ma offer nalagne bhaye yaha chunnus.",
+      "leaveOutKitIds": "Yo kit ma offer nalagne bhaye chunnus.",
+      "leaveOutGroupIds": "Yo group ma offer nalagne bhaye chunnus.",
+      "optionValueIds": "Yo pack ko rang/size/tauls: pratyek ko euta value. Label khali chhodda yahi bata banchha.",
+      "numberValue": "Yo option ko anka (unit option anusar: g, cm ...).",
+      "valueEn": "English ma value.",
+      "valueNe": "Nepali ma value.",
+      "colorHex": "Rang ko hex code (#rrggbb). Seto = #ffffff, kalo = #000000.",
+      "kind": "Prakar chunnus. Pachhi badalna milchhaina.",
+      "unitId": "Naap ko unit (g, kg, cm ...).",
+      "packUnitId": "Pack ko naap ko unit.",
+      "defaultUnitId": "Yo samagri ko sadharan naap ko unit.",
+      "categoryId": "Yo kun category ma pardacha.",
+      "parentId": "Yo kasko sub-category ho. Khali bhaye mathillo category.",
+      "materialId": "Kun samagri ho. Pachhi badalna milchhaina.",
+      "pujaId": "Kun puja ko lagi.",
+      "gradeId": "Yo pack kun quality (grade) ko ho.",
+      "taxClassId": "Kun VAT varga. Khali bhaye category/shop ko sadharan varga lagchha.",
+      "defaultTaxClassId": "Sabai samagri ko sadharan VAT varga.",
+      "deliveryTaxClassId": "Delivery shulka ma lagne VAT varga.",
+      "sourceId": "Yo kata bata aayeko (srot).",
+      "supplierId": "Kun suppliers bata.",
+      "mantraId": "Yo festival/puja ko mantra.",
+      "ritualTypeId": "Puja ko prakar (jastai griha puja).",
+      "tier": "Basic, Standard ya Premium: ek puja ka tin package.",
+      "toBranchId": "Kun pasal ma pathaune.",
+      "accountId": "Kun account bata/ma.",
+      "fromAccountId": "Paisa kun account bata jane.",
+      "toAccountId": "Paisa kun account ma jane.",
+      "groupId": "Kun group ma.",
+      "trigger": "Aafai lagne (automatic) ki coupon code halepachhi.",
+      "scope": "Pura order ma ki khas category/item ma.",
+      "channels": "Kun tarika bata kinda lagne."
+    },
+    "kind": {
+      "text": "Yaha lekhnus",
+      "textarea": "Yaha lekhnus",
+      "html": "Yaha lekhnus",
+      "number": "e.g. 10",
+      "money": "e.g. 450",
+      "percent": "e.g. 13",
+      "url": "https://…",
+      "tags": "comma le chhuttayera"
+    }
   }
 }

@@ -55,6 +55,9 @@ export type Field = {
   // A heading the field starts, from resources.<key>.sections.<section>.
   section?: string;
   defaultValue?: string | boolean | string[];
+  // A code made for a new record, never typed. `name: 'code'` is made so by default; give this to
+  // make another code field so (a SKU), with its own start and separator.
+  auto?: { prefix?: string; separator?: '_' | '-' };
   // Shown only while this is true of what the form holds now (dates only for a dated offer).
   showWhen?: (values: Record<string, unknown>) => boolean;
 };

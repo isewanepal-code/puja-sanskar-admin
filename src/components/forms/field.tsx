@@ -1,23 +1,29 @@
 import type { ReactNode } from 'react';
 
+import { InfoTip } from '@/components/ui/info-tip';
 import { cn } from '@/lib/utils';
 
 type FieldProps = {
   label: string;
   htmlFor: string;
   hint?: ReactNode;
+  // A longer explanation, opened by the "i" beside the label.
+  help?: ReactNode;
   error?: string;
   className?: string;
   children: ReactNode;
 };
 
 // A label, its control, then either the API's complaint or a hint.
-export function Field({ label, htmlFor, hint, error, className, children }: FieldProps) {
+export function Field({ label, htmlFor, hint, help, error, className, children }: FieldProps) {
   return (
     <div className={cn('grid content-start gap-1.5', className)}>
-      <label htmlFor={htmlFor} className="text-sm font-medium">
-        {label}
-      </label>
+      <span className="inline-flex items-center gap-1.5">
+        <label htmlFor={htmlFor} className="text-sm font-medium">
+          {label}
+        </label>
+        {help ? <InfoTip text={help} /> : null}
+      </span>
       {children}
       {error ? (
         <p className="text-xs text-destructive">{error}</p>

@@ -87,11 +87,13 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
                 {group.sections.map((section) => {
                   const active = isActive(pathname, section.href);
                   const label = t(`sections.${section.key}`);
+                  // What the screen is for, shown on hover.
+                  const help = t(`sectionHelp.${section.key}`);
                   return (
                     <Link
                       key={section.key}
                       href={section.href}
-                      title={collapsed ? label : undefined}
+                      title={collapsed ? `${label}: ${help}` : help}
                       // A link followed on a phone closes the drawer.
                       onClick={close}
                       aria-current={active ? 'page' : undefined}

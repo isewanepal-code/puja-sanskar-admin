@@ -13,6 +13,7 @@ import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { Input, Switch, Textarea } from '@/components/ui/input';
 import { fieldErrors, isApiError, request } from '@/lib/api';
 
+import { isAutoField, withAutoCodes } from './auto-fields';
 import { schemaFor, toBody, toFormValues, type FormValues } from './form-values';
 import { ImageInput, ImagesInput } from './image-inputs';
 import { useResourceText, type Translate } from './translate';
@@ -32,6 +33,7 @@ function Control({
   invalid,
   t,
   record,
+  placeholder,
 }: {
   field: Field;
   id: string;
@@ -39,6 +41,8 @@ function Control({
   invalid: boolean;
   t: Translate;
   record?: Record<string, unknown>;
+  // An example of what to type, so nobody has to guess.
+  placeholder?: string;
 }) {
   const { register, getValues, setValue } = form;
   const common = { id, 'aria-invalid': invalid || undefined, ...register(field.name) };
@@ -59,7 +63,9 @@ function Control({
         known={record && field.known ? field.known(record) : undefined}
         invalid={invalid}
         required={field.required}
-        placeholder={field.required ? undefined : t.has('none') ? t('none') : undefined}
+        placeholder={
+          placeholder ?? (field.required ? undefined : t.has('none') ? t('none') : undefined)
+        }
         onChange={(next) => setValue(field.name, next, { shouldDirty: true, shouldValidate: true })}
       />
     );
@@ -93,15 +99,23 @@ function Control({
     case 'switch':
       return <Switch label={t(`fields.${field.name}`)} {...register(field.name)} />;
     case 'textarea':
-      return <Textarea rows={3} maxLength={field.max} {...common} />;
+      return <Textarea rows={3} maxLength={field.max} placeholder={placeholder} {...common} />;
     case 'html':
-      return <Textarea rows={6} className="font-mono text-[0.8rem]" {...common} />;
+      return (
+        <Textarea
+          rows={6}
+          className="font-mono text-[0.8rem]"
+          placeholder={placeholder}
+          {...common}
+        />
+      );
     default:
       return (
         <Input
           type={INPUT_TYPE[field.kind] ?? 'text'}
           maxLength={field.max}
           className={field.kind === 'code' ? 'uppercase' : undefined}
+          placeholder={placeholder}
           autoComplete="off"
           {...common}
         />
@@ -144,9 +158,31 @@ export function ResourceForm<T>({
   const mode = row ? 'edit' : 'create';
   // One key for this form's life: sending again after a lost answer replays the first result.
   const [idempotencyKey] = useState(() => crypto.randomUUID());
-  const fields = resource.fields.filter((field) =>
+  const guide = useTranslations('fieldGuide') as unknown as Translate;
+  const inMode = resource.fields.filter((field) =>
     mode === 'create' ? !field.editOnly : !field.createOnly,
   );
+  // Codes are made for a new record, not typed.
+  const isAuto = (field: Field) =>
+    mode === 'create' &&
+    field.kind === 'code' &&
+    (field.name === 'code' || field.auto !== undefined);
+  const fields = inMode.filter((field) => !isAuto(field));
+  const autoFields = inMode.filter(isAuto);
+  const placeholderOf = (field: Field) =>
+    t.has(`placeholders.${field.name}`)
+      ? t(`placeholders.${field.name}`)
+      : guide.has(`placeholder.${field.name}`)
+        ? guide(`placeholder.${field.name}`)
+        : guide.has(`kind.${field.kind}`)
+          ? guide(`kind.${field.kind}`)
+          : undefined;
+  const helpOf = (field: Field) =>
+    t.has(`help.${field.name}`)
+      ? t(`help.${field.name}`)
+      : guide.has(`help.${field.name}`)
+        ? guide(`help.${field.name}`)
+        : undefined;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schemaFor(fields)) as never,
@@ -158,7 +194,12 @@ export function ResourceForm<T>({
 
   const save = useMutation({
     mutationFn: (values: FormValues) => {
-      const fieldBody = toBody(fields, values, mode);
+      const fieldBody = withAutoCodes(
+        resource.key,
+        autoFields,
+        values,
+        toBody(fields, values, mode),
+      );
       const body = resource.shapeBody ? resource.shapeBody(fieldBody) : fieldBody;
       if (resource.singleton) return request(resource.singleton, resource.path, { body });
       return row
@@ -228,6 +269,7 @@ export function ResourceForm<T>({
                 label={`${t(`fields.${field.name}`)}${field.required ? '' : ` (${tf('optional')})`}`}
                 htmlFor={id}
                 hint={hint}
+                help={helpOf(field)}
                 error={typeof message === 'string' ? message : undefined}
                 className={
                   field.wide ||
@@ -246,6 +288,7 @@ export function ResourceForm<T>({
                   invalid={!!message}
                   t={t}
                   record={row as Record<string, unknown> | undefined}
+                  placeholder={placeholderOf(field)}
                 />
               </FieldShell>
             )}

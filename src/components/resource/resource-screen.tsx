@@ -8,6 +8,7 @@ import { useDeferredValue, useId, useState, type ReactNode } from 'react';
 import { useToast } from '@/components/overlays';
 import { Button, IconButton } from '@/components/ui/button';
 import { DataTable, type Column } from '@/components/ui/data-table';
+import { InfoTip } from '@/components/ui/info-tip';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 import { Pagination } from '@/components/ui/pagination';
@@ -187,6 +188,9 @@ export function ResourceScreen<T>({
           </span>
         ) : null}
         <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
+          {t.has('about') ? (
+            <InfoTip text={t('about')} label={tf('howItWorks')} align="right" />
+          ) : null}
           {toolbar}
           {resource.exportPath ? (
             <ExportButton
@@ -278,6 +282,13 @@ export function ResourceScreen<T>({
           editing === 'new' || editing === null
             ? t('add')
             : tf('editing', { name: resource.rowLabel(editing) })
+        }
+        description={
+          t.has('aboutForm')
+            ? t('aboutForm')
+            : editing === 'new'
+              ? tf('aboutCreate')
+              : tf('aboutEdit')
         }
         footer={
           <>

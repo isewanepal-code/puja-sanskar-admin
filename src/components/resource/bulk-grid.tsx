@@ -13,6 +13,7 @@ import { Modal } from '@/components/ui/modal';
 import { isApiError, request } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
+import { isAutoField, withAutoCodes } from './auto-fields';
 import { schemaFor, toBody } from './form-values';
 import { useResourceText } from './translate';
 import type { Field, Resource } from './types';
@@ -56,9 +57,12 @@ export function BulkGrid<T>({
   const tf = useTranslations('forms');
   const toast = useToast();
   const queryClient = useQueryClient();
-  const offered = (resource.bulk ?? [])
+  const named = (resource.bulk ?? [])
     .map((name) => resource.fields.find((field) => field.name === name))
     .filter((field): field is Field => !!field && field.kind !== 'switch');
+  // Codes are made for each new row, not typed.
+  const autoFields = named.filter(isAutoField);
+  const offered = named.filter((field) => !isAutoField(field));
 
   // Required columns always show, with the first few optional ones; staff turn on the rest.
   const [hidden, setHidden] = useState<string[]>(() =>
@@ -149,7 +153,12 @@ export function BulkGrid<T>({
     // One at a time and in order, so numbered codes follow the rows.
     for (const { row, i } of filled) {
       try {
-        const fieldBody = toBody(fields, row, 'create');
+        const fieldBody = withAutoCodes(
+          resource.key,
+          autoFields,
+          row,
+          toBody(fields, row, 'create'),
+        );
         const body = resource.shapeBody ? resource.shapeBody(fieldBody) : fieldBody;
         await request(resource.submitMethod ?? 'POST', resource.path, {
           body: { ...body, ...extraBody },

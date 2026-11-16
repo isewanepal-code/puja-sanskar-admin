@@ -269,7 +269,21 @@ export function variantsResource(product: Product): Resource<Variant> {
       activeColumn(),
     ],
     fields: [
-      { name: 'sku', kind: 'code', required: true, pattern: SKU },
+      // Made for a new pack from the product's code, so nobody types a SKU.
+      {
+        name: 'sku',
+        kind: 'code',
+        required: true,
+        pattern: SKU,
+        auto: {
+          prefix:
+            (product.code ?? '')
+              .toUpperCase()
+              .replace(/[^A-Z0-9]/g, '')
+              .slice(0, 16) || 'SKU',
+          separator: '-',
+        },
+      },
       { name: 'optionValueIds', kind: 'multiselect', optionsFrom: optionValueChoices, wide: true },
       { name: 'label', kind: 'text', max: 80 },
       { name: 'packQuantity', kind: 'number', pattern: QUANTITY },
