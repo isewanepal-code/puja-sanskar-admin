@@ -3737,13 +3737,21 @@
       "searchIndex": "Puja, festival ra lekh ko search rahancha"
     },
     "stays": "Yo chai rahancha",
-    "includePujas": "Also delete all pujas",
-    "includePujasHelp": "Tick garyo bhane puja haru (ra puja ko guide lekh) pani jancha. Tick nagarda puja rahanchha. Ek ek gari hataune bhane Pujas page ko Delete button.",
+    "alsoTitle": "Also delete (tick what you want gone)",
+    "alsoNote": "Tick nagareko kura rahanchha. Tick garyo bhane tyo pani poora hatchha.",
+    "also": {
+      "pujas": "Pujas (and their guide articles)",
+      "pujaGroups": "Puja groups, ritual types and levels",
+      "units": "Units (kg, g, m ...)",
+      "mantras": "Mantras",
+      "festivals": "Festivals and their dates"
+    },
+    "alsoRows": "{rows} now",
     "keeps": {
       "staff": "Staff account ra tinko role",
       "settings": "Pasal ko settings: VAT, delivery, shakha, bill ko bibaran",
       "website": "Website ko menu, banner, lekh, FAQ ra site-text",
-      "pujas": "Puja, festival, mantra ra tinka sanga jodiyeko lekh",
+      "pujas": "Puja, puja group, unit, mantra, festival ra puja ko lekh (mathi tick garyo bhane matra hatchha)",
       "media": "Upload gareka photo (media library)"
     },
     "off": "Yo server ma yo suvidha band chha. Chalauna server ko setting ma DATA_RESET_ENABLED=true rakhera feri chalaunus.",

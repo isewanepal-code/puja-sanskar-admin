@@ -13,6 +13,7 @@ import { Modal } from '@/components/ui/modal';
 import { isApiError, request, type Schema } from '@/lib/api';
 
 type Preview = Schema<'DataResetPreviewResponse'>;
+type Extra = Schema<'ResetExtraResponse'>['key'];
 
 const KEEPS = ['staff', 'settings', 'website', 'pujas', 'media'] as const;
 
@@ -25,7 +26,7 @@ export function DataResetScreen() {
   const queryClient = useQueryClient();
   const [asking, setAsking] = useState(false);
   const [typed, setTyped] = useState('');
-  const [pujas, setPujas] = useState(false);
+  const [also, setAlso] = useState<Array<Extra>>([]);
 
   const preview = useQuery({
     queryKey: ['data-reset'],
@@ -34,14 +35,14 @@ export function DataResetScreen() {
   const clear = useMutation({
     mutationFn: () =>
       request<Preview>('POST', '/admin/data-reset', {
-        body: pujas ? { confirm: 'DELETE', includePujas: true } : { confirm: 'DELETE' },
+        body: also.length > 0 ? { confirm: 'DELETE', also } : { confirm: 'DELETE' },
       }),
     onSuccess: async (done) => {
       const rows = done.counts.reduce((sum, count) => sum + count.rows, 0);
       toast.success(t('done', { rows }));
       setAsking(false);
       setTyped('');
-      setPujas(false);
+      setAlso([]);
       // Nothing cached is true any more.
       queryClient.clear();
       router.refresh();
@@ -82,24 +83,40 @@ export function DataResetScreen() {
       <section className="grid gap-2 rounded-lg border border-border bg-muted/40 p-5">
         <h2 className="text-base font-semibold">{t('stays')}</h2>
         <ul className="list-disc pl-5 text-sm text-muted-foreground">
-          {KEEPS.filter((key) => !(pujas && key === 'pujas')).map((key) => (
+          {KEEPS.filter((key) => !(key === 'pujas' && also.includes('pujas'))).map((key) => (
             <li key={key}>{t(`keeps.${key}`)}</li>
           ))}
         </ul>
       </section>
 
-      <label className="flex items-start gap-2 rounded-lg border border-border bg-card p-4 text-sm">
-        <input
-          type="checkbox"
-          checked={pujas}
-          onChange={(event) => setPujas(event.target.checked)}
-          className="mt-0.5 size-4"
-        />
-        <span>
-          <b>{t('includePujas')}</b>
-          <span className="block text-muted-foreground">{t('includePujasHelp')}</span>
-        </span>
-      </label>
+      <section className="grid gap-2 rounded-lg border border-border bg-card p-5">
+        <h2 className="text-base font-semibold">{t('alsoTitle')}</h2>
+        <p className="text-sm text-muted-foreground">{t('alsoNote')}</p>
+        <ul className="grid gap-2 text-sm">
+          {(preview.data?.extras ?? []).map((extra) => (
+            <li key={extra.key}>
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={also.includes(extra.key)}
+                  onChange={(event) =>
+                    setAlso((all) =>
+                      event.target.checked
+                        ? [...all, extra.key]
+                        : all.filter((key) => key !== extra.key),
+                    )
+                  }
+                  className="size-4"
+                />
+                <span>{t(`also.${extra.key}`)}</span>
+                <span className="text-xs text-muted-foreground">
+                  {t('alsoRows', { rows: extra.rows })}
+                </span>
+              </label>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {preview.isSuccess && !enabled ? (
         <p role="status" className="rounded-lg border border-warning/40 bg-warning/10 p-4 text-sm">
@@ -111,7 +128,7 @@ export function DataResetScreen() {
         <Button
           variant="danger"
           icon="trash"
-          disabled={!enabled || total === 0}
+          disabled={!enabled || (total === 0 && also.length === 0)}
           onClick={() => setAsking(true)}
         >
           {t('button')}

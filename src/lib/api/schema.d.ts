@@ -4192,7 +4192,7 @@ export interface paths {
     put?: never;
     /**
      * Clear the shop data (development only)
-     * @description Removes every item, kit, category, offer, order, cart, customer, stock and purchase record. Staff accounts, settings, the website menu, banners, texts, pujas and festivals stay. Needs DATA_RESET_ENABLED and the word DELETE.
+     * @description Removes every item, kit, category, offer, order, cart, customer, stock and purchase record. Staff accounts, settings, the website menu, banners and texts stay, and so do pujas, puja groups, units, mantras and festivals unless named in `also`. Needs DATA_RESET_ENABLED and the word DELETE.
      */
     post: operations['AdminDataResetController_clear'];
     delete?: never;
@@ -12260,10 +12260,18 @@ export interface components {
       /** @example 120 */
       rows: number;
     };
+    ResetExtraResponse: {
+      /** @enum {string} */
+      key: 'pujas' | 'pujaGroups' | 'units' | 'mantras' | 'festivals';
+      /** @example 14 */
+      rows: number;
+    };
     DataResetPreviewResponse: {
       /** @description Switched on for this server (DATA_RESET_ENABLED) */
       enabled: boolean;
       counts: components['schemas']['ResetCountResponse'][];
+      /** @description Left alone unless chosen; rows each would remove */
+      extras: components['schemas']['ResetExtraResponse'][];
     };
     ConfirmDataResetDto: {
       /**
@@ -12273,6 +12281,8 @@ export interface components {
       confirm: string;
       /** @description Also remove every puja (groups and ritual types stay) */
       includePujas?: boolean;
+      /** @description More to remove: pujas, pujaGroups (with ritual types and levels), units, mantras, festivals */
+      also?: ('pujas' | 'pujaGroups' | 'units' | 'mantras' | 'festivals')[];
     };
     ListPujaResponse: {
       /** @example lakshmi-puja */
