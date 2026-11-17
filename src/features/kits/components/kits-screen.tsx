@@ -1,16 +1,19 @@
 'use client';
 
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 import { ActionModal, CountButton, ResourceScreen, useResourceText } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
+import { routes } from '@/lib/routes';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 
 import { KitPriceSummary } from './kit-price-summary';
 import {
   kitFromPujaResource,
+  kitPackResource,
   kitItemsResource,
   kitSetDefaults,
   kitSetEditResource,
@@ -28,6 +31,7 @@ export function KitsScreen() {
   const [setOf, setSetOf] = useState<Kit | 'new' | null>(null);
   const [itemsOf, setItemsOf] = useState<Kit | null>(null);
   const [sending, setSending] = useState<Kit | null>(null);
+  const [packing, setPacking] = useState<{ kit: Kit; mode: 'pack' | 'unpack' } | null>(null);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
   // The items count opens the items, as the button on the row does.
   const resource = useMemo(() => {
@@ -62,14 +66,34 @@ export function KitsScreen() {
             <Button variant="secondary" icon="temple" onClick={() => setFromPuja(true)}>
               {t('kitFromPuja')}
             </Button>
-            <Button icon="plus" onClick={() => setSetOf('new')}>
-              {t('newKitSet')}
-            </Button>
+            <Link
+              href={routes.newKit()}
+              className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              {t('newKitPage')}
+            </Link>
           </>
         }
         onCreated={setItemsOf}
         rowActions={(row) => (
           <>
+            {row.packed ? (
+              <>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon="box"
+                  onClick={() => setPacking({ kit: row, mode: 'pack' })}
+                >
+                  {t('packKits')}
+                </Button>
+                <IconButton
+                  icon="x"
+                  label={t('unpackKits')}
+                  onClick={() => setPacking({ kit: row, mode: 'unpack' })}
+                />
+              </>
+            ) : null}
             <IconButton icon="truck" label={t('sendKit')} onClick={() => setSending(row)} />
             <IconButton
               icon="archive"
@@ -79,9 +103,12 @@ export function KitsScreen() {
             {row.puja && row.tier ? (
               <IconButton icon="grid" label={t('editSet')} onClick={() => setSetOf(row)} />
             ) : null}
-            <Button variant="secondary" size="sm" icon="list" onClick={() => setItemsOf(row)}>
-              {t('itemsCount', { count: row.items.length })}
-            </Button>
+            <Link
+              href={routes.kit(row.id)}
+              className="inline-flex h-8 items-center rounded-md border border-border bg-card px-3 text-sm font-medium hover:bg-muted"
+            >
+              {t('openKit')}
+            </Link>
           </>
         )}
       />
@@ -103,6 +130,17 @@ export function KitsScreen() {
         submitLabel={t('saveSet')}
         doneMessage={t('setSaved')}
         onClose={() => setSetOf(null)}
+      />
+      <ActionModal
+        resource={packing ? kitPackResource(packing.kit, packing.mode) : null}
+        size="xs"
+        title={t(packing?.mode === 'unpack' ? 'unpackKitsOf' : 'packKitsOf', {
+          name: packing?.kit.nameNe ?? '',
+        })}
+        description={t(packing?.mode === 'unpack' ? 'unpackKitsNote' : 'packKitsNote')}
+        submitLabel={t(packing?.mode === 'unpack' ? 'unpackKits' : 'packKits')}
+        doneMessage={t(packing?.mode === 'unpack' ? 'kitsUnpacked' : 'kitsPacked')}
+        onClose={() => setPacking(null)}
       />
       <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
       <ActionModal

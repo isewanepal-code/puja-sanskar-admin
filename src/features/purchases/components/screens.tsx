@@ -11,6 +11,7 @@ import { isApiError, request } from '@/lib/api';
 
 import {
   purchaseBillsResource,
+  purchaseReturnsResource,
   supplierPaymentsResource,
   suppliersResource,
   voidSupplierPaymentResource,
@@ -19,6 +20,7 @@ import {
 } from '../resources';
 
 import { PurchaseBillForm } from './purchase-bill-form';
+import { PurchaseReturnForm } from './purchase-return-form';
 
 export function SuppliersScreen() {
   const resource = useMemo(() => suppliersResource(), []);
@@ -135,6 +137,25 @@ export function SupplierPaymentsScreen() {
         doneMessage={tp('voided')}
         onClose={() => setVoiding(null)}
       />
+    </>
+  );
+}
+
+export function PurchaseReturnsScreen() {
+  const tp = useTranslations('purchases');
+  const resource = useMemo(() => purchaseReturnsResource(), []);
+  const [returning, setReturning] = useState(false);
+  return (
+    <>
+      <ResourceScreen
+        resource={resource}
+        toolbar={
+          <Button icon="plus" onClick={() => setReturning(true)}>
+            {tp('newReturn')}
+          </Button>
+        }
+      />
+      {returning ? <PurchaseReturnForm open onClose={() => setReturning(false)} /> : null}
     </>
   );
 }

@@ -23,6 +23,7 @@ export default async function ReportsLayout({
           { href: routes.receivables(), label: t('tabs.receivables') },
           { href: routes.profitAndLoss(), label: t('tabs.profitAndLoss') },
           { href: routes.purchaseBook(), label: t('tabs.purchaseBook') },
+          { href: routes.supplierStatement(), label: t('tabs.supplierStatement') },
         ]}
       />
       {children}

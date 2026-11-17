@@ -1,5 +1,6 @@
 'use client';
 
+import { QuantityInput } from '@/components/controls/quantity-input';
 import { useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 
@@ -69,6 +70,10 @@ function Label({ text, error, children }: { text: string; error?: string; childr
 }
 
 // The bill being made: lines with their stepper, what is taken off, the total and the button.
+// Parts of a pack go up by a half; whole items by one.
+const stepOf = (line: Line) => (line.fraction ? 0.5 : 1);
+const roundQuantity = (n: number) => Math.round(n * 1000) / 1000;
+
 export function TicketPanel({
   lines,
   form,
@@ -155,28 +160,33 @@ export function TicketPanel({
                     <button
                       type="button"
                       aria-label={t('less')}
-                      disabled={line.quantity <= 1}
-                      onClick={() => onQuantity(line.id, line.quantity - 1)}
+                      disabled={line.quantity <= stepOf(line)}
+                      onClick={() =>
+                        onQuantity(
+                          line.id,
+                          roundQuantity(Math.max(stepOf(line), line.quantity - stepOf(line))),
+                        )
+                      }
                       className="grid size-8 place-items-center text-lg hover:bg-muted disabled:opacity-40"
                     >
                       −
                     </button>
-                    <input
+                    <QuantityInput
                       aria-label={t('quantity')}
-                      inputMode="numeric"
                       value={line.quantity}
-                      onChange={(event) =>
-                        onQuantity(
-                          line.id,
-                          Math.min(999, Math.max(1, Number(event.target.value) || 1)),
-                        )
-                      }
-                      className="h-8 w-12 border-x border-border bg-transparent text-center text-sm tabular-nums outline-none"
+                      min={line.fraction ? 0.001 : 1}
+                      fraction={line.fraction}
+                      onChange={(next) => onQuantity(line.id, next)}
                     />
                     <button
                       type="button"
                       aria-label={t('more')}
-                      onClick={() => onQuantity(line.id, Math.min(999, line.quantity + 1))}
+                      onClick={() =>
+                        onQuantity(
+                          line.id,
+                          roundQuantity(Math.min(999, line.quantity + stepOf(line))),
+                        )
+                      }
                       className="grid size-8 place-items-center text-lg hover:bg-muted"
                     >
                       +

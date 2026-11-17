@@ -12,5 +12,5 @@ export {
   type CalendarDay,
 } from './bikram-sambat';
 export { formatBsDate, formatDate, formatDateTime } from './date';
-export { localDigits } from './digits';
+export { formatQuantity, localDigits } from './digits';
 export { formatMoney } from './money';

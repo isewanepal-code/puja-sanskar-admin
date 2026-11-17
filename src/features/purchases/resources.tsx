@@ -7,6 +7,7 @@ import { formatDate, formatMoney } from '@/lib/format';
 
 export type Supplier = Schema<'SupplierResponse'>;
 export type PurchaseBill = Schema<'PurchaseBillResponse'>;
+export type PurchaseReturn = Schema<'PurchaseReturnResponse'>;
 export type SupplierPayment = Schema<'SupplierPaymentResponse'>;
 type Name = (key: string) => string;
 
@@ -61,8 +62,12 @@ export function suppliersResource(): Resource<Supplier> {
       { name: 'name', kind: 'text', required: true, max: 160 },
       { name: 'panNumber', kind: 'text', pattern: PAN },
       { name: 'phone', kind: 'text', max: 20 },
+      { name: 'contactPerson', kind: 'text', max: 120 },
+      { name: 'email', kind: 'text', max: 160 },
       { name: 'address', kind: 'text', max: 300, wide: true },
+      { name: 'paymentTermsDays', kind: 'number', defaultValue: '0' },
       { name: 'openingBalance', kind: 'money' },
+      { name: 'note', kind: 'textarea', max: 500, wide: true },
       { name: 'isActive', kind: 'switch', defaultValue: true },
     ],
   };
@@ -121,6 +126,58 @@ export function purchaseBillsResource(name: Name): Resource<PurchaseBill> {
           <Badge tone={STATUS_TONE[row.status]}>{name(`statuses.${row.status}`)}</Badge>
         ),
         sortValue: (row) => row.status,
+      },
+    ],
+    fields: [],
+  };
+}
+
+// Goods sent back to suppliers; each one is a credit on what the shop owes (read only).
+export function purchaseReturnsResource(): Resource<PurchaseReturn> {
+  return {
+    key: 'purchaseReturns',
+    path: '/admin/purchase-returns',
+    list: 'paged',
+    canCreate: false,
+    canEdit: false,
+    canDelete: false,
+    rowId: (row) => row.id,
+    rowLabel: (row) => row.number,
+    columns: [
+      {
+        key: 'returnDay',
+        cell: (row) => formatDate(row.returnDay, 'en'),
+        sortValue: (row) => row.returnDay,
+      },
+      {
+        key: 'number',
+        cell: (row) => <span className="font-medium">{row.number}</span>,
+        sortValue: (row) => row.number,
+      },
+      {
+        key: 'supplierId',
+        cell: (row) => (
+          <>
+            <div className="font-medium">{row.supplierName}</div>
+            {row.billNumber ? (
+              <div className="text-xs text-muted-foreground">{row.billNumber}</div>
+            ) : null}
+          </>
+        ),
+        sortValue: (row) => row.supplierName,
+      },
+      { key: 'reason', cell: (row) => row.reason ?? '—', sortValue: (row) => row.reason },
+      {
+        key: 'lines',
+        cell: (row) => row.lines.length,
+        sortValue: (row) => row.lines.length,
+        align: 'right',
+      },
+      {
+        key: 'total',
+        cell: (row) => <span className="font-semibold">{money(row.total)}</span>,
+        sortValue: (row) => Number(row.total),
+        align: 'right',
       },
     ],
     fields: [],

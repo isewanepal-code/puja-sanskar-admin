@@ -16,6 +16,15 @@ type Picked = Record<string, string[]>;
 
 const MAX_OPTIONS = 4;
 
+// The kinds of difference that usually fit how an item is sold; the rest stay a click away.
+const SUGGESTED: Record<string, string[]> = {
+  PIECE: ['COLOUR', 'SIZE'],
+  WEIGHT: ['WEIGHT', 'QUALITY'],
+  VOLUME: ['SIZE', 'QUALITY'],
+  LENGTH: ['LENGTH', 'COLOUR'],
+  SIZE: ['LENGTH', 'WIDTH', 'COLOUR', 'QUALITY'],
+};
+
 function Dot({ type, hex }: { type: OptionType; hex: string | null }) {
   return type.kind === 'COLOR' && hex ? (
     <span
@@ -76,6 +85,52 @@ export function OptionsPanel({ product }: { product: Product }) {
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
 
+  const suggested = SUGGESTED[product.sellBy] ?? [];
+  const ordered = [...(types.data ?? [])].sort(
+    (a, b) => Number(!suggested.includes(a.code)) - Number(!suggested.includes(b.code)),
+  );
+  // What fits how the item is sold is shown; colour, size and the rest stay one click away.
+  const inUse = (type: OptionType) => (picked[type.id] ?? []).length > 0;
+  const shown = ordered.filter((type) => suggested.includes(type.code) || inUse(type));
+  const others = ordered.filter((type) => !shown.includes(type));
+  const renderType = (type: OptionType) => (
+    <fieldset key={type.id} className="rounded-lg border border-border p-3">
+      <legend className="px-1 text-sm font-medium">
+        {type.nameEn} <span className="text-muted-foreground">· {type.nameNe}</span>
+        {suggested.includes(type.code) ? (
+          <span className="ml-2 rounded-sm bg-primary/10 px-1.5 py-0.5 text-[0.68rem] font-medium text-primary">
+            {t('suggested')}
+          </span>
+        ) : null}
+      </legend>
+      {type.values.length === 0 ? (
+        <p className="text-xs text-muted-foreground">{t('noValues')}</p>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {type.values.map((value) => {
+            const on = (picked[type.id] ?? []).includes(value.id);
+            return (
+              <label
+                key={value.id}
+                className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm ${
+                  on ? 'border-primary bg-primary/10 text-primary' : 'border-border'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={on}
+                  onChange={() => toggle(type.id, value.id)}
+                />
+                <Dot type={type} hex={value.colorHex} />
+                {value.valueEn}
+              </label>
+            );
+          })}
+        </div>
+      )}
+    </fieldset>
+  );
   const empty = types.isSuccess && types.data.every((type) => type.values.length === 0);
 
   return (
@@ -85,39 +140,13 @@ export function OptionsPanel({ product }: { product: Product }) {
         <p className="rounded-md border border-border p-3 text-sm">{t('noValues')}</p>
       ) : null}
       <section className="grid gap-3">
-        {(types.data ?? []).map((type) => (
-          <fieldset key={type.id} className="rounded-lg border border-border p-3">
-            <legend className="px-1 text-sm font-medium">
-              {type.nameEn} <span className="text-muted-foreground">· {type.nameNe}</span>
-            </legend>
-            {type.values.length === 0 ? (
-              <p className="text-xs text-muted-foreground">{t('noValues')}</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {type.values.map((value) => {
-                  const on = (picked[type.id] ?? []).includes(value.id);
-                  return (
-                    <label
-                      key={value.id}
-                      className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1 text-sm ${
-                        on ? 'border-primary bg-primary/10 text-primary' : 'border-border'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        className="sr-only"
-                        checked={on}
-                        onChange={() => toggle(type.id, value.id)}
-                      />
-                      <Dot type={type} hex={value.colorHex} />
-                      {value.valueEn}
-                    </label>
-                  );
-                })}
-              </div>
-            )}
-          </fieldset>
-        ))}
+        {shown.map(renderType)}
+        {others.length > 0 ? (
+          <details className="rounded-lg border border-border p-3">
+            <summary className="cursor-pointer text-sm font-medium">{t('otherKinds')}</summary>
+            <div className="mt-3 grid gap-3">{others.map(renderType)}</div>
+          </details>
+        ) : null}
         {tooMany ? (
           <p className="text-sm text-destructive">{t('tooMany', { n: MAX_OPTIONS })}</p>
         ) : null}

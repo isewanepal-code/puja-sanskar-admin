@@ -5,6 +5,7 @@ import { choices, pagedSource } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 import { categoryChoices } from '@/features/catalogue';
 import { optionValueChoices } from './options';
+import { unitsFor } from './units';
 
 export type Product = Schema<'AdminProductResponse'>;
 type Variant = Schema<'AdminVariantResponse'>;
@@ -13,6 +14,15 @@ type Grade = Schema<'ProductGradeResponse'>;
 const money = (amount: string | null | undefined) => (amount ? formatMoney(amount, 'en') : '—');
 
 const HS_CODE = { regex: /^\d{4,8}$/, message: '4 to 8 digits, such as 33074100' };
+
+// How an item is sold, in the words staff know it by.
+export const SELL_BY_LABEL: Record<string, string> = {
+  PIECE: 'One by one: shirt, diya, bell',
+  WEIGHT: 'By weight: rice, ghee, camphor (250 g, 1 kg)',
+  VOLUME: 'By volume: oil, water (250 ml, 1 L)',
+  LENGTH: 'By length: cloth, thread (1 m, 2 m)',
+  SIZE: 'By size, length × breadth: dhoti, mat, carpet',
+};
 
 export const productsResource: Resource<Product> = {
   key: 'products',
@@ -71,10 +81,23 @@ export const productsResource: Resource<Product> = {
     },
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
+    {
+      name: 'sellBy',
+      kind: 'select',
+      required: true,
+      defaultValue: 'PIECE',
+      options: ['PIECE', 'WEIGHT', 'VOLUME', 'LENGTH', 'SIZE'].map((value) => ({
+        value,
+        label: SELL_BY_LABEL[value]!,
+      })),
+      wide: true,
+    },
     { name: 'nameRomanized', kind: 'text', max: 160 },
+    { name: 'brand', kind: 'text', max: 80 },
     { name: 'taxClassId', kind: 'select', optionsFrom: choices.taxClasses },
+    { name: 'defaultSupplierId', kind: 'select', optionsFrom: choices.suppliers },
     { name: 'hsCode', kind: 'text', max: 8, pattern: HS_CODE },
-    { name: 'tags', kind: 'tags', wide: true },
+    { name: 'tags', kind: 'tags' },
     { name: 'images', kind: 'images', section: 'website' },
     { name: 'description', kind: 'html', max: 4000 },
     { name: 'slug', kind: 'slug', max: 160, section: 'seo', wide: true },
@@ -118,9 +141,12 @@ export const quickItemResource: Resource<never> = {
   bulk: [
     'nameNe',
     'nameEn',
-    'packLabel',
+    'sellBy',
+    'packQuantity',
+    'packUnitId',
     'price',
     'categoryId',
+    'packLabel',
     'openingQuantity',
     'openingUnitCost',
     'hsCode',
@@ -134,16 +160,20 @@ export const quickItemResource: Resource<never> = {
   rowId: () => '',
   rowLabel: () => '',
   columns: [],
-  check: (values) =>
-    values.materialId || values.categoryId
-      ? null
-      : { field: 'categoryId', message: 'Pick a category, or an existing samagri' },
+  check: (values) => {
+    if (!values.materialId && !values.categoryId) {
+      return { field: 'categoryId', message: 'Pick a category, or an existing samagri' };
+    }
+    return null;
+  },
   shapeBody: ({ openingQuantity, openingUnitCost, openingDay, ...body }) => {
     const code = (body.code as string | null) || codeFrom(String(body.nameEn));
     return {
       ...body,
       code,
-      sku: (body.sku as string | null) || skuFrom(code, String(body.packLabel)),
+      sku:
+        (body.sku as string | null) ||
+        skuFrom(code, String(body.packLabel || body.packQuantity || 'PACK')),
       materialId: body.materialId ?? undefined,
       categoryId: body.categoryId ?? undefined,
       openingStock:
@@ -155,22 +185,70 @@ export const quickItemResource: Resource<never> = {
   fields: [
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
+    {
+      name: 'sellBy',
+      kind: 'select',
+      required: true,
+      defaultValue: 'PIECE',
+      options: Object.entries(SELL_BY_LABEL).map(([value, label]) => ({ value, label })),
+      wide: true,
+    },
     { name: 'categoryId', kind: 'select', optionsFrom: categoryChoices },
     { name: 'materialId', kind: 'select', optionsFrom: choices.sellableMaterials },
-    { name: 'packLabel', kind: 'text', required: true, max: 80, section: 'pack' },
-    { name: 'packQuantity', kind: 'number', pattern: QUANTITY },
-    { name: 'packUnitId', kind: 'select', optionsFrom: choices.units },
+    { name: 'brand', kind: 'text', max: 80 },
+    { name: 'defaultSupplierId', kind: 'select', optionsFrom: choices.suppliers },
+    { name: 'packQuantity', kind: 'number', required: true, pattern: QUANTITY, section: 'pack' },
+    { name: 'packUnitId', kind: 'select', required: true, optionsFrom: choices.units },
     { name: 'price', kind: 'money', required: true },
-    { name: 'compareAtPrice', kind: 'money' },
-    { name: 'openingQuantity', kind: 'number', section: 'stock' },
+    { name: 'packLabel', kind: 'text', max: 80 },
+    { name: 'openingQuantity', kind: 'number', section: 'stock', pattern: QUANTITY },
     { name: 'openingUnitCost', kind: 'money' },
-    { name: 'openingDay', kind: 'date' },
-    { name: 'hsCode', kind: 'text', max: 8, pattern: HS_CODE, section: 'more' },
+    { name: 'openingDay', kind: 'date', wide: true },
+    { name: 'compareAtPrice', kind: 'money', section: 'more' },
+    { name: 'hsCode', kind: 'text', max: 8, pattern: HS_CODE },
     { name: 'tags', kind: 'tags' },
     { name: 'description', kind: 'textarea', max: 4000, wide: true },
     { name: 'showOnWebsite', kind: 'switch' },
     { name: 'code', kind: 'code', max: 32 },
-    { name: 'sku', kind: 'code', max: 40, pattern: SKU },
+    { name: 'sku', kind: 'code', max: 40, pattern: SKU, wide: true },
+  ],
+};
+
+// Step 1 of bringing something in: only the item (its names, how it is sold, where it belongs).
+// Packs, colours and prices come with the first purchase.
+export const bareItemResource: Resource<never> = {
+  key: 'quickItem',
+  scope: 'products',
+  path: '/admin/items',
+  list: 'all',
+  rowId: () => '',
+  rowLabel: () => '',
+  columns: [],
+  check: (values) =>
+    values.materialId || values.categoryId
+      ? null
+      : { field: 'categoryId', message: 'Pick a category, or an existing samagri' },
+  shapeBody: (body) => ({
+    ...body,
+    code: (body.code as string | null) || codeFrom(String(body.nameEn)),
+    materialId: body.materialId ?? undefined,
+    categoryId: body.categoryId ?? undefined,
+  }),
+  fields: [
+    { name: 'nameNe', kind: 'text', required: true, max: 160 },
+    { name: 'nameEn', kind: 'text', required: true, max: 160 },
+    {
+      name: 'sellBy',
+      kind: 'select',
+      required: true,
+      defaultValue: 'PIECE',
+      options: Object.entries(SELL_BY_LABEL).map(([value, label]) => ({ value, label })),
+      wide: true,
+    },
+    { name: 'categoryId', kind: 'select', optionsFrom: categoryChoices },
+    { name: 'materialId', kind: 'select', optionsFrom: choices.sellableMaterials },
+    { name: 'brand', kind: 'text', max: 80 },
+    { name: 'defaultSupplierId', kind: 'select', optionsFrom: choices.suppliers },
   ],
 };
 
@@ -286,8 +364,9 @@ export function variantsResource(product: Product): Resource<Variant> {
       },
       { name: 'optionValueIds', kind: 'multiselect', optionsFrom: optionValueChoices, wide: true },
       { name: 'label', kind: 'text', max: 80 },
+      { name: 'barcode', kind: 'text', max: 64 },
       { name: 'packQuantity', kind: 'number', pattern: QUANTITY },
-      { name: 'packUnitId', kind: 'select', optionsFrom: choices.units },
+      { name: 'packUnitId', kind: 'select', optionsFrom: unitsFor(product.sellBy) },
       {
         name: 'gradeId',
         kind: 'select',

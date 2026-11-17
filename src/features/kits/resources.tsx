@@ -68,7 +68,9 @@ export function kitsResource(name: Name): Resource<Kit> {
         key: 'isAvailable',
         cell: (row) => (
           <Badge tone={row.isAvailable ? 'success' : 'warning'}>
-            {name(row.isAvailable ? 'available' : 'unavailable')}
+            {row.packed
+              ? name('packedReady').replace('{count}', String(row.availableCount))
+              : name(row.isAvailable ? 'available' : 'unavailable')}
           </Badge>
         ),
         sortValue: (row) => row.isAvailable,
@@ -82,6 +84,7 @@ export function kitsResource(name: Name): Resource<Kit> {
       { name: 'nameEn', kind: 'text', required: true, max: 160 },
       { name: 'nameRomanized', kind: 'text', max: 160 },
       { name: 'tier', kind: 'select', options: tierChoices(name) },
+      { name: 'packed', kind: 'switch', wide: true },
       ...discount.fields,
       { name: 'sortOrder', kind: 'number' },
       { name: 'images', kind: 'images', section: 'website' },
@@ -91,6 +94,20 @@ export function kitsResource(name: Name): Resource<Kit> {
       { name: 'metaDescription', kind: 'textarea', max: 160 },
       { name: 'isActive', kind: 'switch' },
     ],
+  };
+}
+
+// Make packed kits (the items come off the shelf once) or take them apart again.
+export function kitPackResource(kit: Kit, mode: 'pack' | 'unpack'): Resource<never> {
+  return {
+    key: 'kitPack',
+    scope: 'kits',
+    path: `/admin/kits/${kit.id}/${mode}`,
+    list: 'all',
+    rowId: () => '',
+    rowLabel: () => kit.code,
+    columns: [],
+    fields: [{ name: 'quantity', kind: 'number', required: true }],
   };
 }
 
@@ -140,6 +157,8 @@ export function kitSetResource(): Resource<never> {
       { name: 'pujaId', kind: 'select', required: true, optionsFrom: choices.pujas, wide: true },
       // Each package adds its tier to the code: SATYA → SATYA_BASIC.
       { name: 'code', kind: 'code', required: true, max: 22 },
+      // Each package is its own kit with its own packed count.
+      { name: 'packed', kind: 'switch', wide: true },
       ...SHARED_FIELDS,
     ],
   };
@@ -278,7 +297,7 @@ export function kitItemsResource(kitId: string): Resource<Line> {
         name: 'quantity',
         kind: 'number',
         required: true,
-        pattern: { regex: /^([1-9]|[1-9]\d)$/, message: 'From 1 to 99' },
+        pattern: { regex: /^\d{1,3}(\.\d{1,3})?$/, message: 'An amount such as 2 or 1.5' },
         defaultValue: '1',
       },
       { name: 'sortOrder', kind: 'number', editOnly: true },

@@ -21,10 +21,18 @@ export const routes = {
   pujaLevels: () => '/pujas/levels',
   mantras: () => '/pujas/mantras',
   kits: () => '/kits',
+  newKit: () => '/kits/new',
+  flowItem: () => '/start/item',
+  newPurchase: () => '/start/buy',
+  itemPrices: () => '/start/prices',
+  stockWork: () => '/start/work',
+  kit: (id: string) => `/kits/${id}`,
 
   categories: () => '/catalogue',
   materials: () => '/catalogue/samagri',
   products: () => '/items',
+  item: (id: string) => `/items/${id}`,
+  newItem: () => '/items/new',
   archive: () => '/archive',
   stock: (show?: 'low' | 'out') => (show ? `/stock?show=${show}` : '/stock'),
   units: () => '/catalogue/units',
@@ -64,6 +72,7 @@ export const routes = {
   purchaseBills: () => '/purchases',
   suppliers: () => '/suppliers',
   supplierPayments: () => '/purchases/payments',
+  purchaseReturns: () => '/purchases/returns',
   expenses: () => '/expenses',
   expenseCategories: () => '/expenses/categories',
 
@@ -77,6 +86,7 @@ export const routes = {
   receivables: () => '/reports/receivables',
   profitAndLoss: () => '/reports/profit-and-loss',
   purchaseBook: () => '/reports/purchase-book',
+  supplierStatement: () => '/reports/supplier-statement',
   itemSales: () => '/reports/items',
 } as const;
 

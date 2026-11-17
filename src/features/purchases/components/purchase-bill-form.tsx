@@ -29,12 +29,15 @@ const money = (n: number) => formatMoney(n.toFixed(2), 'en');
 type PurchaseBillFormProps = {
   // Leave out to enter a new bill.
   bill?: PurchaseBill;
+  // A new bill that starts with these packs (from an item's page), quantity to be filled in.
+  packs?: Array<{ value: string; label: string; detail?: string }>;
   open: boolean;
   onClose: () => void;
+  onSaved?: () => void;
 };
 
 // A supplier's bill line by line; it stays a draft until posted.
-export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps) {
+export function PurchaseBillForm({ bill, packs, open, onClose, onSaved }: PurchaseBillFormProps) {
   const t = useTranslations('purchases');
   const tf = useTranslations('forms');
   const toast = useToast();
@@ -49,22 +52,28 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
       quantity: String(l.quantity),
       unitCost: l.unitCost,
       vatRate: String(Number(l.vatRate)),
-    })) ?? [emptyLine()],
+    })) ??
+      (packs?.length
+        ? packs.map((pack) => ({ ...emptyLine(), variantId: pack.value, quantity: '' }))
+        : [emptyLine()]),
   );
 
   // The bill names its packs, so a draft opens without looking them up.
-  const packNames = (bill?.lines ?? []).map((l) => ({
-    value: l.variantId,
-    label: l.packName,
-    detail: l.sku,
-  }));
+  const packNames = [
+    ...(bill?.lines ?? []).map((l) => ({
+      value: l.variantId,
+      label: l.packName,
+      detail: l.sku,
+    })),
+    ...(packs ?? []),
+  ];
   const supplierName = bill ? [{ value: bill.supplierId, label: bill.supplierName }] : undefined;
 
   const change = (index: number, patch: Partial<Line>) =>
     setLines((current) => current.map((l, i) => (i === index ? { ...l, ...patch } : l)));
 
-  const save = useMutation({
-    mutationFn: () => {
+  const save = useMutation<boolean, unknown, boolean>({
+    mutationFn: async (andPost: boolean) => {
       const body = {
         supplierId,
         supplierBillNumber: number.trim(),
@@ -79,13 +88,19 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
             ...(l.vatRate !== '' && { vatRate: l.vatRate }),
           })),
       };
-      return bill
-        ? request('PUT', `/admin/purchase-bills/${bill.id}`, { body })
-        : request('POST', '/admin/purchase-bills', { body });
+      const saved = bill
+        ? await request<{ id: string }>('PUT', `/admin/purchase-bills/${bill.id}`, { body })
+        : await request<{ id: string }>('POST', '/admin/purchase-bills', { body });
+      // Posting puts what came in on the shelf and sets its cost.
+      if (andPost) await request('POST', `/admin/purchase-bills/${saved.id}/post`);
+      return andPost;
     },
-    onSuccess: async () => {
-      toast.success(bill ? tf('saved') : t('drafted'));
+    onSuccess: async (posted) => {
+      toast.success(posted ? t('posted') : bill ? tf('saved') : t('drafted'));
       await queryClient.invalidateQueries({ queryKey: ['purchaseBills'] });
+      await queryClient.invalidateQueries({ queryKey: ['products'] });
+      await queryClient.invalidateQueries({ queryKey: ['stock'] });
+      onSaved?.();
       onClose();
     },
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
@@ -113,8 +128,11 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
           <Button variant="secondary" onClick={onClose}>
             {tf('cancel')}
           </Button>
-          <Button disabled={save.isPending} onClick={() => save.mutate()}>
+          <Button variant="secondary" disabled={save.isPending} onClick={() => save.mutate(false)}>
             {save.isPending ? tf('saving') : t('saveDraft')}
+          </Button>
+          <Button disabled={save.isPending} onClick={() => save.mutate(true)}>
+            {t('saveAndPost')}
           </Button>
         </>
       }
@@ -182,7 +200,7 @@ export function PurchaseBillForm({ bill, open, onClose }: PurchaseBillFormProps)
                   <td className="border-r border-border p-1.5">
                     <Input
                       aria-label={t('quantity')}
-                      inputMode="numeric"
+                      inputMode="decimal"
                       className="text-right"
                       value={line.quantity}
                       onChange={(e) => change(index, { quantity: e.target.value })}

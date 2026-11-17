@@ -1,44 +1,35 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import {
-  ActionModal,
-  BulkGrid,
-  CountButton,
-  ResourceScreen,
-  WorkbookUploadButton,
-} from '@/components/resource';
-import { Button, IconButton } from '@/components/ui/button';
+import { BulkGrid, CountButton, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
+import { Button, IconButton, buttonVariants } from '@/components/ui/button';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
+import { routes } from '@/lib/routes';
 
 import { productsResource, quickItemResource } from '../resources';
-import { ItemWorkspace, type WorkspaceTab } from './item-workspace';
-import { useProduct, type Product } from './use-product';
-
-type Creating = 'new' | 'many' | null;
+import type { Product } from './use-product';
 
 export function ProductsScreen() {
   const t = useTranslations('actions');
   const tf = useTranslations('forms');
-  const [creating, setCreating] = useState<Creating>(null);
+  const router = useRouter();
+  const [many, setMany] = useState(false);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
-  // One item opened in its workspace, on the tab asked for.
-  const [chosen, setWorkspace] = useState<{ product: Product; tab: WorkspaceTab } | null>(null);
-  // A link from the global search (?open=<id>) opens that item straight away.
+
+  // A link from the global search (?open=<id>) goes to that item's page.
   const openId = useSearchParams().get('open');
-  const [dismissed, setDismissed] = useState(false);
-  const linked = useProduct(!dismissed ? (openId ?? undefined) : undefined);
-  const workspace =
-    chosen ??
-    (linked.data && !dismissed ? { product: linked.data, tab: 'details' as const } : null);
+  useEffect(() => {
+    if (openId) router.replace(routes.item(openId));
+  }, [openId, router]);
 
   const resource = useMemo(
     () => ({
       ...productsResource,
-      // The workspace is the one place an item is changed.
+      // An item is changed on its own page.
       canEdit: false,
       columns: productsResource.columns.map((column) =>
         column.key === 'variants'
@@ -47,7 +38,7 @@ export function ProductsScreen() {
               cell: (row: Product) => (
                 <CountButton
                   label={t('packsOf', { name: row.nameNe })}
-                  onClick={() => setWorkspace({ product: row, tab: 'packs' })}
+                  onClick={() => router.push(routes.item(row.id) + '#prices')}
                 >
                   {row.variants.length}
                 </CountButton>
@@ -56,7 +47,7 @@ export function ProductsScreen() {
           : column,
       ),
     }),
-    [t],
+    [t, router],
   );
 
   return (
@@ -72,24 +63,22 @@ export function ProductsScreen() {
               description={t('uploadProductsNote')}
               refresh={['products', 'stock']}
             />
-            <Button variant="secondary" icon="list" onClick={() => setCreating('many')}>
+            <Button variant="secondary" icon="list" onClick={() => setMany(true)}>
               {tf('bulkAdd')}
             </Button>
-            <Button icon="plus" onClick={() => setCreating('new')}>
+            <Link href={routes.flowItem()} className={buttonVariants({ variant: 'primary' })}>
               {t('addItem')}
-            </Button>
+            </Link>
           </>
         }
         rowActions={(row) => (
           <>
-            <Button
-              variant="secondary"
-              size="sm"
-              icon="edit"
-              onClick={() => setWorkspace({ product: row, tab: 'details' })}
+            <Link
+              href={routes.item(row.id)}
+              className={buttonVariants({ variant: 'secondary', size: 'sm' })}
             >
               {t('openItem')}
-            </Button>
+            </Link>
             <IconButton
               icon="archive"
               label={t('archive')}
@@ -99,35 +88,13 @@ export function ProductsScreen() {
         )}
       />
 
-      {workspace ? (
-        <ItemWorkspace
-          key={workspace.product.id}
-          product={workspace.product}
-          tab={workspace.tab}
-          onClose={() => {
-            setWorkspace(null);
-            setDismissed(true);
-          }}
-        />
-      ) : null}
-
       <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
 
       <BulkGrid
         resource={quickItemResource}
-        open={creating === 'many'}
-        onOpenChange={(next) => (next ? undefined : setCreating(null))}
+        open={many}
+        onOpenChange={(next) => setMany(next ? true : false)}
         description={t('addManyItemsNote')}
-      />
-
-      <ActionModal
-        resource={creating === 'new' ? quickItemResource : null}
-        size="lg"
-        title={t('addItem')}
-        description={t('addItemNote')}
-        submitLabel={t('addItem')}
-        doneMessage={t('itemAdded')}
-        onClose={() => setCreating(null)}
       />
     </>
   );

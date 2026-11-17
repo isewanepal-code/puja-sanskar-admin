@@ -74,6 +74,8 @@ type Product = Schema<'AdminProductResponse'>;
 type Puja = Schema<'AdminPujaResponse'>;
 type Mantra = Schema<'AdminMantraResponse'>;
 type Supplier = Schema<'SupplierResponse'>;
+type CategoryRow = Schema<'AdminCategoryResponse'>;
+type GroupRow = Schema<'PriceGroupResponse'>;
 type Festival = Schema<'AdminFestivalResponse'>;
 type Kit = Schema<'AdminKitResponse'>;
 
@@ -136,6 +138,28 @@ export const choices = {
     toChoices: coded,
     find: (id) => `/admin/kits/${id}`,
   }),
+  categories: pagedSource<CategoryRow>('categories', {
+    path: '/admin/categories',
+    toChoices: (c) => [{ value: c.id, label: c.nameNe, detail: c.code }],
+    find: (id) => `/admin/categories/${id}`,
+  }),
+  itemGroups: pagedSource<GroupRow>('item-groups', {
+    path: '/admin/price-groups',
+    toChoices: (g) => [{ value: g.id, label: g.name, detail: g.code }],
+    find: (id) => `/admin/price-groups/${id}`,
+  }),
+  // Every colour, size, quality ... value, each kind heading its own run.
+  optionValues: wholeSource('option-values', async () =>
+    (await request<Array<Schema<'OptionTypeResponse'>>>('GET', '/admin/option-types')).flatMap(
+      (type) =>
+        type.values.map((value) => ({
+          value: value.id,
+          label: value.valueEn,
+          detail: value.valueNe,
+          group: type.nameEn,
+        })),
+    ),
+  ),
   suppliers: pagedSource<Supplier>('suppliers', {
     path: '/admin/suppliers',
     toChoices: (s) => (s.isActive ? [{ value: s.id, label: s.name, detail: s.code }] : []),

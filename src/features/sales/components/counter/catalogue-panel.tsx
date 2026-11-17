@@ -77,6 +77,7 @@ const packsOf = (item: Shelf): Pack[] =>
     price: pack.price,
     image: item.imageUrl ?? undefined,
     available: pack.available,
+    fraction: pack.allowsFraction,
   }));
 
 type CataloguePanelProps = {

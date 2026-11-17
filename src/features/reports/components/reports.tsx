@@ -18,6 +18,7 @@ type DayRow = Schema<'DayBookRowResponse'>;
 type Receivables = Schema<'ReceivablesResponse'>;
 type Receivable = Schema<'ReceivableRowResponse'>;
 type Totals = Schema<'SalesTotalsResponse'>;
+type SupplierRow = Schema<'SupplierStatementRowResponse'>;
 type ItemSales = Schema<'ItemSalesResponse'>;
 type ItemSalesRow = Schema<'ItemSalesRowResponse'>;
 
@@ -296,6 +297,59 @@ export function PurchaseBookReport() {
         amount<PurchaseRow>('exemptTotal', tc('exemptTotal')),
         amount<PurchaseRow>('vatTotal', tc('vatPaid')),
         amount<PurchaseRow>('total', tc('grossTotal')),
+      ]}
+    />
+  );
+}
+
+// For each supplier: owed at the start, bought, sent back, paid, and owed at the end.
+export function SupplierStatementReport() {
+  const tc = useTranslations('reports.columns');
+  return (
+    <ReportScreen<SupplierRow[], SupplierRow>
+      path="/admin/reports/supplier-statement"
+      noExport
+      filters={['range']}
+      rows={(data) => data}
+      rowKey={(row) => row.supplierId}
+      summary={(data) => (
+        <div className="grid gap-3 sm:grid-cols-4">
+          <Figure
+            label={tc('bought')}
+            value={money(String(data.reduce((sum, r) => sum + Number(r.bought), 0)))}
+          />
+          <Figure
+            label={tc('returned')}
+            value={money(String(data.reduce((sum, r) => sum + Number(r.returned), 0)))}
+          />
+          <Figure
+            label={tc('paid')}
+            value={money(String(data.reduce((sum, r) => sum + Number(r.paid), 0)))}
+          />
+          <Figure
+            label={tc('owedAtEnd')}
+            value={money(String(data.reduce((sum, r) => sum + Number(r.closing), 0)))}
+          />
+        </div>
+      )}
+      initialSort={{ key: 'closing', direction: 'desc' }}
+      columns={[
+        {
+          key: 'name',
+          header: tc('supplier'),
+          cell: (row) => (
+            <>
+              <div className="font-medium">{row.name}</div>
+              <div className="text-xs text-muted-foreground">{row.code}</div>
+            </>
+          ),
+          sortValue: (row) => row.name,
+        },
+        amount<SupplierRow>('opening', tc('owedAtStart')),
+        amount<SupplierRow>('bought', tc('bought')),
+        amount<SupplierRow>('returned', tc('returned')),
+        amount<SupplierRow>('paid', tc('paid')),
+        amount<SupplierRow>('closing', tc('owedAtEnd')),
       ]}
     />
   );

@@ -97,8 +97,8 @@
       "customers": "Customers",
       "items": "Items",
       "kits": "Kits",
-      "stock": "Stock",
-      "buying": "Buying",
+      "stock": "Inventory",
+      "buying": "Buying and returns",
       "suppliers": "Suppliers",
       "money": "Cash and bank",
       "expenses": "Expenses",
@@ -114,17 +114,23 @@
       "priceGroups": "Item groups",
       "discounts": "Coupons",
       "pandits": "Pandits",
-      "dataReset": "Clear data"
+      "dataReset": "Clear data",
+      "flowItem": "1 · Item (name)",
+      "flowBuy": "2 · Buy",
+      "flowPrices": "3 · Selling price",
+      "flowWork": "4 · Stock work"
     },
     "changePassword": "Change password",
     "groups": {
       "overview": "Overview",
       "sell": "Sell",
-      "stock": "Stock",
+      "stock": "Stock and buying",
       "money": "Money",
       "website": "Website",
       "setup": "Setup",
-      "marketing": "Marketing"
+      "marketing": "Marketing",
+      "catalogue": "Items and kits",
+      "flow": "Start here: 4 steps"
     },
     "showMenu": "Show the menu",
     "hideMenu": "Hide the menu",
@@ -143,9 +149,9 @@
       "items": "Bechne item, price, pack ra photo. Row ko icon bata rang/size, offer, archive.",
       "options": "Rang, size, lambai, tauls jastai prakar ra tinka value. Yaha ek patak banaune, Items ma tick garne.",
       "kits": "Tayar kit: puja ko lagi sabai samagri ek sath, chhut sahit.",
-      "stock": "Pratyek pack ko stock, kam bhayeko ra stock ko chal-achal.",
+      "stock": "Kitna maal chha: filter (category, group, supplier, brand), stock ko value, kam stock, hisab milaune ra branch ma pathaune.",
       "archive": "Hataiyeka (archive) item/kit. Feri ullekh garna milchha.",
-      "buying": "Supplier bata kinera ayeko saman ko bill.",
+      "buying": "Supplier bata kinera ayeko bill, supplier lai pharkaeko saman (returns) ra supplier lai tirieko paisa.",
       "suppliers": "Saman kinne supplier haru.",
       "money": "Cash ra bank account, ra tinbich ko paisa.",
       "expenses": "Pasal ko kharcha.",
@@ -159,7 +165,11 @@
       "catalogue": "Samagri ko varga, samagri, naap ko unit ra srot.",
       "settings": "VAT, delivery, shakha ra pasal ka niyam.",
       "staff": "Staff ra tinko role.",
-      "dataReset": "Dev ko lagi: sabai item, kit, order, customer ek patak ma hataune (super admin matra)."
+      "dataReset": "Dev ko lagi: sabai item, kit, order, customer ek patak ma hataune (super admin matra).",
+      "flowItem": "Pahila item ko naam matra. Pack ra price pachhi.",
+      "flowBuy": "Kharid: kasbata, ke ke, kati, kati ma. Pack/size/rang yahi banchha.",
+      "flowPrices": "Kharid bhayeko saman ko bechne price ra On sale.",
+      "flowWork": "Repack, kharab/expire, gunera milaune, branch ma pathaune."
     }
   },
   "dashboard": {
@@ -197,7 +207,12 @@
         "DAMAGE": "Damaged",
         "ADJUSTMENT": "Counted and corrected",
         "TRANSFER_OUT": "Sent to a branch",
-        "TRANSFER_IN": "Received from a branch"
+        "TRANSFER_IN": "Received from a branch",
+        "PURCHASE_RETURN": "Sent back to supplier",
+        "REPACK_OUT": "Opened into smaller packs",
+        "REPACK_IN": "Made from a bulk pack",
+        "KIT_PACK": "Packed into kits",
+        "KIT_UNPACK": "Back from packed kits"
       }
     },
     "cash": {
@@ -629,7 +644,8 @@
         "parentId": "Under",
         "taxClassId": "Tax class",
         "metaTitle": "Search title",
-        "metaDescription": "Search description"
+        "metaDescription": "Search description",
+        "subCategory": "This is a sub-category (inside another category)"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as CAT005. It cannot change later.",
@@ -637,7 +653,8 @@
         "taxClassId": "Empty takes the category above it, then the shop default.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
-        "metaDescription": "Shown under the title in search results; up to 160 characters."
+        "metaDescription": "Shown under the title in search results; up to 160 characters.",
+        "subCategory": "Jastai Dhup, Incense and lamps bhitra. Mukhya category ho bhane off rakhnus."
       },
       "sections": {
         "seo": "Search engines"
@@ -690,11 +707,13 @@
         "nameNe": "Name in Nepali",
         "nameEn": "Name in English",
         "isActive": "Shown on the website",
-        "symbol": "Symbol"
+        "symbol": "Symbol",
+        "dimension": "What it measures"
       },
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later.",
-        "symbol": "As requirements write it: g, ml, pcs."
+        "symbol": "As requirements write it: g, ml, pcs.",
+        "dimension": "Weight, volume, length ra count alag-alag. Item kasari bikchha anusar tyahi prakar ka unit matra dekhincha."
       },
       "about": "Naap ko unit: g, kg, ml, pcs. Pack ra option ma prayog hunchha.",
       "aboutForm": "Tapai naap ko unit banaudai hunuhunchha (g, kg, ml, pcs)."
@@ -930,7 +949,10 @@
         "metaDescription": "Search description",
         "hsCode": "HS code",
         "tags": "Tags",
-        "item": "Item"
+        "item": "Item",
+        "sellBy": "How it is sold",
+        "brand": "Brand",
+        "defaultSupplierId": "Usual supplier"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as PRD001. It cannot change later.",
@@ -942,7 +964,8 @@
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
         "hsCode": "The customs code printed on bills, 4 to 8 digits.",
-        "tags": "Words to find it by, such as diwali, tihar; separated by commas."
+        "tags": "Words to find it by, such as diwali, tihar; separated by commas.",
+        "sellBy": "Item kasari bikchha: ek-ek (shirt), tauls (500 g), volume, lambai (kapada), ya size (lambai × chaudai). Yesle pack ma kun unit/option dekhincha tyo tokchha."
       },
       "sections": {
         "website": "On the website",
@@ -963,12 +986,13 @@
         "packUnitId": "Pack unit",
         "gradeId": "Grade",
         "price": "Price",
-        "compareAtPrice": "Was",
+        "compareAtPrice": "MRP / old price",
         "pricesIncludeTax": "Price includes VAT",
         "inStock": "In stock",
         "isActive": "On sale",
         "optionValueIds": "Colour, size, weight …",
-        "options": "Options"
+        "options": "Options",
+        "barcode": "Barcode"
       },
       "hints": {
         "sku": "Capital letters, digits or -, such as KAP-050.",
@@ -1014,7 +1038,10 @@
         "reserved": "In carts",
         "available": "Available",
         "reorderLevel": "Reorder at",
-        "updatedAt": "Updated"
+        "updatedAt": "Updated",
+        "shelfLocation": "Shelf",
+        "value": "Value",
+        "brand": "Brand"
       },
       "hints": {
         "reorderLevel": "The pack shows as low once what is available falls to this."
@@ -1044,7 +1071,14 @@
         "RETURN": "Return",
         "SALE": "Sale",
         "DAMAGE": "Damage",
-        "ADJUSTMENT": "Adjustment"
+        "ADJUSTMENT": "Adjustment",
+        "TRANSFER_OUT": "Sent to a branch",
+        "TRANSFER_IN": "Received from a branch",
+        "PURCHASE_RETURN": "Sent back to supplier",
+        "REPACK_OUT": "Opened into smaller packs",
+        "REPACK_IN": "Made from a bulk pack",
+        "KIT_PACK": "Packed into kits",
+        "KIT_UNPACK": "Back from packed kits"
       }
     },
     "kits": {
@@ -1072,7 +1106,8 @@
         "metaDescription": "Search description",
         "item": "Kit",
         "discountKind": "Kit discount",
-        "discountValue": "Discount (% or Rs)"
+        "discountValue": "Discount (% or Rs)",
+        "packed": "Packed ahead of time"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as KIT001. It cannot change later.",
@@ -1096,7 +1131,8 @@
       "available": "In stock",
       "unavailable": "Short",
       "about": "Tayar kit: puja ko lagi sabai samagri ek sath, sasto dar ma.\nKit banepachhi \"items\" bata samagri thapnus. Kit ma chhut (%) rakhna milchha.",
-      "aboutForm": "Tapai tayar kit banaudai hunuhunchha. Naam, photo ra chhut halnus; save pachhi samagri (items) thapnus."
+      "aboutForm": "Tapai tayar kit banaudai hunuhunchha. Naam, photo ra chhut halnus; save pachhi samagri (items) thapnus.",
+      "packedReady": "{count} packed"
     },
     "kitSet": {
       "title": "Kit set",
@@ -1112,12 +1148,14 @@
         "images": "Photos",
         "description": "Description",
         "discountKind": "Kit discount",
-        "discountValue": "Discount (% or Rs)"
+        "discountValue": "Discount (% or Rs)",
+        "packed": "Pack each package ahead of time"
       },
       "hints": {
         "code": "Capital letters, digits or _. Each package adds its tier: SATYA becomes SATYA_BASIC, SATYA_STANDARD and SATYA_PREMIUM.",
         "images": "The same photos show on all three packages.",
-        "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit."
+        "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit.",
+        "packed": "Basic, Standard ra Premium har ek ko aafno packed count huncha. Pack kits tin wota kit ma alag-alag garnus; optional item pack hudaina."
       }
     },
     "kitSetEdit": {
@@ -1985,6 +2023,10 @@
         "panNumber": "PAN",
         "phone": "Phone",
         "address": "Address",
+        "contactPerson": "Contact person",
+        "email": "Email",
+        "paymentTermsDays": "Days to pay",
+        "note": "Note",
         "openingBalance": "Owed before",
         "owed": "Owed now",
         "isActive": "Active"
@@ -1993,6 +2035,20 @@
         "openingBalance": "What the shop owed them before recording here."
       },
       "about": "Saman kinne supplier haru."
+    },
+    "purchaseReturns": {
+      "title": "Returns",
+      "add": "Return goods",
+      "empty": "Nothing sent back yet.",
+      "fields": {
+        "returnDay": "Date",
+        "number": "No.",
+        "supplierId": "Supplier",
+        "reason": "Why",
+        "lines": "Lines",
+        "total": "Credit"
+      },
+      "about": "Saman supplier lai pharkaepachhi yaha dekhincha. Stock ghatchha ra supplier lai tirna parne rakam pani ghatchha."
     },
     "purchaseBills": {
       "title": "Bills",
@@ -2103,11 +2159,11 @@
         "nameEn": "Name in English",
         "categoryId": "Category",
         "materialId": "Or an existing samagri",
-        "packLabel": "Pack size",
-        "packQuantity": "Amount in the pack",
+        "packLabel": "Pack name",
+        "packQuantity": "How much is in one pack",
         "packUnitId": "Unit",
-        "price": "Selling price",
-        "compareAtPrice": "Price before discount",
+        "price": "Selling price (customer pays)",
+        "compareAtPrice": "Printed price (MRP)",
         "openingQuantity": "Opening stock",
         "openingUnitCost": "Cost price of one",
         "openingDay": "Bought on",
@@ -2116,23 +2172,30 @@
         "description": "Description",
         "showOnWebsite": "Sell on the website",
         "code": "Item code",
-        "sku": "Pack code (SKU)"
+        "sku": "Pack code (SKU)",
+        "sellBy": "How it is sold",
+        "brand": "Brand",
+        "defaultSupplierId": "Usual supplier"
       },
       "hints": {
         "categoryId": "Where it shows on the website.",
         "materialId": "Only when this is another pack of a samagri you already have.",
-        "packLabel": "How it is sold, such as 50 g, 1 packet or 1 piece.",
-        "price": "What the customer pays, VAT included.",
+        "packLabel": "Khali rakhnus: amount ra unit bata aafai banchha (\"25 kg\"). Naam chahiyo bhane lekhnus: \"Bora\", \"Box\".",
+        "price": "Customer le ek pack ko kati tirne (VAT sahit). Jastai 25 kg ko bora Rs 2600.",
         "openingQuantity": "How many you have now; leave empty to add stock later through Buying.",
         "openingUnitCost": "What one cost you, before VAT. It sets the profit in reports.",
         "openingDay": "Today when left empty.",
         "hsCode": "The customs code printed on bills, 4 to 8 digits.",
         "tags": "Words to find it by, such as diwali, tihar; separated by commas.",
         "code": "Left empty, it is made from the English name.",
-        "sku": "Left empty, it is made from the item code and pack size."
+        "sku": "Left empty, it is made from the item code and pack size.",
+        "sellBy": "Item kasari bikchha: ek-ek (shirt, diya), tauls, volume, lambai (kapada) ya size (lambai x chaudai). Pack ko unit ra option yahi bata tokinchha.",
+        "compareAtPrice": "Pack ma chhapieko (MRP) ya purano price, price bhanda thulo. Website ma kateko dekhincha. Chaina bhane khali rakhnus.",
+        "packQuantity": "Ek pack ma kati chha. 25 kg ko bora ho bhane 25; 500 g ko packet ho bhane 500; ek wota diya ho bhane 1.",
+        "packUnitId": "Tyo amount ko unit. 25 ko lagi kg, 500 ko lagi g, ek wota ko lagi pcs."
       },
       "sections": {
-        "pack": "Pack and price",
+        "pack": "What you sell, and for how much",
         "stock": "Stock you have now",
         "more": "More (optional)"
       }
@@ -2336,7 +2399,7 @@
       },
       "sections": {},
       "kinds": {
-        "CHOICE": "Words",
+        "CHOICE": "Words (Choice)",
         "COLOR": "Colour",
         "NUMBER": "Number with a unit"
       },
@@ -2365,6 +2428,35 @@
       },
       "sections": {},
       "about": "Euta option ko value: jastai Rang ko \"Seto\". Rang bhaye hex code, tauls/lambai bhaye anka halnus."
+    },
+    "kitPack": {
+      "title": "Pack kits",
+      "add": "—",
+      "empty": "",
+      "fields": {
+        "quantity": "How many kits"
+      },
+      "hints": {
+        "quantity": "Each kit takes its items off this branch’s shelf."
+      }
+    },
+    "stockLoss": {
+      "title": "Loss",
+      "add": "-",
+      "empty": "",
+      "fields": {
+        "reason": "What happened",
+        "quantity": "How many",
+        "note": "Note (optional)"
+      }
+    },
+    "stockCount": {
+      "title": "Count",
+      "add": "-",
+      "empty": "",
+      "fields": {
+        "counted": "How many are there really"
+      }
     }
   },
   "catalogue": {
@@ -2509,7 +2601,7 @@
     "addItem": "Add an item",
     "addItemNote": "Fill what you know; codes are made from the English name when left empty. Opening stock is added to the branch chosen at the top.",
     "itemAdded": "Item added",
-    "addManyItemsNote": "One item per row: name, pack size and price are enough. Turn on more columns (category, opening stock, cost, HS code, tags) above the grid. Opening stock goes to the branch chosen at the top; empty rows are skipped.",
+    "addManyItemsNote": "One item per row: name, how much is in one pack (amount and unit) and the price are enough. Turn on more columns (category, opening stock, cost, HS code, tags) above the grid. Opening stock goes to the branch chosen at the top; empty rows are skipped.",
     "sendKit": "Send the stock for this kit to a branch",
     "sendKitOf": "Send stock for {name} to a branch",
     "sendKitNote": "Moves every item the kit holds, times the number of kits, from the branch chosen at the top to the one below, at its average cost. Optional items stay behind.",
@@ -2520,7 +2612,29 @@
     "stockUpdate": "Update",
     "stockHistory": "History",
     "stockSend": "Send",
-    "moreActions": "More"
+    "moreActions": "More",
+    "tileValue": "Stock value",
+    "tileInStock": "Packs in stock",
+    "tileLow": "Running low",
+    "tileOut": "Out of stock",
+    "allCategories": "Every category",
+    "category": "Category",
+    "allGroups": "Every group",
+    "group": "Group",
+    "allSuppliers": "Every supplier",
+    "supplier": "Supplier",
+    "brand": "Brand",
+    "repack": "Open into smaller packs",
+    "packKits": "Pack kits",
+    "packKitsOf": "Pack {name}",
+    "packKitsNote": "The items of one kit come off this branch’s shelf for each kit you make. The packed kits are then sold from their own count, whatever happens to the items.",
+    "kitsPacked": "Packed: the items are off the shelf and the kits are ready",
+    "unpackKits": "Take apart",
+    "unpackKitsOf": "Take {name} apart",
+    "unpackKitsNote": "The kits are opened and their items go back on the shelf.",
+    "kitsUnpacked": "Done: the items are back on the shelf",
+    "newKitPage": "New puja kit",
+    "openKit": "Open"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -2720,7 +2834,8 @@
       "receivables": "Owed",
       "profitAndLoss": "Profit and loss",
       "purchaseBook": "Purchases",
-      "itemSales": "Item sales"
+      "itemSales": "Item sales",
+      "supplierStatement": "Supplier statement"
     }
   },
   "reports": {
@@ -2767,7 +2882,12 @@
       "orders": "Orders",
       "outstanding": "Outstanding",
       "vatPaid": "VAT paid",
-      "supplier": "Supplier"
+      "supplier": "Supplier",
+      "owedAtStart": "Owed at start",
+      "bought": "Bought",
+      "returned": "Sent back",
+      "paid": "Paid",
+      "owedAtEnd": "Owed at end"
     },
     "profit": {
       "line": "Line",
@@ -2912,9 +3032,17 @@
     "title": "Purchases",
     "tabs": {
       "bills": "Bills",
+      "returns": "Returns",
       "suppliers": "Suppliers",
       "payments": "Payments"
     },
+    "newReturn": "Return goods",
+    "returnNote": "Goods go off the shelf and the supplier is owed less, at once. Use the cost on their bill.",
+    "returnReason": "Why (optional)",
+    "returnBillNumber": "Their bill number (optional)",
+    "returnDay": "Return date",
+    "saveReturn": "Return and take off stock",
+    "returned": "Returned: stock reduced and the supplier is owed less",
     "newBill": "Enter a bill",
     "editBill": "Bill {number}",
     "billNote": "Goods reach stock only when the bill is posted. Prices are before VAT; VAT left on \"Pack’s rate\" follows the pack.",
@@ -2935,12 +3063,13 @@
     "addLine": "Add a line",
     "note": "Note (optional)",
     "post": "Post into stock",
-    "posted": "Posted: the goods are in stock",
+    "posted": "Bill saved and the stock added",
     "view": "View",
     "void": "Void",
     "voidPayment": "Void this payment",
     "voidNote": "It stays listed as voided and leaves the balance.",
-    "voided": "Voided"
+    "voided": "Voided",
+    "saveAndPost": "Save and add to stock"
   },
   "expensesSection": {
     "title": "Expenses",
@@ -2968,7 +3097,7 @@
     },
     "kits": {
       "title": "Kits",
-      "intro": "A puja kit is a list of items sold together. A kit has no stock of its own: selling one takes each item out of stock."
+      "intro": "A puja kit is a list of items sold together. A kit made when sold takes each item out of stock as it sells; a packed kit is made ahead with Pack kits and sold from its own count."
     },
     "suppliers": {
       "title": "Suppliers",
@@ -3236,7 +3365,9 @@
     "photosNote": "Shoppers see these photos when they choose that value.",
     "addPhoto": "Add a photo",
     "removePhoto": "Remove photo",
-    "close": "Close"
+    "close": "Close",
+    "suggested": "Suggested",
+    "otherKinds": "Other kinds (colour, size, length ...)"
   },
   "optionsPage": {
     "title": "Colours and sizes",
@@ -3299,7 +3430,7 @@
       "couponCode": "e.g. DASHAIN10",
       "billPrefix": "e.g. PS",
       "symbol": "e.g. g",
-      "email": "name@example.com",
+      "email": "e.g. orders@supplier.com",
       "phone": "e.g. 98XXXXXXXX",
       "whatsappNumber": "e.g. 98XXXXXXXX",
       "viberNumber": "e.g. 98XXXXXXXX",
@@ -3309,6 +3440,8 @@
       "area": "e.g. Baneshwor",
       "areas": "One area per line",
       "panNumber": "e.g. 123456789",
+      "contactPerson": "e.g. Ram Shrestha",
+      "paymentTermsDays": "e.g. 30",
       "buyerPan": "e.g. 123456789",
       "payeePan": "e.g. 123456789",
       "legalName": "e.g. Puja Sanskar Pvt. Ltd.",
@@ -3359,7 +3492,12 @@
       "numberValue": "e.g. 500",
       "valueEn": "e.g. White",
       "valueNe": "जस्तै: सेतो",
-      "colorHex": "#ffffff"
+      "colorHex": "#ffffff",
+      "brand": "e.g. Patanjali",
+      "defaultSupplierId": "Choose…",
+      "barcode": "e.g. 8901234567890",
+      "shelfLocation": "e.g. Rack 3, shelf B",
+      "packed": ""
     },
     "help": {
       "name": "Yo record ko naam. Staff le chinna sajilo hune sano, spasta naam rakhnus.",
@@ -3434,7 +3572,7 @@
       "couponCode": "Customer le checkout ma type garne code. Capital akshar, number, - ra _ matra (3-32). Customer le yaad garna sajilo hune banaunus.",
       "billPrefix": "Bill number ko suru ka akshar (jastai PS-000123).",
       "symbol": "Chhoto chinha: g, kg, ml, pcs.",
-      "email": "Email thegana.",
+      "email": "Supplier ko email (optional). Order pathauda kam lagchha.",
       "phone": "Mobile number.",
       "whatsappNumber": "WhatsApp number (country code bina). Website ko WhatsApp button yahi ma jancha.",
       "viberNumber": "Viber number.",
@@ -3444,6 +3582,8 @@
       "area": "Ilaka ko naam.",
       "areas": "Ilaka haru, ek line ma ek ota.",
       "panNumber": "PAN number (9 ank).",
+      "contactPerson": "Supplier ma kasle kura garne, tyo manis ko naam.",
+      "paymentTermsDays": "Bill aayepachhi kati din ma paisa tirne. 0 bhaneko saman aaune bittikai tirne, 30 bhaneko mahina bhitra.",
       "buyerPan": "Kinne ko PAN number (bill ma chahiyema).",
       "payeePan": "Paune ko PAN number.",
       "legalName": "Bill ma chhapine kanuni naam.",
@@ -3551,7 +3691,12 @@
       "groupId": "Kun group ma.",
       "trigger": "Aafai lagne (automatic) ki coupon code halepachhi.",
       "scope": "Pura order ma ki khas category/item ma.",
-      "channels": "Kun tarika bata kinda lagne."
+      "channels": "Kun tarika bata kinda lagne.",
+      "brand": "Kun brand/company ko saman ho. Stock ma brand le chhanna milchha.",
+      "defaultSupplierId": "Yo saman prayah kun supplier bata kinchha. Kharid garda ra stock ma chhanna kaam lagchha.",
+      "barcode": "Packet ma chhapieko barcode. Counter ma scan garda yahi pack khulchha. Pratyek pack ko alag hunchha.",
+      "shelfLocation": "Yo saman dokan ma kun thau ma rakhieko chha (rack/shelf). Khoj garna sajilo hunchha.",
+      "packed": "On bhaneko kit pahilai pack garera rakhinchha: \"Pack kits\" thichda item ek patak shelf bata ghatchha, ra kit ko aafnai count huncha. Pachhi item sakiyo bhane pani packed kit bikna milchha. Off bhaneko kit bikda item bata nai kaatinchha."
     },
     "kind": {
       "text": "Yaha lekhnus",
@@ -3592,6 +3737,8 @@
       "searchIndex": "Puja, festival ra lekh ko search rahancha"
     },
     "stays": "Yo chai rahancha",
+    "includePujas": "Also delete all pujas",
+    "includePujasHelp": "Tick garyo bhane puja haru (ra puja ko guide lekh) pani jancha. Tick nagarda puja rahanchha. Ek ek gari hataune bhane Pujas page ko Delete button.",
     "keeps": {
       "staff": "Staff account ra tinko role",
       "settings": "Pasal ko settings: VAT, delivery, shakha, bill ko bibaran",
@@ -3647,7 +3794,7 @@
     "remove": "Remove"
   },
   "priceGrid": {
-    "note": "Harek pack ko price alag-alag halna milchha. Jastai Seto 500, Kalo 450, Premium quality 500, Regular 400.",
+    "note": "Harek pack ko price alag-alag halna milchha: Price (customer le tirne) ra MRP (chhapieko/purano price). Cost ra Margin kharid bill bata aafai aauchha; Margin = price (VAT bahek) ma cost ghatera. Jastai Seto 500, Kalo 450, Premium quality 500, Regular 400. Thok pack (jastai 25 kg bora) kharid ra repack ko lagi matra ho bhane \"Sold to customers\" untick garnus; tyo website/counter ma dekhidaina, tara stock ma rahancha.",
     "forAll": "Same price for all packs with",
     "choose": "Choose colour, size or quality",
     "price": "Price",
@@ -3655,7 +3802,7 @@
     "pack": "Pack",
     "sku": "SKU",
     "priceCol": "Price (Rs)",
-    "was": "Old price (optional)",
+    "was": "MRP / old price (optional)",
     "stock": "Stock",
     "inStock": "In stock",
     "noStock": "No stock",
@@ -3664,6 +3811,294 @@
     "undo": "Undo changes",
     "saved": "{count} price saved",
     "badPrice": "Price must be an amount above zero, such as 500 or 450.50",
-    "badCompare": "The old price must be more than the price"
+    "badCompare": "The old price must be more than the price",
+    "cost": "Cost",
+    "margin": "Margin",
+    "boughtFrom": "Last bought",
+    "onSale": "Sold to customers"
+  },
+  "itemPage": {
+    "back": "All items",
+    "live": "On the website",
+    "hidden": "Hidden",
+    "notFound": "This item could not be found.",
+    "sections": "Parts of this item",
+    "newTitle": "New item",
+    "newNote": "Naam, kasari bikchha, pahilo pack ra price halnus. Save garepachhi item ko page khulchha, jaha rang/size, photo ra offer halna milchha.",
+    "createItem": "Create item",
+    "section": {
+      "basics": "Basics",
+      "prices": "Prices and cost",
+      "packs": "Colours, sizes and packs",
+      "photos": "Photos",
+      "offers": "Offers",
+      "stock": "Stock and buying",
+      "more": "Quality and goes-with"
+    },
+    "help": {
+      "basics": "Item ko naam, kasari bikchha (ek-ek, tauls, lambai, size), tax, tags ra barnan. Badalepachhi tala Save thichnus.",
+      "packs": "Item kun-kun rang, size, lambai, tauls ma aaucha tick garera pack banaunus. \"How it is sold\" anusar milne option mathi aaucha.",
+      "prices": "Harek pack ko bikri price ra MRP (chhapieko/purano price) yahi halnus. Cost ra margin aafai dekhincha: cost chai kharid bata aauchha.",
+      "photos": "Item ka sabai photo ek thau ma. Pahilo mukhya. Kunai photo ek rang/size ko matra bhaye \"Shown for\" chunnus.",
+      "buying": "Yo item kata bata, kati ma kinyo tyo yaha lekhnus. \"Save and add to stock\" garepachhi stock badhchha ra cost aafai set huncha.",
+      "offers": "Yo item ma kun-kun offer lagne tick garnus. Naya offer Marketing → Offers ma.",
+      "more": "Quality (sadharan, bishesh) ra yo item sanga kina jane aru item."
+    },
+    "morePacks": "More packs you sell (optional)",
+    "stockNote": "Stock harek pack ko Stock screen ma herne ra milaune. Maal kinera ayepachhi Buying ma bill banaunus, tyo bata stock ra cost aafai aauchha. MRP chai mathi Prices and cost ma.",
+    "openStock": "Open Stock",
+    "recordPurchase": "Record a purchase",
+    "quality": "Quality",
+    "qualityNote": "Item ko quality (sadharan, bishesh). Pack le tyo chhanchha. Nabhaye chhodidinus.",
+    "goesWith": "Goes with",
+    "goesWithNote": "Yo item sanga kina jane aru item: product page ra cart ma \"yo pani kinnus\" bhanera dekhincha.",
+    "pairsSaved": "Saved",
+    "step": {
+      "basics": "Basics",
+      "packs": "Colours and sizes",
+      "prices": "Prices",
+      "photos": "Photos",
+      "buying": "Buying and stock",
+      "offers": "Offers",
+      "more": "More"
+    },
+    "prev": "Back",
+    "next": "Next: {step}",
+    "finish": "Finish",
+    "pack": "Pack",
+    "cost": "Cost",
+    "lastBought": "Last bought",
+    "onShelf": "On the shelf",
+    "inStock": "In stock",
+    "noStock": "No stock",
+    "neverBought": "Not bought yet",
+    "buyingNote": "Item kinera ayepachhi yahi lekhnus: kun supplier bata, kati ota, kati ma. Stock ra cost aafai aauchha. Pachhi pani kinda yahi bata ya Buying ma bill banauna milchha.",
+    "makePacksFirst": "Pahile Colours and sizes ma pack banaunus.",
+    "morePacksNote": "Ek item ka dherai pack: jastai 1 kg Rs 150 ra 250 g Rs 40. Mathi pahilo pack ma 1 kg, yaha 250 g thapnus. Unit ek nai rakhnus.",
+    "amount": "Amount",
+    "unit": "Unit",
+    "price": "Selling price",
+    "removePack": "Remove this pack",
+    "addPack": "Add another pack",
+    "buyBigger": "I buy it in a bigger pack (a bag, a roll)",
+    "buyBiggerNote": "Jastai 25 kg ko bora kinera 1 kg ra 250 g ma baadne. Yo bora customer lai bechinna; kharid ra repack ko lagi matra stock ma rahancha.",
+    "buyAmount": "Amount in the bigger pack",
+    "buyName": "Name (optional)",
+    "bareTitle": "Step 1: the item",
+    "bareNote": "Item ko naam, kasari bikchha (ek-ek, tauls, lambai) ra category matra. Pack, size, rang ra rate kharid garda halne.",
+    "bareSaved": "{name} saved",
+    "bareNext": "Aba bazar bata kinera ayepachhi Buy screen ma pack, size, rang ra rate halnus.",
+    "goBuy": "Next: record the purchase",
+    "addAnother": "Add another item",
+    "advanced": "Add with pack and price (advanced)",
+    "sameName": "Yo item ko naam arko item sanga milchha, tara yo alag item ho (naam milecha bhane matra tick garnus)."
+  },
+  "repack": {
+    "title": "Open {name} into smaller packs",
+    "note": "Take some of a bulk pack off the shelf and add the smaller packs it makes. What the bulk pack cost is shared over the new packs by their size.",
+    "opened": "How many of the bulk pack are opened",
+    "into": "Smaller packs that come out",
+    "pack": "Pack",
+    "howMany": "How many",
+    "remove": "Remove",
+    "addPack": "Add a pack",
+    "noteLabel": "Note (optional)",
+    "submit": "Open and add the packs",
+    "done": "Done: the bulk pack is off the shelf and the smaller packs are in stock",
+    "onHand": "{count} of the bulk pack on hand",
+    "choosePack": "Choose a pack...",
+    "balance": "Opened {opened} {unit}, packs make {made} {unit}. Wastage {wasted} {unit} ({percent}%). Wastage is shared into the cost of the packs.",
+    "tooMuch": "The packs add up to {made} {unit}, more than the {opened} {unit} opened. Check the numbers.",
+    "newPack": "+ A new pack (amount and unit)",
+    "newAmount": "How much in one new pack",
+    "newUnit": "Unit"
+  },
+  "kitPage": {
+    "back": "All kits",
+    "title": "New puja kit",
+    "note": "Ek puja ko kit ek choti ma: naam ek patak, ani Basic, Standard, Premium har package ko aafno item, photo ra chhut. Save garda sabai ek sath banchhan.",
+    "kit": "The kit",
+    "puja": "Puja",
+    "pujaHelp": "Yo kit kun puja ko lagi ho (jastai Chhath). Basic/Standard/Premium yahi puja ka package hun.",
+    "nameNe": "Name in Nepali",
+    "nameEn": "Name in English",
+    "description": "Description (optional)",
+    "descriptionHelp": "Chhoto parichaya: customer le kit ko page ma padhchha.",
+    "photos": "Photos (optional)",
+    "photosHelp": "Sabai package ma dekhine photo. Kunai package ko aafno photo chahiyo bhane tala package ma halnus.",
+    "packages": "Packages",
+    "packagesNote": "Package chunnus ra tyasko item haru halnus. Tick nagareko package banaudaina.",
+    "tier": {
+      "BASIC": "Basic",
+      "STANDARD": "Standard",
+      "PREMIUM": "Premium"
+    },
+    "offer": "Make a {tier} package",
+    "off": "Yo package banaudaina. Tick garyo bhane item halna milchha.",
+    "items": "Items in this package",
+    "itemsNote": "Pack chunnus ra kati ota. \"Optional\" tick bhaye kit ko price ma jodinna; add-on ko roop ma dekhincha.",
+    "pack": "Pack",
+    "quantity": "Qty",
+    "optional": "Optional",
+    "remove": "Remove",
+    "addItem": "Add an item",
+    "copyBasic": "Copy items from Basic",
+    "discount": "Discount (optional)",
+    "discountKind": "Discount kind",
+    "discountHelp": "Item haru ko jod ma chhut: % (up to 50) ya Rs. Kit ko price = items ko jod − chhut.",
+    "packed": "Packed ahead of time (own stock)",
+    "tierPhotos": "Photos of the {tier} package",
+    "tierPhotosHelp": "Yo package ko aafnai photo. Khali bhaye mathi ko sajha photo dekhincha.",
+    "summary": "{count, plural, one {# package} other {# packages}} will be made",
+    "save": "Save the kit",
+    "saved": "Kit saved with its packages"
+  },
+  "kitEdit": {
+    "back": "All kits",
+    "notFound": "This kit was not found.",
+    "sections": "Kit sections",
+    "step": {
+      "basics": "Details and photos",
+      "items": "Items and price",
+      "packing": "Packing"
+    },
+    "itemsNote": "Kit ke ke ko bancha: pack ra kati ota. Tala kit ko price ra item alag-alag kinda ko price tulna milchha.",
+    "packedBadge": "{count} packed",
+    "packedNote": "{count} kit pack bhayeko chha. Pack kits le item shelf bata ghatchha; Take apart le feri thau ma.",
+    "notPacked": "Yo kit bikda item bata nai kaatinchha. Pahile pack garera rakhna Details ma \"Packed ahead of time\" ON garnus."
+  },
+  "flow": {
+    "title": "Bring something into the shop",
+    "step": {
+      "item": "Item",
+      "buy": "Buy",
+      "prices": "Selling price",
+      "work": "Stock work"
+    },
+    "hint": {
+      "item": "Pahila item ko naam matra halnus. Pack, size, rang ra rate kharid garda (step 2) halne.",
+      "buy": "Bazar bata kinera aayepachhi: kasbata, ke ke, kati ota ra kati ma kinyo. Pack, size, rang yahi banchha.",
+      "prices": "Kharid bhayeko pack ko bechne price halera \"On sale\" garnus. Kharid ko rate yahi dekhincha.",
+      "work": "Stock ko kam: thok kholera chhoto pack banaune (repack), kharab/expire/harayo, gunera milaune, arko branch ma pathaune."
+    },
+    "intro": "Char step: item ko naam, kharid, selling price, ani stock ko kam. Ek-ek step ek-ek screen ma."
+  },
+  "buyPage": {
+    "title": "Buy: record what you brought",
+    "note": "Bazar bata kinera ayepachhi yaha lekhnus. Kasbata, ke ke, kati ota ra kati ma kinyo. Bechne price pachhi (step 3).",
+    "supplier": "Bought from",
+    "supplierHelp": "Kun supplier/dokan bata kinyo. Naya hunuhunchha bhane pahile Suppliers ma banaunus.",
+    "billNo": "Bill number",
+    "billNoHelp": "Supplier ko bill ma bhayeko number. Bill chhaina bhane aajako mithi lekhnus (jastai 2083-07-30).",
+    "day": "Bill date",
+    "what": "What you bought",
+    "lineNo": "Item {n}",
+    "removeLine": "Remove this item",
+    "item": "Item",
+    "itemHelp": "Item pahile Step 1 ma naam le banaunus.",
+    "pack": "Which pack",
+    "packHelp": "Pahile nai banieko pack chunnus, ya \"A new pack\" chunera yahi banaunus.",
+    "choosePack": "Choose...",
+    "newPack": "+ A new pack (size, colour...)",
+    "notOnSale": "not on sale yet",
+    "amount": "How much in one pack",
+    "amountHelp": "Ek pack ma kati: bora 25 kg ho bhane 25000 (g), packet 100 g ho bhane 100.",
+    "unit": "Unit",
+    "options": "Colour / size / quality",
+    "optionsHelp": "Rang, size, quality chunnus (optional). Jastai Black.",
+    "quantity": "How many",
+    "quantityHelp": "Kati ota (ya kati metre/kg) kinyo.",
+    "rate": "Cost of one",
+    "rateHelp": "Ek pack ko kati ma kinyo (VAT bahek).",
+    "vat": "VAT",
+    "vatAuto": "Item ko rate",
+    "vatNone": "No VAT",
+    "lineTotal": "= Rs {amount}",
+    "addLine": "Add another item",
+    "noteLabel": "Note (optional)",
+    "needPack": "Pratyek item ma item ra pack chunnus.",
+    "needNewPack": "Naya pack ma amount ra unit (ya colour/size) halnus.",
+    "needRate": "Pratyek item ma kati ota ra kati ma kinyo halnus.",
+    "ready": "Tayar chha. Save and add to stock garepachhi selling price halne page khulchha.",
+    "saveDraft": "Save as draft",
+    "savePost": "Save and add to stock",
+    "postedMsg": "Stock ma add bhayo. Aba selling price halnus.",
+    "draftedMsg": "Draft ma save bhayo.",
+    "noPacksYet": "Yo item ko pack pahile banieko chhaina. Amount ra unit lekhera banaunus.",
+    "packName": "Pack name (optional)",
+    "packNameHelp": "Khali rakhnus: amount ra unit bata aafai banchha. Bora/baksa jasto naam chahiyo bhane lekhnus.",
+    "packNamePlaceholder": "25 kg bag",
+    "totalCol": "Total",
+    "expiresCol": "Expires on",
+    "packCol": "Pack",
+    "amountCol": "How much",
+    "nameCol": "Pack name",
+    "optionsCol": "Colour / size",
+    "rateCol": "Cost each",
+    "quantityCol": "Qty",
+    "mergeTitle": "These packs already exist",
+    "mergeLine": "{item}: a pack of this size already exists ({pack}); {qty} will be added to its stock.",
+    "mergeNote": "Naya pack banaudaina; yahi pack ma stock thapchha. Thik chha?",
+    "mergeYes": "Yes, add to it"
+  },
+  "pricesPage": {
+    "title": "Selling price",
+    "note": "Kharid bhayeko pack ko bechne price yahi halnus. Tala kharid ko rate (Cost) ra margin dekhincha.",
+    "waiting": "Waiting for a price ({count})",
+    "all": "All packs ({count})",
+    "pack": "Item and pack",
+    "cost": "Cost",
+    "price": "Selling price",
+    "margin": "Margin",
+    "onSale": "On sale",
+    "notYet": "not on sale",
+    "empty": "Price chahine pack chhaina.",
+    "goBuy": "Kharid garna jaane",
+    "saved": "{count, plural, one {# pack} other {# packs}} saved",
+    "save": "Save {count, plural, one {# pack} other {# packs}}",
+    "badPrice": "Price rupaiya ma, 0 bhanda thulo (jastai 150 ya 150.50).",
+    "hint": "Price lekhepachhi pack aafai On sale huncha. Customer le tyo pack dekhne/kinne bhaye matra On sale ma rakhnus."
+  },
+  "stockWork": {
+    "title": "Stock work",
+    "note": "Shelf ma bhayeko saman ko kam yaha. Pahila pack chunnus; aafno branch mathi chunnu parchha (Every branch hoina).",
+    "pack": "Which pack",
+    "packHelp": "Kun item ko kun pack ko kam garne.",
+    "onShelf": "{count} on the shelf",
+    "pick": "Pahila pack chunnus.",
+    "task": {
+      "repack": "Open into smaller packs",
+      "loss": "Damaged, expired or lost",
+      "count": "Count on the shelf",
+      "send": "Send to another branch"
+    },
+    "taskNote": {
+      "repack": "Thok pack (bora, baksa) kholera chhoto pack banaune. Wastage dekhincha.",
+      "loss": "Phutyo, expire bhayo, harayo, chhachhin. Shelf bata ghatchha ra loss ma jancha.",
+      "count": "Gunera herda farak aayo bhane asli number halnus.",
+      "send": "Arko branch ma pathaune."
+    },
+    "lossTitle": "Took away from {name}",
+    "lossNote": "Kati ota kharab/expire/harayo ra karan.",
+    "countTitle": "Count {name}",
+    "countNote": "System ma {count} chha. Gunera herda kati chha?",
+    "record": "Record",
+    "recorded": "Recorded",
+    "expiry": {
+      "title": "Expiring soon",
+      "note": "Kharid garda 'Expires on' halyo bhane yaha dekhincha. Purano miti aagadi bikchha. Miti bitisakeko saman Write off garnus.",
+      "none": "Kunai saman expire hune garii chhaina.",
+      "within": "Within (days)",
+      "item": "Item",
+      "pack": "Pack",
+      "qty": "Qty",
+      "date": "Expires on",
+      "left": "Days left",
+      "value": "Value",
+      "expired": "Expired {days} days ago",
+      "today": "Today",
+      "writeOff": "Write off",
+      "writtenOff": "Written off as expired"
+    }
   }
 }

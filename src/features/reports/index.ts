@@ -3,6 +3,7 @@ export {
   ItemSalesReport,
   ProfitAndLossReport,
   PurchaseBookReport,
+  SupplierStatementReport,
   ReceivablesReport,
   SalesBookReport,
   VatReport,

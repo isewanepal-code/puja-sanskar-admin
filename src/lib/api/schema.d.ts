@@ -2067,6 +2067,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/option-types/defaults': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Add the usual colours, sizes, lengths and weights
+     * @description Colour (white, black, red …), Size (small, medium, large …), and Length, Width and Weight in cm and g. Anything already there is left alone.
+     */
+    post: operations['AdminOptionTypeController_defaults'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/option-types/{id}': {
     parameters: {
       query?: never;
@@ -2138,7 +2158,7 @@ export interface paths {
     get: operations['AdminProductOptionController_get'];
     /**
      * Choose the kinds of difference of a product
-     * @description Up to three, in the order shoppers choose them. A pack loses its value for a kind taken out.
+     * @description Up to four, in the order shoppers choose them. A pack loses its value for a kind taken out.
      */
     put: operations['AdminProductOptionController_set'];
     post?: never;
@@ -2474,7 +2494,7 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
-    /** Set the branch's low-stock threshold */
+    /** Set the branch's low-stock threshold and shelf location */
     patch: operations['AdminStockLevelController_update'];
     trace?: never;
   };
@@ -2513,6 +2533,63 @@ export interface paths {
      * @description Every line leaves as TRANSFER_OUT and arrives as TRANSFER_IN at the sender's average cost, all in one transaction; both halves share one reference.
      */
     post: operations['AdminStockTransferController_transfer'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/stock-repacks': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Open a bulk pack and make smaller packs of it
+     * @description The opened packs leave as REPACK_OUT and the new packs arrive as REPACK_IN carrying the same cost, split by pack size, in one transaction.
+     */
+    post: operations['AdminStockRepackController_repack'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/stock-batches': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Stock that spoils soon or already has, earliest date first
+     * @description Batches with something left, dated within the next withinDays days or earlier.
+     */
+    get: operations['AdminStockBatchController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/stock-batches/{id}/write-off': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Write off what is left of a batch as expired */
+    post: operations['AdminStockBatchController_writeOff'];
     delete?: never;
     options?: never;
     head?: never;
@@ -2992,6 +3069,60 @@ export interface paths {
     patch: operations['AdminKitController_update'];
     trace?: never;
   };
+  '/api/v1/admin/kits/{id}/stock': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** A packed kit's stock at the chosen branch */
+    get: operations['AdminKitController_stock'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/kits/{id}/pack': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Pack kits: take their items off the shelf once and add the kits
+     * @description Only for a kit marked packed. Fails, changing nothing, when an item runs short.
+     */
+    post: operations['AdminKitController_pack'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/kits/{id}/unpack': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Take packed kits apart: the items go back on the shelf */
+    post: operations['AdminKitController_unpack'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/kits/set': {
     parameters: {
       query?: never;
@@ -3006,6 +3137,26 @@ export interface paths {
      * @description One name, one set of photos and one description for all three; each starts with the puja's default samagri.
      */
     post: operations['AdminKitController_createSet'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/kits/packages': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Create a puja's kit in its packages, each with its own photos, price and items
+     * @description Name and description are shared; every package (Basic, Standard, Premium) brings its own items, photos and discount. All are saved, or none.
+     */
+    post: operations['AdminKitController_createPackages'];
     delete?: never;
     options?: never;
     head?: never;
@@ -5429,6 +5580,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/reports/supplier-statement': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * What each supplier was owed, sold us, took back and was paid
+     * @description fiscalYear (2083/84) or from/to (AD days); the current fiscal year if neither.
+     */
+    get: operations['AdminReportController_supplierStatement'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/reports/purchase-book/export': {
     parameters: {
       query?: never;
@@ -5653,6 +5824,44 @@ export interface paths {
      * @description Posted bills are never changed. VAT is left out of the cost when the shop is VAT registered.
      */
     post: operations['AdminPurchaseBillController_post'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/purchase-returns': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Goods sent back to suppliers, newest first */
+    get: operations['AdminPurchaseReturnController_list'];
+    put?: never;
+    /**
+     * Send goods back to a supplier
+     * @description Takes the goods off the branch stock and lowers what the supplier is owed, together.
+     */
+    post: operations['AdminPurchaseReturnController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/purchase-returns/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One return with its lines */
+    get: operations['AdminPurchaseReturnController_get'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -6982,6 +7191,11 @@ export interface components {
       nameEn: string | null;
       /** @example ग्राम */
       nameNe: string;
+      /**
+       * @description What it measures
+       * @enum {string}
+       */
+      dimension: 'COUNT' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'AREA';
       isActive: boolean;
       /** Format: date-time */
       createdAt: string;
@@ -6997,6 +7211,12 @@ export interface components {
       nameEn?: string | null;
       /** @example ग्राम */
       nameNe: string;
+      /**
+       * @description What it measures; only units of one kind convert into each other
+       * @default COUNT
+       * @enum {string}
+       */
+      dimension: 'COUNT' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'AREA';
       /** @default true */
       isActive: boolean;
     };
@@ -7007,6 +7227,12 @@ export interface components {
       nameEn?: string | null;
       /** @example ग्राम */
       nameNe?: string;
+      /**
+       * @description What it measures; only units of one kind convert into each other
+       * @default COUNT
+       * @enum {string}
+       */
+      dimension: 'COUNT' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'AREA';
       /** @default true */
       isActive: boolean;
     };
@@ -8153,6 +8379,15 @@ export interface components {
       /** @example 33074100 */
       hsCode: string | null;
       /**
+       * @description How it is sold: one by one, by weight, by volume, by length, or by size
+       * @enum {string}
+       */
+      sellBy: 'PIECE' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'SIZE';
+      /** @example Patanjali */
+      brand: string | null;
+      /** Format: uuid */
+      defaultSupplierId: string | null;
+      /**
        * @example [
        *       "diwali"
        *     ]
@@ -8249,6 +8484,15 @@ export interface components {
       /** @example 33074100 */
       hsCode: string | null;
       /**
+       * @description How it is sold: one by one, by weight, by volume, by length, or by size
+       * @enum {string}
+       */
+      sellBy: 'PIECE' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'SIZE';
+      /** @example Patanjali */
+      brand: string | null;
+      /** Format: uuid */
+      defaultSupplierId: string | null;
+      /**
        * @example [
        *       "diwali"
        *     ]
@@ -8272,6 +8516,19 @@ export interface components {
        * @example 13.00
        */
       ratePercent: string | null;
+    };
+    LastBoughtResponse: {
+      /** Format: uuid */
+      supplierId: string;
+      /** @example Ram Traders */
+      supplierName: string;
+      /**
+       * @description Before VAT, for one pack
+       * @example 300.00
+       */
+      unitCost: string;
+      /** @example 2026-11-10 */
+      billDay: string;
     };
     AdminVariantResponse: {
       /** Format: uuid */
@@ -8314,6 +8571,12 @@ export interface components {
       inStock: boolean;
       isActive: boolean;
       sortOrder: number;
+      /**
+       * @description What a pack costs the shop (moving average of the stock held); null before any purchase
+       * @example 320.00
+       */
+      cost: string | null;
+      lastBought: components['schemas']['LastBoughtResponse'] | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -8347,6 +8610,15 @@ export interface components {
       metaDescription: string | null;
       /** @example 33074100 */
       hsCode: string | null;
+      /**
+       * @description How it is sold: one by one, by weight, by volume, by length, or by size
+       * @enum {string}
+       */
+      sellBy: 'PIECE' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'SIZE';
+      /** @example Patanjali */
+      brand: string | null;
+      /** Format: uuid */
+      defaultSupplierId: string | null;
       /**
        * @example [
        *       "diwali"
@@ -8418,6 +8690,21 @@ export interface components {
        */
       materialId: string;
       images?: components['schemas']['ProductImageDto'][];
+      /**
+       * @description How it is sold: one by one, by weight, by volume, by length, or by size (length x breadth)
+       * @default PIECE
+       * @enum {string}
+       */
+      sellBy: 'PIECE' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'SIZE';
+      /** @example Patanjali */
+      brand?: string | null;
+      /**
+       * @description Make the item even though another has the same name: only when it really is a different item
+       * @default false
+       */
+      allowDuplicateName: boolean;
+      /** Format: uuid */
+      defaultSupplierId?: string | null;
       /** @default true */
       isActive: boolean;
       /**
@@ -8451,6 +8738,21 @@ export interface components {
       /** @example Pure camphor tablets for aarti */
       description?: string | null;
       images?: components['schemas']['ProductImageDto'][];
+      /**
+       * @description How it is sold: one by one, by weight, by volume, by length, or by size (length x breadth)
+       * @default PIECE
+       * @enum {string}
+       */
+      sellBy: 'PIECE' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'SIZE';
+      /** @example Patanjali */
+      brand?: string | null;
+      /**
+       * @description Make the item even though another has the same name: only when it really is a different item
+       * @default false
+       */
+      allowDuplicateName: boolean;
+      /** Format: uuid */
+      defaultSupplierId?: string | null;
       /** @default true */
       isActive: boolean;
       /**
@@ -8484,6 +8786,8 @@ export interface components {
        * @description One of the product's grades
        */
       gradeId?: string | null;
+      /** @example 8901234567890 */
+      barcode?: string | null;
       /** @example 120.00 */
       price: string;
       /** @example 150.00 */
@@ -8536,6 +8840,8 @@ export interface components {
        * @description One of the product's grades
        */
       gradeId?: string | null;
+      /** @example 8901234567890 */
+      barcode?: string | null;
       /** @example 120.00 */
       price?: string;
       /** @example 150.00 */
@@ -9128,11 +9434,18 @@ export interface components {
       available: number;
       /** @example 10 */
       reorderLevel: number | null;
+      /** @example Rack 3, shelf B */
+      shelfLocation: string | null;
       /**
        * @description One unit's moving average cost at this branch
        * @example 82.50
        */
       avgCost: string;
+      /**
+       * @description onHand times avgCost
+       * @example 3217.50
+       */
+      value: string;
       /** @description onHand is at or below reorderLevel */
       isLowStock: boolean;
       /** Format: date-time */
@@ -9159,6 +9472,11 @@ export interface components {
        * @example 24
        */
       out: number;
+      /**
+       * @description What the stock held cost: units times average cost
+       * @example 482500.00
+       */
+      stockValue: string;
     };
     UpdateStockLevelDto: {
       /**
@@ -9166,6 +9484,8 @@ export interface components {
        * @example 10
        */
       reorderLevel: number | null;
+      /** @example Rack 3, shelf B */
+      shelfLocation?: string | null;
     };
     StockMovementResponse: {
       /** Format: uuid */
@@ -9179,7 +9499,18 @@ export interface components {
       variantId: string;
       /** @enum {string} */
       type:
-        'PURCHASE' | 'RETURN' | 'SALE' | 'DAMAGE' | 'ADJUSTMENT' | 'TRANSFER_OUT' | 'TRANSFER_IN';
+        | 'PURCHASE'
+        | 'RETURN'
+        | 'SALE'
+        | 'DAMAGE'
+        | 'ADJUSTMENT'
+        | 'TRANSFER_OUT'
+        | 'TRANSFER_IN'
+        | 'PURCHASE_RETURN'
+        | 'REPACK_OUT'
+        | 'REPACK_IN'
+        | 'KIT_PACK'
+        | 'KIT_UNPACK';
       /**
        * @description Signed change to the stock
        * @example -2
@@ -9214,7 +9545,10 @@ export interface components {
     TransferLineDto: {
       /** Format: uuid */
       variantId: string;
-      /** @example 12 */
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 12
+       */
       quantity: number;
     };
     TransferStockDto: {
@@ -9228,6 +9562,74 @@ export interface components {
       reference?: string | null;
       /** @example Dashain restock for Patan */
       note?: string | null;
+    };
+    RepackNewPackDto: {
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 100
+       */
+      packQuantity: number;
+      /** Format: uuid */
+      packUnitId: string;
+    };
+    RepackLineDto: {
+      /**
+       * Format: uuid
+       * @description An existing pack; or give newPack
+       */
+      variantId?: string;
+      newPack?: components['schemas']['RepackNewPackDto'];
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 40
+       */
+      quantity: number;
+    };
+    RepackStockDto: {
+      /**
+       * Format: uuid
+       * @description The bulk pack that is opened
+       */
+      sourceVariantId: string;
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 1
+       */
+      sourceQuantity: number;
+      /** @description The smaller packs that come out */
+      outputs: components['schemas']['RepackLineDto'][];
+      /** @example Opened a 1 kg bag into 50 g packs */
+      note?: string | null;
+    };
+    StockBatchResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example MAIN */
+      branchCode: string;
+      productNameEn: string;
+      productNameNe: string;
+      sku: string;
+      /** @example 1000 ml */
+      packName: string;
+      /** Format: uuid */
+      variantId: string;
+      /** @example 9 */
+      quantity: number;
+      /**
+       * Format: date
+       * @example 2026-12-01
+       */
+      expiresOn: string;
+      /**
+       * @description Negative once it is past its date
+       * @example 14
+       */
+      daysLeft: number;
+      /**
+       * @description Quantity times the pack average cost
+       * @example 1080.00
+       */
+      value: string;
     };
     CartMemberResponse: {
       /** Format: uuid */
@@ -9276,6 +9678,11 @@ export interface components {
       product: components['schemas']['CartProductResponse'];
       /** @example 2 */
       quantity: number;
+      /**
+       * @description Sold by weight, volume or length: the quantity may be a part of a pack (1.5)
+       * @example false
+       */
+      allowsFraction: boolean;
       /** @example 240.00 */
       lineTotal: string;
       /**
@@ -9428,7 +9835,7 @@ export interface components {
     };
     SetItemQuantityDto: {
       /**
-       * @description The new quantity of this SKU (not an increment)
+       * @description Up to three decimals; whole numbers for items sold one by one
        * @example 2
        */
       quantity: number;
@@ -9890,6 +10297,8 @@ export interface components {
        */
       previousSlugs: string[];
       isActive: boolean;
+      /** @description Packed ahead of time with its own stock (made with Pack) */
+      packed: boolean;
       sortOrder: number;
       /**
        * @description Whole kits that can be sold from the stock on hand
@@ -9901,6 +10310,32 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    KitStockResponse: {
+      /**
+       * @description Packed kits on the shelf
+       * @example 12
+       */
+      onHand: number;
+      /**
+       * @description Held for orders not yet sent
+       * @example 2
+       */
+      reserved: number;
+      /**
+       * @description onHand - reserved: what can be sold
+       * @example 10
+       */
+      available: number;
+      /**
+       * @description What one packed kit cost
+       * @example 640.00
+       */
+      avgCost: string;
+    };
+    PackKitDto: {
+      /** @example 10 */
+      quantity: number;
     };
     ImageDto: {
       /** @example https://cdn.pujasanskar.com/products/kapur-50g.webp */
@@ -9949,6 +10384,11 @@ export interface components {
       sortOrder: number;
       /** @default true */
       isActive: boolean;
+      /**
+       * @description Packed ahead of time: the kit has its own stock, made with Pack, and selling it never touches the items
+       * @default false
+       */
+      packed: boolean;
       /** @example Kapur for aarti: pure camphor tablets */
       metaTitle?: string | null;
       /** @example Pure camphor for aarti and havan, delivered home. */
@@ -9984,8 +10424,68 @@ export interface components {
       images?: components['schemas']['ImageDto'][];
       /** @default true */
       isActive: boolean;
+      /**
+       * @description Packed ahead of time: the kit has its own stock, made with Pack, and selling it never touches the items
+       * @default false
+       */
+      packed: boolean;
       /** Format: uuid */
       pujaId: string;
+    };
+    PackageItemDto: {
+      /**
+       * Format: uuid
+       * @description The pack (product variant)
+       */
+      variantId: string;
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 2
+       */
+      quantity: number;
+      /**
+       * @description Offered with the kit, not part of its price
+       * @default false
+       */
+      isOptional: boolean;
+    };
+    KitPackageDto: {
+      /** @enum {string} */
+      tier: 'BASIC' | 'STANDARD' | 'PREMIUM';
+      /** @description This package's photos; the shared ones when left out */
+      images?: components['schemas']['ImageDto'][];
+      /**
+       * @default PERCENT
+       * @enum {string}
+       */
+      discountKind: 'PERCENT' | 'FLAT';
+      /** @example 10.00 */
+      discountPercent?: string | null;
+      /** @example 100.00 */
+      discountAmount?: string | null;
+      /** @default false */
+      packed: boolean;
+      items: components['schemas']['PackageItemDto'][];
+    };
+    KitPackagesDto: {
+      /** Format: uuid */
+      pujaId: string;
+      /** @example CHHATH */
+      code: string;
+      /** @example Chhath Puja Kit */
+      nameEn: string;
+      /** @example छठ पूजा किट */
+      nameNe: string;
+      /** @example chhath puja kit */
+      nameRomanized?: string | null;
+      /** @example Everything for Chhath */
+      description?: string | null;
+      /** @description Photos every package shows unless it has its own */
+      images?: components['schemas']['ImageDto'][];
+      /** @default true */
+      isActive: boolean;
+      /** @description One to three, each a different tier */
+      packages: components['schemas']['KitPackageDto'][];
     };
     KitFromPujaResponse: {
       kit: components['schemas']['AdminKitResponse'];
@@ -10070,6 +10570,11 @@ export interface components {
       sortOrder: number;
       /** @default true */
       isActive: boolean;
+      /**
+       * @description Packed ahead of time: the kit has its own stock, made with Pack, and selling it never touches the items
+       * @default false
+       */
+      packed: boolean;
       /** @example Kapur for aarti: pure camphor tablets */
       metaTitle?: string | null;
       /** @example Pure camphor for aarti and havan, delivered home. */
@@ -10081,7 +10586,10 @@ export interface components {
        * @description The SKU (product variant)
        */
       variantId: string;
-      /** @example 2 */
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 2
+       */
       quantity: number;
       /**
        * @description Offered with the kit, not part of its price
@@ -10092,7 +10600,10 @@ export interface components {
       note?: string | null;
     };
     UpdateKitItemDto: {
-      /** @example 2 */
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 2
+       */
       quantity?: number;
       /**
        * @description Offered with the kit, not part of its price
@@ -11270,7 +11781,10 @@ export interface components {
     StoreSaleLineDto: {
       /** Format: uuid */
       variantId: string;
-      /** @example 2 */
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 2
+       */
       quantity: number;
     };
     StoreSaleKitDto: {
@@ -11317,6 +11831,11 @@ export interface components {
        * @example 18
        */
       available: number;
+      /**
+       * @description Sold by weight, volume or length, so a part of a pack (1.5 m) may be sold
+       * @example false
+       */
+      allowsFraction: boolean;
     };
     ShelfItemResponse: {
       /** Format: uuid */
@@ -11752,6 +12271,8 @@ export interface components {
        * @example DELETE
        */
       confirm: string;
+      /** @description Also remove every puja (groups and ritual types stay) */
+      includePujas?: boolean;
     };
     ListPujaResponse: {
       /** @example lakshmi-puja */
@@ -13442,7 +13963,18 @@ export interface components {
     StockFlowTypeResponse: {
       /** @enum {string} */
       type:
-        'PURCHASE' | 'RETURN' | 'SALE' | 'DAMAGE' | 'ADJUSTMENT' | 'TRANSFER_OUT' | 'TRANSFER_IN';
+        | 'PURCHASE'
+        | 'RETURN'
+        | 'SALE'
+        | 'DAMAGE'
+        | 'ADJUSTMENT'
+        | 'TRANSFER_OUT'
+        | 'TRANSFER_IN'
+        | 'PURCHASE_RETURN'
+        | 'REPACK_OUT'
+        | 'REPACK_IN'
+        | 'KIT_PACK'
+        | 'KIT_UNPACK';
       /** @example 4 */
       movements: number;
       /**
@@ -13761,6 +14293,30 @@ export interface components {
       items: components['schemas']['PurchaseBookRowResponse'][];
       meta: components['schemas']['PageMetaResponse'];
     };
+    SupplierStatementRowResponse: {
+      /** Format: uuid */
+      supplierId: string;
+      /** @example SUP_ASAN */
+      code: string;
+      /** @example Asan Bazar Traders */
+      name: string;
+      /**
+       * @description Owed at the start of the period
+       * @example 1000.00
+       */
+      opening: string;
+      /** @example 2260.00 */
+      bought: string;
+      /** @example 565.00 */
+      returned: string;
+      /** @example 2000.00 */
+      paid: string;
+      /**
+       * @description Owed at the end of the period
+       * @example 695.00
+       */
+      closing: string;
+    };
     VatMonthResponse: {
       /**
        * @description After discount
@@ -13898,6 +14454,11 @@ export interface components {
       panNumber: string | null;
       phone: string | null;
       address: string | null;
+      contactPerson: string | null;
+      email: string | null;
+      /** @example 30 */
+      paymentTermsDays: number;
+      note: string | null;
       /** @example 0.00 */
       openingBalance: string;
       /**
@@ -13918,6 +14479,13 @@ export interface components {
       phone?: string | null;
       /** @example Asan, Kathmandu */
       address?: string | null;
+      /** @example Ram Shrestha */
+      contactPerson?: string | null;
+      email?: string | null;
+      /** @example 30 */
+      paymentTermsDays?: number;
+      /** @example Delivers on Tuesdays */
+      note?: string | null;
       /** @example 12000.00 */
       openingBalance?: string | null;
       /** @default true */
@@ -13932,6 +14500,13 @@ export interface components {
       phone?: string | null;
       /** @example Asan, Kathmandu */
       address?: string | null;
+      /** @example Ram Shrestha */
+      contactPerson?: string | null;
+      email?: string | null;
+      /** @example 30 */
+      paymentTermsDays?: number;
+      /** @example Delivers on Tuesdays */
+      note?: string | null;
       /** @example 12000.00 */
       openingBalance?: string | null;
       /** @default true */
@@ -13959,6 +14534,8 @@ export interface components {
       sku: string;
       /** @example लोबान धूप · 50 g */
       packName: string;
+      /** @example 2026-12-01 */
+      expiresOn: string | null;
     };
     PurchaseBillResponse: {
       /** Format: uuid */
@@ -13993,15 +14570,40 @@ export interface components {
       postedAt: string | null;
       lines: components['schemas']['PurchaseLineResponse'][];
     };
-    PurchaseLineDto: {
+    NewPackDto: {
       /** Format: uuid */
-      variantId: string;
-      /** @example 24 */
+      productId: string;
+      /** @example 250 */
+      packQuantity?: number;
+      /** Format: uuid */
+      packUnitId?: string;
+      /** @description Colour, size, quality ... values */
+      optionValueIds?: string[];
+      /** @example 25 kg bag */
+      label?: string | null;
+    };
+    PurchaseLineDto: {
+      /**
+       * Format: uuid
+       * @description An existing pack; or give newPack
+       */
+      variantId?: string;
+      /** @description A pack to make as the bill is saved */
+      newPack?: components['schemas']['NewPackDto'];
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 24
+       */
       quantity: number;
       /** @example 85.00 */
       unitCost: string;
       /** @example 13 */
       vatRate?: string | null;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      expiresOn?: string | null;
     };
     SavePurchaseBillDto: {
       /** Format: uuid */
@@ -14016,6 +14618,61 @@ export interface components {
       lines: components['schemas']['PurchaseLineDto'][];
       /** @example Dashain stock */
       note?: string | null;
+    };
+    PurchaseReturnResponse: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      branchId: string;
+      /** Format: uuid */
+      supplierId: string;
+      /** @example Bhaktapur Traders */
+      supplierName: string;
+      /** @example PR-0001 */
+      number: string;
+      billNumber: string | null;
+      /**
+       * Format: date
+       * @example 2026-11-03
+       */
+      returnDay: string;
+      reason: string | null;
+      /** @example 2040.00 */
+      taxableTotal: string;
+      /** @example 0.00 */
+      exemptTotal: string;
+      /** @example 265.20 */
+      vatTotal: string;
+      /** @example 2305.20 */
+      total: string;
+      lines: components['schemas']['PurchaseLineResponse'][];
+    };
+    ReturnLineDto: {
+      /** Format: uuid */
+      variantId: string;
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 5
+       */
+      quantity: number;
+      /** @example 85.00 */
+      unitCost: string;
+      /** @example 13 */
+      vatRate?: string | null;
+    };
+    SavePurchaseReturnDto: {
+      /** Format: uuid */
+      supplierId: string;
+      /** @example INV-4471 */
+      billNumber?: string | null;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      returnDay: string;
+      /** @example Broken in transit */
+      reason?: string | null;
+      lines: components['schemas']['ReturnLineDto'][];
     };
     SupplierPaymentResponse: {
       /** Format: uuid */
@@ -14142,8 +14799,35 @@ export interface components {
       /** @example https://media.pujasanskar.com/receipts/nea.jpg */
       receiptUrl?: string | null;
     };
+    ExtraPackDto: {
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 250
+       */
+      packQuantity: number;
+      /** Format: uuid */
+      packUnitId: string;
+      /** @example 40.00 */
+      price: string;
+      /** @example 250 g */
+      packLabel?: string | null;
+    };
+    BuyPackDto: {
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 25000
+       */
+      packQuantity: number;
+      /** Format: uuid */
+      packUnitId: string;
+      /** @example 25 kg bag */
+      packLabel?: string | null;
+    };
     OpeningStockDto: {
-      /** @example 40 */
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 40
+       */
       quantity: number;
       /** @example 45.00 */
       unitCost?: string | null;
@@ -14175,13 +14859,29 @@ export interface components {
       /** @example LOBAN-50 */
       sku: string;
       /** @example 50 g */
-      packLabel: string;
+      packLabel?: string | null;
       /** @example 50 */
       packQuantity?: number;
       /** Format: uuid */
       packUnitId?: string;
+      /**
+       * @description How it is sold: one by one, by weight, by volume, by length, or by size
+       * @default PIECE
+       * @enum {string}
+       */
+      sellBy: 'PIECE' | 'WEIGHT' | 'VOLUME' | 'LENGTH' | 'SIZE';
+      /** @example Patanjali */
+      brand?: string | null;
+      /** @default false */
+      allowDuplicateName: boolean;
+      /** Format: uuid */
+      defaultSupplierId?: string | null;
       /** @example 120.00 */
-      price: string;
+      price?: string | null;
+      /** @description More packs it is sold in */
+      morePacks?: components['schemas']['ExtraPackDto'][];
+      /** @description The bigger pack it is bought in */
+      buyPack?: components['schemas']['BuyPackDto'];
       /** @example 150.00 */
       compareAtPrice?: string | null;
       /** @example 33074100 */
@@ -24144,6 +24844,49 @@ export interface operations {
       };
     };
   };
+  AdminOptionTypeController_defaults: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OptionTypeResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminOptionTypeController_get: {
     parameters: {
       query?: never;
@@ -25868,6 +26611,16 @@ export interface operations {
         productId?: string;
         /** @description Only SKUs at or below their reorder level */
         lowStock?: boolean;
+        /** @description Items in this category or under it */
+        categoryId?: string;
+        /** @description Items in this offer group */
+        groupId?: string;
+        /** @description Items this supplier usually supplies */
+        supplierId?: string;
+        /** @description Items of this brand */
+        brand?: string;
+        /** @description SKU, barcode, item name or code */
+        q?: string;
         /** @description Only SKUs with nothing on hand */
         outOfStock?: boolean;
       };
@@ -25999,6 +26752,16 @@ export interface operations {
         productId?: string;
         /** @description Only SKUs at or below their reorder level */
         lowStock?: boolean;
+        /** @description Items in this category or under it */
+        categoryId?: string;
+        /** @description Items in this offer group */
+        groupId?: string;
+        /** @description Items this supplier usually supplies */
+        supplierId?: string;
+        /** @description Items of this brand */
+        brand?: string;
+        /** @description SKU, barcode, item name or code */
+        q?: string;
         /** @description Only SKUs with nothing on hand */
         outOfStock?: boolean;
       };
@@ -26191,7 +26954,18 @@ export interface operations {
         page?: number;
         limit?: number;
         type?:
-          'PURCHASE' | 'RETURN' | 'SALE' | 'DAMAGE' | 'ADJUSTMENT' | 'TRANSFER_OUT' | 'TRANSFER_IN';
+          | 'PURCHASE'
+          | 'RETURN'
+          | 'SALE'
+          | 'DAMAGE'
+          | 'ADJUSTMENT'
+          | 'TRANSFER_OUT'
+          | 'TRANSFER_IN'
+          | 'PURCHASE_RETURN'
+          | 'REPACK_OUT'
+          | 'REPACK_IN'
+          | 'KIT_PACK'
+          | 'KIT_UNPACK';
       };
       header?: {
         /** @description Branch code; may be left out when the user works at one branch only */
@@ -26406,6 +27180,192 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockRepackController_repack: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RepackStockDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['StockMovementResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockBatchController_list: {
+    parameters: {
+      query?: {
+        withinDays?: number;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['StockBatchResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockBatchController_writeOff: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };
@@ -28565,6 +29525,248 @@ export interface operations {
       };
     };
   };
+  AdminKitController_stock: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['KitStockResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminKitController_pack: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PackKitDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['KitStockResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminKitController_unpack: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PackKitDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['KitStockResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminKitController_createSet: {
     parameters: {
       query?: never;
@@ -28575,6 +29777,89 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['KitSetDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['KitSetResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminKitController_createPackages: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['KitPackagesDto'];
       };
     };
     responses: {
@@ -39145,6 +40430,75 @@ export interface operations {
       };
     };
   };
+  AdminReportController_supplierStatement: {
+    parameters: {
+      query?: {
+        /** @description Defaults to the current fiscal year */
+        fiscalYear?: string;
+        from?: string | null;
+        to?: string | null;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SupplierStatementRowResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminReportController_exportPurchaseBook: {
     parameters: {
       query?: {
@@ -40289,6 +41643,221 @@ export interface operations {
        *     UNPROCESSABLE_ENTITY
        */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseReturnController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        supplierId?: string;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['PurchaseReturnResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseReturnController_create: {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+        /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
+        'Idempotency-Key': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SavePurchaseReturnDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PurchaseReturnResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /**
+       * @description CONFLICT
+       *
+       *     CONFLICT
+       */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /**
+       * @description UNPROCESSABLE_ENTITY
+       *
+       *     UNPROCESSABLE_ENTITY
+       */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseReturnController_get: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PurchaseReturnResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };

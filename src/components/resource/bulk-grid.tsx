@@ -267,11 +267,17 @@ export function BulkGrid<T>({
         <table className="w-full border-separate border-spacing-0 text-sm">
           <thead className="sticky top-0 z-10 bg-muted text-xs text-muted-foreground">
             <tr>
-              <th className="w-10 border-r border-b border-border px-2 py-1.5 font-medium">#</th>
-              {fields.map((field) => (
+              <th className="sticky left-0 z-20 w-10 border-r border-b border-border bg-muted px-2 py-1.5 font-medium">
+                #
+              </th>
+              {fields.map((field, index) => (
                 <th
                   key={field.name}
-                  className="min-w-40 border-r border-b border-border px-2 py-1.5 text-left font-medium whitespace-nowrap"
+                  className={cn(
+                    'min-w-40 border-r border-b border-border px-2 py-1.5 text-left font-medium whitespace-nowrap',
+                    index === 0 &&
+                      'sticky left-10 z-20 bg-muted shadow-[1px_0_0_var(--color-border)]',
+                  )}
                 >
                   {t(`fields.${field.name}`)}
                   {field.required ? <span className="text-destructive"> *</span> : null}
@@ -292,11 +298,18 @@ export function BulkGrid<T>({
                     state?.state === 'failed' && 'bg-destructive/5',
                   )}
                 >
-                  <td className="border-r border-b border-border px-2 text-center text-xs text-muted-foreground">
+                  <td className="sticky left-0 z-[5] border-r border-b border-border bg-card px-2 text-center text-xs text-muted-foreground">
                     {r + 1}
                   </td>
                   {fields.map((field, c) => (
-                    <td key={field.name} className="border-r border-b border-border p-0">
+                    <td
+                      key={field.name}
+                      className={cn(
+                        'border-r border-b border-border p-0',
+                        c === 0 &&
+                          'sticky left-10 z-[5] bg-card shadow-[1px_0_0_var(--color-border)]',
+                      )}
+                    >
                       {field.kind === 'select' ? (
                         <SearchSelect
                           bare

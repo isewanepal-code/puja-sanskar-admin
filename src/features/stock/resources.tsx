@@ -31,7 +31,19 @@ async function packsOf(productId: string, show: StockShow): Promise<Level[]> {
 }
 
 // Stock per pack; only the reorder level is set by hand, the rest follows movements.
-export function stockResource(show: StockShow, productId?: string): Resource<Level> {
+// What narrows the stock list besides the all/low/out switch.
+export type StockFilters = {
+  productId?: string;
+  categoryId?: string;
+  groupId?: string;
+  supplierId?: string;
+  brand?: string;
+};
+
+export function stockResource(
+  show: StockShow,
+  { productId, categoryId, groupId, supplierId, brand }: StockFilters = {},
+): Resource<Level> {
   return {
     key: 'stock',
     path: '/admin/stock-levels',
@@ -43,8 +55,11 @@ export function stockResource(show: StockShow, productId?: string): Resource<Lev
       ...(show === 'low' && { lowStock: 'true' }),
       ...(show === 'out' && { outOfStock: 'true' }),
       ...(productId && { productId }),
+      ...(categoryId && { categoryId }),
+      ...(groupId && { groupId }),
+      ...(supplierId && { supplierId }),
+      ...(brand && { brand }),
     },
-    searchable: false,
     canCreate: false,
     canDelete: false,
     rowId: (row) => row.variant.id,
@@ -76,12 +91,6 @@ export function stockResource(show: StockShow, productId?: string): Resource<Lev
       { key: 'label', cell: (row) => row.variant.label, sortValue: (row) => row.variant.label },
       { key: 'onHand', cell: (row) => row.onHand, sortValue: (row) => row.onHand, align: 'right' },
       {
-        key: 'reserved',
-        cell: (row) => row.reserved,
-        sortValue: (row) => row.reserved,
-        align: 'right',
-      },
-      {
         key: 'available',
         cell: (row) => (
           <Badge tone={row.available <= 0 ? 'danger' : row.isLowStock ? 'warning' : 'success'}>
@@ -97,8 +106,21 @@ export function stockResource(show: StockShow, productId?: string): Resource<Lev
         sortValue: (row) => row.reorderLevel,
         align: 'right',
       },
+      {
+        key: 'value',
+        cell: (row) => formatMoney(row.value, 'en'),
+        sortValue: (row) => Number(row.value),
+        align: 'right',
+      },
     ],
-    fields: [{ name: 'reorderLevel', kind: 'number', required: true }],
+    fields: [
+      {
+        name: 'reorderLevel',
+        kind: 'number',
+        pattern: { regex: /^\d{1,6}(\.\d{1,3})?$/, message: 'A quantity such as 10 or 2.5' },
+      },
+      { name: 'shelfLocation', kind: 'text', max: 60 },
+    ],
   };
 }
 
@@ -120,7 +142,12 @@ export function movementResource(level: Level, name: Name): Resource<never> {
         options: MOVEMENT_KINDS.map((kind) => ({ value: kind, label: name(`kinds.${kind}`) })),
         defaultValue: 'PURCHASE',
       },
-      { name: 'quantity', kind: 'number', required: true },
+      {
+        name: 'quantity',
+        kind: 'number',
+        required: true,
+        pattern: { regex: /^-?\d{1,6}(\.\d{1,3})?$/, message: 'A quantity such as 12 or 1.5' },
+      },
       { name: 'unitCost', kind: 'money' },
       { name: 'reference', kind: 'text', max: 100 },
       { name: 'note', kind: 'textarea', max: 500 },
@@ -183,7 +210,12 @@ export const transferStockResource = (level: Level): Resource<never> => ({
   columns: [],
   fields: [
     { name: 'toBranchId', kind: 'select', required: true, optionsFrom: branchChoices },
-    { name: 'quantity', kind: 'number', required: true },
+    {
+      name: 'quantity',
+      kind: 'number',
+      required: true,
+      pattern: { regex: /^\d{1,6}(\.\d{1,3})?$/, message: 'A quantity such as 12 or 1.5' },
+    },
     { name: 'note', kind: 'text', max: 500, wide: true },
   ],
   shapeBody: ({ toBranchId, quantity, note }) => ({
@@ -192,3 +224,61 @@ export const transferStockResource = (level: Level): Resource<never> => ({
     lines: [{ variantId: level.variant.id, quantity }],
   }),
 });
+
+const QTY = { regex: /^\d{1,6}(\.\d{1,3})?$/, message: 'A quantity such as 12 or 1.5' };
+
+// Stock that is gone: broken, past its date, lost. It leaves the shelf and shows as a loss in the reports.
+export function stockLossResource(level: Level): Resource<never> {
+  return {
+    key: 'stockLoss',
+    scope: 'stock',
+    path: `/admin/stock-levels/${level.variant.id}/movements`,
+    list: 'all',
+    rowId: () => '',
+    rowLabel: () => level.variant.sku,
+    columns: [],
+    fields: [
+      {
+        name: 'reason',
+        kind: 'select',
+        required: true,
+        defaultValue: 'Damaged',
+        options: ['Damaged', 'Expired', 'Lost', 'Spilled', 'Other'].map((value) => ({
+          value,
+          label: value,
+        })),
+      },
+      { name: 'quantity', kind: 'number', required: true, pattern: QTY },
+      { name: 'note', kind: 'text', max: 400, wide: true },
+    ],
+    shapeBody: ({ reason, quantity, note }) => ({
+      type: 'DAMAGE',
+      quantity,
+      note: [reason, note].filter(Boolean).join(': '),
+    }),
+  };
+}
+
+// A count on the shelf: say how many there really are and the difference is recorded.
+export function stockCountResource(level: Level): Resource<never> {
+  return {
+    key: 'stockCount',
+    scope: 'stock',
+    path: `/admin/stock-levels/${level.variant.id}/movements`,
+    list: 'all',
+    rowId: () => '',
+    rowLabel: () => level.variant.sku,
+    columns: [],
+    fields: [{ name: 'counted', kind: 'number', required: true, pattern: QTY }],
+    check: ({ counted }) =>
+      Number(counted) === level.onHand
+        ? { field: 'counted', message: 'That is what the system already has' }
+        : null,
+    shapeBody: ({ counted }) => ({
+      type: 'ADJUSTMENT',
+      quantity: Number(counted) - level.onHand,
+      reference: 'Shelf count',
+      note: `Counted ${counted}, system had ${level.onHand}`,
+    }),
+  };
+}

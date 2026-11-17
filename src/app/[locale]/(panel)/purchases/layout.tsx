@@ -14,6 +14,7 @@ export default async function Layout({ children, params }: LayoutProps<'/[locale
         title={t('title')}
         tabs={[
           { href: routes.purchaseBills(), label: t('tabs.bills') },
+          { href: routes.purchaseReturns(), label: t('tabs.returns') },
           { href: routes.supplierPayments(), label: t('tabs.payments') },
         ]}
       />

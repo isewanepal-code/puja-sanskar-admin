@@ -13,6 +13,8 @@ export type Pack = {
   image?: string;
   // How many can be sold from this branch's shelf now.
   available: number;
+  // Sold by weight, volume or length: a part of a pack (1.5 m) may be sold.
+  fraction?: boolean;
 };
 
 export type Line = Pack & { quantity: number };

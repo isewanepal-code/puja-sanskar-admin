@@ -66,7 +66,7 @@ export function CounterSale() {
               z.object({
                 id: z.string(),
                 kind: z.string(),
-                quantity: z.number().int().min(1).max(999),
+                quantity: z.number().min(0.001).max(999),
               }),
             )
             .min(1, t('noLines')),
@@ -94,7 +94,9 @@ export function CounterSale() {
     setLines((current) =>
       current.some((line) => line.id === pack.id)
         ? current.map((line) =>
-            line.id === pack.id ? { ...line, quantity: Math.min(999, line.quantity + 1) } : line,
+            line.id === pack.id
+              ? { ...line, quantity: Math.min(999, line.quantity + (pack.fraction ? 0.5 : 1)) }
+              : line,
           )
         : [...current, { ...pack, quantity: 1 }],
     );

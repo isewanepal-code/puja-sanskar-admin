@@ -9,10 +9,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { isApiError, request } from '@/lib/api';
+import { formatMoney } from '@/lib/format';
 
 import type { Product } from './use-product';
 
-type Edit = { price?: string; compareAtPrice?: string };
+type Edit = { price?: string; compareAtPrice?: string; isActive?: boolean };
 const AMOUNT = /^\d{1,13}(\.\d{1,2})?$/;
 
 // Every pack of the item in one table with its price in a box: change a price, or give a whole
@@ -47,6 +48,20 @@ export function PriceGrid({ product }: { product: Product }) {
   const set = (id: string, field: 'price' | 'compareAtPrice', value: string) =>
     setEdits((was) => ({ ...was, [id]: { ...was[id], [field]: value } }));
 
+  // Margin on the price before VAT, when the shop knows what the pack cost it.
+  const rate = Number(product.effectiveTax.ratePercent ?? 0);
+  const marginOf = (id: string) => {
+    const variant = rows.find((row) => row.id === id)!;
+    const price = Number(valueOf(id, 'price'));
+    const cost = variant.cost ? Number(variant.cost) : null;
+    if (cost === null || !(price > 0)) return null;
+    const net = price / (1 + rate / 100);
+    return Math.round(((net - cost) / net) * 100);
+  };
+
+  const activeOf = (id: string) =>
+    edits[id]?.isActive ?? rows.find((row) => row.id === id)?.isActive ?? true;
+
   const bad = (id: string) => {
     const price = valueOf(id, 'price');
     const was = valueOf(id, 'compareAtPrice');
@@ -59,7 +74,8 @@ export function PriceGrid({ product }: { product: Product }) {
     return (
       variant &&
       (valueOf(id, 'price') !== variant.price ||
-        valueOf(id, 'compareAtPrice') !== (variant.compareAtPrice ?? ''))
+        valueOf(id, 'compareAtPrice') !== (variant.compareAtPrice ?? '') ||
+        activeOf(id) !== variant.isActive)
     );
   });
   const problem = changed.map((id) => bad(id)).find(Boolean);
@@ -84,6 +100,7 @@ export function PriceGrid({ product }: { product: Product }) {
           body: {
             price: valueOf(id, 'price'),
             compareAtPrice: valueOf(id, 'compareAtPrice') || null,
+            isActive: activeOf(id),
           },
         });
       }
@@ -145,7 +162,11 @@ export function PriceGrid({ product }: { product: Product }) {
               <th className="px-3 py-2">{t('sku')}</th>
               <th className="w-32 px-3 py-2">{t('priceCol')}</th>
               <th className="w-32 px-3 py-2">{t('was')}</th>
+              <th className="px-3 py-2">{t('cost')}</th>
+              <th className="px-3 py-2">{t('margin')}</th>
+              <th className="px-3 py-2">{t('boughtFrom')}</th>
               <th className="px-3 py-2">{t('stock')}</th>
+              <th className="px-3 py-2">{t('onSale')}</th>
             </tr>
           </thead>
           <tbody>
@@ -179,10 +200,52 @@ export function PriceGrid({ product }: { product: Product }) {
                       onChange={(event) => set(row.id, 'compareAtPrice', event.target.value)}
                     />
                   </td>
+                  <td className="border-t border-border px-3 py-2 whitespace-nowrap">
+                    {row.cost ? (
+                      formatMoney(row.cost, 'en')
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </td>
+                  <td className="border-t border-border px-3 py-2 whitespace-nowrap">
+                    {marginOf(row.id) === null ? (
+                      <span className="text-muted-foreground">—</span>
+                    ) : (
+                      <Badge tone={(marginOf(row.id) ?? 0) < 10 ? 'warning' : 'success'}>
+                        {marginOf(row.id)}%
+                      </Badge>
+                    )}
+                  </td>
+                  <td className="border-t border-border px-3 py-2 text-xs">
+                    {row.lastBought ? (
+                      <>
+                        <div className="font-medium">{row.lastBought.supplierName}</div>
+                        <div className="text-muted-foreground">
+                          {formatMoney(row.lastBought.unitCost, 'en')} · {row.lastBought.billDay}
+                        </div>
+                      </>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </td>
                   <td className="border-t border-border px-3 py-2">
                     <Badge tone={row.inStock ? 'success' : 'warning'}>
                       {row.inStock ? t('inStock') : t('noStock')}
                     </Badge>
+                  </td>
+                  <td className="border-t border-border px-3 py-2 text-center">
+                    <input
+                      type="checkbox"
+                      className="size-4"
+                      aria-label={`${t('onSale')} ${row.label}`}
+                      checked={activeOf(row.id)}
+                      onChange={(event) =>
+                        setEdits((was) => ({
+                          ...was,
+                          [row.id]: { ...was[row.id], isActive: event.target.checked },
+                        }))
+                      }
+                    />
                   </td>
                 </tr>
               );

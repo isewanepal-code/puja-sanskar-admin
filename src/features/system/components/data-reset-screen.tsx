@@ -25,6 +25,7 @@ export function DataResetScreen() {
   const queryClient = useQueryClient();
   const [asking, setAsking] = useState(false);
   const [typed, setTyped] = useState('');
+  const [pujas, setPujas] = useState(false);
 
   const preview = useQuery({
     queryKey: ['data-reset'],
@@ -32,12 +33,15 @@ export function DataResetScreen() {
   });
   const clear = useMutation({
     mutationFn: () =>
-      request<Preview>('POST', '/admin/data-reset', { body: { confirm: 'DELETE' } }),
+      request<Preview>('POST', '/admin/data-reset', {
+        body: { confirm: 'DELETE', includePujas: pujas },
+      }),
     onSuccess: async (done) => {
       const rows = done.counts.reduce((sum, count) => sum + count.rows, 0);
       toast.success(t('done', { rows }));
       setAsking(false);
       setTyped('');
+      setPujas(false);
       // Nothing cached is true any more.
       queryClient.clear();
       router.refresh();
@@ -78,11 +82,24 @@ export function DataResetScreen() {
       <section className="grid gap-2 rounded-lg border border-border bg-muted/40 p-5">
         <h2 className="text-base font-semibold">{t('stays')}</h2>
         <ul className="list-disc pl-5 text-sm text-muted-foreground">
-          {KEEPS.map((key) => (
+          {KEEPS.filter((key) => !(pujas && key === 'pujas')).map((key) => (
             <li key={key}>{t(`keeps.${key}`)}</li>
           ))}
         </ul>
       </section>
+
+      <label className="flex items-start gap-2 rounded-lg border border-border bg-card p-4 text-sm">
+        <input
+          type="checkbox"
+          checked={pujas}
+          onChange={(event) => setPujas(event.target.checked)}
+          className="mt-0.5 size-4"
+        />
+        <span>
+          <b>{t('includePujas')}</b>
+          <span className="block text-muted-foreground">{t('includePujasHelp')}</span>
+        </span>
+      </label>
 
       {preview.isSuccess && !enabled ? (
         <p role="status" className="rounded-lg border border-warning/40 bg-warning/10 p-4 text-sm">
