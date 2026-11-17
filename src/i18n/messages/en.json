@@ -1201,7 +1201,7 @@
       "none": "—",
       "fields": {
         "variantId": "Pack",
-        "quantity": "How many",
+        "quantity": "How many of this pack",
         "available": "In stock here",
         "lineTotal": "Total",
         "isOptional": "Optional",
@@ -2450,7 +2450,7 @@
       "empty": "",
       "fields": {
         "reason": "What happened",
-        "quantity": "How many",
+        "quantity": "How many of this pack",
         "note": "Note (optional)"
       }
     },
@@ -2459,7 +2459,7 @@
       "add": "-",
       "empty": "",
       "fields": {
-        "counted": "How many are there really"
+        "counted": "How many of this pack are there really"
       }
     }
   },

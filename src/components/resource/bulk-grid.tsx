@@ -80,7 +80,15 @@ export function BulkGrid<T>({
   const [saving, setSaving] = useState(false);
 
   const setCell = (r: number, name: string, value: string) =>
-    setRows((current) => current.map((row, i) => (i === r ? { ...row, [name]: value } : row)));
+    setRows((current) =>
+      current.map((row, i) => {
+        if (i !== r) return row;
+        const next = { ...row, [name]: value };
+        // A choice that depends on this cell no longer fits once it changes.
+        for (const field of fields) if (field.dependsOn === name) next[field.name] = '';
+        return next;
+      }),
+    );
 
   const resize = (wanted: number) => {
     const size = Math.max(1, Math.min(MAX_ROWS, wanted || 1));
@@ -150,6 +158,8 @@ export function BulkGrid<T>({
 
     setSaving(true);
     let saved = 0;
+    // A copy of its own: `next` already went to state, and state is never changed in place.
+    const results = [...next];
     // One at a time and in order, so numbered codes follow the rows.
     for (const { row, i } of filled) {
       try {
@@ -163,12 +173,15 @@ export function BulkGrid<T>({
         await request(resource.submitMethod ?? 'POST', resource.path, {
           body: { ...body, ...extraBody },
         });
-        next[i] = { state: 'saved' };
+        results[i] = { state: 'saved' };
         saved += 1;
       } catch (error) {
-        next[i] = { state: 'failed', message: isApiError(error) ? error.message : tb('failed') };
+        results[i] = {
+          state: 'failed',
+          message: isApiError(error) ? error.message : tb('failed'),
+        };
       }
-      setStatus([...next]);
+      setStatus([...results]);
     }
     setSaving(false);
     await Promise.all([
@@ -313,7 +326,7 @@ export function BulkGrid<T>({
                       {field.kind === 'select' ? (
                         <SearchSelect
                           bare
-                          source={field.optionsFrom}
+                          source={field.optionsFor ? field.optionsFor(row) : field.optionsFrom}
                           options={field.options}
                           value={row[field.name] ?? ''}
                           disabled={done}

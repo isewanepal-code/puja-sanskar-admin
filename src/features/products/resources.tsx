@@ -198,7 +198,14 @@ export const quickItemResource: Resource<never> = {
     { name: 'brand', kind: 'text', max: 80 },
     { name: 'defaultSupplierId', kind: 'select', optionsFrom: choices.suppliers },
     { name: 'packQuantity', kind: 'number', required: true, pattern: QUANTITY, section: 'pack' },
-    { name: 'packUnitId', kind: 'select', required: true, optionsFrom: choices.units },
+    {
+      name: 'packUnitId',
+      kind: 'select',
+      required: true,
+      // The units that fit how the item is sold: kg and g for weight, m and cm for length.
+      optionsFor: (values) => unitsFor(String(values.sellBy || 'PIECE')),
+      dependsOn: 'sellBy',
+    },
     { name: 'price', kind: 'money', required: true },
     { name: 'packLabel', kind: 'text', max: 80 },
     { name: 'openingQuantity', kind: 'number', section: 'stock', pattern: QUANTITY },

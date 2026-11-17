@@ -50,6 +50,10 @@ export type Field = {
   // Choices from the API, shown in the searchable dropdown: a short list loaded once, or a
   // long one the API searches a page at a time (pagedSource).
   optionsFrom?: ChoiceSource;
+  // Choices that follow another value of the form (units that fit how an item is sold).
+  optionsFor?: (values: Record<string, unknown>) => ChoiceSource;
+  // Emptied when the field of this name changes, so a choice that no longer fits does not stay.
+  dependsOn?: string;
   // Labels of the saved values, read from the record being edited, so none is fetched.
   known?: (row: Record<string, unknown>) => Choice[];
   // Takes the whole row of the form.

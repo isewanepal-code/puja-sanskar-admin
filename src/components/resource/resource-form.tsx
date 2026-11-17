@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { Fragment, useId, useState } from 'react';
+import { Fragment, useEffect, useId, useState } from 'react';
 import { useForm, type UseFormReturn } from 'react-hook-form';
 
 import { SearchSelect } from '@/components/controls';
@@ -56,7 +56,7 @@ function Control({
     return (
       <SearchSelect
         id={id}
-        source={field.optionsFrom}
+        source={field.optionsFor ? field.optionsFor(form.watch()) : field.optionsFrom}
         options={field.options}
         multiple={multiple}
         value={multiple ? (Array.isArray(value) ? value : []) : String(value ?? '')}
@@ -212,6 +212,19 @@ export function ResourceForm<T>({
       row ? (resource.formRow?.(row) ?? (row as Record<string, unknown>)) : defaults,
     ),
   });
+
+  // A choice that depends on another field is emptied when that field changes.
+  useEffect(() => {
+    const subscription = form.watch((_values, { name, type }) => {
+      if (!name || !type) return;
+      for (const field of fields) {
+        if (field.dependsOn === name) {
+          form.setValue(field.name, '', { shouldDirty: true });
+        }
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, fields]);
 
   const save = useMutation({
     mutationFn: (values: FormValues) => {
