@@ -87,7 +87,7 @@ function OptionValues({ typeId, onClose }: { typeId: string | null; onClose: () 
                   <span className="ml-2 text-muted-foreground">{value.valueNe}</span>
                   {value.numberValue ? (
                     <span className="ml-2 text-xs text-muted-foreground">
-                      {Number(value.numberValue)} {data?.unitSymbol}
+                      {Number(value.numberValue)} {value.unitSymbol ?? data?.unitSymbol}
                     </span>
                   ) : null}
                 </span>

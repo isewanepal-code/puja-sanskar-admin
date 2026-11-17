@@ -3,6 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
 import { choices, wholeSource } from '@/lib/choices';
 
+import { unitsLike } from './units';
+
 export type OptionType = Schema<'OptionTypeResponse'>;
 export type OptionValue = Schema<'OptionValueResponse'>;
 
@@ -93,8 +95,21 @@ export function optionValueResource(type: OptionType, value?: OptionValue): Reso
     columns: [],
     modalSize: 'sm',
     fields: [
-      { name: 'valueEn', kind: 'text', required: true, max: 80 },
-      { name: 'valueNe', kind: 'text', required: true, max: 80 },
+      // A number value is named from its number and unit, so its names may stay empty.
+      ...(type.kind === 'NUMBER'
+        ? [
+            { name: 'numberValue', kind: 'money' as const, required: true },
+            {
+              name: 'unitId',
+              kind: 'select' as const,
+              optionsFrom: unitsLike(type.unitId ?? null),
+              defaultValue: value?.unitId ?? type.unitId ?? undefined,
+              required: true,
+            },
+          ]
+        : []),
+      { name: 'valueEn', kind: 'text', required: type.kind !== 'NUMBER', max: 80 },
+      { name: 'valueNe', kind: 'text', required: type.kind !== 'NUMBER', max: 80 },
       ...(type.kind === 'COLOR'
         ? [
             {
@@ -105,9 +120,6 @@ export function optionValueResource(type: OptionType, value?: OptionValue): Reso
               max: 7,
             },
           ]
-        : []),
-      ...(type.kind === 'NUMBER'
-        ? [{ name: 'numberValue', kind: 'money' as const, required: true }]
         : []),
       { name: 'sortOrder', kind: 'number' },
     ],

@@ -15,6 +15,24 @@ export const DIMENSIONS_FOR: Record<string, string[]> = {
 
 // The units of these kinds, for a pack's unit; one source for each way of selling.
 const sources = new Map<string, ReturnType<typeof wholeSource>>();
+// The units that measure the same thing as this one (m, ft, inch beside cm), for a number value.
+export function unitsLike(unitId: string | null) {
+  const key = `units-like-${unitId ?? 'any'}`;
+  if (!sources.has(key)) {
+    sources.set(
+      key,
+      wholeSource(key, async () => {
+        const all = (await request<Page>('GET', '/admin/units', { query: { limit: 100 } })).items;
+        const kind = all.find((unit) => unit.id === unitId)?.dimension;
+        return all
+          .filter((unit) => !kind || unit.dimension === kind)
+          .map((unit) => ({ value: unit.id, label: unit.nameNe, detail: unit.symbol }));
+      }),
+    );
+  }
+  return sources.get(key)!;
+}
+
 export function unitsFor(sellBy: string) {
   const dimensions = DIMENSIONS_FOR[sellBy] ?? [];
   const key = `units-for-${sellBy}`;

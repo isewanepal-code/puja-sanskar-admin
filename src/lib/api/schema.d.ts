@@ -8960,6 +8960,16 @@ export interface components {
       colorHex: string | null;
       /** @example 500.000 */
       numberValue: string | null;
+      /**
+       * Format: uuid
+       * @description The unit this value chose; empty means the option's unit
+       */
+      unitId: string | null;
+      /**
+       * @description The unit it is in: its own, else the option's
+       * @example ft
+       */
+      unitSymbol: string | null;
       sortOrder: number;
     };
     OptionTypeResponse: {
@@ -9019,22 +9029,10 @@ export interface components {
       isActive: boolean;
     };
     CreateOptionValueDto: {
-      /** @example White */
-      valueEn: string;
-      /** @example सेतो */
-      valueNe: string;
       /**
-       * @description A colour option: its swatch
-       * @example #ffffff
+       * @description Left out for a number option: it is written from the number and unit (1.5 m)
+       * @example White
        */
-      colorHex?: string | null;
-      /** @example 500 */
-      numberValue?: string | null;
-      /** @default 0 */
-      sortOrder: number;
-    };
-    UpdateOptionValueDto: {
-      /** @example White */
       valueEn?: string;
       /** @example सेतो */
       valueNe?: string;
@@ -9045,6 +9043,34 @@ export interface components {
       colorHex?: string | null;
       /** @example 500 */
       numberValue?: string | null;
+      /**
+       * Format: uuid
+       * @description A number option: this value's unit (m, ft, inch), of the same kind as the option's unit. Empty keeps the option's unit.
+       */
+      unitId?: string | null;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    UpdateOptionValueDto: {
+      /**
+       * @description Left out for a number option: it is written from the number and unit (1.5 m)
+       * @example White
+       */
+      valueEn?: string;
+      /** @example सेतो */
+      valueNe?: string;
+      /**
+       * @description A colour option: its swatch
+       * @example #ffffff
+       */
+      colorHex?: string | null;
+      /** @example 500 */
+      numberValue?: string | null;
+      /**
+       * Format: uuid
+       * @description A number option: this value's unit (m, ft, inch), of the same kind as the option's unit. Empty keeps the option's unit.
+       */
+      unitId?: string | null;
       /** @default 0 */
       sortOrder: number;
     };

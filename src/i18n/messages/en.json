@@ -2387,7 +2387,7 @@
         "nameEn": "Name in English",
         "nameNe": "Name in Nepali",
         "kind": "Kind",
-        "unitId": "Unit",
+        "unitId": "Main unit",
         "sortOrder": "Order",
         "isActive": "In use",
         "values": "Values"
@@ -2395,7 +2395,7 @@
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later.",
         "kind": "Words (Cotton), a colour with a swatch, or a number with a unit (500 g, 120 cm). It cannot change later.",
-        "unitId": "Only for a number: g, kg, cm …"
+        "unitId": "Only for a number: what it measures (cm for length, kg for weight). Each value can use any unit of the same kind."
       },
       "sections": {},
       "kinds": {
@@ -2419,12 +2419,16 @@
         "valueEn": "In English",
         "valueNe": "In Nepali",
         "colorHex": "Colour (#rrggbb)",
-        "numberValue": "Number only (no unit)",
-        "sortOrder": "Order"
+        "numberValue": "Number",
+        "sortOrder": "Order",
+        "unitId": "Unit"
       },
       "hints": {
         "colorHex": "For example #ffffff for white.",
-        "numberValue": "Only the number, in the unit of this option. cm option: 120. m option: 1.5. Do not type cm or m."
+        "numberValue": "Only the number, like 1.5 or 120. Choose the unit next to it.",
+        "unitId": "Units of the same kind only (length: m, ft, inch, cm).",
+        "valueEn": "A number: leave empty, it is written for you (1.5 m).",
+        "valueNe": "A number: leave empty, it is written for you."
       },
       "sections": {},
       "about": "Euta option ko value: jastai Rang ko \"Seto\". Rang bhaye hex code, tauls/lambai bhaye anka halnus."
@@ -3663,7 +3667,7 @@
       "leaveOutKitIds": "Yo kit ma offer nalagne bhaye chunnus.",
       "leaveOutGroupIds": "Yo group ma offer nalagne bhaye chunnus.",
       "optionValueIds": "Yo pack ko rang/size/tauls: pratyek ko euta value. Label khali chhodda yahi bata banchha.",
-      "numberValue": "Yo option ko anka (unit option anusar: g, cm ...).",
+      "numberValue": "Sirf anka (1.5 ya 120). Unit tala dropdown bata chunnus; unit lekhnu pardaina.",
       "valueEn": "English ma value.",
       "valueNe": "Nepali ma value.",
       "colorHex": "Rang ko hex code (#rrggbb). Seto = #ffffff, kalo = #000000.",
