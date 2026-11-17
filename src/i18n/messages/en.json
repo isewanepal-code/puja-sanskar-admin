@@ -2419,12 +2419,12 @@
         "valueEn": "In English",
         "valueNe": "In Nepali",
         "colorHex": "Colour (#rrggbb)",
-        "numberValue": "Amount",
+        "numberValue": "Number only (no unit)",
         "sortOrder": "Order"
       },
       "hints": {
         "colorHex": "For example #ffffff for white.",
-        "numberValue": "In the unit of this option."
+        "numberValue": "Only the number, in the unit of this option. cm option: 120. m option: 1.5. Do not type cm or m."
       },
       "sections": {},
       "about": "Euta option ko value: jastai Rang ko \"Seto\". Rang bhaye hex code, tauls/lambai bhaye anka halnus."
