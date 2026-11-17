@@ -34,7 +34,7 @@ export function DataResetScreen() {
   const clear = useMutation({
     mutationFn: () =>
       request<Preview>('POST', '/admin/data-reset', {
-        body: { confirm: 'DELETE', includePujas: pujas },
+        body: pujas ? { confirm: 'DELETE', includePujas: true } : { confirm: 'DELETE' },
       }),
     onSuccess: async (done) => {
       const rows = done.counts.reduce((sum, count) => sum + count.rows, 0);
