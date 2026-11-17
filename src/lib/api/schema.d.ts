@@ -5976,6 +5976,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/items/similar': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Items that look like a name being typed
+     * @description Spellings of one word meet (dhoop, dhup, धूप). Shown under the name boxes so the same item is not made twice: buy more of it instead.
+     */
+    get: operations['AdminItemController_similar'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/items': {
     parameters: {
       query?: never;
@@ -14834,6 +14854,28 @@ export interface components {
       note?: string | null;
       /** @example https://media.pujasanskar.com/receipts/nea.jpg */
       receiptUrl?: string | null;
+    };
+    SimilarItemResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example DHUP */
+      code: string;
+      /** @example Incense */
+      nameEn: string;
+      /** @example धूप */
+      nameNe: string;
+      /**
+       * @example [
+       *       "100 g",
+       *       "250 g"
+       *     ]
+       */
+      packs: string[];
+      /**
+       * @description Same: it is this item spelled another way
+       * @enum {string}
+       */
+      match: 'SAME' | 'SIMILAR';
     };
     ExtraPackDto: {
       /**
@@ -42582,6 +42624,52 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminItemController_similar: {
+    parameters: {
+      query?: {
+        nameEn?: string;
+        nameNe?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SimilarItemResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
         headers: {
           [name: string]: unknown;
         };

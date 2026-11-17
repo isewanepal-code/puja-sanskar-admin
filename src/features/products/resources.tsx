@@ -146,6 +146,7 @@ export const quickItemResource: Resource<never> = {
     'packUnitId',
     'price',
     'categoryId',
+    'nameRomanized',
     'packLabel',
     'openingQuantity',
     'openingUnitCost',
@@ -185,6 +186,7 @@ export const quickItemResource: Resource<never> = {
   fields: [
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
+    { name: 'nameRomanized', kind: 'text', max: 160 },
     {
       name: 'sellBy',
       kind: 'select',
@@ -244,6 +246,7 @@ export const bareItemResource: Resource<never> = {
   fields: [
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
+    { name: 'nameRomanized', kind: 'text', max: 160 },
     {
       name: 'sellBy',
       kind: 'select',

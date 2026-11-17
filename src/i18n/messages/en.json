@@ -2175,7 +2175,8 @@
         "sku": "Pack code (SKU)",
         "sellBy": "How it is sold",
         "brand": "Brand",
-        "defaultSupplierId": "Usual supplier"
+        "defaultSupplierId": "Usual supplier",
+        "nameRomanized": "In Roman letters (for search)"
       },
       "hints": {
         "categoryId": "Where it shows on the website.",
@@ -2192,7 +2193,8 @@
         "sellBy": "Item kasari bikchha: ek-ek (shirt, diya), tauls, volume, lambai (kapada) ya size (lambai x chaudai). Pack ko unit ra option yahi bata tokinchha.",
         "compareAtPrice": "Pack ma chhapieko (MRP) ya purano price, price bhanda thulo. Website ma kateko dekhincha. Chaina bhane khali rakhnus.",
         "packQuantity": "Ek pack ma kati chha. 25 kg ko bora ho bhane 25; 500 g ko packet ho bhane 500; ek wota diya ho bhane 1.",
-        "packUnitId": "Tyo amount ko unit. 25 ko lagi kg, 500 ko lagi g, ek wota ko lagi pcs."
+        "packUnitId": "Tyo amount ko unit. 25 ko lagi kg, 500 ko lagi g, ek wota ko lagi pcs.",
+        "nameRomanized": "Optional. Khali rakhda Nepali naam bata aafai banchha (धूप → dhuup). Dhup, dhoop jasto arko spelling le pani khojna milcha; yaha lekhnus."
       },
       "sections": {
         "pack": "What you sell, and for how much",
@@ -3903,7 +3905,15 @@
     "goBuy": "Next: record the purchase",
     "addAnother": "Add another item",
     "advanced": "Add with pack and price (advanced)",
-    "sameName": "Yo item ko naam arko item sanga milchha, tara yo alag item ho (naam milecha bhane matra tick garnus)."
+    "sameName": "Yo item ko naam arko item sanga milchha, tara yo alag item ho (naam milecha bhane matra tick garnus).",
+    "similarTitle": "Already in your shop",
+    "similarNote": "Yesto naam bhayeko item pahile nai chha bhane naya nabanaunus. Ek item ek patak matra; stock matra badhne-ghatne.",
+    "similarSame": "Same item",
+    "similarLike": "Looks alike",
+    "similarNoPacks": "no pack yet",
+    "similarBuy": "Buy more of it",
+    "similarOpen": "Open",
+    "similarSameWarn": "Yo naam pahile nai chha. Tala ko item nai ho bhane Buy ma gayera stock thapnus."
   },
   "repack": {
     "title": "Open {name} into smaller packs",

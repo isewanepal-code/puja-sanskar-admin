@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useId, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useId, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { Icon } from '@/components/icons';
 import { Input } from '@/components/ui/input';
+import { request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 
 import { ResourceForm } from '@/components/resource';
@@ -189,6 +191,64 @@ function FullNewItemPage() {
 }
 
 // Step 1: just the item. Saving it shows what to do next.
+type Similar = Schema<'SimilarItemResponse'>;
+
+// Items that look like the name being typed (dhup, dhoop, धूप), so one item is not made twice.
+function SimilarItems({ nameEn, nameNe }: { nameEn: string; nameNe: string }) {
+  const t = useTranslations('itemPage');
+  const [typed, setTyped] = useState({ nameEn: '', nameNe: '' });
+  // Not on every key: a short pause after the last one.
+  useEffect(() => {
+    const timer = setTimeout(() => setTyped({ nameEn: nameEn.trim(), nameNe: nameNe.trim() }), 350);
+    return () => clearTimeout(timer);
+  }, [nameEn, nameNe]);
+  const found = useQuery({
+    queryKey: ['items', 'similar', typed.nameEn, typed.nameNe],
+    queryFn: () => request<Similar[]>('GET', '/admin/items/similar', { query: typed }),
+    enabled: typed.nameEn.length >= 2 || typed.nameNe.length >= 1,
+  });
+  const list = found.data ?? [];
+  if (list.length === 0) return null;
+  const same = list.some((item) => item.match === 'SAME');
+  return (
+    <section
+      className={`mb-4 grid gap-2 rounded-lg border p-4 text-sm ${same ? 'border-warning/50 bg-warning/10' : 'border-border bg-muted/40'}`}
+    >
+      <p className="font-semibold">{t('similarTitle')}</p>
+      <p className="text-muted-foreground">{same ? t('similarSameWarn') : t('similarNote')}</p>
+      <ul className="grid gap-1.5">
+        {list.map((item) => (
+          <li
+            key={item.id}
+            className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-card px-3 py-2"
+          >
+            <span className="min-w-0">
+              <span className="font-medium">{item.nameEn}</span>
+              <span className="ml-2 text-muted-foreground">{item.nameNe}</span>
+              <span className="ml-2 text-xs text-muted-foreground">
+                {item.packs.length ? item.packs.join(' · ') : t('similarNoPacks')}
+              </span>
+            </span>
+            <span className="flex items-center gap-2">
+              <span
+                className={`rounded px-1.5 py-0.5 text-xs ${item.match === 'SAME' ? 'bg-warning/20' : 'bg-muted'}`}
+              >
+                {item.match === 'SAME' ? t('similarSame') : t('similarLike')}
+              </span>
+              <Link href={routes.item(item.id)} className="text-primary underline">
+                {t('similarOpen')}
+              </Link>
+              <Link href={routes.newPurchase()} className="text-primary underline">
+                {t('similarBuy')}
+              </Link>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export function BareItemPage() {
   const t = useTranslations('itemPage');
   const tf = useTranslations('forms');
@@ -197,6 +257,7 @@ export function BareItemPage() {
   const [saved, setSaved] = useState<string | null>(null);
   const [round, setRound] = useState(0);
   const [sameName, setSameName] = useState(false);
+  const [names, setNames] = useState({ nameEn: '', nameNe: '' });
 
   return (
     <div className="grid max-w-3xl gap-6">
@@ -225,9 +286,21 @@ export function BareItemPage() {
         </section>
       ) : (
         <section className="rounded-xl border border-border bg-card p-5">
+          <SimilarItems nameEn={names.nameEn} nameNe={names.nameNe} />
           <ResourceForm
             key={round}
             resource={bareItemResource}
+            onValues={(values) =>
+              setNames((current) => {
+                const next = {
+                  nameEn: String(values.nameEn ?? ''),
+                  nameNe: String(values.nameNe ?? ''),
+                };
+                return next.nameEn === current.nameEn && next.nameNe === current.nameNe
+                  ? current
+                  : next;
+              })
+            }
             formId={formId}
             extraBody={sameName ? { allowDuplicateName: true } : undefined}
             onPendingChange={setSaving}

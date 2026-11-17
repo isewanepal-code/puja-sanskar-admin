@@ -158,6 +158,8 @@ type ResourceFormProps<T> = {
   // Given the saved record, so a new one can open its next step.
   onDone: (saved?: unknown) => void;
   onPendingChange?: (pending: boolean) => void;
+  // Told what the fields hold as they are typed (a form that shows matching records beside them).
+  onValues?: (values: Record<string, unknown>) => void;
 };
 
 // The create and edit form of any resource, laid out from its fields.
@@ -170,6 +172,7 @@ export function ResourceForm<T>({
   successMessage,
   onDone,
   onPendingChange,
+  onValues,
 }: ResourceFormProps<T>) {
   const t = useResourceText(resource.key);
   const tf = useTranslations('forms');
@@ -212,6 +215,13 @@ export function ResourceForm<T>({
       row ? (resource.formRow?.(row) ?? (row as Record<string, unknown>)) : defaults,
     ),
   });
+
+  useEffect(() => {
+    if (!onValues) return;
+    onValues(form.getValues());
+    const subscription = form.watch((values) => onValues(values as Record<string, unknown>));
+    return () => subscription.unsubscribe();
+  }, [form, onValues]);
 
   // A choice that depends on another field is emptied when that field changes.
   useEffect(() => {
