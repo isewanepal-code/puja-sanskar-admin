@@ -34,7 +34,7 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
-      - run: npm audit --omit=dev --audit-level=high
+      - run: node scripts/audit-gate.mjs
       - name: Build (needs the staging API to be live)
         run: npm run build && node scripts-pack.mjs "$APP"
         env:

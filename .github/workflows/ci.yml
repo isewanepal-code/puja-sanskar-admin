@@ -40,7 +40,7 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run test:coverage
-      - run: npm audit --omit=dev --audit-level=high
+      - run: node scripts/audit-gate.mjs
 
   e2e:
     name: Build & E2E
