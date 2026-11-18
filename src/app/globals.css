@@ -198,3 +198,17 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* A click outside a modal that holds typed-in work does nothing but this small shake. */
+@keyframes modal-nudge {
+  0%,
+  100% {
+    translate: -50% -50%;
+  }
+  25% {
+    translate: calc(-50% - 5px) -50%;
+  }
+  75% {
+    translate: calc(-50% + 5px) -50%;
+  }
+}

@@ -10,6 +10,7 @@ import { ChipInput, SearchSelect } from '@/components/controls';
 import { Field as FieldShell } from '@/components/forms';
 import { useToast } from '@/components/overlays';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
+import { useModalDirty } from '@/components/ui/modal';
 import { Input, Switch, Textarea } from '@/components/ui/input';
 import { fieldErrors, isApiError, request } from '@/lib/api';
 
@@ -245,6 +246,9 @@ export function ResourceForm<T>({
     const subscription = form.watch((values) => onValues(values as Record<string, unknown>));
     return () => subscription.unsubscribe();
   }, [form, onValues]);
+
+  // A modal around this form keeps what was typed until Cancel, a confirmed discard, or a save.
+  useModalDirty(form.formState.isDirty);
 
   // A choice that depends on another field is emptied when that field changes.
   useEffect(() => {

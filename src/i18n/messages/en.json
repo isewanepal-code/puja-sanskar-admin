@@ -9,7 +9,12 @@
     "remove": "Remove",
     "quantity": "Quantity",
     "increase": "Add one",
-    "decrease": "Remove one"
+    "decrease": "Remove one",
+    "dragHint": "Drag to move this window aside; double-click to put it back. Ctrl+Enter saves.",
+    "discardTitle": "Discard what you typed?",
+    "discardBody": "Tapai le bhareko kura haraunchha. Save garena bhane feri bharnu parchha.",
+    "keepEditing": "Keep editing",
+    "discard": "Discard"
   },
   "error": {
     "title": "Something went wrong",

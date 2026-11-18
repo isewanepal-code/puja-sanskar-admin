@@ -210,6 +210,7 @@ export function BulkGrid<T>({
   return (
     <Modal
       open={open}
+      dirty={rows.some((row) => !isBlank(row, offered))}
       onOpenChange={(next) => {
         if (!next && !saving) reset();
         if (!saving) onOpenChange(next);
