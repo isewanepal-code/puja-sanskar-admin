@@ -2,11 +2,12 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { uploadMedia } from '@/components/media-library/media-picker';
 import { useToast } from '@/components/overlays';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { isApiError, request } from '@/lib/api';
 
 import type { Product } from './use-product';
@@ -101,6 +102,12 @@ export function PhotosPanel({ product }: { product: Product }) {
                 alt={photo.altText ?? ''}
                 className="h-36 w-full rounded-md bg-muted object-cover"
               />
+              <AltText
+                key={`${photo.url}-${photo.altText ?? ''}`}
+                value={photo.altText ?? ''}
+                disabled={save.isPending}
+                onSave={(altText) => change(index, { altText })}
+              />
               <label className="grid gap-1 text-xs">
                 {t('shownFor')}
                 <select
@@ -146,5 +153,37 @@ export function PhotosPanel({ product }: { product: Product }) {
         </ul>
       )}
     </div>
+  );
+}
+
+// What the photo shows, for screen readers and search engines. Saved when the box is left.
+function AltText({
+  value,
+  disabled,
+  onSave,
+}: {
+  value: string;
+  disabled: boolean;
+  onSave: (altText: string | null) => void;
+}) {
+  const t = useTranslations('itemPhotos');
+  const [text, setText] = useState(value);
+  return (
+    <label className="grid gap-1 text-xs">
+      {t('altText')}
+      <Input
+        value={text}
+        maxLength={160}
+        disabled={disabled}
+        placeholder={t('altPlaceholder')}
+        aria-invalid={text.trim() === '' || undefined}
+        onChange={(event) => setText(event.target.value)}
+        onBlur={() => {
+          const next = text.trim() || null;
+          if (next !== (value.trim() || null)) onSave(next);
+        }}
+      />
+      {text.trim() === '' ? <span className="text-warning">{t('altMissing')}</span> : null}
+    </label>
   );
 }

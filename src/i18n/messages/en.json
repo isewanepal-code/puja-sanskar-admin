@@ -2680,7 +2680,8 @@
     "later": "Move down",
     "libraryNote": "Every uploaded image. Product, puja and pandit forms pick from here too.",
     "copy": "Copy address",
-    "copied": "Address copied"
+    "copied": "Address copied",
+    "altMissing": "Alt text khali. Photo ma ke dekhinchha lekhnus (jastai \"Rato kapada, 1.5 m\"). Khali bhae item ko naam jancha."
   },
   "salesSection": {
     "title": "Orders",
@@ -3833,7 +3834,10 @@
     "all": "All colours and sizes",
     "main": "Main photo",
     "makeMain": "Make main",
-    "remove": "Remove"
+    "remove": "Remove",
+    "altText": "Alt text (what the photo shows)",
+    "altPlaceholder": "e.g. Red cloth, 1.5 m",
+    "altMissing": "Alt text khali. Photo ma ke dekhinchha lekhnus (jastai \"Rato kapada, 1.5 m\"). Khali bhae item ko naam jancha."
   },
   "priceGrid": {
     "note": "Harek pack ko price alag-alag halna milchha: Price (customer le tirne) ra MRP (chhapieko/purano price). Cost ra Margin kharid bill bata aafai aauchha; Margin = price (VAT bahek) ma cost ghatera. Jastai Seto 500, Kalo 450, Premium quality 500, Regular 400. Thok pack (jastai 25 kg bora) kharid ra repack ko lagi matra ho bhane \"Sold to customers\" untick garnus; tyo website/counter ma dekhidaina, tara stock ma rahancha.",

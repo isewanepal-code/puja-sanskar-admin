@@ -74,19 +74,25 @@ export function ImagesInput({
       {images.map((image, i) => (
         <div key={`${image.url}-${i}`} className="flex items-center gap-3">
           <Thumb src={image.url} size={56} className="size-14 shrink-0" />
-          <Input
-            value={image.altText ?? ''}
-            placeholder={t('altText')}
-            aria-label={t('altText')}
-            maxLength={160}
-            onChange={(event) =>
-              save(
-                images.map((img, j) =>
-                  j === i ? { ...img, altText: event.target.value || null } : img,
-                ),
-              )
-            }
-          />
+          <div className="grid min-w-0 flex-1 gap-0.5">
+            <Input
+              value={image.altText ?? ''}
+              placeholder={t('altText')}
+              aria-label={t('altText')}
+              aria-invalid={!image.altText?.trim() || undefined}
+              maxLength={160}
+              onChange={(event) =>
+                save(
+                  images.map((img, j) =>
+                    j === i ? { ...img, altText: event.target.value || null } : img,
+                  ),
+                )
+              }
+            />
+            {!image.altText?.trim() ? (
+              <span className="text-xs text-warning">{t('altMissing')}</span>
+            ) : null}
+          </div>
           {i === 0 ? (
             <span className="text-xs whitespace-nowrap text-muted-foreground">{t('main')}</span>
           ) : null}
