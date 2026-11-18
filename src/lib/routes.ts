@@ -88,6 +88,7 @@ export const routes = {
   purchaseBook: () => '/reports/purchase-book',
   supplierStatement: () => '/reports/supplier-statement',
   itemSales: () => '/reports/items',
+  searchTerms: () => '/reports/searches',
 } as const;
 
 export type RouteName = keyof typeof routes;

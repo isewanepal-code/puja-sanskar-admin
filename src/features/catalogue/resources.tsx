@@ -65,6 +65,7 @@ export function categoriesResource(
       { name: 'nameNe', kind: 'text', required: true, max: 120 },
       { name: 'nameEn', kind: 'text', required: true, max: 120 },
       { name: 'nameRomanized', kind: 'text', max: 120 },
+      { name: 'aliases', kind: 'tags', wide: true },
       { name: 'taxClassId', kind: 'select', optionsFrom: choices.taxClasses, editOnly: true },
       { name: 'sortOrder', kind: 'number', editOnly: true },
       { name: 'slug', kind: 'slug', max: 160, section: 'seo', wide: true },

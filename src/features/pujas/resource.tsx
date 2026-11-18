@@ -52,6 +52,7 @@ export function pujasResource(
       { name: 'nameNe', kind: 'text', required: true, max: 160, section: 'names' },
       { name: 'nameEn', kind: 'text', required: true, max: 160 },
       { name: 'nameRomanized', kind: 'text', max: 160 },
+      { name: 'aliases', kind: 'tags', wide: true },
       { name: 'traditions', kind: 'tags' },
       { name: 'summaryNe', kind: 'textarea', max: 500, section: 'website' },
       { name: 'summaryEn', kind: 'textarea', max: 500 },

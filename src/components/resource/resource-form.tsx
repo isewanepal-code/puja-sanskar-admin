@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Fragment, useEffect, useId, useState } from 'react';
 import { useForm, type UseFormReturn } from 'react-hook-form';
 
-import { SearchSelect } from '@/components/controls';
+import { ChipInput, SearchSelect } from '@/components/controls';
 import { Field as FieldShell } from '@/components/forms';
 import { useToast } from '@/components/overlays';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
@@ -117,6 +117,18 @@ function Control({
         </div>
       );
     }
+    case 'tags':
+      return (
+        <ChipInput
+          id={id}
+          value={String(form.watch(field.name) ?? '')}
+          onChange={setByPicker}
+          max={20}
+          maxLength={field.name === 'aliases' ? 80 : 40}
+          placeholder={placeholder}
+          invalid={invalid}
+        />
+      );
     case 'switch':
       return <Switch label={t(`fields.${field.name}`)} {...register(field.name)} />;
     case 'textarea':
@@ -142,6 +154,17 @@ function Control({
         />
       );
   }
+}
+
+// How much of a search-result title or description is used: past the limit Google cuts it off.
+function LengthCounter({ length, max }: { length: number; max: number }) {
+  return (
+    <p
+      className={`mt-1 text-right text-xs tabular-nums ${length > max * 0.95 ? 'text-warning' : 'text-muted-foreground'}`}
+    >
+      {length}/{max}
+    </p>
+  );
 }
 
 type ResourceFormProps<T> = {
@@ -334,6 +357,12 @@ export function ResourceForm<T>({
                   record={row as Record<string, unknown> | undefined}
                   placeholder={placeholderOf(field)}
                 />
+                {field.name.startsWith('meta') && field.max ? (
+                  <LengthCounter
+                    length={String(form.watch(field.name) ?? '').length}
+                    max={field.max}
+                  />
+                ) : null}
               </FieldShell>
             )}
           </Fragment>

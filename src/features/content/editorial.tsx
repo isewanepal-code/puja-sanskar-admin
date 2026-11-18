@@ -108,6 +108,7 @@ export const festivalsResource: Resource<Festival> = {
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
     { name: 'nameRomanized', kind: 'text', max: 160 },
+    { name: 'aliases', kind: 'tags', wide: true },
     { name: 'sortOrder', kind: 'number' },
     { name: 'imageUrl', kind: 'image', section: 'website', wide: true },
     { name: 'summaryNe', kind: 'textarea', max: 500 },

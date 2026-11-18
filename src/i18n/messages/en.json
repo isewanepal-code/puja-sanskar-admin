@@ -536,7 +536,8 @@
         "descriptionNe": "Description in Nepali",
         "descriptionEn": "Description in English",
         "imageUrl": "Image",
-        "ritualTypeId": "Ritual type"
+        "ritualTypeId": "Ritual type",
+        "aliases": "Other names"
       },
       "hints": {
         "code": "Capital letters, such as H. Groups below it are numbered from it: H1, then H1.1.",
@@ -545,7 +546,8 @@
         "metaTitle": "Shown as the title in search results; up to 70 characters.",
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
         "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
-        "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags."
+        "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra."
       },
       "sections": {
         "names": "Names",
@@ -575,7 +577,8 @@
         "groupId": "Group",
         "type": "Kind",
         "mantraId": "Mantra",
-        "traditions": "Traditions"
+        "traditions": "Traditions",
+        "aliases": "Other names"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as K1. It cannot change later.",
@@ -585,7 +588,8 @@
         "metaTitle": "Shown as the title in search results; up to 70 characters.",
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
         "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
-        "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags."
+        "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra."
       },
       "sections": {
         "names": "Names",
@@ -645,7 +649,8 @@
         "taxClassId": "Tax class",
         "metaTitle": "Search title",
         "metaDescription": "Search description",
-        "subCategory": "This is a sub-category (inside another category)"
+        "subCategory": "This is a sub-category (inside another category)",
+        "aliases": "Other names"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as CAT005. It cannot change later.",
@@ -654,7 +659,8 @@
         "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
-        "subCategory": "Jastai Dhup, Incense and lamps bhitra. Mukhya category ho bhane off rakhnus."
+        "subCategory": "Jastai Dhup, Incense and lamps bhitra. Mukhya category ho bhane off rakhnus.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra."
       },
       "sections": {
         "seo": "Search engines"
@@ -686,7 +692,7 @@
       },
       "hints": {
         "code": "Capital letters, digits or _, such as M062. It cannot change later.",
-        "aliases": "Other names people search by, separated by commas: कर्पुर, camphor.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra.",
         "isSellable": "Off for things a puja needs that the shop never sells, such as dakshina.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
@@ -952,7 +958,8 @@
         "item": "Item",
         "sellBy": "How it is sold",
         "brand": "Brand",
-        "defaultSupplierId": "Usual supplier"
+        "defaultSupplierId": "Usual supplier",
+        "aliases": "Other names"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as PRD001. It cannot change later.",
@@ -965,7 +972,8 @@
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
         "hsCode": "The customs code printed on bills, 4 to 8 digits.",
         "tags": "Words to find it by, such as diwali, tihar; separated by commas.",
-        "sellBy": "Item kasari bikchha: ek-ek (shirt), tauls (500 g), volume, lambai (kapada), ya size (lambai × chaudai). Yesle pack ma kun unit/option dekhincha tyo tokchha."
+        "sellBy": "Item kasari bikchha: ek-ek (shirt), tauls (500 g), volume, lambai (kapada), ya size (lambai × chaudai). Yesle pack ma kun unit/option dekhincha tyo tokchha.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra."
       },
       "sections": {
         "website": "On the website",
@@ -1107,7 +1115,8 @@
         "item": "Kit",
         "discountKind": "Kit discount",
         "discountValue": "Discount (% or Rs)",
-        "packed": "Packed ahead of time"
+        "packed": "Packed ahead of time",
+        "aliases": "Other names"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as KIT001. It cannot change later.",
@@ -1117,7 +1126,8 @@
         "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
-        "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit."
+        "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra."
       },
       "sections": {
         "website": "On the website",
@@ -1149,13 +1159,15 @@
         "description": "Description",
         "discountKind": "Kit discount",
         "discountValue": "Discount (% or Rs)",
-        "packed": "Pack each package ahead of time"
+        "packed": "Pack each package ahead of time",
+        "aliases": "Other names"
       },
       "hints": {
         "code": "Capital letters, digits or _. Each package adds its tier: SATYA becomes SATYA_BASIC, SATYA_STANDARD and SATYA_PREMIUM.",
         "images": "The same photos show on all three packages.",
         "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit.",
-        "packed": "Basic, Standard ra Premium har ek ko aafno packed count huncha. Pack kits tin wota kit ma alag-alag garnus; optional item pack hudaina."
+        "packed": "Basic, Standard ra Premium har ek ko aafno packed count huncha. Pack kits tin wota kit ma alag-alag garnus; optional item pack hudaina.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra."
       }
     },
     "kitSetEdit": {
@@ -1284,13 +1296,15 @@
         "metaDescription": "Search description",
         "isActive": "Shown on the website",
         "dates": "Next date",
-        "pujaIds": "Pujas"
+        "pujaIds": "Pujas",
+        "aliases": "Other names"
       },
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later.",
         "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
-        "slug": "Made from the English name when left empty. A changed address keeps the old one working."
+        "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra."
       },
       "sections": {
         "website": "On the website",
@@ -2176,7 +2190,8 @@
         "sellBy": "How it is sold",
         "brand": "Brand",
         "defaultSupplierId": "Usual supplier",
-        "nameRomanized": "In Roman letters (for search)"
+        "nameRomanized": "In Roman letters (for search)",
+        "aliases": "Other names"
       },
       "hints": {
         "categoryId": "Where it shows on the website.",
@@ -2194,7 +2209,8 @@
         "compareAtPrice": "Pack ma chhapieko (MRP) ya purano price, price bhanda thulo. Website ma kateko dekhincha. Chaina bhane khali rakhnus.",
         "packQuantity": "Ek pack ma kati chha. 25 kg ko bora ho bhane 25; 500 g ko packet ho bhane 500; ek wota diya ho bhane 1.",
         "packUnitId": "Tyo amount ko unit. 25 ko lagi kg, 500 ko lagi g, ek wota ko lagi pcs.",
-        "nameRomanized": "Optional. Khali rakhda Nepali naam bata aafai banchha (धूप → dhuup). Dhup, dhoop jasto arko spelling le pani khojna milcha; yaha lekhnus."
+        "nameRomanized": "Optional. Khali rakhda Nepali naam bata aafai banchha (धूप → dhuup). Dhup, dhoop jasto arko spelling le pani khojna milcha; yaha lekhnus.",
+        "aliases": "Arko naam harulai ek-ek gari halnus (Enter ya comma). Jastai: chamal, rice, akshata, अक्षता. Website search ra Google ma yehi naam le pani khojincha. # chaidaina; ek naam ek patak matra."
       },
       "sections": {
         "pack": "What you sell, and for how much",
@@ -2841,7 +2857,8 @@
       "profitAndLoss": "Profit and loss",
       "purchaseBook": "Purchases",
       "itemSales": "Item sales",
-      "supplierStatement": "Supplier statement"
+      "supplierStatement": "Supplier statement",
+      "searches": "Searches"
     }
   },
   "reports": {
@@ -2921,6 +2938,17 @@
       "damaged": "Damaged",
       "salesValue": "Sales value",
       "inStock": "In stock now"
+    },
+    "searches": {
+      "note": "Website ke search box ma customer le kun shabda khoje. Kehi nabhetiyeko shabda (red) aaune ho bhane tyo shabda item/category/kit/puja ko \"Other names\" ma thapnus; tespachhi customer le tyo lekhda pani bhetinchha.",
+      "onlyMissing": "Only searches that found nothing",
+      "none": "Kunai search bhayeko chhaina.",
+      "noneMissing": "Kehi nabhetiyeko search chhaina. Ramro!",
+      "term": "Searched for",
+      "searches": "Times",
+      "foundNothing": "Found nothing",
+      "lastFound": "Last found",
+      "lastAt": "Last searched"
     }
   },
   "system": {
@@ -3973,7 +4001,9 @@
     "tierPhotosHelp": "Yo package ko aafnai photo. Khali bhaye mathi ko sajha photo dekhincha.",
     "summary": "{count, plural, one {# package} other {# packages}} will be made",
     "save": "Save the kit",
-    "saved": "Kit saved with its packages"
+    "saved": "Kit saved with its packages",
+    "aliases": "Other names (optional)",
+    "aliasesHelp": "Arko naam: Enter ya comma le ek-ek gari. Jastai: chhath set, chhath samagri. Website ma yo naam le pani khojincha."
   },
   "kitEdit": {
     "back": "All kits",

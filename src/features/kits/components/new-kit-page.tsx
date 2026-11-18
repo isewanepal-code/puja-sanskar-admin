@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { SearchSelect } from '@/components/controls';
+import { ChipInput, SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
 import { Icon } from '@/components/icons';
 import { useToast } from '@/components/overlays';
@@ -63,6 +63,7 @@ export function NewKitPage() {
   const [pujaId, setPujaId] = useState('');
   const [nameNe, setNameNe] = useState('');
   const [nameEn, setNameEn] = useState('');
+  const [aliases, setAliases] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState('[]');
   const [tier, setTier] = useState<Tier>('BASIC');
@@ -93,6 +94,10 @@ export function NewKitPage() {
           code: codeOf(nameEn),
           nameEn: nameEn.trim(),
           nameNe: nameNe.trim(),
+          aliases: aliases
+            .split(',')
+            .map((name) => name.trim())
+            .filter(Boolean),
           description: description.trim() || null,
           images: readImages(images),
           packages: chosen.map((name) => {
@@ -165,6 +170,9 @@ export function NewKitPage() {
             />
           </Field>
         </div>
+        <Field label={t('aliases')} htmlFor="kit-aliases" help={t('aliasesHelp')}>
+          <ChipInput id="kit-aliases" value={aliases} onChange={setAliases} />
+        </Field>
         <Field label={t('description')} htmlFor="kit-desc" help={t('descriptionHelp')}>
           <Input
             id="kit-desc"

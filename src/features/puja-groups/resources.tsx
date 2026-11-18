@@ -100,6 +100,7 @@ export function pujaGroupResource(typesCode: boolean): Resource<GroupNode> {
       { name: 'nameNe', kind: 'text', required: true, max: 120 },
       { name: 'nameEn', kind: 'text', required: true, max: 120 },
       { name: 'nameRomanized', kind: 'text', max: 120 },
+      { name: 'aliases', kind: 'tags', wide: true },
       { name: 'ritualTypeId', kind: 'select', optionsFrom: ritualTypeChoices },
       { name: 'sortOrder', kind: 'number' },
       { name: 'summaryNe', kind: 'textarea', max: 500, section: 'website' },

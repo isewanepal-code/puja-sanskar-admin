@@ -2222,6 +2222,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/search/terms': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * What shoppers searched for
+     * @description Most searched first, counted once per spelling. With missing=true only the searches that found nothing: the words to add as other names.
+     */
+    get: operations['AdminSearchController_termList'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/search/reindex': {
     parameters: {
       query?: never;
@@ -6995,6 +7015,13 @@ export interface components {
       nameNe: string;
       /** @example Dhup-Deep */
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** Format: uuid */
       parentId: string | null;
       /**
@@ -7020,6 +7047,13 @@ export interface components {
       nameNe: string;
       /** @example Dhup-Deep */
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** Format: uuid */
       parentId: string | null;
       /**
@@ -7046,6 +7080,13 @@ export interface components {
       nameNe: string;
       /** @example Dhup-Deep */
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** Format: uuid */
       parentId: string | null;
       /**
@@ -7074,6 +7115,13 @@ export interface components {
       nameNe: string;
       /** @example Dhup-Deep */
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** Format: uuid */
       parentId: string | null;
       /**
@@ -7113,6 +7161,13 @@ export interface components {
       nameNe: string;
       /** @example Dhup-Deep */
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** Format: uuid */
       parentId: string | null;
       /**
@@ -7151,6 +7206,15 @@ export interface components {
       nameNe: string;
       /** @example Dhup-Deep */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
@@ -7179,6 +7243,15 @@ export interface components {
       nameNe?: string;
       /** @example Dhup-Deep */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
@@ -7600,6 +7673,13 @@ export interface components {
       /** @example दैनिक तथा नियमित पूजा */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** Format: uuid */
       parentId: string | null;
       /**
@@ -7633,6 +7713,13 @@ export interface components {
       /** @example दैनिक तथा नियमित पूजा */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** Format: uuid */
       parentId: string | null;
       /**
@@ -7660,6 +7747,13 @@ export interface components {
       /** @example दैनिक तथा नियमित पूजा */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** Format: uuid */
       parentId: string | null;
       /**
@@ -7721,6 +7815,13 @@ export interface components {
       nameNe: string;
       nameRomanized: string | null;
       /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
+      /**
        * Format: uuid
        * @description Its own; null takes the parent’s
        */
@@ -7774,6 +7875,13 @@ export interface components {
       nameNe: string;
       nameRomanized: string | null;
       /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
+      /**
        * Format: uuid
        * @description Its own; null takes the parent’s
        */
@@ -7811,6 +7919,15 @@ export interface components {
       nameNe: string;
       /** @example Dainik tatha Niyamit Puja */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
@@ -7855,6 +7972,15 @@ export interface components {
       nameNe?: string;
       /** @example Dainik tatha Niyamit Puja */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
@@ -7931,6 +8057,13 @@ export interface components {
       /** @example सत्यनारायण पूजा */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** @enum {string} */
       type: 'PUJA' | 'FESTIVAL' | 'SAMSKARA' | 'VRAT' | 'SHANTI' | 'SHRADDHA' | 'PATH' | 'HOMA';
       /**
@@ -7967,6 +8100,13 @@ export interface components {
       /** @example सत्यनारायण पूजा */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** @enum {string} */
       type: 'PUJA' | 'FESTIVAL' | 'SAMSKARA' | 'VRAT' | 'SHANTI' | 'SHRADDHA' | 'PATH' | 'HOMA';
       /**
@@ -8044,6 +8184,13 @@ export interface components {
       /** @example सत्यनारायण पूजा */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       /** @enum {string} */
       type: 'PUJA' | 'FESTIVAL' | 'SAMSKARA' | 'VRAT' | 'SHANTI' | 'SHRADDHA' | 'PATH' | 'HOMA';
       /**
@@ -8088,6 +8235,15 @@ export interface components {
       nameNe: string;
       /** @example Satyanarayan Puja */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
@@ -8139,6 +8295,15 @@ export interface components {
       nameNe?: string;
       /** @example Satyanarayan Puja */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @description Generated from nameEn when omitted */
       slug?: string;
       /**
@@ -8381,6 +8546,13 @@ export interface components {
       nameNe: string;
       /** @example Kapur */
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       description: string | null;
       material: components['schemas']['MaterialSummary'];
       images: components['schemas']['ProductImageResponse'][];
@@ -8486,6 +8658,13 @@ export interface components {
       nameNe: string;
       /** @example Kapur */
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       description: string | null;
       material: components['schemas']['MaterialSummary'];
       images: components['schemas']['ProductImageResponse'][];
@@ -8613,6 +8792,13 @@ export interface components {
       nameNe: string;
       /** @example Kapur */
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       description: string | null;
       material: components['schemas']['MaterialSummary'];
       images: components['schemas']['ProductImageResponse'][];
@@ -8702,6 +8888,15 @@ export interface components {
       nameNe: string;
       /** @example Kapur */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Pure camphor tablets for aarti */
       description?: string | null;
       /**
@@ -8755,6 +8950,15 @@ export interface components {
       nameNe?: string;
       /** @example Kapur */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Pure camphor tablets for aarti */
       description?: string | null;
       images?: components['schemas']['ProductImageDto'][];
@@ -9127,7 +9331,7 @@ export interface components {
     };
     SearchHitResponse: {
       /** @enum {string} */
-      type: 'PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE';
+      type: 'PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE' | 'CATEGORY';
       /** Format: uuid */
       id: string;
       /** @example kapur */
@@ -9154,6 +9358,32 @@ export interface components {
        * @example 3.82
        */
       score: number;
+    };
+    SearchTermResponse: {
+      /**
+       * @description The spelling it is counted under
+       * @example dup
+       */
+      term: string;
+      /**
+       * @description How it was first typed
+       * @example dhoop
+       */
+      display: string;
+      /** @example 12 */
+      searches: number;
+      /**
+       * @description How many of them found nothing
+       * @example 4
+       */
+      noResultSearches: number;
+      /**
+       * @description What the last search found
+       * @example 0
+       */
+      lastResults: number;
+      /** Format: date-time */
+      lastAt: string;
     };
     ReindexResponse: {
       rebuilt: boolean;
@@ -10079,6 +10309,13 @@ export interface components {
       /** @example सत्यनारायण पूजा सामग्री */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       description: string | null;
       puja: components['schemas']['KitPujaResponse'] | null;
       /**
@@ -10152,6 +10389,13 @@ export interface components {
       /** @example सत्यनारायण पूजा सामग्री */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       description: string | null;
       puja: components['schemas']['KitPujaResponse'] | null;
       /**
@@ -10285,6 +10529,13 @@ export interface components {
       /** @example सत्यनारायण पूजा सामग्री */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       description: string | null;
       puja: components['schemas']['KitPujaResponse'] | null;
       /**
@@ -10400,6 +10651,15 @@ export interface components {
       nameNe: string;
       /** @example Satyanarayan Puja Samagri */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Everything for a home Satyanarayan puja */
       description?: string | null;
       /**
@@ -10455,6 +10715,15 @@ export interface components {
       nameNe: string;
       /** @example Satyanarayan Puja Samagri */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Everything for a home Satyanarayan puja */
       description?: string | null;
       /**
@@ -10524,6 +10793,15 @@ export interface components {
       nameNe: string;
       /** @example chhath puja kit */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Everything for Chhath */
       description?: string | null;
       /** @description Photos every package shows unless it has its own */
@@ -10561,6 +10839,15 @@ export interface components {
       nameNe?: string;
       /** @example Satyanarayan Puja Samagri */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Everything for a home Satyanarayan puja */
       description?: string | null;
       /**
@@ -10586,6 +10873,15 @@ export interface components {
       nameNe?: string;
       /** @example Satyanarayan Puja Samagri */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Everything for a home Satyanarayan puja */
       description?: string | null;
       /**
@@ -10697,6 +10993,13 @@ export interface components {
       /** @example दशैं */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       summaryEn: string | null;
       summaryNe: string | null;
       imageUrl: string | null;
@@ -10735,6 +11038,13 @@ export interface components {
       /** @example दशैं */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       summaryEn: string | null;
       summaryNe: string | null;
       imageUrl: string | null;
@@ -10768,6 +11078,13 @@ export interface components {
       /** @example दशैं */
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       summaryEn: string | null;
       summaryNe: string | null;
       imageUrl: string | null;
@@ -10854,6 +11171,13 @@ export interface components {
       nameEn: string;
       nameNe: string;
       nameRomanized: string | null;
+      /**
+       * @example [
+       *       "rice",
+       *       "chamal"
+       *     ]
+       */
+      aliases: string[];
       summaryEn: string | null;
       summaryNe: string | null;
       descriptionEn: string | null;
@@ -10883,6 +11207,15 @@ export interface components {
       nameNe: string;
       /** @example Dashain */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Nepal's longest festival, honouring Durga */
       summaryEn?: string | null;
       /** @example दुर्गा भवानीको आराधना गरिने चाड */
@@ -10913,6 +11246,15 @@ export interface components {
       nameNe?: string;
       /** @example Dashain */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /** @example Nepal's longest festival, honouring Durga */
       summaryEn?: string | null;
       /** @example दुर्गा भवानीको आराधना गरिने चाड */
@@ -11091,7 +11433,7 @@ export interface components {
     };
     SearchCardResponse: {
       /** @enum {string} */
-      type: 'PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE';
+      type: 'PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE' | 'CATEGORY';
       /** Format: uuid */
       id: string;
       /** @example kapur */
@@ -14924,6 +15266,15 @@ export interface components {
       nameEn: string;
       /** @example dhup */
       nameRomanized?: string | null;
+      /**
+       * @description Other names it is searched by and known by; each kept once, no # needed
+       * @example [
+       *       "chamal",
+       *       "rice",
+       *       "अक्षता"
+       *     ]
+       */
+      aliases?: string[];
       /**
        * Format: uuid
        * @description An existing samagri; else one is made in categoryId
@@ -25574,7 +25925,7 @@ export interface operations {
         /** @description Nepali, English or Nepali in English letters */
         q: string;
         /** @description Only these kinds; repeat or comma-separate (type=PUJA,KIT) */
-        type?: ('PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE')[];
+        type?: ('PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE' | 'CATEGORY')[];
         limit?: number;
       };
       header?: never;
@@ -25622,6 +25973,52 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  AdminSearchController_termList: {
+    parameters: {
+      query?: {
+        missing?: boolean;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SearchTermResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
       };
     };
   };

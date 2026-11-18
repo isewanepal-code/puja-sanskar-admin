@@ -93,6 +93,7 @@ export const productsResource: Resource<Product> = {
       wide: true,
     },
     { name: 'nameRomanized', kind: 'text', max: 160 },
+    { name: 'aliases', kind: 'tags', wide: true },
     { name: 'brand', kind: 'text', max: 80 },
     { name: 'taxClassId', kind: 'select', optionsFrom: choices.taxClasses },
     { name: 'defaultSupplierId', kind: 'select', optionsFrom: choices.suppliers },
@@ -187,6 +188,7 @@ export const quickItemResource: Resource<never> = {
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
     { name: 'nameRomanized', kind: 'text', max: 160 },
+    { name: 'aliases', kind: 'tags', wide: true },
     {
       name: 'sellBy',
       kind: 'select',
@@ -247,6 +249,7 @@ export const bareItemResource: Resource<never> = {
     { name: 'nameNe', kind: 'text', required: true, max: 160 },
     { name: 'nameEn', kind: 'text', required: true, max: 160 },
     { name: 'nameRomanized', kind: 'text', max: 160 },
+    { name: 'aliases', kind: 'tags', wide: true },
     {
       name: 'sellBy',
       kind: 'select',
