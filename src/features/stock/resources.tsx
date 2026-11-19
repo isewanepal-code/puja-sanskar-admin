@@ -46,6 +46,23 @@ export function stockResource(
 ): Resource<Level> {
   return {
     key: 'stock',
+    // What is on the shelf is counted right in the list: the difference is recorded as a shelf count.
+    inline: {
+      onHand: {
+        type: 'quantity',
+        allowZero: true,
+        value: (row) => row.onHand,
+        save: (row, value) =>
+          request('POST', `/admin/stock-levels/${row.variant.id}/movements`, {
+            body: {
+              type: 'ADJUSTMENT',
+              quantity: Number(value) - row.onHand,
+              reference: 'Shelf count',
+              note: `Counted ${value}, system had ${row.onHand}`,
+            },
+          }),
+      },
+    },
     path: '/admin/stock-levels',
     exportPath: '/admin/stock-levels/export',
     list: productId ? 'all' : 'paged',

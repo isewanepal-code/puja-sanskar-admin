@@ -16,6 +16,7 @@ import { isApiError, request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { unitsFor } from '@/features/products';
 import { routes } from '@/lib/routes';
+import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 
 type Product = Schema<'AdminProductResponse'>;
 
@@ -332,8 +333,18 @@ export function BuyPage() {
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
 
+  // A bill half typed is not lost by leaving the page without a word.
+  const guard = useUnsavedGuard(
+    !save.isSuccess &&
+      (supplierId !== '' ||
+        billNo !== '' ||
+        note !== '' ||
+        lines.some((l) => l.productId !== '' || l.unitCost !== '')),
+  );
+
   return (
     <>
+      {guard}
       <p className="text-sm text-muted-foreground">{t('note')}</p>
 
       <section className="grid gap-4 rounded-xl border border-border bg-card p-5 sm:grid-cols-3">

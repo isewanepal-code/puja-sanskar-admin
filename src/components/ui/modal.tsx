@@ -36,6 +36,8 @@ type ModalProps = {
   footer?: ReactNode;
   // The caller holds work the modal cannot see (rows in a grid): treated as typed-in.
   dirty?: boolean;
+  // Changed when the form inside starts over (saved, and another one begins): typed-in state clears.
+  resetKey?: unknown;
   children: ReactNode;
 };
 
@@ -68,6 +70,7 @@ export function Modal({
   size = 'md',
   footer,
   dirty: held = false,
+  resetKey,
   children,
 }: ModalProps) {
   const t = useTranslations('common');
@@ -83,6 +86,12 @@ export function Modal({
   const moved = offset.x !== 0 || offset.y !== 0;
 
   // A closed modal starts clean next time (state follows the prop during render, not in an effect).
+  const [wasKey, setWasKey] = useState(resetKey);
+  if (resetKey !== wasKey) {
+    setWasKey(resetKey);
+    setTyped(false);
+    setReported(false);
+  }
   const [wasOpen, setWasOpen] = useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);

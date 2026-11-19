@@ -12,6 +12,8 @@ type ConfirmDialogProps = {
   title: ReactNode;
   description?: ReactNode;
   confirmLabel?: string;
+  // The other button, when "Keep it" does not fit the question.
+  keepLabel?: string;
   // Removing something is red; anything else is the plain primary action.
   danger?: boolean;
   onConfirm: () => void;
@@ -24,6 +26,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
+  keepLabel,
   danger = true,
   onConfirm,
 }: ConfirmDialogProps) {
@@ -42,7 +45,9 @@ export function ConfirmDialog({
               <AlertDialog.Description render={<p />}>{description}</AlertDialog.Description>
             ) : null}
             <div className="cd-actions">
-              <AlertDialog.Close className="btn btn-outline">{t('keep')}</AlertDialog.Close>
+              <AlertDialog.Close className="btn btn-outline">
+                {keepLabel ?? t('keep')}
+              </AlertDialog.Close>
               <button
                 type="button"
                 className={danger ? 'btn btn-danger' : 'btn btn-primary'}

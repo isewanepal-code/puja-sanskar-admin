@@ -13,6 +13,7 @@ import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
+import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 
 type Product = Schema<'AdminProductResponse'>;
 type Page = { items: Product[] };
@@ -73,8 +74,12 @@ export function PricesPage() {
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
 
+  // Prices typed but not saved are not lost by leaving the page without a word.
+  const guard = useUnsavedGuard(changed.length > 0 && !save.isPending);
+
   return (
     <>
+      {guard}
       <p className="text-sm text-muted-foreground">{t('note')}</p>
 
       <div className="flex flex-wrap items-center gap-2">

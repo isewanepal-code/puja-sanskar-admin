@@ -18,6 +18,7 @@ import { isApiError, request } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
+import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 
 const TIERS = ['BASIC', 'STANDARD', 'PREMIUM'] as const;
 type Tier = (typeof TIERS)[number];
@@ -130,8 +131,18 @@ export function NewKitPage() {
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
 
+  const guard = useUnsavedGuard(
+    !save.isSuccess &&
+      (pujaId !== '' ||
+        nameNe.trim() !== '' ||
+        nameEn.trim() !== '' ||
+        aliases !== '' ||
+        description.trim() !== ''),
+  );
+
   return (
     <div className="grid max-w-5xl gap-6">
+      {guard}
       <div>
         <Link href={routes.kits()} className="text-sm text-muted-foreground hover:text-foreground">
           ← {t('back')}

@@ -6,12 +6,15 @@ import { Icon } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 type Tone = 'success' | 'error' | 'info';
-type Toast = { id: number; tone: Tone; message: ReactNode };
+// A button on the toast (Undo): pressed, the toast goes away.
+export type ToastAction = { label: string; onClick: () => void };
+type ToastOptions = { action?: ToastAction; durationMs?: number };
+type Toast = { id: number; tone: Tone; message: ReactNode; action?: ToastAction };
 
 export type Notify = {
-  success: (message: ReactNode) => void;
-  error: (message: ReactNode) => void;
-  info: (message: ReactNode) => void;
+  success: (message: ReactNode, options?: ToastOptions) => void;
+  error: (message: ReactNode, options?: ToastOptions) => void;
+  info: (message: ReactNode, options?: ToastOptions) => void;
 };
 
 const ToastContext = createContext<Notify | null>(null);
@@ -30,16 +33,25 @@ const TONE: Record<Tone, { icon: 'check' | 'x' | 'info'; className: string }> = 
 export function Toaster({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const show = useCallback((tone: Tone, message: ReactNode) => {
-    const id = Date.now() + Math.random();
-    setToasts((current) => [...current, { id, tone, message }].slice(-VISIBLE));
-    setTimeout(() => setToasts((current) => current.filter((t) => t.id !== id)), DURATION_MS[tone]);
-  }, []);
+  const dismiss = useCallback(
+    (id: number) => setToasts((current) => current.filter((t) => t.id !== id)),
+    [],
+  );
+  const show = useCallback(
+    (tone: Tone, message: ReactNode, options?: ToastOptions) => {
+      const id = Date.now() + Math.random();
+      setToasts((current) =>
+        [...current, { id, tone, message, action: options?.action }].slice(-VISIBLE),
+      );
+      setTimeout(() => dismiss(id), options?.durationMs ?? DURATION_MS[tone]);
+    },
+    [dismiss],
+  );
   const notify = useMemo<Notify>(
     () => ({
-      success: (message) => show('success', message),
-      error: (message) => show('error', message),
-      info: (message) => show('info', message),
+      success: (message, options) => show('success', message, options),
+      error: (message, options) => show('error', message, options),
+      info: (message, options) => show('info', message, options),
     }),
     [show],
   );
@@ -62,7 +74,19 @@ export function Toaster({ children }: { children: ReactNode }) {
               size={18}
               className={cn('mt-px shrink-0', TONE[toast.tone].className)}
             />
-            <span>{toast.message}</span>
+            <span className="min-w-0 flex-1">{toast.message}</span>
+            {toast.action ? (
+              <button
+                type="button"
+                onClick={() => {
+                  toast.action?.onClick();
+                  dismiss(toast.id);
+                }}
+                className="shrink-0 font-semibold text-primary hover:underline"
+              >
+                {toast.action.label}
+              </button>
+            ) : null}
           </div>
         ))}
       </div>

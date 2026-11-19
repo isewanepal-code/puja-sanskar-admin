@@ -14,7 +14,11 @@
     "discardTitle": "Discard what you typed?",
     "discardBody": "Tapai le bhareko kura haraunchha. Save garena bhane feri bharnu parchha.",
     "keepEditing": "Keep editing",
-    "discard": "Discard"
+    "discard": "Discard",
+    "leaveTitle": "Leave this page?",
+    "leaveBody": "Tapai le yaha bhareko kura save bhayeko chhaina. Chhoddai gaye bhane haraunchha.",
+    "leave": "Leave",
+    "stay": "Stay here"
   },
   "error": {
     "title": "Something went wrong",
@@ -385,7 +389,10 @@
     "nothingToArrange": "Nothing to arrange yet.",
     "aboutCreate": "Naya record banauna: tala ka kura bharnus ra \"Create\" thichnus. Pratyek khana ko wari ko (i) ma tyo khana ma ke lekhne bhanera lekhiyeko chha.",
     "aboutEdit": "Badalnu parne kura matra badalera \"Save\" thichnus. Code jastai kura pachhi badalinna.",
-    "howItWorks": "Yo screen kasari chalchha"
+    "howItWorks": "Yo screen kasari chalchha",
+    "saveAndAdd": "Save and add another",
+    "deletedUndo": "{name} deleted",
+    "undo": "Undo"
   },
   "pujas": {
     "title": "Pujas",
@@ -470,7 +477,11 @@
     "pages": "Pages",
     "clearFilter": "Clear this search",
     "turnedOn": "Turned on · {name}",
-    "turnedOff": "Turned off · {name}"
+    "turnedOff": "Turned off · {name}",
+    "inlineHint": "Click to change",
+    "inlineSaved": "Saved · {name}",
+    "badPrice": "Price rupaiya ma, 0 bhanda thulo (jastai 150 ya 150.50).",
+    "badNumber": "Anka halnus (jastai 12 ya 0.5)."
   },
   "password": {
     "title": "Change password",

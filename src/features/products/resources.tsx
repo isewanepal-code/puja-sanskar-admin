@@ -277,6 +277,8 @@ export function variantsResource(product: Product): Resource<Variant> {
     rowLabel: (row) => `${row.sku} · ${row.label}`,
     matches: (row, q) => `${row.sku} ${row.label}`.toLowerCase().includes(q),
     initialSort: { key: 'price', direction: 'asc' },
+    // The price is changed right in the list.
+    inline: { price: { type: 'money', value: (row) => row.price } },
     bulk: ['sku', 'label', 'packQuantity', 'packUnitId', 'price'],
     formRow: (row) => ({
       ...row,

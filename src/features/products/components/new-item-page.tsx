@@ -18,6 +18,7 @@ import { routes } from '@/lib/routes';
 
 import { bareItemResource, quickItemResource } from '../resources';
 import { StepBar } from './item-page';
+import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 
 // A new item: its name, how it is sold, the first pack and its price, and the stock that came in.
 // The rest (colours, photos, offers) is done on the item's own page, which opens when this is saved.
@@ -30,6 +31,8 @@ function FullNewItemPage() {
   const [more, setMore] = useState<Array<{ amount: string; unitId: string; price: string }>>([]);
   const [buying, setBuying] = useState(false);
   const [buy, setBuy] = useState({ amount: '', unitId: '', label: '' });
+  const [named, setNamed] = useState(false);
+  const guard = useUnsavedGuard(named && !saving);
   const changeMore = (index: number, patch: Partial<(typeof more)[number]>) =>
     setMore((rows) => rows.map((row, i) => (i === index ? { ...row, ...patch } : row)));
   // The extra packs and the bag it is bought in ride along with the form.
@@ -54,6 +57,7 @@ function FullNewItemPage() {
 
   return (
     <div className="grid max-w-5xl gap-6">
+      {guard}
       <div>
         <Link
           href={routes.products()}
@@ -71,6 +75,7 @@ function FullNewItemPage() {
           formId={formId}
           extraBody={extraBody}
           onPendingChange={setSaving}
+          onValues={(values) => setNamed(Boolean(values.nameEn || values.nameNe))}
           onDone={(saved) => {
             const id = (saved as { id?: string } | undefined)?.id;
             router.push(id ? `${routes.item(id)}?step=packs` : routes.products());
@@ -258,9 +263,13 @@ export function BareItemPage() {
   const [round, setRound] = useState(0);
   const [sameName, setSameName] = useState(false);
   const [names, setNames] = useState({ nameEn: '', nameNe: '' });
+  const guard = useUnsavedGuard(
+    saved === null && (names.nameEn.trim() !== '' || names.nameNe.trim() !== ''),
+  );
 
   return (
     <div className="grid max-w-3xl gap-6">
+      {guard}
       <p className="text-sm text-muted-foreground">{t('bareNote')}</p>
       {saved !== null ? (
         <section className="grid gap-3 rounded-xl border border-border bg-card p-5">

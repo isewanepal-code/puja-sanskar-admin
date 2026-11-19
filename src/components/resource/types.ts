@@ -79,6 +79,16 @@ export type Cell<T> = {
   className?: string;
 };
 
+export type InlineEdit<T> = {
+  type: 'money' | 'quantity';
+  // The plain number the box starts with.
+  value: (row: T) => string | number | null | undefined;
+  // Saves it; without this the record's own path is patched with { [column]: value }.
+  save?: (row: T, value: string) => Promise<unknown>;
+  // A count may be zero; a price may not.
+  allowZero?: boolean;
+};
+
 export type Resource<T> = {
   // Messages under resources.<key>; query key for its list.
   key: string;
@@ -124,4 +134,6 @@ export type Resource<T> = {
   reorder?: boolean;
   // Fields offered as columns of the bulk-entry grid; leave out for no bulk entry.
   bulk?: string[];
+  // Columns whose number is changed right in the list: click, type, Enter. The column's key is the field.
+  inline?: Record<string, InlineEdit<T>>;
 };
