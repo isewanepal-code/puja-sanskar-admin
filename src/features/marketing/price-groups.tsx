@@ -32,6 +32,7 @@ export function priceGroupsResource(): Resource<PriceGroup> {
     list: 'paged',
     rowId: (row) => row.id,
     rowLabel: (row) => `${row.code} · ${row.name}`,
+    usagePath: (row) => `/admin/usage/group/${row.id}`,
     initialSort: { key: 'name', direction: 'asc' },
     modalSize: 'lg',
     columns: [

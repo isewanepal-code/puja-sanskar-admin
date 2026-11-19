@@ -29,6 +29,7 @@ export function kitsResource(name: Name): Resource<Kit> {
     list: 'paged',
     rowId: (row) => row.id,
     rowLabel: (row) => `${row.code} · ${row.nameNe}`,
+    usagePath: (row) => `/admin/usage/kit/${row.id}`,
     initialSort: { key: 'sortOrder', direction: 'asc' },
     reorder: true,
     modalSize: 'lg',

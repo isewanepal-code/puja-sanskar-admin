@@ -134,6 +134,8 @@ export type Resource<T> = {
   reorder?: boolean;
   // Fields offered as columns of the bulk-entry grid; leave out for no bulk entry.
   bulk?: string[];
+  // Where a row is used (groups, offers, kits ...): asked before a delete, and a row in use is not deleted.
+  usagePath?: (row: T) => string;
   // Columns whose number is changed right in the list: click, type, Enter. The column's key is the field.
   inline?: Record<string, InlineEdit<T>>;
 };

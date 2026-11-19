@@ -26,7 +26,7 @@ import { BulkGrid } from './bulk-grid';
 import { ExportButton } from './export-button';
 import { InlineNumber } from './inline-number';
 import { InlineToggle } from './inline-toggle';
-import { ConfirmDelete } from './confirm-delete';
+import { ConfirmDelete, type Usage } from './confirm-delete';
 import { ReorderModal } from './reorder-modal';
 import { ResourceForm } from './resource-form';
 import { useResourceText } from './translate';
@@ -134,6 +134,14 @@ export function ResourceScreen<T>({
       : undefined;
   const editing = chosen ?? linked ?? null;
 
+  // Where the row about to be deleted is used: a row in use cannot be deleted.
+  const usage = useQuery({
+    queryKey: ['usage', removing && resource.usagePath ? resource.usagePath(removing) : null],
+    queryFn: () => request<Usage>('GET', resource.usagePath!(removing!)),
+    enabled: removing !== null && resource.usagePath !== undefined,
+    staleTime: 0,
+    gcTime: 0,
+  });
   const scope = resource.scope ?? resource.key;
   const unhide = useCallback(
     (id: string) =>
@@ -453,6 +461,7 @@ export function ResourceScreen<T>({
 
       <ConfirmDelete
         name={removing ? resource.rowLabel(removing) : null}
+        usage={resource.usagePath === undefined ? null : usage.isError ? null : usage.data}
         pending={false}
         onCancel={() => setRemoving(null)}
         onConfirm={() => removing && scheduleDelete(removing)}

@@ -4199,5 +4199,23 @@
     "note": "Group ma halyo bhane offer, filter ra website ko \"yo group matra\" ma yo pani aaunchha. Chip hataunus (×) bhane group bata nikalinchha.",
     "everyGroup": "Every group",
     "filter": "Only this group"
+  },
+  "usage": {
+    "checking": "Kaha-kaha prayog bhayeko chha, herdai…",
+    "blocked": "Yo hataina milcha: tala ko thau ma prayog bhayeko chha.",
+    "blockedHint": "Pahile tyo thau bata nikalnus (group, offer, kit...). Hataunu bhanda item/kit ma Archive, group ma Switched off garnus: history ra sambandha jastai rahanchha.",
+    "goesWith": "Yo sanga yo pani jancha:",
+    "kinds": {
+      "GROUP": "{count, plural, one {# group} other {# groups}}",
+      "OFFER": "{count, plural, one {# offer} other {# offers}}",
+      "KIT": "{count, plural, one {# kit} other {# kits}}",
+      "ORDER": "{count, plural, one {# order line} other {# order lines}}",
+      "PURCHASE": "{count, plural, one {# purchase bill line} other {# purchase bill lines}}",
+      "STOCK": "{count, plural, one {# unit in stock} other {# units in stock}}",
+      "REVIEW": "{count, plural, one {# review} other {# reviews}}",
+      "PAIRING": "{count, plural, one {# \"goes with\" link} other {# \"goes with\" links}}",
+      "PARENT_GROUP": "{count, plural, one {# group it is inside} other {# groups it is inside}}",
+      "WISHLIST": "{count, plural, one {# wish list} other {# wish lists}}"
+    }
   }
 }

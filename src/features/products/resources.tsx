@@ -31,6 +31,7 @@ export const productsResource: Resource<Product> = {
   list: 'paged',
   // Newest first, as the shop adds them; a heading still sorts the page.
   listQuery: { sort: 'NEWEST' },
+  usagePath: (row) => `/admin/usage/product/${row.id}`,
   // A new item comes through the one-step form (quickItemResource); this form edits.
   canCreate: false,
   rowId: (row) => row.id,
