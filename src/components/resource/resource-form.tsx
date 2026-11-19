@@ -384,6 +384,7 @@ export function ResourceForm<T>({
                   record={row as Record<string, unknown> | undefined}
                   placeholder={placeholderOf(field)}
                 />
+                {field.after ? field.after(form.watch() as Record<string, unknown>) : null}
                 {field.name.startsWith('meta') && field.max ? (
                   <LengthCounter
                     length={String(form.watch(field.name) ?? '').length}

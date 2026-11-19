@@ -66,6 +66,8 @@ export type Field = {
   auto?: { prefix?: string; separator?: '_' | '-' };
   // Shown only while this is true of what the form holds now (dates only for a dated offer).
   showWhen?: (values: Record<string, unknown>) => boolean;
+  // Shown under the field, from what the form holds now (a count of what the choice will add).
+  after?: (values: Record<string, unknown>) => ReactNode;
 };
 
 export type Cell<T> = {

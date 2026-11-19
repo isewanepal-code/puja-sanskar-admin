@@ -9768,6 +9768,11 @@ export interface components {
        * @example 95
        */
       totalCount: number;
+      /**
+       * @description Of those, what a shopper can buy now (an item needs a pack on sale). A group is on the website only while this is above zero.
+       * @example 12
+       */
+      onSaleCount: number;
       /** @description The groups inside this one */
       children: components['schemas']['GroupRefResponse'][];
       /** @description The groups this one is inside */
@@ -9807,6 +9812,11 @@ export interface components {
        * @example 95
        */
       totalCount: number;
+      /**
+       * @description Of those, what a shopper can buy now (an item needs a pack on sale). A group is on the website only while this is above zero.
+       * @example 12
+       */
+      onSaleCount: number;
       /** @description The groups inside this one */
       children: components['schemas']['GroupRefResponse'][];
       /** @description The groups this one is inside */

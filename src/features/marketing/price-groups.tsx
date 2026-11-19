@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { type Schema } from '@/lib/api';
 import { choices, pagedSource, type ChoiceSource } from '@/lib/choices';
 
+import { CategoryPreview } from './components/category-preview';
 import { priceGroups } from './offers';
 
 export type PriceGroup = Schema<'PriceGroupResponse'>;
@@ -98,6 +99,15 @@ export function priceGroupsResource(): Resource<PriceGroup> {
         sortValue: (row) => row.totalCount,
         align: 'right',
       },
+      // What shoppers can buy now from the group: it is on the website only while this is above zero.
+      {
+        key: 'onSaleCount',
+        cell: (row) => (
+          <Badge tone={row.onSaleCount > 0 ? 'success' : 'warning'}>{row.onSaleCount}</Badge>
+        ),
+        sortValue: (row) => row.onSaleCount,
+        align: 'right',
+      },
       // A switch in the list: shown on the website as a way to narrow items, or not.
       {
         key: 'showOnWebsite',
@@ -130,13 +140,6 @@ export function priceGroupsResource(): Resource<PriceGroup> {
       { name: 'showOnWebsite', kind: 'switch', defaultValue: false },
       // What goes in is chosen as the group is made; later, the group's list changes it.
       {
-        name: 'categoryIds',
-        kind: 'multiselect',
-        optionsFrom: categories,
-        wide: true,
-        createOnly: true,
-      },
-      {
         name: 'productIds',
         kind: 'multiselect',
         optionsFrom: choices.products,
@@ -149,6 +152,14 @@ export function priceGroupsResource(): Resource<PriceGroup> {
         optionsFrom: choices.kits,
         wide: true,
         createOnly: true,
+      },
+      {
+        name: 'categoryIds',
+        kind: 'multiselect',
+        optionsFrom: categories,
+        wide: true,
+        createOnly: true,
+        after: (values) => <CategoryPreview ids={values.categoryIds} />,
       },
       { name: 'codes', kind: 'textarea', wide: true, createOnly: true, codec: codesCodec },
       { name: 'isActive', kind: 'switch', defaultValue: true, editOnly: true },
@@ -168,7 +179,6 @@ export function addMembersResource(groupId: string): Resource<never> {
     columns: [],
     modalSize: 'lg',
     fields: [
-      { name: 'categoryIds', kind: 'multiselect', optionsFrom: categories, wide: true },
       { name: 'productIds', kind: 'multiselect', optionsFrom: choices.products, wide: true },
       { name: 'kitIds', kind: 'multiselect', optionsFrom: choices.kits, wide: true },
       {
@@ -176,6 +186,14 @@ export function addMembersResource(groupId: string): Resource<never> {
         kind: 'textarea',
         wide: true,
         codec: codesCodec,
+      },
+      // Last, with the number it adds shown: every item in the category goes in.
+      {
+        name: 'categoryIds',
+        kind: 'multiselect',
+        optionsFrom: categories,
+        wide: true,
+        after: (values) => <CategoryPreview ids={values.categoryIds} />,
       },
     ],
   };

@@ -2435,15 +2435,16 @@
         "showOnWebsite": "Show on the website",
         "children": "Groups inside",
         "parents": "Inside",
-        "totalCount": "With groups inside"
+        "totalCount": "With groups inside",
+        "onSaleCount": "On sale now"
       },
       "hints": {
         "name": "For example: Teej samagri.",
-        "categoryIds": "Every item inside the category and its sub-categories.",
+        "categoryIds": "Yo ma category chunyo bhane tyasko SABAI item group ma jancha (filter hoina). Kehi matra chahine bhae tala \"Add items\" ma chunnus, yo khali rakhnus.",
         "codes": "Separated by spaces, commas or new lines.",
         "nameNe": "Website ko Nepali ma dekhine naam. Khali bhae mathi ko naam jancha.",
         "childGroupIds": "Yo group le arka group haru lai samet runchha (A, B, C ko mathi D). Offer ya filter D ma lagyo bhane A, B, C ka item pani aaunchha; ek group ma arko group, tyasma pheri arko, kati pani tala.",
-        "showOnWebsite": "On garyo bhane website ma customer le yo group matra herna sakchha (jastai \"Teej samagri\" matra). Group \"Switched on\" hunuparchha, ra sale ma kehi hunuparchha."
+        "showOnWebsite": "On garyo bhane website ma customer le yo group matra herna sakchha. Tara group ma kam se kam ek item \"sale ma\" hunuparchha (item ko pack ra price halera On sale garepachhi); natra website ma dekhaudaina. List ma \"On sale now\" herum."
       },
       "sections": {},
       "about": "Item ra kit ko set (jastai \"Teej samagri\"). Ek patak offer lagauna, website ma filter banauna, list ma chhutyauna sabai ma kam lagchha.\nEk group arko group bhitra halna milchha (D ma A, B, C): tyo bela D ma lagayeko kura A, B, C ka item ma pani lagchha.",
@@ -4476,5 +4477,9 @@
     "hint": "Dherai puja, kit wa samuha ekaipatak?",
     "title": "Pujas, kits and groups with Excel",
     "note": "Download the layout: it has the pujas, kits and groups already saved (grey, locked) and empty rows below. Fill the sheets in order: Puja Groups (a parent group nests them as deep as you like: चाडपर्व → दशैं → नवरात्र), Pujas, Puja Samagri (a search group from the item list), Kits (\"make from puja samagri: हो\" fills it from items on sale; \"होइन\" takes the items on Kit Items), Kit Items, Item Groups (nested the same way; \"show on website: हो\" makes a filter) and Group Items. Check the file, then Import. Uploading the same file again adds only the new rows."
+  },
+  "groupForm": {
+    "categoryChecking": "Category ma kati item chha, herdai…",
+    "categoryAdds": "Dhyan dinus: yo category ko sabai item (sub-category samet) group ma jancha, lagbhag {count} ota. Kehi matra chahine bhae tala \"Add items\" bata chunnus, yo khali rakhnus."
   }
 }
