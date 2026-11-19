@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
+import { SearchSelect } from '@/components/controls';
+import { ItemGroups, priceGroups } from '@/features/marketing';
 import { ActionModal, CountButton, ResourceScreen, useResourceText } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
@@ -25,6 +27,7 @@ import {
 
 export function KitsScreen() {
   const t = useTranslations('actions');
+  const tg = useTranslations('itemGroups');
   const tk = useResourceText('kits');
   const [fromPuja, setFromPuja] = useState(false);
   // A new set, or the set a kit belongs to.
@@ -33,11 +36,14 @@ export function KitsScreen() {
   const [sending, setSending] = useState<Kit | null>(null);
   const [packing, setPacking] = useState<{ kit: Kit; mode: 'pack' | 'unpack' } | null>(null);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
+  // Only the kits in this group, and in the groups inside it.
+  const [groupId, setGroupId] = useState('');
   // The items count opens the items, as the button on the row does.
   const resource = useMemo(() => {
     const base = kitsResource(tk);
     return {
       ...base,
+      listQuery: { ...base.listQuery, ...(groupId && { groupId }) },
       columns: base.columns.map((column) =>
         column.key === 'items'
           ? {
@@ -54,7 +60,7 @@ export function KitsScreen() {
           : column,
       ),
     };
-  }, [tk, t]);
+  }, [tk, t, groupId]);
 
   return (
     <>
@@ -63,6 +69,14 @@ export function KitsScreen() {
         deepLink
         toolbar={
           <>
+            <SearchSelect
+              source={priceGroups}
+              value={groupId}
+              onChange={(value) => setGroupId(String(value))}
+              placeholder={tg('everyGroup')}
+              aria-label={tg('filter')}
+              className="w-44"
+            />
             <Button variant="secondary" icon="temple" onClick={() => setFromPuja(true)}>
               {t('kitFromPuja')}
             </Button>
@@ -75,6 +89,12 @@ export function KitsScreen() {
           </>
         }
         onCreated={setItemsOf}
+        editFooter={(row) => (
+          <div className="mt-5 grid gap-2 border-t border-border pt-4">
+            <h3 className="text-sm font-semibold">{tg('title')}</h3>
+            <ItemGroups kind="kit" id={row.id} />
+          </div>
+        )}
         rowActions={(row) => (
           <>
             {row.packed ? (

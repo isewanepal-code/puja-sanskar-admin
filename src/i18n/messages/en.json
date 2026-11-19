@@ -2378,21 +2378,30 @@
       "fields": {
         "code": "Code",
         "name": "Name of the group",
-        "memberCount": "Items and kits",
+        "memberCount": "In this group",
         "isActive": "Switched on",
         "categoryIds": "Add a whole category",
         "productIds": "Add items",
         "kitIds": "Add kits",
-        "codes": "Or paste item codes"
+        "codes": "Or paste item codes",
+        "nameNe": "Name in Nepali",
+        "childGroupIds": "Groups inside this group",
+        "showOnWebsite": "Show on the website",
+        "children": "Groups inside",
+        "parents": "Inside",
+        "totalCount": "With groups inside"
       },
       "hints": {
         "name": "For example: Teej samagri.",
         "categoryIds": "Every item inside the category and its sub-categories.",
-        "codes": "Separated by spaces, commas or new lines."
+        "codes": "Separated by spaces, commas or new lines.",
+        "nameNe": "Website ko Nepali ma dekhine naam. Khali bhae mathi ko naam jancha.",
+        "childGroupIds": "Yo group le arka group haru lai samet runchha (A, B, C ko mathi D). Offer ya filter D ma lagyo bhane A, B, C ka item pani aaunchha; ek group ma arko group, tyasma pheri arko, kati pani tala.",
+        "showOnWebsite": "On garyo bhane website ma customer le yo group matra herna sakchha (jastai \"Teej samagri\" matra). Group \"Switched on\" hunuparchha, ra sale ma kehi hunuparchha."
       },
       "sections": {},
-      "about": "Item ra kit ko set (jastai \"Teej samagri\"). Ek patak offer lagauna.\nNaya group banaunda tyahi item pani chunna milchha; pachhi row ko list icon bata thapna/hataunu milchha.",
-      "aboutForm": "Tapai item/kit ko ek set banaudai hunuhunchha. Naam halnus, ani tyahi item chunnus (category, item, kit ya code paste). Pachhi yo group Offers ma chunera ek patak chhut dina milchha."
+      "about": "Item ra kit ko set (jastai \"Teej samagri\"). Ek patak offer lagauna, website ma filter banauna, list ma chhutyauna sabai ma kam lagchha.\nEk group arko group bhitra halna milchha (D ma A, B, C): tyo bela D ma lagayeko kura A, B, C ka item ma pani lagchha.",
+      "aboutForm": "Naam halnus; \"Groups inside\" ma arka group chunnus (optional); tyahi item pani chunna milchha. \"Show on the website\" on garyo bhane customer ko filter ma dekhincha."
     },
     "groupMembers": {
       "title": "Add to group",
@@ -3364,7 +3373,7 @@
   "groupMembers": {
     "open": "Items and kits in this group",
     "title": "{name}",
-    "note": "An offer put on this group covers everything here.",
+    "note": "An offer or a filter on this group covers everything here, and everything in the groups inside it.",
     "count": "{count} in the group",
     "add": "Add items and kits",
     "empty": "Nothing in this group yet.",
@@ -3374,7 +3383,17 @@
     "addTitle": "Add to the group",
     "addNote": "Pick items, whole categories, kits or paste item codes. Those already in stay as they are.",
     "addSubmit": "Add",
-    "added": "Added to the group"
+    "added": "Added to the group",
+    "counts": "{direct} put in this group · {total} in all, with the groups inside it",
+    "groupsInside": "Groups inside this group",
+    "insideOf": "This group is inside:",
+    "directItems": "Items and kits in this group itself",
+    "selectAll": "Select all",
+    "takeOutSelected": "Take out selected ({count})",
+    "emptyDirect": "No items put in this group itself; what it holds comes from the groups inside it.",
+    "tookOut": "{count, plural, one {# taken out} other {# taken out}}",
+    "groupTaken": "Group taken out",
+    "groupTakenOut": "Group taken out of this one"
   },
   "productOffers": {
     "title": "Offers for {name}",
@@ -4172,5 +4191,13 @@
       "writeOff": "Write off",
       "writtenOff": "Written off as expired"
     }
+  },
+  "itemGroups": {
+    "title": "Groups",
+    "none": "In no group",
+    "saved": "Groups saved",
+    "note": "Group ma halyo bhane offer, filter ra website ko \"yo group matra\" ma yo pani aaunchha. Chip hataunus (×) bhane group bata nikalinchha.",
+    "everyGroup": "Every group",
+    "filter": "Only this group"
   }
 }

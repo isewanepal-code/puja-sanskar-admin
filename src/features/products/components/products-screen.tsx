@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
 
+import { SearchSelect } from '@/components/controls';
+import { priceGroups } from '@/features/marketing';
 import { BulkGrid, CountButton, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
 import { Button, IconButton, buttonVariants } from '@/components/ui/button';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
@@ -19,6 +21,9 @@ export function ProductsScreen() {
   const router = useRouter();
   const [many, setMany] = useState(false);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
+  // Only the items in this group, and in the groups inside it.
+  const [groupId, setGroupId] = useState('');
+  const tg = useTranslations('itemGroups');
 
   // A link from the global search (?open=<id>) goes to that item's page.
   const openId = useSearchParams().get('open');
@@ -29,6 +34,7 @@ export function ProductsScreen() {
   const resource = useMemo(
     () => ({
       ...productsResource,
+      listQuery: { ...productsResource.listQuery, ...(groupId && { groupId }) },
       // An item is changed on its own page.
       canEdit: false,
       columns: productsResource.columns.map((column) =>
@@ -47,7 +53,7 @@ export function ProductsScreen() {
           : column,
       ),
     }),
-    [t, router],
+    [t, router, groupId],
   );
 
   return (
@@ -56,6 +62,14 @@ export function ProductsScreen() {
         resource={resource}
         toolbar={
           <>
+            <SearchSelect
+              source={priceGroups}
+              value={groupId}
+              onChange={(value) => setGroupId(String(value))}
+              placeholder={tg('everyGroup')}
+              aria-label={tg('filter')}
+              className="w-44"
+            />
             <WorkbookUploadButton
               path="/admin/products/import"
               templatePath="/admin/products/import/template"

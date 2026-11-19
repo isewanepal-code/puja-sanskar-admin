@@ -2399,8 +2399,47 @@ export interface paths {
     delete: operations['AdminPriceGroupController_delete'];
     options?: never;
     head?: never;
-    /** Rename or switch a group off */
+    /** Change a group: its names, the groups inside it, the website and the on/off switch */
     patch: operations['AdminPriceGroupController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/price-groups/of/product/{productId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** The groups an item is directly in */
+    get: operations['AdminPriceGroupController_groupsOfProduct'];
+    /**
+     * Put an item in exactly these groups
+     * @description Any group left out is left: one place to add and remove.
+     */
+    put: operations['AdminPriceGroupController_setGroupsOfProduct'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-groups/of/kit/{kitId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** The groups a kit is directly in */
+    get: operations['AdminPriceGroupController_groupsOfKit'];
+    /** Put a kit in exactly these groups */
+    put: operations['AdminPriceGroupController_setGroupsOfKit'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   '/api/v1/admin/price-groups/{id}/members': {
@@ -2434,6 +2473,26 @@ export interface paths {
     put?: never;
     /** Take items and kits out of a group */
     post: operations['AdminPriceGroupController_removeMembers'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/groups': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Groups of items offered as a way to narrow the shop
+     * @description Groups switched on and shown on the website, with what is on sale in each and in the groups inside it. Pass the slug as `group` to the product and kit lists.
+     */
+    get: operations['PriceGroupController_list'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -9598,15 +9657,43 @@ export interface components {
       /** @description What a kit costs by how many are bought */
       kitTiers?: components['schemas']['KitTierDto'][];
     };
-    PriceGroupResponse: {
+    GroupRefResponse: {
       /** Format: uuid */
       id: string;
       /** @example TEEJ_ITEMS */
       code: string;
       name: string;
       isActive: boolean;
-      /** @example 40 */
+    };
+    PriceGroupResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example TEEJ_ITEMS */
+      code: string;
+      name: string;
+      nameNe: string | null;
+      /**
+       * @description Web address
+       * @example teej-samagri
+       */
+      slug: string;
+      /** @description Offered to shoppers on the website as a way to narrow items */
+      showOnWebsite: boolean;
+      isActive: boolean;
+      /**
+       * @description Items and kits put in this group itself
+       * @example 40
+       */
       memberCount: number;
+      /**
+       * @description Items and kits in this group and every group beneath it, each counted once
+       * @example 95
+       */
+      totalCount: number;
+      /** @description The groups inside this one */
+      children: components['schemas']['GroupRefResponse'][];
+      /** @description The groups this one is inside */
+      parents: components['schemas']['GroupRefResponse'][];
     };
     PriceGroupMemberResponse: {
       /** Format: uuid */
@@ -9623,9 +9710,29 @@ export interface components {
       /** @example TEEJ_ITEMS */
       code: string;
       name: string;
+      nameNe: string | null;
+      /**
+       * @description Web address
+       * @example teej-samagri
+       */
+      slug: string;
+      /** @description Offered to shoppers on the website as a way to narrow items */
+      showOnWebsite: boolean;
       isActive: boolean;
-      /** @example 40 */
+      /**
+       * @description Items and kits put in this group itself
+       * @example 40
+       */
       memberCount: number;
+      /**
+       * @description Items and kits in this group and every group beneath it, each counted once
+       * @example 95
+       */
+      totalCount: number;
+      /** @description The groups inside this one */
+      children: components['schemas']['GroupRefResponse'][];
+      /** @description The groups this one is inside */
+      parents: components['schemas']['GroupRefResponse'][];
       members: components['schemas']['PriceGroupMemberResponse'][];
     };
     CreatePriceGroupDto: {
@@ -9636,11 +9743,23 @@ export interface components {
       code?: string;
       /** @example Teej samagri */
       name: string;
+      /**
+       * @description The name shown on the Nepali website
+       * @example तीज सामग्री
+       */
+      nameNe?: string | null;
+      /**
+       * @description Offered to shoppers on the website as a way to narrow items: only this group (and the groups inside it)
+       * @default false
+       */
+      showOnWebsite: boolean;
       /** @default true */
       isActive: boolean;
       /** @description Items to put in the group as it is made */
       productIds?: string[];
       kitIds?: string[];
+      /** @description Groups to put inside this one: an offer or filter on this group then reaches everything in them, to any depth. Replaces the groups inside on a change. */
+      childGroupIds?: string[];
       /** @description Every item in these categories and below them */
       categoryIds?: string[];
       /** @description Item codes, as pasted from a sheet */
@@ -9649,8 +9768,26 @@ export interface components {
     UpdatePriceGroupDto: {
       /** @example Teej samagri */
       name?: string;
+      /**
+       * @description The name shown on the Nepali website
+       * @example तीज सामग्री
+       */
+      nameNe?: string | null;
+      /**
+       * @description Offered to shoppers on the website as a way to narrow items: only this group (and the groups inside it)
+       * @default false
+       */
+      showOnWebsite: boolean;
       /** @default true */
       isActive: boolean;
+      /** @description Groups to put inside this one: an offer or filter on this group then reaches everything in them, to any depth. Replaces the groups inside on a change. */
+      childGroupIds?: string[];
+    };
+    ItemGroupsResponse: {
+      groups: components['schemas']['GroupRefResponse'][];
+    };
+    SetItemGroupsDto: {
+      groupIds: string[];
     };
     MembersChangedResponse: {
       /** @description How many were added (or removed) */
@@ -9669,6 +9806,28 @@ export interface components {
     RemoveGroupMembersDto: {
       productIds?: string[];
       kitIds?: string[];
+    };
+    PublicGroupResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example teej-samagri */
+      slug: string;
+      /** @example Teej samagri */
+      name: string;
+      /** @example तीज सामग्री */
+      nameNe: string | null;
+      /**
+       * @description Items on sale in it and below it
+       * @example 24
+       */
+      productCount: number;
+      /**
+       * @description Kits on sale in it and below it
+       * @example 2
+       */
+      kitCount: number;
+      /** @description The groups it is inside that are shown too, by slug */
+      parentSlugs: string[];
     };
     VariantSummary: {
       /** Format: uuid */
@@ -23457,6 +23616,8 @@ export interface operations {
         material?: string;
         /** @description Category slug: products filed in it or any category below it */
         category?: string;
+        /** @description Item group slug (a group shown on the website): its products and those of every group inside it */
+        group?: string;
         sort?:
           | 'CODE'
           | 'NAME'
@@ -23534,6 +23695,8 @@ export interface operations {
         q?: string;
         /** @description Material slug: products sold for this samagri */
         material?: string;
+        /** @description Item group slug (a group shown on the website): its products and those of every group inside it */
+        group?: string;
         minPrice?: string | null;
         maxPrice?: string | null;
         /** @description Only products with a pack in stock right now */
@@ -23687,6 +23850,8 @@ export interface operations {
         /** @description Products of samagri filed in this category or below it */
         categoryId?: string;
         materialId?: string;
+        /** @description Products in this item group, and in every group inside it, to any depth */
+        groupId?: string;
         /** @description The product an active pack belongs to, to name a saved pack */
         variantId?: string;
         sort?:
@@ -23838,6 +24003,8 @@ export interface operations {
         /** @description Products of samagri filed in this category or below it */
         categoryId?: string;
         materialId?: string;
+        /** @description Products in this item group, and in every group inside it, to any depth */
+        groupId?: string;
         /** @description The product an active pack belongs to, to name a saved pack */
         variantId?: string;
         sort?:
@@ -26943,6 +27110,248 @@ export interface operations {
       };
     };
   };
+  AdminPriceGroupController_groupsOfProduct: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ItemGroupsResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_setGroupsOfProduct: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetItemGroupsDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ItemGroupsResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_groupsOfKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        kitId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ItemGroupsResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceGroupController_setGroupsOfKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        kitId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetItemGroupsDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ItemGroupsResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminPriceGroupController_addMembers: {
     parameters: {
       query?: never;
@@ -27073,6 +27482,31 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  PriceGroupController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PublicGroupResponse'][];
+          };
         };
       };
     };
@@ -29399,6 +29833,8 @@ export interface operations {
         q?: string;
         /** @description Puja slug: that puja's kits */
         puja?: string;
+        /** @description Item group slug (a group shown on the website): its kits and those of every group inside it */
+        group?: string;
       };
       header?: never;
       path?: never;
@@ -29655,6 +30091,8 @@ export interface operations {
         /** @description Archived kits are left out; only lists just them, include both */
         archived?: 'only' | 'include';
         pujaId?: string;
+        /** @description Kits in this item group, and in every group inside it, to any depth */
+        groupId?: string;
       };
       header?: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
@@ -40644,6 +41082,8 @@ export interface operations {
         limit?: number;
         /** @description SKU, code or name */
         q?: string;
+        /** @description Only packs of items in this item group, and in every group inside it */
+        groupId?: string;
       };
       header?: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
@@ -40717,6 +41157,8 @@ export interface operations {
         limit?: number;
         /** @description SKU, code or name */
         q?: string;
+        /** @description Only packs of items in this item group, and in every group inside it */
+        groupId?: string;
       };
       header?: {
         /** @description Branch code to narrow to; left out, every branch the user may see */

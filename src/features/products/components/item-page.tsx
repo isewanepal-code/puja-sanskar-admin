@@ -10,7 +10,7 @@ import { ResourceForm, ResourceScreen } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { InfoTip } from '@/components/ui/info-tip';
-import { ProductOffersPanel } from '@/features/marketing';
+import { ItemGroups, ProductOffersPanel } from '@/features/marketing';
 import { request } from '@/lib/api';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
@@ -146,6 +146,7 @@ function Card({ title, help, children }: { title: string; help: string; children
 // goes there; Back and Next walk through them; nothing is far down a long page.
 export function ItemPage({ id }: { id: string }) {
   const t = useTranslations('itemPage');
+  const tg = useTranslations('itemGroups');
   const tf = useTranslations('forms');
   const router = useRouter();
   const pathname = usePathname();
@@ -244,6 +245,10 @@ export function ItemPage({ id }: { id: string }) {
 
         {step === 'more' ? (
           <div className="grid gap-8">
+            <div className="grid gap-2">
+              <h3 className="text-sm font-semibold">{tg('title')}</h3>
+              <ItemGroups kind="product" id={product.id} />
+            </div>
             <div className="grid gap-2">
               <h3 className="text-sm font-semibold">{t('quality')}</h3>
               <p className="text-sm text-muted-foreground">{t('qualityNote')}</p>
