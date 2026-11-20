@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
@@ -15,6 +15,7 @@ import { Button, IconButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { unitsFor } from '@/features/products';
 import { isApiError, request, type Schema } from '@/lib/api';
+import { autoCode } from '@/lib/auto-code';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
@@ -35,6 +36,8 @@ type Line = {
   sellPrice: string;
   vat: string;
   expiresOn: string;
+  // The item's own VAT %, learnt when it loads; used for the totals only.
+  itemVat: string;
 };
 
 const emptyLine = (productId = ''): Line => ({
@@ -46,6 +49,7 @@ const emptyLine = (productId = ''): Line => ({
   sellPrice: '',
   vat: '',
   expiresOn: '',
+  itemVat: '0',
 });
 const cell = 'border-r border-b border-border p-0 align-middle';
 const th = 'border-r border-b border-border px-2 py-2 font-medium';
@@ -53,6 +57,8 @@ const box =
   'h-9 w-full bg-transparent px-2 text-sm outline-none focus:bg-primary/5 disabled:opacity-40';
 const today = () => new Date().toISOString().slice(0, 10);
 const num = (text: string) => Number(text.replace(/,/g, ''));
+// The VAT % a line pays: chosen on the line, else the item's own.
+const vatOf = (l: { vat: string; itemVat: string }) => num(l.vat === '' ? l.itemVat : l.vat) || 0;
 // The unit most shops count each way of selling in, picked first: kg, metre, litre.
 const USUAL = ['pc', 'pcs', 'kg', 'm', 'l', 'ltr'];
 
@@ -71,12 +77,15 @@ function LineRow({
   onChange,
   onRemove,
   removable,
+  showErrors,
 }: {
   line: Line;
   index: number;
   onChange: (patch: Partial<Line>) => void;
   onRemove: () => void;
   removable: boolean;
+  // After Save was pressed with something missing: the empty cells turn red.
+  showErrors: boolean;
 }) {
   const t = useTranslations('inventory.buy');
   const item = useQuery({
@@ -84,23 +93,34 @@ function LineRow({
     queryFn: () => request<Product>('GET', `/admin/products/${line.productId}`),
     enabled: Boolean(line.productId),
   });
-  const sellBy = item.data?.sellBy ?? 'PIECE';
-  const unitSource = unitsFor(sellBy);
+  // Units are looked up only once the item is known, so a kg item never gets a piece unit first.
+  const sellBy = item.data?.sellBy;
   const units = useQuery({
     queryKey: ['units-for', sellBy],
-    queryFn: unitSource.load,
-    enabled: Boolean(line.productId),
+    queryFn: () => unitsFor(sellBy!).load(),
+    enabled: Boolean(line.productId && sellBy),
     staleTime: 5 * 60 * 1000,
   });
-  // The usual unit is chosen for staff as soon as the item is known.
+  const unitList = useMemo(
+    () => (line.productId && sellBy ? (units.data ?? []) : []),
+    [line.productId, sellBy, units.data],
+  );
+  const unitKnown = unitList.some((u) => u.value === line.unitId);
+  // The usual unit is chosen for staff as soon as the item is known, and a unit that does not fit
+  // the item (left from another item) is replaced.
   useEffect(() => {
-    const list = units.data ?? [];
-    if (!line.productId || line.unitId || list.length === 0) return;
-    const usual = list.find((u) => USUAL.includes((u.detail ?? '').toLowerCase())) ?? list[0]!;
+    if (unitList.length === 0 || unitKnown) return;
+    const usual =
+      unitList.find((u) => USUAL.includes((u.detail ?? '').toLowerCase())) ?? unitList[0]!;
     onChange({ unitId: usual.value });
-  }, [units.data, line.productId, line.unitId, onChange]);
+  }, [unitList, unitKnown, onChange]);
+  // The item's VAT, for the totals.
+  const itemVat = item.data?.effectiveTax.ratePercent ?? '0';
+  useEffect(() => {
+    if (line.productId && item.data && line.itemVat !== itemVat) onChange({ itemVat });
+  }, [line.productId, item.data, line.itemVat, itemVat, onChange]);
 
-  const unitSymbol = units.data?.find((u) => u.value === line.unitId)?.detail ?? '';
+  const unitSymbol = unitList.find((u) => u.value === line.unitId)?.detail ?? '';
   // Colours and sizes this item already comes in, as a reminder.
   const known = [
     ...new Set(
@@ -108,16 +128,19 @@ function LineRow({
     ),
   ];
   const total = (num(line.quantity) || 0) * (num(line.rate) || 0);
+  const vatPercent = vatOf(line);
+  const bad = (missing: boolean) => (showErrors && missing ? 'bg-destructive/10' : '');
   const label = (name: string) => `${name} ${index + 1}`;
 
   return (
     <tr>
-      <td className="sticky left-0 z-[5] border-r border-b border-border bg-card px-2 text-center text-xs text-muted-foreground">
+      <td className="border-r border-b border-border px-1 text-center text-xs text-muted-foreground">
         {index + 1}
       </td>
-      <td className={`${cell} sticky left-10 z-[5] bg-card shadow-[1px_0_0_var(--color-border)]`}>
+      <td className={cn(cell, bad(!line.productId))}>
         <SearchSelect
           bare
+          invalid={showErrors && !line.productId}
           aria-label={label(t('item'))}
           source={choices.products}
           value={line.productId}
@@ -141,7 +164,7 @@ function LineRow({
           onChange={(value) => onChange({ optionValueIds: value as string[] })}
         />
       </td>
-      <td className={cell}>
+      <td className={cn(cell, bad(!(num(line.quantity) > 0)))}>
         <input
           aria-label={label(t('quantity'))}
           inputMode="decimal"
@@ -156,13 +179,14 @@ function LineRow({
           bare
           required
           aria-label={label(t('unit'))}
-          disabled={!line.productId}
-          source={unitSource}
-          value={line.unitId}
+          disabled={unitList.length === 0}
+          placeholder={line.productId ? '…' : '—'}
+          options={unitList}
+          value={unitKnown ? line.unitId : ''}
           onChange={(value) => onChange({ unitId: String(value) })}
         />
       </td>
-      <td className={cell}>
+      <td className={cn(cell, bad(!(num(line.rate) > 0)))}>
         <input
           aria-label={label(t('rate', { unit: unitSymbol || t('one') }))}
           inputMode="decimal"
@@ -205,10 +229,18 @@ function LineRow({
           className={box}
         />
       </td>
-      <td className="sticky right-[50px] z-[5] border-r border-b border-border bg-card px-3 text-right text-sm whitespace-nowrap tabular-nums shadow-[-1px_0_0_var(--color-border)]">
-        {total.toFixed(2)}
+      <td className="border-r border-b border-border px-2 text-right text-sm whitespace-nowrap tabular-nums">
+        <div className="font-medium">{total.toFixed(2)}</div>
+        {vatPercent > 0 && total > 0 ? (
+          <div className="text-[0.7rem] text-muted-foreground">
+            {t('withVat', {
+              percent: vatPercent,
+              amount: (total * (1 + vatPercent / 100)).toFixed(2),
+            })}
+          </div>
+        ) : null}
       </td>
-      <td className="sticky right-0 z-[5] border-b border-border bg-card px-1 text-center">
+      <td className="border-b border-border px-1 text-center">
         <IconButton
           icon="trash"
           variant="danger"
@@ -236,6 +268,10 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
   const [day, setDay] = useState(today());
   const [note, setNote] = useState('');
   const [lines, setLines] = useState<Line[]>([emptyLine(itemId)]);
+  // Save pressed with something missing: the missing places turn red and are named.
+  const [showErrors, setShowErrors] = useState(false);
+  // A supplier added right here, for a shop buying from someone new.
+  const [newSupplier, setNewSupplier] = useState<{ name: string; phone: string } | null>(null);
   // The bill once made, so a retry after a failed step posts it instead of making a second one.
   const made = useRef<Bill | null>(null);
   const change = (index: number, patch: Partial<Line>) => {
@@ -255,6 +291,38 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
   const firstProblem = lines.map(problem).find(Boolean) ?? null;
   const ready = Boolean(supplierId) && !firstProblem;
   const grand = lines.reduce((sum, l) => sum + (num(l.quantity) || 0) * (num(l.rate) || 0), 0);
+  const vatTotal = lines.reduce(
+    (sum, l) => sum + (num(l.quantity) || 0) * (num(l.rate) || 0) * (vatOf(l) / 100),
+    0,
+  );
+  const tryToSave = () => {
+    if (ready) {
+      save.mutate();
+      return;
+    }
+    setShowErrors(true);
+    toast.error(!supplierId ? t('needSupplier') : (firstProblem ?? t('needSupplier')));
+    if (!supplierId) document.getElementById('buy-supplier')?.focus();
+  };
+
+  const addSupplier = useMutation({
+    mutationFn: (input: { name: string; phone: string }) =>
+      request<{ id: string; name: string }>('POST', '/admin/suppliers', {
+        body: {
+          code: autoCode({ from: input.name, fallback: 'SUPPLIER' }),
+          name: input.name.trim(),
+          ...(input.phone.trim() && { phone: input.phone.trim() }),
+          isActive: true,
+        },
+      }),
+    onSuccess: async (supplier) => {
+      await queryClient.invalidateQueries({ queryKey: ['suppliers'] });
+      setSupplierId(supplier.id);
+      setNewSupplier(null);
+      toast.success(t('supplierAdded', { name: supplier.name }));
+    },
+    onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
+  });
 
   const save = useMutation({
     mutationFn: async () => {
@@ -329,17 +397,62 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
   );
 
   return (
-    <div className="grid max-w-5xl gap-6">
+    <div className="grid max-w-6xl gap-6">
       {guard}
 
       <section className="grid gap-4 rounded-xl border border-border bg-card p-5 sm:grid-cols-3">
-        <Field label={`${t('supplier')} *`} htmlFor="buy-supplier" hint={t('supplierHint')}>
+        <Field
+          label={`${t('supplier')} *`}
+          htmlFor="buy-supplier"
+          error={showErrors && !supplierId ? t('needSupplier') : undefined}
+        >
           <SearchSelect
             id="buy-supplier"
             source={choices.suppliers}
             value={supplierId}
+            invalid={showErrors && !supplierId}
             onChange={(value) => setSupplierId(String(value))}
           />
+          {newSupplier ? (
+            <div className="mt-2 grid gap-2 rounded-md border border-border p-2">
+              <Input
+                aria-label={t('newSupplierName')}
+                placeholder={t('newSupplierName')}
+                value={newSupplier.name}
+                maxLength={160}
+                autoFocus
+                onChange={(e) => setNewSupplier({ ...newSupplier, name: e.target.value })}
+              />
+              <Input
+                aria-label={t('newSupplierPhone')}
+                placeholder={t('newSupplierPhone')}
+                value={newSupplier.phone}
+                maxLength={20}
+                onChange={(e) => setNewSupplier({ ...newSupplier, phone: e.target.value })}
+              />
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  disabled={!newSupplier.name.trim() || addSupplier.isPending}
+                  onClick={() => addSupplier.mutate(newSupplier)}
+                >
+                  {addSupplier.isPending ? tf('saving') : t('newSupplierSave')}
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setNewSupplier(null)}>
+                  {tf('cancel')}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+              onClick={() => setNewSupplier({ name: '', phone: '' })}
+            >
+              <Icon name="plus" size={12} />
+              {t('newSupplier')}
+            </button>
+          )}
         </Field>
         <Field label={t('billNo')} htmlFor="buy-bill" hint={t('billNoHint')}>
           <Input
@@ -359,28 +472,24 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         <h2 className="font-heading text-base font-semibold">{t('what')}</h2>
         <p className="text-xs text-muted-foreground">{t('sheetNote')}</p>
         <div className="overflow-x-auto rounded-lg border border-border bg-card">
-          <table className="w-[1280px] table-fixed border-separate border-spacing-0 text-sm">
+          <table className="w-full min-w-[1080px] table-fixed border-separate border-spacing-0 text-sm">
             <colgroup>
-              <col style={{ width: 40 }} />
-              <col style={{ width: 240 }} />
-              <col style={{ width: 180 }} />
+              <col style={{ width: 32 }} />
+              <col style={{ width: '19%' }} />
+              <col style={{ width: '14%' }} />
+              <col style={{ width: 80 }} />
               <col style={{ width: 100 }} />
-              <col style={{ width: 120 }} />
-              <col style={{ width: 120 }} />
-              <col style={{ width: 120 }} />
-              <col style={{ width: 120 }} />
-              <col style={{ width: 130 }} />
+              <col style={{ width: 90 }} />
+              <col style={{ width: 90 }} />
               <col style={{ width: 110 }} />
-              <col style={{ width: 50 }} />
+              <col style={{ width: 130 }} />
+              <col style={{ width: 120 }} />
+              <col style={{ width: 44 }} />
             </colgroup>
             <thead className="bg-muted text-xs whitespace-nowrap text-muted-foreground">
               <tr>
-                <th className={`${th} sticky left-0 z-20 bg-muted text-center`}>#</th>
-                <th
-                  className={`${th} sticky left-10 z-20 bg-muted text-left shadow-[1px_0_0_var(--color-border)]`}
-                >
-                  {t('item')} *
-                </th>
+                <th className={`${th} text-center`}>#</th>
+                <th className={`${th} text-left`}>{t('item')} *</th>
                 <th className={`${th} text-left`}>{t('colour')}</th>
                 <th className={`${th} text-right`}>{t('quantity')} *</th>
                 <th className={`${th} text-left`}>{t('unit')} *</th>
@@ -388,12 +497,8 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
                 <th className={`${th} text-right`}>{t('sellCol')}</th>
                 <th className={`${th} text-left`}>{t('vat')}</th>
                 <th className={`${th} text-left`}>{t('expires')}</th>
-                <th
-                  className={`${th} sticky right-[50px] z-20 bg-muted text-right shadow-[-1px_0_0_var(--color-border)]`}
-                >
-                  {t('total')}
-                </th>
-                <th className="sticky right-0 z-20 border-b border-border bg-muted" />
+                <th className={`${th} text-right`}>{t('total')}</th>
+                <th className="border-b border-border" />
               </tr>
             </thead>
             <tbody>
@@ -405,6 +510,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
                   onChange={(patch) => change(index, patch)}
                   onRemove={() => setLines((all) => all.filter((_, i) => i !== index))}
                   removable={lines.length > 1}
+                  showErrors={showErrors}
                 />
               ))}
             </tbody>
@@ -415,12 +521,16 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
             <Icon name="plus" size={16} />
             {t('addLine')}
           </Button>
-          <span className="text-sm">
-            {t('grandTotal')}{' '}
-            <span className="font-semibold tabular-nums">
-              {formatMoney(grand.toFixed(2), 'en')}
-            </span>
-          </span>
+          <dl className="grid grid-cols-[auto_auto] gap-x-4 gap-y-0.5 text-sm tabular-nums">
+            <dt className="text-muted-foreground">{t('grandTotal')}</dt>
+            <dd className="text-right">{formatMoney(grand.toFixed(2), 'en')}</dd>
+            <dt className="text-muted-foreground">{t('vatTotal')}</dt>
+            <dd className="text-right">{formatMoney(vatTotal.toFixed(2), 'en')}</dd>
+            <dt className="font-semibold">{t('payTotal')}</dt>
+            <dd className="text-right font-semibold">
+              {formatMoney((grand + vatTotal).toFixed(2), 'en')}
+            </dd>
+          </dl>
         </div>
       </section>
 
@@ -437,7 +547,8 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         <p className={cn('text-sm', ready ? 'text-muted-foreground' : 'text-destructive')}>
           {!supplierId ? t('needSupplier') : (firstProblem ?? t('ready'))}
         </p>
-        <Button disabled={!ready || save.isPending} onClick={() => save.mutate()}>
+        {/* Never greyed out: pressing it with something missing shows what, in red. */}
+        <Button disabled={save.isPending} onClick={tryToSave}>
           {save.isPending ? tf('saving') : t('save')}
         </Button>
       </div>

@@ -124,7 +124,7 @@
       "discounts": "Coupons",
       "pandits": "Pandits",
       "dataReset": "Clear data",
-      "flowWork": "Repack and fix stock",
+      "flowWork": "Expiring stock",
       "addItem": "1 · Add item",
       "buy": "2 · Buy",
       "sellPrice": "Selling price"
@@ -174,7 +174,7 @@
       "settings": "VAT, delivery, shakha ra pasal ka niyam.",
       "staff": "Staff ra tinko role.",
       "dataReset": "Dev ko lagi: sabai item, kit, order, customer ek patak ma hataune (super admin matra).",
-      "flowWork": "Repack, kharab/expire, gunera milaune, branch ma pathaune.",
+      "flowWork": "Expire hune saman (kinda Expires on halyeko). Repack, damaged ra count chai Stock page ko line mai.",
       "addItem": "Naya saman ko naam matra thapne: ke ho, kasari bechincha (gota, kg, meter). Rang/size kinda chhanincha.",
       "buy": "Bazar bata kineko saman: kun supplier, kun item, kun rang/size, kati ra kati ma. Stock ma thapincha.",
       "sellPrice": "Kineko saman ko bechne mol rakhne ra bikri ma rakhne (On sale)."
@@ -3164,7 +3164,7 @@
     },
     "stock": {
       "title": "Stock",
-      "intro": "How many of each item this branch holds. Online orders and counter sales take from the same count."
+      "intro": "Kati saman baki chha: har item ra rang/size ko euta line. Line mai: Damaged / lost, Count, Make packets. Value = kati chha × kineko mol (VAT registered nabhaye VAT sahit)."
     },
     "kits": {
       "title": "Kits",
@@ -4203,7 +4203,10 @@
       "today": "Today",
       "writeOff": "Write off",
       "writtenOff": "Written off as expired"
-    }
+    },
+    "rowLoss": "Damaged / lost",
+    "rowCount": "Count",
+    "rowRepack": "Make packets"
   },
   "itemGroups": {
     "title": "Groups",
@@ -4324,23 +4327,31 @@
       "expiresHint": "For food and ghee; leave empty otherwise.",
       "removeLine": "Remove this line",
       "addLine": "Add another item",
-      "grandTotal": "Bill total (before VAT):",
+      "grandTotal": "Total (before VAT)",
       "note": "Note",
-      "needSupplier": "Choose who you bought from.",
+      "needSupplier": "Choose who you bought from (top left). Not in the list? Press \"New supplier\".",
       "needItem": "Line {n}: choose the item.",
       "needQuantity": "Line {n}: say how much, and the unit.",
       "needRate": "Line {n}: say what 1 cost.",
       "needSellPrice": "Line {n}: the selling price must be more than 0, or empty.",
-      "ready": "Ready. Saving puts it all into stock.",
+      "ready": "Ready. Saving puts it all into stock. VAT is added to the cost while the shop is not VAT registered.",
       "save": "Save and add to stock",
       "saved": "Saved. It is in stock and on sale.",
       "savedNeedPrice": "Saved and in stock. {n, plural, one {# line needs} other {# lines need}} a selling price.",
       "packetsNote": "Buying ready-made packets (250 g, 1 kg bags) or opening a big bag into small ones?",
       "packetsLink": "Use the detailed buy page.",
       "colourNone": "None",
-      "rateCol": "Cost of 1",
+      "rateCol": "Cost of 1 (before VAT)",
       "sellCol": "Sell 1 for",
-      "sheetNote": "Ek line ma ek saman. Rang/size chha bhane chhannus (rato kapada → rato). Bechne mol khali chhode pachhi rakhna milchha."
+      "sheetNote": "Ek line ma ek saman. Rang/size chha bhane chhannus (rato kapada → rato). Bechne mol khali chhode pachhi rakhna milchha.",
+      "vatTotal": "VAT",
+      "payTotal": "Total to pay",
+      "withVat": "+{percent}% VAT = {amount}",
+      "newSupplier": "New supplier (not in the list)",
+      "newSupplierName": "Supplier name, e.g. Asan Bazar Pasal",
+      "newSupplierPhone": "Phone (optional)",
+      "newSupplierSave": "Add supplier",
+      "supplierAdded": "{name} added and chosen."
     },
     "itemPage": {
       "back": "All items",

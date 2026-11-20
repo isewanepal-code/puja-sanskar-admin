@@ -79,7 +79,7 @@ export const navigation: NavGroup[] = [
     sections: [
       { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
       { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
-      { key: 'flowWork', href: routes.stockWork(), icon: 'refresh', permission: 'inventory:write' },
+      { key: 'flowWork', href: routes.expiring(), icon: 'clock', permission: 'inventory:read' },
       { key: 'archive', href: routes.archive(), icon: 'archive', permission: 'catalogue:read' },
     ],
   },

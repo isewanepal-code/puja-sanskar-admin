@@ -8,4 +8,4 @@ export {
   type StockShow,
   transferStockResource,
 } from './resources';
-export { StockWorkPage } from './components/stock-work-page';
+export { ExpiryList, StockWorkPage } from './components/stock-work-page';

@@ -27,6 +27,8 @@ import {
   historyResource,
   movementResource,
   STOCK_SHOWS,
+  stockCountResource,
+  stockLossResource,
   stockResource,
   transferStockResource,
   type StockShow,
@@ -34,7 +36,10 @@ import {
 
 type Level = Schema<'StockLevelResponse'>;
 type Summary = Schema<'StockSummaryResponse'>;
-type Open = { what: 'record' | 'history' | 'transfer' | 'repack' | 'wipe'; level: Level } | null;
+type Open = {
+  what: 'record' | 'history' | 'transfer' | 'repack' | 'wipe' | 'loss' | 'count';
+  level: Level;
+} | null;
 
 export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }) {
   const t = useTranslations('actions');
@@ -51,6 +56,7 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
   });
   const [open, setOpen] = useState<Open>(null);
   const tw = useTranslations('stockWipe');
+  const tk = useTranslations('stockWork');
   const toast = useToast();
   const queryClient = useQueryClient();
   // Staging only: a pack's stock at a branch can be wiped, history and all.
@@ -179,14 +185,30 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
         }
         rowActions={(row) => (
           <>
+            {/* The everyday jobs right on the row: no pack to pick on another page. */}
             <Button
               variant="secondary"
               size="sm"
-              icon="plus"
-              title={t('recordMovement')}
-              onClick={() => setOpen({ what: 'record', level: row })}
+              title={tk('taskNote.loss')}
+              onClick={() => setOpen({ what: 'loss', level: row })}
             >
-              {t('stockUpdate')}
+              {tk('rowLoss')}
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              title={tk('taskNote.count')}
+              onClick={() => setOpen({ what: 'count', level: row })}
+            >
+              {tk('rowCount')}
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              title={tk('taskNote.repack')}
+              onClick={() => setOpen({ what: 'repack', level: row })}
+            >
+              {tk('rowRepack')}
             </Button>
             <RowMenu
               compact
@@ -198,9 +220,9 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
                   onSelect: () => setOpen({ what: 'history', level: row }),
                 },
                 {
-                  icon: 'box',
-                  label: t('repack'),
-                  onSelect: () => setOpen({ what: 'repack', level: row }),
+                  icon: 'plus',
+                  label: t('stockUpdate'),
+                  onSelect: () => setOpen({ what: 'record', level: row }),
                 },
                 {
                   icon: 'truck',
@@ -221,6 +243,24 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
             />
           </>
         )}
+      />
+      <ActionModal
+        resource={open?.what === 'loss' ? stockLossResource(open.level) : null}
+        size="sm"
+        title={tk('lossTitle', { name })}
+        description={tk('lossNote')}
+        submitLabel={tk('record')}
+        doneMessage={tk('recorded')}
+        onClose={() => setOpen(null)}
+      />
+      <ActionModal
+        resource={open?.what === 'count' ? stockCountResource(open.level) : null}
+        size="sm"
+        title={tk('countTitle', { name })}
+        description={tk('countNote', { count: open?.level.onHand ?? 0 })}
+        submitLabel={tk('record')}
+        doneMessage={tk('recorded')}
+        onClose={() => setOpen(null)}
       />
       <ActionModal
         resource={open?.what === 'record' ? movementResource(open.level, tm) : null}

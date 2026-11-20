@@ -119,7 +119,7 @@ export function StockWorkPage() {
 type Batch = Schema<'StockBatchResponse'>;
 
 // Dated stock, soonest first. Anything past its date can be written off in one click.
-function ExpiryList() {
+export function ExpiryList() {
   const t = useTranslations('stockWork.expiry');
   const toast = useToast();
   const queryClient = useQueryClient();

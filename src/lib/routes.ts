@@ -24,6 +24,7 @@ export const routes = {
   newKit: () => '/kits/new',
   // The inventory pages: add an item, then buy it.
   addItem: () => '/inventory/add-item',
+  expiring: () => '/inventory/expiring',
   buy: (itemId?: string) => withQuery('/inventory/buy', { item: itemId }),
   flowItem: () => '/start/item',
   newPurchase: () => '/start/buy',
