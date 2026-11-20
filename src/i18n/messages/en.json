@@ -1067,20 +1067,27 @@
       "fields": {
         "product": "Item",
         "sku": "SKU",
-        "label": "Pack",
-        "onHand": "On hand",
+        "label": "Colour / size",
+        "onHand": "In the shop",
         "reserved": "In carts",
-        "available": "Available",
-        "reorderLevel": "Reorder at",
+        "available": "Can sell",
+        "reorderLevel": "Warn below",
         "updatedAt": "Updated",
         "shelfLocation": "Shelf",
-        "value": "Value",
+        "value": "Worth",
         "brand": "Brand"
       },
       "hints": {
         "reorderLevel": "The pack shows as low once what is available falls to this."
       },
-      "about": "Pratyek pack ko stock. Kam bhayeko tala dekhincha."
+      "about": "Pratyek pack ko stock. Kam bhayeko tala dekhincha.",
+      "columnHelp": {
+        "label": "Kun rang, size ya pack. Rang chhaina bhane naap (1 kg, 1 pcs) dekhincha.",
+        "onHand": "Pasal ma ahile bhayeko jamma. Number ma click garera gunera milaune.",
+        "available": "Bechna milne: pasal ma bhayeko − customer ko order/cart ma rakhiyeko. Green = thik, pahenlo = kam, rato = sakiyo.",
+        "reorderLevel": "Yo bhanda kam bhaye \"Running low\" ma dekhincha. ✏️ bata rakhne.",
+        "value": "Kati ko maal: pasal ma bhayeko × kineko mol (VAT registered nabhaye VAT sahit)."
+      }
     },
     "movements": {
       "title": "Stock changes",

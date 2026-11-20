@@ -215,11 +215,14 @@ export function ResourceScreen<T>({
   );
   const columns: Column<T>[] = resource.columns.map((column) => {
     const header = t(`fields.${column.key}`);
+    // resources.<key>.columnHelp.<column>, when written, explains the heading in plain words.
+    const help = t.has(`columnHelp.${column.key}`) ? t(`columnHelp.${column.key}`) : undefined;
     const inline = canEdit ? resource.inline?.[column.key] : undefined;
     if (inline) {
       return {
         ...column,
         header,
+        help,
         cell: (row: T) => {
           const start = inline.value(row);
           return (
@@ -243,12 +246,13 @@ export function ResourceScreen<T>({
       };
     }
     if (!canEdit || resource.singleton || !switches.has(column.key) || !column.sortValue) {
-      return { ...column, header };
+      return { ...column, header, help };
     }
     const on = column.sortValue;
     return {
       ...column,
       header,
+      help,
       cell: (row: T) => (
         <InlineToggle
           path={`${resource.path}/${resource.rowId(row)}`}

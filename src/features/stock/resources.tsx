@@ -102,21 +102,13 @@ export function stockResource(
         cell: (row) => (
           <div className="max-w-[11rem] min-w-0">
             <div className="truncate font-medium">{row.product.nameNe}</div>
-            <div className="truncate text-xs text-muted-foreground">
-              {row.product.nameEn} · {row.product.code}
+            {/* The code (SKU) stays findable: hover the English name. */}
+            <div className="truncate text-xs text-muted-foreground" title={row.variant.sku}>
+              {row.product.nameEn}
             </div>
           </div>
         ),
         sortValue: (row) => row.product.nameEn,
-      },
-      {
-        key: 'sku',
-        cell: (row) => (
-          <span className="block max-w-[8.5rem] truncate font-semibold" title={row.variant.sku}>
-            {row.variant.sku}
-          </span>
-        ),
-        sortValue: (row) => row.variant.sku,
       },
       { key: 'label', cell: (row) => row.variant.label, sortValue: (row) => row.variant.label },
       { key: 'onHand', cell: (row) => row.onHand, sortValue: (row) => row.onHand, align: 'right' },

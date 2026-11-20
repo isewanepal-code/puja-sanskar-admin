@@ -5,11 +5,14 @@ import { useTranslations } from 'next-intl';
 import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { Icon } from '@/components/icons';
+import { InfoTip } from '@/components/ui/info-tip';
 import { cn } from '@/lib/utils';
 
 export type Column<T> = {
   key: string;
   header: string;
+  // A short explanation, opened by the (i) beside the heading.
+  help?: string;
   cell: (row: T) => ReactNode;
   // What the column sorts by; leave out for a column that does not sort.
   sortValue?: (row: T) => string | number | boolean | null | undefined;
@@ -208,6 +211,13 @@ export function DataTable<T>({
                     ) : (
                       column.header
                     )}
+                    {column.help ? (
+                      <InfoTip
+                        text={column.help}
+                        label={column.header}
+                        align={column.align === 'right' ? 'right' : 'left'}
+                      />
+                    ) : null}
                     {searchable && filterOf(column) ? (
                       <ColumnSearch
                         label={t('searchColumn', { column: column.header })}
