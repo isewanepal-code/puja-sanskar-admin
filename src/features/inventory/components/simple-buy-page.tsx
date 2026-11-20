@@ -35,7 +35,6 @@ type Line = {
   sellPrice: string;
   vat: string;
   expiresOn: string;
-  more: boolean;
 };
 
 const emptyLine = (productId = ''): Line => ({
@@ -47,8 +46,11 @@ const emptyLine = (productId = ''): Line => ({
   sellPrice: '',
   vat: '',
   expiresOn: '',
-  more: false,
 });
+const cell = 'border-r border-b border-border p-0 align-middle';
+const th = 'border-r border-b border-border px-2 py-2 font-medium';
+const box =
+  'h-9 w-full bg-transparent px-2 text-sm outline-none focus:bg-primary/5 disabled:opacity-40';
 const today = () => new Date().toISOString().slice(0, 10);
 const num = (text: string) => Number(text.replace(/,/g, ''));
 // The unit most shops count each way of selling in, picked first: kg, metre, litre.
@@ -61,8 +63,9 @@ const autoBillNo = () => {
   return `NB-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
 };
 
-// One thing bought: the item, its colour or size, how much, what it cost and (if known) what it sells for.
-function LineCard({
+// One thing bought, as one row of the sheet: the item, its colour or size, how much, what one cost and
+// (if known) what one sells for.
+function LineRow({
   line,
   index,
   onChange,
@@ -105,14 +108,107 @@ function LineCard({
     ),
   ];
   const total = (num(line.quantity) || 0) * (num(line.rate) || 0);
-  const id = (name: string) => `buy-${index}-${name}`;
+  const label = (name: string) => `${name} ${index + 1}`;
 
   return (
-    <div className="grid gap-4 rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between gap-2">
-        <span className="grid size-7 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-          {index + 1}
-        </span>
+    <tr>
+      <td className="sticky left-0 z-[5] border-r border-b border-border bg-card px-2 text-center text-xs text-muted-foreground">
+        {index + 1}
+      </td>
+      <td className={`${cell} sticky left-10 z-[5] bg-card shadow-[1px_0_0_var(--color-border)]`}>
+        <SearchSelect
+          bare
+          aria-label={label(t('item'))}
+          source={choices.products}
+          value={line.productId}
+          onChange={(value) =>
+            onChange({ productId: String(value), unitId: '', optionValueIds: [] })
+          }
+        />
+      </td>
+      <td
+        className={cell}
+        title={known.length ? t('colourKnown', { list: known.join(', ') }) : t('colourHint')}
+      >
+        <SearchSelect
+          bare
+          multiple
+          aria-label={label(t('colour'))}
+          disabled={!line.productId}
+          placeholder={t('colourNone')}
+          source={choices.optionValues}
+          value={line.optionValueIds}
+          onChange={(value) => onChange({ optionValueIds: value as string[] })}
+        />
+      </td>
+      <td className={cell}>
+        <input
+          aria-label={label(t('quantity'))}
+          inputMode="decimal"
+          value={line.quantity}
+          placeholder="0"
+          onChange={(e) => onChange({ quantity: e.target.value })}
+          className={`${box} text-right`}
+        />
+      </td>
+      <td className={cell}>
+        <SearchSelect
+          bare
+          required
+          aria-label={label(t('unit'))}
+          disabled={!line.productId}
+          source={unitSource}
+          value={line.unitId}
+          onChange={(value) => onChange({ unitId: String(value) })}
+        />
+      </td>
+      <td className={cell}>
+        <input
+          aria-label={label(t('rate', { unit: unitSymbol || t('one') }))}
+          inputMode="decimal"
+          value={line.rate}
+          placeholder="0"
+          onChange={(e) => onChange({ rate: e.target.value })}
+          className={`${box} text-right`}
+        />
+      </td>
+      <td className={cell}>
+        <input
+          aria-label={label(t('sellPrice', { unit: unitSymbol || t('one') }))}
+          inputMode="decimal"
+          value={line.sellPrice}
+          placeholder={t('later')}
+          onChange={(e) => onChange({ sellPrice: e.target.value })}
+          className={`${box} text-right`}
+        />
+      </td>
+      <td className={cell}>
+        <SearchSelect
+          bare
+          required
+          aria-label={label(t('vat'))}
+          value={line.vat || 'AUTO'}
+          options={[
+            { value: 'AUTO', label: t('vatAuto') },
+            { value: '13', label: '13%' },
+            { value: '0', label: t('vatNone') },
+          ]}
+          onChange={(value) => onChange({ vat: value === 'AUTO' ? '' : String(value) })}
+        />
+      </td>
+      <td className={cell}>
+        <input
+          type="date"
+          aria-label={label(t('expires'))}
+          value={line.expiresOn}
+          onChange={(e) => onChange({ expiresOn: e.target.value })}
+          className={box}
+        />
+      </td>
+      <td className="sticky right-[50px] z-[5] border-r border-b border-border bg-card px-3 text-right text-sm whitespace-nowrap tabular-nums shadow-[-1px_0_0_var(--color-border)]">
+        {total.toFixed(2)}
+      </td>
+      <td className="sticky right-0 z-[5] border-b border-border bg-card px-1 text-center">
         <IconButton
           icon="trash"
           variant="danger"
@@ -120,130 +216,8 @@ function LineCard({
           disabled={!removable}
           onClick={onRemove}
         />
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <Field label={`${t('item')} *`} htmlFor={id('item')} hint={t('itemHint')}>
-          <SearchSelect
-            id={id('item')}
-            source={choices.products}
-            value={line.productId}
-            onChange={(value) =>
-              onChange({ productId: String(value), unitId: '', optionValueIds: [] })
-            }
-          />
-        </Field>
-        <Field
-          label={t('colour')}
-          htmlFor={id('colour')}
-          hint={known.length ? t('colourKnown', { list: known.join(', ') }) : t('colourHint')}
-        >
-          <SearchSelect
-            id={id('colour')}
-            multiple
-            disabled={!line.productId}
-            source={choices.optionValues}
-            value={line.optionValueIds}
-            onChange={(value) => onChange({ optionValueIds: value as string[] })}
-          />
-        </Field>
-      </div>
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <Field label={`${t('quantity')} *`} htmlFor={id('qty')}>
-          <Input
-            id={id('qty')}
-            inputMode="decimal"
-            value={line.quantity}
-            placeholder="50"
-            onChange={(e) => onChange({ quantity: e.target.value })}
-          />
-        </Field>
-        <Field label={`${t('unit')} *`} htmlFor={id('unit')} hint={t(`unitHint.${sellBy}`)}>
-          <SearchSelect
-            id={id('unit')}
-            required
-            disabled={!line.productId}
-            source={unitSource}
-            value={line.unitId}
-            onChange={(value) => onChange({ unitId: String(value) })}
-          />
-        </Field>
-        <Field
-          label={`${t('rate', { unit: unitSymbol || t('one') })} *`}
-          htmlFor={id('rate')}
-          hint={t('rateHint')}
-        >
-          <Input
-            id={id('rate')}
-            inputMode="decimal"
-            value={line.rate}
-            placeholder="0"
-            onChange={(e) => onChange({ rate: e.target.value })}
-          />
-        </Field>
-        <Field
-          label={t('sellPrice', { unit: unitSymbol || t('one') })}
-          htmlFor={id('sell')}
-          hint={t('sellPriceHint')}
-        >
-          <Input
-            id={id('sell')}
-            inputMode="decimal"
-            value={line.sellPrice}
-            placeholder={t('later')}
-            onChange={(e) => onChange({ sellPrice: e.target.value })}
-          />
-        </Field>
-        <div className="grid content-start gap-1.5">
-          <span className="text-sm font-medium">{t('total')}</span>
-          <span className="flex h-9 items-center rounded-md bg-muted px-3 text-sm font-semibold tabular-nums">
-            {formatMoney(total.toFixed(2), 'en')}
-          </span>
-        </div>
-      </div>
-
-      <div>
-        <button
-          type="button"
-          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-          aria-expanded={line.more}
-          onClick={() => onChange({ more: !line.more })}
-        >
-          <Icon
-            name="down"
-            size={14}
-            className={cn('transition-transform', line.more && 'rotate-180')}
-          />
-          {t('lineMore')}
-        </button>
-        {line.more ? (
-          <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Field label={t('vat')} htmlFor={id('vat')}>
-              <SearchSelect
-                id={id('vat')}
-                required
-                value={line.vat || 'AUTO'}
-                options={[
-                  { value: 'AUTO', label: t('vatAuto') },
-                  { value: '13', label: '13%' },
-                  { value: '0', label: t('vatNone') },
-                ]}
-                onChange={(value) => onChange({ vat: value === 'AUTO' ? '' : String(value) })}
-              />
-            </Field>
-            <Field label={t('expires')} htmlFor={id('exp')} hint={t('expiresHint')}>
-              <Input
-                id={id('exp')}
-                type="date"
-                value={line.expiresOn}
-                onChange={(e) => onChange({ expiresOn: e.target.value })}
-              />
-            </Field>
-          </div>
-        ) : null}
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 }
 
@@ -371,16 +345,59 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
 
       <section className="grid gap-3">
         <h2 className="font-heading text-base font-semibold">{t('what')}</h2>
-        {lines.map((line, index) => (
-          <LineCard
-            key={index}
-            line={line}
-            index={index}
-            onChange={(patch) => change(index, patch)}
-            onRemove={() => setLines((all) => all.filter((_, i) => i !== index))}
-            removable={lines.length > 1}
-          />
-        ))}
+        <p className="text-xs text-muted-foreground">{t('sheetNote')}</p>
+        <div className="overflow-x-auto rounded-lg border border-border bg-card">
+          <table className="w-[1280px] table-fixed border-separate border-spacing-0 text-sm">
+            <colgroup>
+              <col style={{ width: 40 }} />
+              <col style={{ width: 240 }} />
+              <col style={{ width: 180 }} />
+              <col style={{ width: 100 }} />
+              <col style={{ width: 120 }} />
+              <col style={{ width: 120 }} />
+              <col style={{ width: 120 }} />
+              <col style={{ width: 120 }} />
+              <col style={{ width: 130 }} />
+              <col style={{ width: 110 }} />
+              <col style={{ width: 50 }} />
+            </colgroup>
+            <thead className="bg-muted text-xs whitespace-nowrap text-muted-foreground">
+              <tr>
+                <th className={`${th} sticky left-0 z-20 bg-muted text-center`}>#</th>
+                <th
+                  className={`${th} sticky left-10 z-20 bg-muted text-left shadow-[1px_0_0_var(--color-border)]`}
+                >
+                  {t('item')} *
+                </th>
+                <th className={`${th} text-left`}>{t('colour')}</th>
+                <th className={`${th} text-right`}>{t('quantity')} *</th>
+                <th className={`${th} text-left`}>{t('unit')} *</th>
+                <th className={`${th} text-right`}>{t('rateCol')} *</th>
+                <th className={`${th} text-right`}>{t('sellCol')}</th>
+                <th className={`${th} text-left`}>{t('vat')}</th>
+                <th className={`${th} text-left`}>{t('expires')}</th>
+                <th
+                  className={`${th} sticky right-[50px] z-20 bg-muted text-right shadow-[-1px_0_0_var(--color-border)]`}
+                >
+                  {t('total')}
+                </th>
+                <th className="sticky right-0 z-20 border-b border-border bg-muted" />
+              </tr>
+            </thead>
+            <tbody>
+              {lines.map((line, index) => (
+                <LineRow
+                  key={index}
+                  line={line}
+                  index={index}
+                  onChange={(patch) => change(index, patch)}
+                  onRemove={() => setLines((all) => all.filter((_, i) => i !== index))}
+                  removable={lines.length > 1}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Button variant="secondary" onClick={() => setLines((all) => [...all, emptyLine()])}>
             <Icon name="plus" size={16} />
