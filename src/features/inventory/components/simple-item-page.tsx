@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTestModeOn } from '@/hooks/use-test-mode';
+import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
@@ -121,6 +122,7 @@ function VariantRow({
 export function SimpleItemPage({ id }: { id: string }) {
   const t = useTranslations('inventory.itemPage');
   const tf = useTranslations('forms');
+  const tc = useTranslations('common');
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -128,6 +130,7 @@ export function SimpleItemPage({ id }: { id: string }) {
   const [editing, setEditing] = useState(false);
   const [names, setNames] = useState({ nameNe: '', nameEn: '' });
   const [removing, setRemoving] = useState(false);
+  const [discarding, setDiscarding] = useState(false);
 
   const item = useQuery({
     queryKey: ['products', 'simple', id],
@@ -177,6 +180,13 @@ export function SimpleItemPage({ id }: { id: string }) {
     },
   });
 
+  // Names changed but not saved: leaving the page, or Cancel, asks first.
+  const namesChanged =
+    editing &&
+    item.data !== undefined &&
+    (names.nameNe.trim() !== item.data.nameNe || names.nameEn.trim() !== item.data.nameEn);
+  const guard = useUnsavedGuard(namesChanged && !rename.isPending);
+
   if (item.isPending) return <p className="text-sm text-muted-foreground">{t('loading')}</p>;
   if (item.isError || !item.data)
     return <p className="text-sm text-destructive">{t('notFound')}</p>;
@@ -185,6 +195,7 @@ export function SimpleItemPage({ id }: { id: string }) {
 
   return (
     <div className="grid max-w-5xl gap-6">
+      {guard}
       <div>
         <Link
           href={routes.products()}
@@ -244,7 +255,10 @@ export function SimpleItemPage({ id }: { id: string }) {
             />
           </Field>
           <div className="flex justify-end gap-2 sm:col-span-2">
-            <Button variant="secondary" onClick={() => setEditing(false)}>
+            <Button
+              variant="secondary"
+              onClick={() => (namesChanged ? setDiscarding(true) : setEditing(false))}
+            >
               {tf('cancel')}
             </Button>
             <Button
@@ -302,6 +316,18 @@ export function SimpleItemPage({ id }: { id: string }) {
         </Button>
       </section>
 
+      <ConfirmDialog
+        open={discarding}
+        onOpenChange={setDiscarding}
+        title={tc('discardTitle')}
+        description={tc('discardBody')}
+        confirmLabel={tc('discard')}
+        keepLabel={tc('keepEditing')}
+        onConfirm={() => {
+          setDiscarding(false);
+          setEditing(false);
+        }}
+      />
       <ConfirmDialog
         open={removing}
         onOpenChange={setRemoving}

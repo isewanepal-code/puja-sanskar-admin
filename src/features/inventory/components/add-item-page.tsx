@@ -55,7 +55,11 @@ export function AddItemPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saved, setSaved] = useState<{ id: string; name: string } | null>(null);
   const change = (patch: Partial<typeof empty>) => setForm((f) => ({ ...f, ...patch }));
-  const guard = useUnsavedGuard(saved === null && form.nameEn.trim() !== '');
+  // Anything typed or chosen counts, so leaving asks before it is lost.
+  const dirty = (Object.keys(empty) as Array<keyof typeof empty>).some(
+    (key) => String(form[key]).trim() !== String(empty[key]),
+  );
+  const guard = useUnsavedGuard(saved === null && dirty);
 
   const save = useMutation({
     mutationFn: () => {

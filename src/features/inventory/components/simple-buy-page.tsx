@@ -312,8 +312,20 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
 
+  // Anything typed or chosen counts; the item brought in from "Buy it now" alone does not.
+  const start = emptyLine(itemId);
+  const lineTouched = (l: Line, i: number) =>
+    (i > 0 && l.productId !== '') ||
+    (i === 0 && l.productId !== start.productId) ||
+    l.optionValueIds.length > 0 ||
+    [l.quantity, l.rate, l.sellPrice, l.vat, l.expiresOn].some((v) => v.trim() !== '');
   const guard = useUnsavedGuard(
-    !save.isSuccess && (supplierId !== '' || lines.some((l) => l.quantity !== '' || l.rate !== '')),
+    !save.isSuccess &&
+      (supplierId !== '' ||
+        billNo.trim() !== '' ||
+        note.trim() !== '' ||
+        lines.length > 1 ||
+        lines.some(lineTouched)),
   );
 
   return (
