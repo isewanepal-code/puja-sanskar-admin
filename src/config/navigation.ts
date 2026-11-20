@@ -13,9 +13,9 @@ export type NavSection = {
     | 'kits'
     | 'stock'
     | 'archive'
-    | 'flowItem'
-    | 'flowBuy'
-    | 'flowPrices'
+    | 'addItem'
+    | 'buy'
+    | 'sellPrice'
     | 'flowWork'
     | 'buying'
     | 'suppliers'
@@ -41,32 +41,28 @@ export type NavSection = {
 
 export type NavGroup = {
   key:
-    | 'overview'
-    | 'flow'
-    | 'sell'
-    | 'catalogue'
-    | 'stock'
-    | 'money'
-    | 'marketing'
-    | 'website'
-    | 'setup';
+    'overview' | 'inventory' | 'sell' | 'catalogue' | 'money' | 'marketing' | 'website' | 'setup';
   sections: NavSection[];
 };
 
-// The sidebar in the order the shop works: sell, keep stock, count money, run the website, set up.
+// The sidebar in the order the shop works: bring stock in, sell, count money, run the website, set up.
 export const navigation: NavGroup[] = [
   {
     key: 'overview',
     sections: [{ key: 'dashboard', href: routes.dashboard(), icon: 'grid' }],
   },
   {
-    // The order a new item comes into the shop: name it, buy it, price it, look after it.
-    key: 'flow',
+    // Everything about the goods in one place, in the order they come in: name the item, buy it,
+    // see what is left. Each is its own page; none hides behind tabs.
+    key: 'inventory',
     sections: [
-      { key: 'flowItem', href: routes.flowItem(), icon: 'leaf', permission: 'catalogue:write' },
-      { key: 'flowBuy', href: routes.newPurchase(), icon: 'truck', permission: 'purchases:write' },
-      { key: 'flowPrices', href: routes.itemPrices(), icon: 'tag', permission: 'catalogue:write' },
-      { key: 'flowWork', href: routes.stockWork(), icon: 'list', permission: 'inventory:write' },
+      { key: 'addItem', href: routes.addItem(), icon: 'plus', permission: 'catalogue:write' },
+      { key: 'buy', href: routes.buy(), icon: 'truck', permission: 'purchases:write' },
+      { key: 'stock', href: routes.stock(), icon: 'box', permission: 'inventory:read' },
+      { key: 'items', href: routes.products(), icon: 'leaf', permission: 'catalogue:read' },
+      { key: 'sellPrice', href: routes.itemPrices(), icon: 'tag', permission: 'catalogue:write' },
+      { key: 'buying', href: routes.purchaseBills(), icon: 'list', permission: 'purchases:read' },
+      { key: 'suppliers', href: routes.suppliers(), icon: 'users', permission: 'purchases:read' },
     ],
   },
   {
@@ -78,22 +74,13 @@ export const navigation: NavGroup[] = [
     ],
   },
   {
-    // What the shop sells: the items, the kits made of them, and the colours and sizes they come in.
+    // The less daily work: kits made of items, colours and sizes, repacking, and what was retired.
     key: 'catalogue',
     sections: [
-      { key: 'items', href: routes.products(), icon: 'leaf', permission: 'catalogue:read' },
       { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
       { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
+      { key: 'flowWork', href: routes.stockWork(), icon: 'refresh', permission: 'inventory:write' },
       { key: 'archive', href: routes.archive(), icon: 'archive', permission: 'catalogue:read' },
-    ],
-  },
-  {
-    // What is on the shelf and how it got there: count it, buy it, send it back, pay for it.
-    key: 'stock',
-    sections: [
-      { key: 'stock', href: routes.stock(), icon: 'list', permission: 'inventory:read' },
-      { key: 'buying', href: routes.purchaseBills(), icon: 'truck', permission: 'purchases:read' },
-      { key: 'suppliers', href: routes.suppliers(), icon: 'users', permission: 'purchases:read' },
     ],
   },
   {

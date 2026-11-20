@@ -22,6 +22,9 @@ export const routes = {
   mantras: () => '/pujas/mantras',
   kits: () => '/kits',
   newKit: () => '/kits/new',
+  // The inventory pages: add an item, then buy it.
+  addItem: () => '/inventory/add-item',
+  buy: (itemId?: string) => withQuery('/inventory/buy', { item: itemId }),
   flowItem: () => '/start/item',
   newPurchase: () => '/start/buy',
   itemPrices: () => '/start/prices',

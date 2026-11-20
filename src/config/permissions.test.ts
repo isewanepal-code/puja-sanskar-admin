@@ -22,9 +22,9 @@ describe('can', () => {
     );
     expect(keys).toEqual([
       'dashboard',
-      'flowItem',
-      'flowPrices',
+      'addItem',
       'items',
+      'sellPrice',
       'kits',
       'options',
       'archive',

@@ -4,7 +4,7 @@ import createClient from 'openapi-fetch';
 import { cookies } from 'next/headers';
 
 import { serverEnv } from '@/lib/env/server';
-import { BRANCH_COOKIE, SESSION_COOKIES } from '@/lib/session/cookies';
+import { BRANCH_COOKIE, SESSION_COOKIES, TEST_MODE_COOKIE } from '@/lib/session/cookies';
 
 import type { paths } from './schema';
 
@@ -24,6 +24,7 @@ export async function sessionApi() {
   const access = jar.get(SESSION_COOKIES.access)?.value;
   const cart = jar.get(SESSION_COOKIES.guestCart)?.value;
   const branch = jar.get(BRANCH_COOKIE)?.value;
+  const testMode = jar.get(TEST_MODE_COOKIE)?.value === 'on';
   return createClient<paths>({
     baseUrl: serverEnv.API_URL,
     redirect: 'manual',
@@ -32,6 +33,7 @@ export async function sessionApi() {
       ...(access && { Authorization: `Bearer ${access}` }),
       ...(cart && { 'X-Cart-Token': cart }),
       ...(branch && { 'X-Branch': branch }),
+      ...(testMode && { 'X-Test-Mode': 'on' }),
     },
   });
 }

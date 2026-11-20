@@ -199,7 +199,7 @@ function FullNewItemPage() {
 type Similar = Schema<'SimilarItemResponse'>;
 
 // Items that look like the name being typed (dhup, dhoop, धूप), so one item is not made twice.
-function SimilarItems({ nameEn, nameNe }: { nameEn: string; nameNe: string }) {
+export function SimilarItems({ nameEn, nameNe }: { nameEn: string; nameNe: string }) {
   const t = useTranslations('itemPage');
   const [typed, setTyped] = useState({ nameEn: '', nameNe: '' });
   // Not on every key: a short pause after the last one.

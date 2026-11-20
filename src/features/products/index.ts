@@ -1,9 +1,10 @@
 export { ItemPage } from './components/item-page';
 export { PricesPage } from './components/prices-page';
-export { BareItemPage, NewItemPage } from './components/new-item-page';
+export { BareItemPage, NewItemPage, SimilarItems } from './components/new-item-page';
 export { ProductsScreen } from './components/products-screen';
 export {
   bareItemResource,
+  codeFrom,
   gradesResource,
   pairingsResource,
   productsResource,

@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 
 import { Icon } from '@/components/icons';
-import type { NavGroup } from '@/config/navigation';
+import type { NavGroup, NavSection } from '@/config/navigation';
 import { siteConfig } from '@/config/site';
 import { Link, usePathname } from '@/i18n/navigation';
 import { routes } from '@/lib/routes';
@@ -15,6 +15,9 @@ const isActive = (pathname: string, href: string) =>
   href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
 
 const initial = siteConfig.name.slice(0, 1);
+
+// Only some sections have a hint; t.has() checks it, so the key is typed as one that exists.
+const hintKey = (key: NavSection['key']) => `sectionHint.${key}` as 'sectionHint.addItem';
 
 // The sections staff may open, grouped; each section has its own tabs inside.
 export function Sidebar({ groups }: { groups: NavGroup[] }) {
@@ -108,7 +111,15 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
                       )}
                     >
                       <Icon name={section.icon} size={18} className="shrink-0" />
-                      <span className={cn(collapsed && 'md:sr-only')}>{label}</span>
+                      <span className={cn('grid leading-tight', collapsed && 'md:sr-only')}>
+                        {label}
+                        {/* A few plain words under the main pages, so anyone can tell them apart. */}
+                        {t.has(hintKey(section.key)) ? (
+                          <span className="text-[0.7rem] font-normal text-muted-foreground">
+                            {t(hintKey(section.key))}
+                          </span>
+                        ) : null}
+                      </span>
                     </Link>
                   );
                 })}

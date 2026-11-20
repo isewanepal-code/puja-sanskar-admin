@@ -7,6 +7,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useToast } from '@/components/overlays';
 import { ActionModal, ConfirmDelete, ResourceScreen, useResourceText } from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
+import { useTestModeOn } from '@/hooks/use-test-mode';
 import { isApiError, request } from '@/lib/api';
 
 import {
@@ -36,6 +37,8 @@ export function PurchaseBillsScreen() {
   const resource = useMemo(() => purchaseBillsResource(t), [t]);
   const [editing, setEditing] = useState<PurchaseBill | 'new' | null>(null);
   const [removing, setRemoving] = useState<PurchaseBill | null>(null);
+  // Staging: a posted bill can be deleted too, and the stock it brought in goes with it.
+  const testMode = useTestModeOn();
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['purchaseBills'] });
 
   // One key per bill until it is posted, so a double click or a retry posts it once.
@@ -60,7 +63,7 @@ export function PurchaseBillsScreen() {
     onSuccess: async () => {
       toast.success(tf('deleted'));
       setRemoving(null);
-      await refresh();
+      await Promise.all([refresh(), queryClient.invalidateQueries({ queryKey: ['stock'] })]);
     },
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
@@ -87,7 +90,17 @@ export function PurchaseBillsScreen() {
               />
             </>
           ) : (
-            <IconButton icon="eye" label={tp('view')} onClick={() => setEditing(row)} />
+            <>
+              <IconButton icon="eye" label={tp('view')} onClick={() => setEditing(row)} />
+              {testMode ? (
+                <IconButton
+                  icon="trash"
+                  variant="danger"
+                  label={tp('deletePosted')}
+                  onClick={() => setRemoving(row)}
+                />
+              ) : null}
+            </>
           )
         }
       />

@@ -80,7 +80,7 @@ export function ProductsScreen() {
             <Button variant="secondary" icon="list" onClick={() => setMany(true)}>
               {tf('bulkAdd')}
             </Button>
-            <Link href={routes.flowItem()} className={buttonVariants({ variant: 'primary' })}>
+            <Link href={routes.addItem()} className={buttonVariants({ variant: 'primary' })}>
               {t('addItem')}
             </Link>
           </>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
@@ -10,11 +10,13 @@ import {
   useResourceText,
   WorkbookUploadButton,
 } from '@/components/resource';
+import { ConfirmDialog, useToast } from '@/components/overlays';
 import { Button } from '@/components/ui/button';
+import { useTestModeOn } from '@/hooks/use-test-mode';
 import { RowMenu } from '@/components/ui/row-menu';
 import { SearchSelect } from '@/components/controls';
 import { Modal } from '@/components/ui/modal';
-import { request, type Schema } from '@/lib/api';
+import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
 import { choices } from '@/lib/choices';
 
@@ -32,7 +34,7 @@ import {
 
 type Level = Schema<'StockLevelResponse'>;
 type Summary = Schema<'StockSummaryResponse'>;
-type Open = { what: 'record' | 'history' | 'transfer' | 'repack'; level: Level } | null;
+type Open = { what: 'record' | 'history' | 'transfer' | 'repack' | 'wipe'; level: Level } | null;
 
 export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }) {
   const t = useTranslations('actions');
@@ -48,6 +50,23 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
     queryFn: () => request<Summary>('GET', '/admin/stock-levels/summary'),
   });
   const [open, setOpen] = useState<Open>(null);
+  const tw = useTranslations('stockWipe');
+  const toast = useToast();
+  const queryClient = useQueryClient();
+  // Staging only: a pack's stock at a branch can be wiped, history and all.
+  const testMode = useTestModeOn();
+  const wipe = useMutation({
+    mutationFn: (level: Level) =>
+      request('DELETE', `/admin/stock-levels/${level.variant.id}`, {
+        headers: { 'X-Branch': level.branch.code },
+      }),
+    onSuccess: async () => {
+      toast.success(tw('done'));
+      setOpen(null);
+      await queryClient.invalidateQueries({ queryKey: ['stock'] });
+    },
+    onError: (error) => toast.error(isApiError(error) ? error.message : tw('failed')),
+  });
   const resource = useMemo(
     () =>
       stockResource(show, {
@@ -188,6 +207,16 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
                   label: t('sendToBranch'),
                   onSelect: () => setOpen({ what: 'transfer', level: row }),
                 },
+                ...(testMode
+                  ? [
+                      {
+                        icon: 'trash' as const,
+                        label: tw('action'),
+                        danger: true,
+                        onSelect: () => setOpen({ what: 'wipe', level: row }),
+                      },
+                    ]
+                  : []),
               ]}
             />
           </>
@@ -208,6 +237,14 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
         submitLabel={t('send')}
         doneMessage={t('sent')}
         onClose={() => setOpen(null)}
+      />
+      <ConfirmDialog
+        open={open?.what === 'wipe'}
+        onOpenChange={(next) => (next ? undefined : setOpen(null))}
+        title={tw('title', { name })}
+        description={tw('note')}
+        confirmLabel={wipe.isPending ? tw('wiping') : tw('confirm')}
+        onConfirm={() => open && wipe.mutate(open.level)}
       />
       {open?.what === 'repack' ? (
         <RepackForm level={open.level} onClose={() => setOpen(null)} />
