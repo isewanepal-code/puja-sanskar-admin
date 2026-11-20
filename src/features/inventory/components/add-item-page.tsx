@@ -60,8 +60,7 @@ export function AddItemPage() {
   const save = useMutation({
     mutationFn: () => {
       const nameEn = form.nameEn.trim();
-      // One name is enough: the English one stands in for Nepali until someone writes it.
-      const nameNe = form.nameNe.trim() || nameEn;
+      const nameNe = form.nameNe.trim();
       return request<{ id: string; nameEn: string }>('POST', '/admin/items', {
         body: {
           code: codeFrom(nameEn),
@@ -93,9 +92,11 @@ export function AddItemPage() {
     },
   });
 
-  const missing = [!form.nameEn.trim() && t('nameEn'), !form.categoryId && t('category')].filter(
-    Boolean,
-  );
+  const missing = [
+    !form.nameNe.trim() && t('nameNe'),
+    !form.nameEn.trim() && t('nameEn'),
+    !form.categoryId && t('category'),
+  ].filter(Boolean);
 
   if (saved) {
     return (
@@ -160,7 +161,7 @@ export function AddItemPage() {
             />
           </Field>
           <Field
-            label={t('nameNe')}
+            label={`${t('nameNe')} *`}
             htmlFor="add-name-ne"
             hint={t('nameNeHint')}
             error={errors.nameNe}
