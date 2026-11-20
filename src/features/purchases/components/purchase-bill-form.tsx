@@ -91,8 +91,11 @@ export function PurchaseBillForm({ bill, packs, open, onClose, onSaved }: Purcha
       const saved = bill
         ? await request<{ id: string }>('PUT', `/admin/purchase-bills/${bill.id}`, { body })
         : await request<{ id: string }>('POST', '/admin/purchase-bills', { body });
-      // Posting puts what came in on the shelf and sets its cost.
-      if (andPost) await request('POST', `/admin/purchase-bills/${saved.id}/post`);
+      // Posting puts what came in on the shelf, so it carries an Idempotency-Key: a retry posts once.
+      if (andPost)
+        await request('POST', `/admin/purchase-bills/${saved.id}/post`, {
+          headers: { 'Idempotency-Key': `post-${saved.id}` },
+        });
       return andPost;
     },
     onSuccess: async (posted) => {

@@ -80,12 +80,17 @@ export function NewKitPage() {
     change({ rows: pkg.rows.map((row, i) => (i === index ? { ...row, ...patch } : row)) });
 
   const chosen = TIERS.filter((name) => packages[name].on);
-  const ready =
-    pujaId &&
-    nameNe.trim() &&
-    nameEn.trim() &&
-    chosen.length > 0 &&
-    chosen.every((name) => packages[name].rows.some((row) => row.variantId));
+  // What still keeps Save off, named, so nobody has to guess.
+  const missing = [
+    !pujaId && t('puja'),
+    !nameNe.trim() && t('nameNe'),
+    !nameEn.trim() && t('nameEn'),
+    chosen.length === 0 && t('packages'),
+    ...chosen
+      .filter((name) => !packages[name].rows.some((row) => row.variantId))
+      .map((name) => t('needItem', { tier: t(`tier.${name}`) })),
+  ].filter((label): label is string => Boolean(label));
+  const ready = missing.length === 0;
 
   const save = useMutation({
     mutationFn: () =>
@@ -382,7 +387,13 @@ export function NewKitPage() {
       </section>
 
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-muted-foreground">{t('summary', { count: chosen.length })}</p>
+        {ready ? (
+          <p className="text-sm text-muted-foreground">{t('summary', { count: chosen.length })}</p>
+        ) : (
+          <p className="text-sm text-destructive">
+            {tf('stillNeeded', { fields: missing.join(', ') })}
+          </p>
+        )}
         <div className="flex gap-2">
           <Link
             href={routes.kits()}

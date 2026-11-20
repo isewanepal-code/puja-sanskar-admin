@@ -89,6 +89,9 @@ export function PurchaseReturnForm({ open, onClose }: { open: boolean; onClose: 
               vat: money(vat),
               total: money(subtotal + vat),
             })}
+            {supplierId ? null : (
+              <div className="text-destructive">{tf('stillNeeded', { fields: t('supplier') })}</div>
+            )}
           </div>
           <Button variant="secondary" onClick={onClose}>
             {tf('cancel')}

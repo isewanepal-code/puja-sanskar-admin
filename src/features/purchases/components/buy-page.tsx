@@ -290,6 +290,8 @@ export function BuyPage() {
   };
   const firstProblem = lines.map(problem).find(Boolean);
   const ready = supplierId && billNo.trim() && !firstProblem;
+  // What still keeps Save off, named, so nobody has to guess.
+  const missing = [!supplierId && t('supplier'), !billNo.trim() && t('billNo')].filter(Boolean);
 
   const save = useMutation<boolean, unknown, boolean>({
     mutationFn: async (andPost) => {
@@ -318,7 +320,11 @@ export function BuyPage() {
         })),
       };
       const saved = await request<{ id: string }>('POST', '/admin/purchase-bills', { body });
-      if (andPost) await request('POST', `/admin/purchase-bills/${saved.id}/post`);
+      // Posting moves stock, so the API wants an Idempotency-Key; one per bill means a retry posts it once.
+      if (andPost)
+        await request('POST', `/admin/purchase-bills/${saved.id}/post`, {
+          headers: { 'Idempotency-Key': `post-${saved.id}` },
+        });
       return andPost;
     },
     onSuccess: async (posted) => {
@@ -470,8 +476,12 @@ export function BuyPage() {
         }}
       />
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className={firstProblem ? 'text-sm text-destructive' : 'text-sm text-muted-foreground'}>
-          {firstProblem ?? t('ready')}
+        <p className={ready ? 'text-sm text-muted-foreground' : 'text-sm text-destructive'}>
+          {missing.length > 0
+            ? [tf('stillNeeded', { fields: missing.join(', ') }), firstProblem]
+                .filter(Boolean)
+                .join(' ')
+            : (firstProblem ?? t('ready'))}
         </p>
         <div className="flex gap-2">
           <Button

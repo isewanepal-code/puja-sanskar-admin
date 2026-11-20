@@ -392,7 +392,9 @@
     "howItWorks": "Yo screen kasari chalchha",
     "saveAndAdd": "Save and add another",
     "deletedUndo": "{name} deleted",
-    "undo": "Undo"
+    "undo": "Undo",
+    "fixFields": "Fill in or fix: {fields}",
+    "stillNeeded": "To save, fill in: {fields}"
   },
   "pujas": {
     "title": "Pujas",
@@ -4000,7 +4002,8 @@
     "tooMuch": "The packs add up to {made} {unit}, more than the {opened} {unit} opened. Check the numbers.",
     "newPack": "+ A new pack (amount and unit)",
     "newAmount": "How much in one new pack",
-    "newUnit": "Unit"
+    "newUnit": "Unit",
+    "moreThanOnHand": "Only {count} available to open here"
   },
   "kitPage": {
     "back": "All kits",
@@ -4042,7 +4045,8 @@
     "save": "Save the kit",
     "saved": "Kit saved with its packages",
     "aliases": "Other names (optional)",
-    "aliasesHelp": "Arko naam: Enter ya comma le ek-ek gari. Jastai: chhath set, chhath samagri. Website ma yo naam le pani khojincha."
+    "aliasesHelp": "Arko naam: Enter ya comma le ek-ek gari. Jastai: chhath set, chhath samagri. Website ma yo naam le pani khojincha.",
+    "needItem": "an item in {tier}"
   },
   "kitEdit": {
     "back": "All kits",

@@ -232,8 +232,13 @@ export function ResourceForm<T>({
         ? guide(`help.${field.name}`)
         : undefined;
 
+  // Only the fields on screen are checked: a hidden one (its switch off, another schedule
+  // chosen) must not block Save with an error nobody can see.
+  const visibleNow = (values: Record<string, unknown>) =>
+    fields.filter((field) => !field.showWhen || field.showWhen(values));
   const form = useForm<FormValues>({
-    resolver: zodResolver(schemaFor(fields)) as never,
+    resolver: ((values: FormValues, context: unknown, options: never) =>
+      zodResolver(schemaFor(visibleNow(values)))(values, context, options)) as never,
     defaultValues: toFormValues(
       fields,
       row ? (resource.formRow?.(row) ?? (row as Record<string, unknown>)) : defaults,
@@ -293,11 +298,19 @@ export function ResourceForm<T>({
     },
     onError: (error) => {
       const byField = fieldErrors(error);
+      const onScreen = new Set(visibleNow(form.getValues()).map((field) => field.name));
+      const elsewhere: string[] = [];
       for (const [name, message] of Object.entries(byField)) {
-        form.setError(name, { message });
+        if (onScreen.has(name)) form.setError(name, { message });
+        else elsewhere.push(message);
       }
+      // A message for a field this form does not show would otherwise be lost.
       toast.error(
-        isApiError(error) && Object.keys(byField).length === 0 ? error.message : tf('failed'),
+        elsewhere.length > 0
+          ? elsewhere.join(' · ')
+          : isApiError(error) && Object.keys(byField).length === 0
+            ? error.message
+            : tf('failed'),
       );
     },
   });
@@ -310,14 +323,24 @@ export function ResourceForm<T>({
     <form
       id={formId}
       noValidate
-      onSubmit={form.handleSubmit((values) => {
-        const issue = resource.check?.(values);
-        if (issue) {
-          form.setError(issue.field, { message: issue.message });
-          return;
-        }
-        save.mutate(values);
-      })}
+      onSubmit={form.handleSubmit(
+        (values) => {
+          const issue = resource.check?.(values);
+          if (issue) {
+            form.setError(issue.field, { message: issue.message });
+            toast.error(tf('fixFields', { fields: t(`fields.${issue.field}`) }));
+            return;
+          }
+          save.mutate(values);
+        },
+        // Name what is wrong: in a long form the marked field may be out of sight.
+        (invalid) => {
+          const names = fields
+            .filter((field) => invalid[field.name])
+            .map((field) => t(`fields.${field.name}`));
+          if (names.length > 0) toast.error(tf('fixFields', { fields: names.join(', ') }));
+        },
+      )}
       className="grid gap-x-4 gap-y-4 sm:grid-cols-2"
     >
       {shown.map((field) => {
