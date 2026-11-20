@@ -92,11 +92,15 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
   const tooMuch = Boolean(sized) && madeAmount > openedAmount + 0.0005;
   const change = (index: number, patch: Partial<Output>) =>
     setOutputs((current) => current.map((o, i) => (i === index ? { ...o, ...patch } : o)));
-  const ready =
-    !tooMuch &&
-    outputs.every((o) => o.variantId !== NEW || (Number(o.amount) > 0 && o.unitId)) &&
-    Number(opened) > 0 &&
-    outputs.some((o) => o.variantId && Number(o.quantity) > 0);
+  // What still keeps Save off, named, so nobody has to guess.
+  const tooMany = Number(opened) > level.available;
+  const missing = [
+    !(Number(opened) > 0) && t('opened'),
+    !outputs.some((o) => o.variantId && Number(o.quantity) > 0) && `${t('pack')} + ${t('howMany')}`,
+    outputs.some((o) => o.variantId === NEW && !(Number(o.amount) > 0)) && t('newAmount'),
+    outputs.some((o) => o.variantId === NEW && !o.unitId) && t('newUnit'),
+  ].filter(Boolean);
+  const ready = !tooMuch && !tooMany && missing.length === 0;
 
   return (
     <Modal
@@ -109,6 +113,16 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
         <>
           <div className="mr-auto text-sm text-muted-foreground">
             {t('onHand', { count: level.available })}
+            {tooMany ? (
+              <div className="text-destructive">
+                {t('moreThanOnHand', { count: level.available })}
+              </div>
+            ) : null}
+            {missing.length > 0 ? (
+              <div className="text-destructive">
+                {tf('stillNeeded', { fields: missing.join(', ') })}
+              </div>
+            ) : null}
           </div>
           <Button variant="secondary" onClick={onClose}>
             {tf('cancel')}

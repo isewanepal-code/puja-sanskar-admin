@@ -10,7 +10,20 @@ type Product = Schema<'AdminProductResponse'>;
 type Movement = Schema<'StockMovementResponse'>;
 type Name = (key: string) => string;
 
-const MOVEMENT_KINDS = ['PURCHASE', 'RETURN', 'DAMAGE', 'ADJUSTMENT'] as const;
+// Buying is not here: a purchase bill (Buy page) adds stock with its supplier and cost.
+const MOVEMENT_KINDS = ['RETURN', 'DAMAGE', 'ADJUSTMENT'] as const;
+
+// Stock that leaves the shelf can be no more than what is free to use here.
+const withinAvailable = (level: Level, quantity: unknown) =>
+  Number(quantity) > level.available
+    ? {
+        field: 'quantity',
+        message:
+          level.available > 0
+            ? `Only ${level.available} available at this branch`
+            : 'None available at this branch',
+      }
+    : null;
 
 // One product's packs, each with its stock: a new pack has no stock row until its first change.
 export type StockShow = 'all' | 'low' | 'out';
@@ -157,7 +170,6 @@ export function movementResource(level: Level, name: Name): Resource<never> {
         kind: 'select',
         required: true,
         options: MOVEMENT_KINDS.map((kind) => ({ value: kind, label: name(`kinds.${kind}`) })),
-        defaultValue: 'PURCHASE',
       },
       {
         name: 'quantity',
@@ -165,10 +177,16 @@ export function movementResource(level: Level, name: Name): Resource<never> {
         required: true,
         pattern: { regex: /^-?\d{1,6}(\.\d{1,3})?$/, message: 'A quantity such as 12 or 1.5' },
       },
-      { name: 'unitCost', kind: 'money' },
       { name: 'reference', kind: 'text', max: 100 },
       { name: 'note', kind: 'textarea', max: 500 },
     ],
+    // Damage takes stock out; so does a negative adjustment.
+    check: ({ type, quantity }) =>
+      type === 'DAMAGE'
+        ? withinAvailable(level, quantity)
+        : type === 'ADJUSTMENT' && Number(quantity) < 0
+          ? withinAvailable(level, -Number(quantity))
+          : null,
   };
 }
 
@@ -235,6 +253,7 @@ export const transferStockResource = (level: Level): Resource<never> => ({
     },
     { name: 'note', kind: 'text', max: 500, wide: true },
   ],
+  check: ({ quantity }) => withinAvailable(level, quantity),
   shapeBody: ({ toBranchId, quantity, note }) => ({
     toBranchId,
     note,
@@ -268,6 +287,7 @@ export function stockLossResource(level: Level): Resource<never> {
       { name: 'quantity', kind: 'number', required: true, pattern: QTY },
       { name: 'note', kind: 'text', max: 400, wide: true },
     ],
+    check: ({ quantity }) => withinAvailable(level, quantity),
     shapeBody: ({ reason, quantity, note }) => ({
       type: 'DAMAGE',
       quantity,
