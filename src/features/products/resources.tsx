@@ -39,24 +39,10 @@ export const productsResource: Resource<Product> = {
   modalSize: 'lg',
   formRow: (row) => ({ ...row, materialId: row.material.id }),
   columns: [
+    // No code chip and no tags here: staff find items by name; both stay on the advanced page.
     recordColumn<Product>('item', {
       image: (row) => row.images[0]?.url,
-      code: (row) => row.code,
     }),
-    {
-      key: 'tags',
-      cell: (row) =>
-        row.tags.length > 0 ? (
-          <div className="flex flex-wrap gap-1">
-            {row.tags.map((tag) => (
-              <Badge key={tag}>{tag}</Badge>
-            ))}
-          </div>
-        ) : (
-          '—'
-        ),
-      filterValue: (row) => row.tags.join(' '),
-    },
     {
       key: 'variants',
       cell: (row) => <Badge>{row.variants.length}</Badge>,

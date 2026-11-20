@@ -975,8 +975,8 @@
         "description": "Description",
         "slug": "Web address",
         "isActive": "Shown on the website",
-        "variants": "Packs",
-        "fromPrice": "From",
+        "variants": "Colours / sizes",
+        "fromPrice": "Sells for",
         "metaTitle": "Search title",
         "metaDescription": "Search description",
         "hsCode": "HS code",
@@ -1006,7 +1006,13 @@
         "seo": "Search engines"
       },
       "about": "Pasal le bechne sabai item: price, pack ra stock yahi bata.\nRow ko icon haru: pack, quality, jodi, rang/size, offer, archive.",
-      "aboutForm": "Tapai item ko bibaran badaldai hunuhunchha. Price ra pack tala/row ko icon bata badlinchha."
+      "aboutForm": "Tapai item ko bibaran badaldai hunuhunchha. Price ra pack tala/row ko icon bata badlinchha.",
+      "columnHelp": {
+        "item": "Nepali naam mathi, English naam tala. Click garda item ko page khulchha.",
+        "variants": "Yo item kati rang/size ma chha (jastai Rato, Pahenlo = 2). Number click garda tiniharu ko stock ra bechne mol dekhincha.",
+        "fromPrice": "Bechne mol. Dherai rang/size bhaye sabai bhanda sasto ko mol dekhaucha.",
+        "isActive": "On = website ma dekhincha ra bechna milchha. Off = lukaieko."
+      }
     },
     "variants": {
       "title": "Packs",
@@ -3167,7 +3173,7 @@
     },
     "items": {
       "title": "Items",
-      "intro": "Everything the shop sells. Add an item once with its price and opening stock; it is sold online and at the counter."
+      "intro": "Pasal le bechne sabai saman. Naya saman: \"1 · Add item\" (naam matra), ani \"2 · Buy\" ma kineko rang/size ra mol halnus. Stock ra bechne mol item kholera herna/badalna milchha."
     },
     "stock": {
       "title": "Stock",
