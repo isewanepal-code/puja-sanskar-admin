@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { priceGroups } from '@/features/marketing';
-import { CountButton, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
+import { ResourceScreen, WorkbookUploadButton } from '@/components/resource';
 import { IconButton, buttonVariants } from '@/components/ui/button';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 import { routes } from '@/lib/routes';
@@ -42,12 +42,30 @@ export function ProductsScreen() {
           ? {
               ...column,
               cell: (row: Product) => (
-                <CountButton
-                  label={t('packsOf', { name: row.nameNe })}
+                <button
+                  type="button"
+                  title={t('packsOf', { name: row.nameNe })}
                   onClick={() => router.push(routes.item(row.id) + '#prices')}
+                  className="flex max-w-[16rem] flex-wrap justify-end gap-1 text-right"
                 >
-                  {row.variants.length}
-                </CountButton>
+                  {row.variants.slice(0, 4).map((v) => (
+                    <span
+                      key={v.id}
+                      className={
+                        v.isActive
+                          ? 'rounded border border-border bg-card px-1.5 py-0.5 text-xs'
+                          : 'rounded border border-dashed border-border px-1.5 py-0.5 text-xs text-muted-foreground'
+                      }
+                    >
+                      {v.label}
+                    </span>
+                  ))}
+                  {row.variants.length > 4 ? (
+                    <span className="px-1 py-0.5 text-xs text-muted-foreground">
+                      +{row.variants.length - 4}
+                    </span>
+                  ) : null}
+                </button>
               ),
             }
           : column,

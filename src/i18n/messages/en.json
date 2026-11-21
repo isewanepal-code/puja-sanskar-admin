@@ -296,12 +296,12 @@
       "items": "Items and stock",
       "itemsTotal": "Items",
       "itemsActive": "{count} shown on the website",
-      "packsTracked": "Packs in stock",
-      "packsTrackedNote": "of {packs} packs, at the branch in view",
+      "packsTracked": "Sizes in stock",
+      "packsTrackedNote": "of {packs} sizes, at the branch in view",
       "low": "Running low",
       "lowNote": "At or below their reorder level",
-      "out": "Out of stock",
-      "outNote": "Nothing to sell here, packs never stocked included"
+      "out": "Sizes with no stock",
+      "outNote": "Nothing to sell, never-bought sizes included"
     },
     "branches": {
       "title": "Stock by branch",
@@ -975,7 +975,7 @@
         "description": "Description",
         "slug": "Web address",
         "isActive": "Shown on the website",
-        "variants": "Colours / sizes",
+        "variants": "Sold as",
         "fromPrice": "Sells for",
         "metaTitle": "Search title",
         "metaDescription": "Search description",
@@ -1009,7 +1009,7 @@
       "aboutForm": "Tapai item ko bibaran badaldai hunuhunchha. Price ra pack tala/row ko icon bata badlinchha.",
       "columnHelp": {
         "item": "Nepali naam mathi, English naam tala. Click garda item ko page khulchha.",
-        "variants": "Yo item kati rang/size ma chha (jastai Rato, Pahenlo = 2). Number click garda tiniharu ko stock ra bechne mol dekhincha.",
+        "variants": "Yo item kun kun naap ma bikchha (1 set, 50 g, 1 kg…). Dhersai bhaye \"+3\" jasto dekhincha; click garda stock ra mol. Dotted = bikri ma chhaina (mol rakhna baki).",
         "fromPrice": "Bechne mol. Dherai rang/size bhaye sabai bhanda sasto ko mol dekhaucha.",
         "isActive": "On = website ma dekhincha ra bechna milchha. Off = lukaieko."
       }
@@ -1073,11 +1073,11 @@
       "fields": {
         "product": "Item",
         "sku": "SKU",
-        "label": "Colour / size",
-        "onHand": "In the shop",
+        "label": "Sold as",
+        "onHand": "In stock",
         "reserved": "In carts",
-        "available": "Can sell",
-        "reorderLevel": "Warn below",
+        "available": "Status",
+        "reorderLevel": "Warn when below",
         "updatedAt": "Updated",
         "shelfLocation": "Shelf",
         "value": "Worth",
@@ -1088,10 +1088,10 @@
       },
       "about": "Pratyek pack ko stock. Kam bhayeko tala dekhincha.",
       "columnHelp": {
-        "label": "Kun rang, size ya pack. Rang chhaina bhane naap (1 kg, 1 pcs) dekhincha.",
-        "onHand": "Pasal ma ahile bhayeko jamma. Number ma click garera gunera milaune.",
-        "available": "Bechna milne: pasal ma bhayeko − customer ko order/cart ma rakhiyeko. Green = thik, pahenlo = kam, rato = sakiyo.",
-        "reorderLevel": "Yo bhanda kam bhaye \"Running low\" ma dekhincha. ✏️ bata rakhne.",
+        "label": "Customer le yo item kasari kinchha: 1 set, 1 L, 50 g, 1.5 m. Stock yahi naap ma ganincha.",
+        "onHand": "Pasal ma ahile kati chha (mathiko naap ma: 5 = 5 set, 0.2 = 0.2 L). Number ma click garera gunera milaunus.",
+        "available": "OK = bechna pugchha, Low = \"Warn when below\" bhanda kam, None = sakiyo. Customer ko order ma rakhiyeko bhaye \"kept for orders\" dekhincha.",
+        "reorderLevel": "Yo bhanda kam bhaye \"Low\" ra \"Running low\" ma dekhincha. ✏️ bata rakhne.",
         "value": "Kati ko maal: pasal ma bhayeko × kineko mol (VAT registered nabhaye VAT sahit)."
       }
     },
@@ -2597,9 +2597,9 @@
     "packs": "Packs",
     "showStock": "Show",
     "show": {
-      "all": "All packs",
+      "all": "All",
       "low": "Running low",
-      "out": "Out of stock"
+      "out": "No stock"
     },
     "packsOf": "Packs of {name}",
     "packsAndPrices": "Packs and prices",
@@ -2684,9 +2684,9 @@
     "stockSend": "Send",
     "moreActions": "More",
     "tileValue": "Stock value",
-    "tileInStock": "Packs in stock",
+    "tileInStock": "Sizes in stock",
     "tileLow": "Running low",
-    "tileOut": "Out of stock",
+    "tileOut": "Sizes with no stock",
     "allCategories": "Every category",
     "category": "Category",
     "allGroups": "Every group",
@@ -3179,7 +3179,7 @@
     },
     "stock": {
       "title": "Stock",
-      "intro": "Kati saman baki chha: har item ra rang/size ko euta line. Line mai: Damaged / lost, Count, Make packets. Value = kati chha × kineko mol (VAT registered nabhaye VAT sahit)."
+      "intro": "Kati saman baki chha. Ek line = euta item ko euta naap (1 set, 1 L, 50 g). In stock: kati chha; Status: OK / Low / None. Line mai: Damaged / lost, Count, Make packets."
     },
     "kits": {
       "title": "Kits",

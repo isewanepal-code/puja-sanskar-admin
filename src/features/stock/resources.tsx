@@ -113,11 +113,19 @@ export function stockResource(
       { key: 'label', cell: (row) => row.variant.label, sortValue: (row) => row.variant.label },
       { key: 'onHand', cell: (row) => row.onHand, sortValue: (row) => row.onHand, align: 'right' },
       {
+        // Plain words for what can be sold: OK, Low or None; what is held for orders only when there is some.
         key: 'available',
         cell: (row) => (
-          <Badge tone={row.available <= 0 ? 'danger' : row.isLowStock ? 'warning' : 'success'}>
-            {row.available}
-          </Badge>
+          <div className="grid justify-items-end gap-0.5">
+            <Badge tone={row.available <= 0 ? 'danger' : row.isLowStock ? 'warning' : 'success'}>
+              {row.available <= 0 ? 'None' : row.isLowStock ? 'Low' : 'OK'}
+            </Badge>
+            {row.reserved > 0 ? (
+              <span className="text-[0.7rem] text-muted-foreground">
+                {row.reserved} kept for orders
+              </span>
+            ) : null}
+          </div>
         ),
         sortValue: (row) => row.available,
         align: 'right',
