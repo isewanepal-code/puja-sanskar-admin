@@ -58,35 +58,21 @@
       "where": "Sidebar → 1 Setup → Categories",
       "intro": "Made once. Items are filed under a category. The 5 categories from your Excel are already there.",
       "fields": [
-        [
-          "Name in Nepali *",
-          "आधारभूत सामग्री",
-          "Shown on the website menu and item lists."
-        ],
-        [
-          "Name in English *",
-          "Basic Dry Goods",
-          "Shown on the English website."
-        ],
+        ["Name in Nepali *", "आधारभूत सामग्री", "Shown on the website menu and item lists."],
+        ["Name in English *", "Basic Dry Goods", "Shown on the English website."],
         [
           "Under",
           "(empty) or another category",
           "Empty = top level. Choosing one makes this a sub-category inside it."
         ],
-        [
-          "Order",
-          "1, 2, 3",
-          "Smaller number comes first in menus."
-        ],
+        ["Order", "1, 2, 3", "Smaller number comes first in menus."],
         [
           "Shown on the website",
           "On / Off",
           "Off hides the category and its items from the website menu."
         ]
       ],
-      "tips": [
-        "Do not delete a category that has items; move the items first."
-      ]
+      "tips": ["Do not delete a category that has items; move the items first."]
     },
     {
       "id": "units",
@@ -95,16 +81,8 @@
       "where": "Sidebar → 1 Setup → Units",
       "intro": "The words sizes are counted in. Already made: g, kg, ml, L, m, cm, pcs, pack, box, set, pair, bundle (मुठा), leaf (पात), kit, dala, ghari, stalk, plant, roll, skein. Add one only if a new kind of size is needed.",
       "fields": [
-        [
-          "Symbol *",
-          "kg",
-          "The short word shown everywhere: 1 kg, 50 g."
-        ],
-        [
-          "Name in Nepali *",
-          "किलोग्राम",
-          "Shown in Nepali."
-        ],
+        ["Symbol *", "kg", "The short word shown everywhere: 1 kg, 50 g."],
+        ["Name in Nepali *", "किलोग्राम", "Shown in Nepali."],
         [
           "What it measures",
           "Weight / Volume / Length / Count",
@@ -135,55 +113,22 @@
           "Asan Puja Samagri Thok",
           "Shown on bills and the Buy page. The code is made by itself."
         ],
-        [
-          "Phone",
-          "98XXXXXXXX",
-          "To call them."
-        ],
-        [
-          "Address",
-          "Asan, Kathmandu",
-          "Where they are."
-        ],
-        [
-          "Contact person",
-          "Ram Kumar",
-          "Who to ask for."
-        ],
+        ["Phone", "98XXXXXXXX", "To call them."],
+        ["Address", "Asan, Kathmandu", "Where they are."],
+        ["Contact person", "Ram Kumar", "Who to ask for."],
         [
           "PAN",
           "9 digits",
           "Fill it for a VAT-registered seller. In the Buy sheet a blank VAT then means the item's VAT; without a PAN it means 0%."
         ],
-        [
-          "Days to pay",
-          "15",
-          "How many days after a bill you pay them."
-        ],
-        [
-          "Owed before",
-          "12000",
-          "What the shop already owed them before using this system."
-        ],
-        [
-          "Note",
-          "Delivers on Tuesday",
-          "Anything to remember."
-        ]
+        ["Days to pay", "15", "How many days after a bill you pay them."],
+        ["Owed before", "12000", "What the shop already owed them before using this system."],
+        ["Note", "Delivers on Tuesday", "Anything to remember."]
       ],
       "columns": [
-        [
-          "Name",
-          "The supplier."
-        ],
-        [
-          "Owed now",
-          "Bills not yet paid, minus payments."
-        ],
-        [
-          "Active",
-          "Off hides them from the Buy page."
-        ]
+        ["Name", "The supplier."],
+        ["Owed now", "Bills not yet paid, minus payments."],
+        ["Active", "Off hides them from the Buy page."]
       ]
     },
     {
@@ -198,36 +143,20 @@
           "Copper Worship Plate Small",
           "Without colour (red cloth is just \"Cloth\"; colour comes when buying). Must not be the same as another item."
         ],
-        [
-          "Name (Nepali) *",
-          "तामाको पूजा थाली सानो",
-          "Shown on the website and the bill."
-        ],
+        ["Name (Nepali) *", "तामाको पूजा थाली सानो", "Shown on the website and the bill."],
         [
           "How do you sell it? *",
           "By piece / By weight / By length / By litre / By size",
           "Decides the units offered when buying: By weight → g, kg; By length → m."
         ],
-        [
-          "Category *",
-          "भाँडाकुँडा र घरमै हुने",
-          "Where it is filed in the shop and website."
-        ],
+        ["Category *", "भाँडाकुँडा र घरमै हुने", "Where it is filed in the shop and website."],
         [
           "Name in Roman (More details)",
           "Tamako Puja Thali Sano",
           "Helps people find it typing English letters."
         ],
-        [
-          "Other names (More details)",
-          "thal, plate",
-          "More search words; Enter after each."
-        ],
-        [
-          "Brand (More details)",
-          "Patanjali",
-          "Optional."
-        ],
+        ["Other names (More details)", "thal, plate", "More search words; Enter after each."],
+        ["Brand (More details)", "Patanjali", "Optional."],
         [
           "Usually bought from (More details)",
           "Patan Dhatu Kala Udhyog",
@@ -243,9 +172,7 @@
         "Fill the boxes and press Save item.",
         "Then choose: Buy it now (go to Buy with this item), Add another item, or Open the item."
       ],
-      "tips": [
-        "Many items at once? Use All items → Upload Excel (chapter 2.4)."
-      ]
+      "tips": ["Many items at once? Use All items → Upload Excel (chapter 2.4)."]
     },
     {
       "id": "items-list",
@@ -253,22 +180,13 @@
       "nepali": "Pasal ko sabai saman ko list.",
       "where": "Sidebar → 2 Items → All items",
       "columns": [
-        [
-          "Item",
-          "Photo, Nepali name, English name. Click Open to see the item."
-        ],
+        ["Item", "Photo, Nepali name, English name. Click Open to see the item."],
         [
           "Sold as",
           "The sizes it is sold in: 50 g · 100 g · 1 kg. \"+2\" = two more. A dotted chip = that size has no selling price (not on sale). Click to jump to its stock and prices."
         ],
-        [
-          "Sells for",
-          "Its selling price; with many sizes, the cheapest."
-        ],
-        [
-          "Shown on the website",
-          "On = on the website and can be sold. Off = hidden."
-        ],
+        ["Sells for", "Its selling price; with many sizes, the cheapest."],
+        ["Shown on the website", "On = on the website and can be sold. Off = hidden."],
         [
           "Buttons",
           "Open = the item page. Box icon = Archive (hide an item you stopped selling; it can come back). Bin = Delete."
@@ -292,43 +210,26 @@
           "What is left to do",
           "Three lines: selling price, stock, photo. Yellow = still to do, with the button that does it. Green = done."
         ],
-        [
-          "Sold as",
-          "One line per size: 1 set, 50 g, 1.5 m."
-        ],
+        ["Sold as", "One line per size: 1 set, 50 g, 1.5 m."],
         [
           "In stock",
           "How many of that size are in the shop: \"18 × 1.5 m\" = 18 pieces of 1.5 m. \"None — buy\" = buy it first."
         ],
-        [
-          "Cost of 1",
-          "What one cost when bought (from the bills)."
-        ],
+        ["Cost of 1", "What one cost when bought (from the bills)."],
         [
           "Sell 1 for",
           "Type the price (Rs, VAT included) and press Save. A size not on sale shows \"Put on sale\"."
         ],
-        [
-          "On sale",
-          "Green = can be sold. Click it to take that size off sale."
-        ]
+        ["On sale", "Green = can be sold. Click it to take that size off sale."]
       ],
       "fields": [
-        [
-          "Edit name and website text → Names",
-          "—",
-          "Change the Nepali and English names."
-        ],
+        ["Edit name and website text → Names", "—", "Change the Nepali and English names."],
         [
           "Edit name and website text → Website text",
           "Used in every puja for…",
           "A line or two under the name on the website."
         ],
-        [
-          "Edit name and website text → Show on the website",
-          "tick",
-          "Untick to hide the item."
-        ],
+        ["Edit name and website text → Show on the website", "tick", "Untick to hide the item."],
         [
           "Add another size → How much + Unit + Sell for",
           "2 + kg + 250",
@@ -356,30 +257,18 @@
       "where": "All items → Download Excel / Upload Excel",
       "intro": "Same layout as your master list. Each sheet is a category. The first sheet (गृहपृष्ठ) has the rules.",
       "columns": [
-        [
-          "क्र.सं.",
-          "Row number."
-        ],
-        [
-          "सामग्री (Nepali Item Name) *",
-          "Nepali name. Each size/quality is its own row (Rule B)."
-        ],
+        ["क्र.सं.", "Row number."],
+        ["सामग्री (Nepali Item Name) *", "Nepali name. Each size/quality is its own row (Rule B)."],
         [
           "English Name *",
           "Must be different from every other item; add Small/Medium/Large, Regular/Special."
         ],
-        [
-          "Romanized Form",
-          "Name in English letters."
-        ],
+        ["Romanized Form", "Name in English letters."],
         [
           "मूल सामग्री (Search Group)",
           "Search group: अबिर, कलश, धूप. Same word = same group. A new word makes a new group."
         ],
-        [
-          "Variant प्रकार (Type)",
-          "Only for reading; how it sells is found from the sizes."
-        ],
+        ["Variant प्रकार (Type)", "Only for reading; how it sells is found from the sizes."],
         [
           "सुझाएका Variants",
           "The sizes, comma between: 50 gm, 100 gm, 1 kg — or 1 पिस, 5 पिस — or सानो प्याक, ठूलो बक्स. Empty = 1 piece."
@@ -388,18 +277,12 @@
           "बेच्ने मूल्य Rs (pale yellow)",
           "One price per size in the same order: 35, 65, 580. A blank place keeps that size as it is. A price puts that size on sale."
         ],
-        [
-          "मुख्य सप्लायर (pale yellow)",
-          "Pick from the list: who you usually buy it from."
-        ],
+        ["मुख्य सप्लायर (pale yellow)", "Pick from the list: who you usually buy it from."],
         [
           "नपाइएमा वैकल्पिक / प्रयोजन",
           "What to use if it is not found, or what it is for; shown as website text."
         ],
-        [
-          "Code (नछुनुहोस्)",
-          "Made by the shop; do not touch. Leave empty for new rows."
-        ]
+        ["Code (नछुनुहोस्)", "Made by the shop; do not touch. Leave empty for new rows."]
       ],
       "steps": [
         "Download Excel. Grey rows are in the shop (locked); only their yellow price and supplier can change.",
@@ -429,21 +312,9 @@
           "Birgunj Kirana Thok Bikreta",
           "Who sold it. Not in the list? \"+ New supplier\" (name and phone) right there."
         ],
-        [
-          "Bill number",
-          "BKT-7781",
-          "The number on the paper bill. Empty = one is made."
-        ],
-        [
-          "Date",
-          "2026-11-21",
-          "The bill's date."
-        ],
-        [
-          "Item *",
-          "अक्षता - साधारण",
-          "What was bought. Not in the list? Add item first."
-        ],
+        ["Bill number", "BKT-7781", "The number on the paper bill. Empty = one is made."],
+        ["Date", "2026-11-21", "The bill's date."],
+        ["Item *", "अक्षता - साधारण", "What was bought. Not in the list? Add item first."],
         [
           "Colour or size",
           "Red",
@@ -454,36 +325,18 @@
           "25 + kg",
           "How much came: 25 kg bag, 100 m roll, 20 pcs. It is stored as 25 × \"1 kg\" (the bulk size)."
         ],
-        [
-          "Cost of 1 (before VAT) *",
-          "97.50",
-          "What one kg / m / pcs cost, without VAT."
-        ],
-        [
-          "Sell 1 for",
-          "125",
-          "Optional: filled in, that size goes on sale now."
-        ],
+        ["Cost of 1 (before VAT) *", "97.50", "What one kg / m / pcs cost, without VAT."],
+        ["Sell 1 for", "125", "Optional: filled in, that size goes on sale now."],
         [
           "VAT",
           "As the item's tax / 13% / No VAT",
           "VAT bill = 13%. No VAT bill (farmer, small seller) = No VAT."
         ],
-        [
-          "Expires on",
-          "2027-05-31",
-          "For food, ghee, flowers. Shown later on Expiring stock."
-        ]
+        ["Expires on", "2027-05-31", "For food, ghee, flowers. Shown later on Expiring stock."]
       ],
       "columns": [
-        [
-          "Total",
-          "How much × cost; the line under shows it with VAT."
-        ],
-        [
-          "Before VAT / VAT / Total to pay",
-          "The bill's totals at the bottom."
-        ]
+        ["Total", "How much × cost; the line under shows it with VAT."],
+        ["Before VAT / VAT / Total to pay", "The bill's totals at the bottom."]
       ],
       "steps": [
         "Fill the top (supplier, bill no., date), then one line per thing bought. \"Add another item\" adds a line.",
@@ -501,46 +354,16 @@
       "nepali": "Dherai bill ekaipatak.",
       "where": "Buy page or Purchase bills → Upload Excel → Download the layout",
       "columns": [
-        [
-          "सप्लायर (Supplier) *",
-          "Pick from the list."
-        ],
-        [
-          "बिल नं. (Bill No.) *",
-          "Rows with the same supplier + bill number = one bill."
-        ],
-        [
-          "मिति (Date) *",
-          "2026-11-21; the same on every row of one bill."
-        ],
-        [
-          "सामान (Item) *",
-          "Pick or type the Nepali name."
-        ],
-        [
-          "कति (How much) *",
-          "25"
-        ],
-        [
-          "एकाइ (Unit) *",
-          "kg, g, m, pcs, L… must fit how the item sells."
-        ],
-        [
-          "एकको मूल्य Rs *",
-          "Cost of one unit, before VAT."
-        ],
-        [
-          "VAT %",
-          "13 or 0. Blank: 0 if the supplier has no PAN, else the item's VAT."
-        ],
-        [
-          "Expiry",
-          "2027-05-31, optional."
-        ],
-        [
-          "बेच्ने मूल्य Rs",
-          "Optional selling price: puts that size on sale."
-        ]
+        ["सप्लायर (Supplier) *", "Pick from the list."],
+        ["बिल नं. (Bill No.) *", "Rows with the same supplier + bill number = one bill."],
+        ["मिति (Date) *", "2026-11-21; the same on every row of one bill."],
+        ["सामान (Item) *", "Pick or type the Nepali name."],
+        ["कति (How much) *", "25"],
+        ["एकाइ (Unit) *", "kg, g, m, pcs, L… must fit how the item sells."],
+        ["एकको मूल्य Rs *", "Cost of one unit, before VAT."],
+        ["VAT %", "13 or 0. Blank: 0 if the supplier has no PAN, else the item's VAT."],
+        ["Expiry", "2027-05-31, optional."],
+        ["बेच्ने मूल्य Rs", "Optional selling price: puts that size on sale."]
       ],
       "steps": [
         "The Example sheet shows filled rows (rice 25 kg, ghee 5 L, red cloth 100 m).",
@@ -554,30 +377,13 @@
       "nepali": "Kineko bill haru.",
       "where": "Sidebar → 3 Buy → Purchase bills",
       "columns": [
-        [
-          "Date",
-          "The bill's date."
-        ],
-        [
-          "Supplier",
-          "Who sold it."
-        ],
-        [
-          "Lines",
-          "How many things on the bill."
-        ],
-        [
-          "VAT / Total",
-          "VAT and the amount to pay."
-        ],
-        [
-          "Status",
-          "Draft = saved, not in stock yet (✓ posts it). Posted = in stock."
-        ]
+        ["Date", "The bill's date."],
+        ["Supplier", "Who sold it."],
+        ["Lines", "How many things on the bill."],
+        ["VAT / Total", "VAT and the amount to pay."],
+        ["Status", "Draft = saved, not in stock yet (✓ posts it). Posted = in stock."]
       ],
-      "tips": [
-        "In Staging a posted bill can be deleted; its stock goes back out."
-      ]
+      "tips": ["In Staging a posted bill can be deleted; its stock goes back out."]
     },
     {
       "id": "stock",
@@ -585,30 +391,12 @@
       "nepali": "Kati saman baki chha.",
       "where": "Sidebar → 4 Stock → Stock",
       "columns": [
-        [
-          "Stock value (tile)",
-          "What all stock cost (VAT included while not VAT registered)."
-        ],
-        [
-          "Sizes in stock (tile)",
-          "How many item sizes have stock."
-        ],
-        [
-          "Running low (tile)",
-          "Sizes below their \"Warn when below\"."
-        ],
-        [
-          "Sizes with no stock (tile)",
-          "Sizes never bought or sold out."
-        ],
-        [
-          "Item",
-          "Nepali and English name."
-        ],
-        [
-          "Sold as",
-          "The size the stock is counted in: 1 set, 1 L, 1 kg."
-        ],
+        ["Stock value (tile)", "What all stock cost (VAT included while not VAT registered)."],
+        ["Sizes in stock (tile)", "How many item sizes have stock."],
+        ["Running low (tile)", "Sizes below their \"Warn when below\"."],
+        ["Sizes with no stock (tile)", "Sizes never bought or sold out."],
+        ["Item", "Nepali and English name."],
+        ["Sold as", "The size the stock is counted in: 1 set, 1 L, 1 kg."],
         [
           "In stock",
           "How many of that size: 5 = 5 sets; 0.2 = 0.2 L. Click the number to correct it after counting."
@@ -617,14 +405,8 @@
           "Status",
           "OK = enough. Low = below the warning level. None = sold out. \"2 kept for orders\" shows only when customer orders hold some."
         ],
-        [
-          "Warn when below",
-          "Set with ✏️: below this it shows as Low."
-        ],
-        [
-          "Worth",
-          "In stock × cost."
-        ]
+        ["Warn when below", "Set with ✏️: below this it shows as Low."],
+        ["Worth", "In stock × cost."]
       ],
       "steps": [
         "Filters: category, item group, supplier, brand, item; All / Running low / No stock.",
@@ -671,16 +453,8 @@
       "nepali": "Euta puja ko lagi dherai saman ek sath.",
       "where": "Sidebar → 5 Kits and pujas → Kits",
       "fields": [
-        [
-          "Puja",
-          "लक्ष्मी पूजा",
-          "Which puja the kit is for."
-        ],
-        [
-          "Name in Nepali / English *",
-          "लक्ष्मी पूजा किट",
-          "Shown on the website."
-        ],
+        ["Puja", "लक्ष्मी पूजा", "Which puja the kit is for."],
+        ["Name in Nepali / English *", "लक्ष्मी पूजा किट", "Shown on the website."],
         [
           "Packages",
           "Basic / Standard / Premium",
@@ -691,11 +465,7 @@
           "माटोको दियो 12 pcs × 2",
           "What is inside. Each item size must be on sale."
         ],
-        [
-          "Discount",
-          "5 %",
-          "Taken off the items' total when bought as a kit."
-        ]
+        ["Discount", "5 %", "Taken off the items' total when bought as a kit."]
       ],
       "tips": [
         "The fastest way: in the Excel (chapter 5.3) write \"Make from puja samagri = हो\" and the kit is filled from the puja's samagri list."
@@ -723,10 +493,7 @@
           "पूजा समूह: समूह, English, माथिको समूह",
           "Group, its English name, and its parent group (empty = top). The parent makes the nesting, any depth."
         ],
-        [
-          "पूजा: पूजा, English, समूह, प्रकार",
-          "The puja, its group and type."
-        ],
+        ["पूजा: पूजा, English, समूह, प्रकार", "The puja, its group and type."],
         [
           "पूजा सामग्री: पूजा, मूल सामग्री, कति, एकाइ, अनिवार्य/ऐच्छिक",
           "One row per samagri a puja needs. Empty amount = \"as the ritual needs\"."
@@ -743,10 +510,7 @@
           "सामान समूह: समूह, English, माथिको समूह, वेबसाइटमा देखाउने?",
           "Item groups, nested the same way; \"हो\" makes a website filter."
         ],
-        [
-          "समूहका सामान: समूह, सामान वा किट",
-          "What goes in each group."
-        ]
+        ["समूहका सामान: समूह, सामान वा किट", "What goes in each group."]
       ],
       "steps": [
         "Grey rows are saved (locked); write in the empty rows.",
@@ -759,21 +523,9 @@
       "nepali": "Pasal ma ra website bata bechne.",
       "where": "Sidebar → 6 Sell → Counter sale / Orders and bills / Customers",
       "fields": [
-        [
-          "Item or kit",
-          "पूजा घिउ 250 ml",
-          "Tap a kit or choose an item size."
-        ],
-        [
-          "Qty",
-          "2",
-          "How many."
-        ],
-        [
-          "Customer name / Phone",
-          "Walk-in customer",
-          "Optional."
-        ],
+        ["Item or kit", "पूजा घिउ 250 ml", "Tap a kit or choose an item size."],
+        ["Qty", "2", "How many."],
+        ["Customer name / Phone", "Walk-in customer", "Optional."],
         [
           "Coupon / Counter discount + Why",
           "10 % — regular customer",
@@ -818,32 +570,12 @@
           "go": "/suppliers",
           "goLabel": "Suppliers",
           "intro": "The 6 suppliers of this example are already there. For a VAT seller, PAN is filled; for a farmer or small seller it is empty.",
-          "head": [
-            "Box",
-            "What to write",
-            "Why"
-          ],
+          "head": ["Box", "What to write", "Why"],
           "rows": [
-            [
-              "Name *",
-              "Pharping Phool Krishak Samuha",
-              "Shown on the Buy page and the bill."
-            ],
-            [
-              "Phone",
-              "9800000003",
-              "To call them."
-            ],
-            [
-              "PAN",
-              "(empty)",
-              "No PAN = no VAT bill: in the Buy sheet a blank VAT becomes 0%."
-            ],
-            [
-              "Days to pay",
-              "0",
-              "Paid in cash on the spot."
-            ]
+            ["Name *", "Pharping Phool Krishak Samuha", "Shown on the Buy page and the bill."],
+            ["Phone", "9800000003", "To call them."],
+            ["PAN", "(empty)", "No PAN = no VAT bill: in the Buy sheet a blank VAT becomes 0%."],
+            ["Days to pay", "0", "Paid in cash on the spot."]
           ],
           "result": "A new supplier is added with \"+ Add\" on this page, or with \"+ New supplier\" right on the Buy page."
         },
@@ -852,14 +584,7 @@
           "go": "/items?q=दियो",
           "goLabel": "All items (searched: दियो)",
           "intro": "All 13 already exist from the master list. Rule B: पित्तलको दियो सानो and ठूलो are two items; धूप साधारण and स्पेसल are two items. To add a new one, use Add item.",
-          "head": [
-            "#",
-            "Item",
-            "Sold",
-            "Size / quality",
-            "Usual supplier",
-            "VAT on its bill"
-          ],
+          "head": ["#", "Item", "Sold", "Size / quality", "Usual supplier", "VAT on its bill"],
           "rows": [
             [
               "1",
@@ -893,14 +618,7 @@
               "Birgunj Kirana Thok Bikreta",
               "13%"
             ],
-            [
-              "5",
-              "पूजा घिउ (साधारण)",
-              "By litre",
-              "Regular",
-              "Birgunj Kirana Thok Bikreta",
-              "13%"
-            ],
+            ["5", "पूजा घिउ (साधारण)", "By litre", "Regular", "Birgunj Kirana Thok Bikreta", "13%"],
             [
               "6",
               "गाईको शुद्ध घिउ (स्पेसल)",
@@ -949,14 +667,7 @@
               "Asan Puja Samagri Thok",
               "13%"
             ],
-            [
-              "12",
-              "कपूर (साधारण)",
-              "By weight, bulk",
-              "Regular",
-              "Asan Puja Samagri Thok",
-              "13%"
-            ],
+            ["12", "कपूर (साधारण)", "By weight, bulk", "Regular", "Asan Puja Samagri Thok", "13%"],
             [
               "13",
               "सयपत्री फूलको माला",
@@ -972,57 +683,25 @@
           "title": "Step 3 · Buy with a VAT bill (Indra Chowk: the cloth)",
           "go": "/inventory/buy",
           "goLabel": "Buy",
-          "head": [
-            "Box",
-            "What to write",
-            "What happens"
-          ],
+          "head": ["Box", "What to write", "What happens"],
           "rows": [
             [
               "Bought from (supplier) *",
               "Indra Chowk Vastra Pasal",
               "The bill belongs to them; they are owed the total."
             ],
-            [
-              "Bill number",
-              "ICV-5001",
-              "The number on the paper bill."
-            ],
-            [
-              "Date",
-              "today",
-              "The bill date."
-            ],
-            [
-              "Line 1 · Item *",
-              "रातो कपडा (साधारण)",
-              "—"
-            ],
-            [
-              "Line 1 · How much * + Unit *",
-              "10 + m",
-              "Comes in as 10 × \"1 m\" (the roll)."
-            ],
-            [
-              "Line 1 · Cost of 1 (before VAT) *",
-              "100",
-              "Rs 100 a metre."
-            ],
-            [
-              "Line 1 · VAT",
-              "13%",
-              "A VAT bill."
-            ],
+            ["Bill number", "ICV-5001", "The number on the paper bill."],
+            ["Date", "today", "The bill date."],
+            ["Line 1 · Item *", "रातो कपडा (साधारण)", "—"],
+            ["Line 1 · How much * + Unit *", "10 + m", "Comes in as 10 × \"1 m\" (the roll)."],
+            ["Line 1 · Cost of 1 (before VAT) *", "100", "Rs 100 a metre."],
+            ["Line 1 · VAT", "13%", "A VAT bill."],
             [
               "Line 2 · Item * / How much / Unit / Cost",
               "रातो कपडा (स्पेसल) · 10 · m · 338",
               "The Special cloth for the Premium kit."
             ],
-            [
-              "Line 2 · VAT",
-              "13%",
-              "—"
-            ]
+            ["Line 2 · VAT", "13%", "—"]
           ],
           "result": "Save → bill ICV-5001 is posted; Stock shows रातो कपडा (साधारण) 1 m: 10 and (स्पेसल) 1 m: 10. While the shop is not VAT registered the 13% is added to the cost (Rs 113 a metre)."
         },
@@ -1031,103 +710,19 @@
           "go": "/inventory/buy",
           "goLabel": "Buy",
           "intro": "One bill per supplier. Or put all of them in the Buy sheet (Buy page → Upload Excel → Download the layout): one row per line, same supplier + bill no. = one bill.",
-          "head": [
-            "Bill",
-            "Item",
-            "How much + Unit",
-            "Cost of 1",
-            "VAT",
-            "Expires on"
-          ],
+          "head": ["Bill", "Item", "How much + Unit", "Cost of 1", "VAT", "Expires on"],
           "rows": [
-            [
-              "BKT-5002 · Birgunj",
-              "अक्षता - साधारण",
-              "25 kg",
-              "97.50",
-              "13%",
-              "2027-05-31"
-            ],
-            [
-              "BKT-5002 · Birgunj",
-              "अक्षता - स्पेसल",
-              "5 kg",
-              "250",
-              "13%",
-              "2027-05-31"
-            ],
-            [
-              "BKT-5002 · Birgunj",
-              "पूजा घिउ (साधारण)",
-              "5 L",
-              "850",
-              "13%",
-              "2027-03-31"
-            ],
-            [
-              "BKT-5002 · Birgunj",
-              "गाईको शुद्ध घिउ (स्पेसल)",
-              "2 L",
-              "1300",
-              "13%",
-              "2027-03-31"
-            ],
-            [
-              "PDK-5003 · Patan",
-              "पित्तलको दियो सानो",
-              "5 pcs",
-              "300",
-              "13%",
-              "—"
-            ],
-            [
-              "PDK-5003 · Patan",
-              "पित्तलको दियो ठूलो",
-              "2 pcs",
-              "700",
-              "13%",
-              "—"
-            ],
-            [
-              "APS-5004 · Asan",
-              "धूप (अगरबत्ती) - साधारण",
-              "20 pack",
-              "70",
-              "13%",
-              "—"
-            ],
-            [
-              "APS-5004 · Asan",
-              "धूप - स्पेसल",
-              "10 pack",
-              "80",
-              "13%",
-              "—"
-            ],
-            [
-              "APS-5004 · Asan",
-              "कपूर (साधारण)",
-              "1 kg",
-              "2300",
-              "13%",
-              "—"
-            ],
-            [
-              "BMB-5005 · Bhaktapur",
-              "माटोको दियो (पाला)",
-              "100 pcs",
-              "3.50",
-              "No VAT",
-              "—"
-            ],
-            [
-              "PPK-5006 · Pharping",
-              "सयपत्री फूलको माला",
-              "20 pcs",
-              "40",
-              "No VAT",
-              "in 3 days"
-            ]
+            ["BKT-5002 · Birgunj", "अक्षता - साधारण", "25 kg", "97.50", "13%", "2027-05-31"],
+            ["BKT-5002 · Birgunj", "अक्षता - स्पेसल", "5 kg", "250", "13%", "2027-05-31"],
+            ["BKT-5002 · Birgunj", "पूजा घिउ (साधारण)", "5 L", "850", "13%", "2027-03-31"],
+            ["BKT-5002 · Birgunj", "गाईको शुद्ध घिउ (स्पेसल)", "2 L", "1300", "13%", "2027-03-31"],
+            ["PDK-5003 · Patan", "पित्तलको दियो सानो", "5 pcs", "300", "13%", "—"],
+            ["PDK-5003 · Patan", "पित्तलको दियो ठूलो", "2 pcs", "700", "13%", "—"],
+            ["APS-5004 · Asan", "धूप (अगरबत्ती) - साधारण", "20 pack", "70", "13%", "—"],
+            ["APS-5004 · Asan", "धूप - स्पेसल", "10 pack", "80", "13%", "—"],
+            ["APS-5004 · Asan", "कपूर (साधारण)", "1 kg", "2300", "13%", "—"],
+            ["BMB-5005 · Bhaktapur", "माटोको दियो (पाला)", "100 pcs", "3.50", "No VAT", "—"],
+            ["PPK-5006 · Pharping", "सयपत्री फूलको माला", "20 pcs", "40", "No VAT", "in 3 days"]
           ],
           "result": "5 bills, all in stock. Dhup bought in \"pack\" goes into its first pack size (सानो प्याक). Bulk sizes (1 kg rice, 1 L ghee, 1 kg camphor, 1 pcs clay diyo) are off sale: they are cut into packets next."
         },
@@ -1136,12 +731,7 @@
           "go": "/stock?q=रातो कपडा",
           "goLabel": "Stock (searched: रातो कपडा)",
           "intro": "On each bulk row press Make packets. \"How many of the bulk pack are opened\", then each smaller size and how many. The screen shows the balance and any wastage.",
-          "head": [
-            "Item (bulk row)",
-            "Open",
-            "Smaller sizes that come out",
-            "Left in bulk"
-          ],
+          "head": ["Item (bulk row)", "Open", "Smaller sizes that come out", "Left in bulk"],
           "rows": [
             [
               "रातो कपडा (साधारण) · 1 m",
@@ -1149,48 +739,13 @@
               "4 × 0.5 m + 2 × 1 m + 3 × 2 m = 2 + 2 + 6 = 10 m",
               "0 m"
             ],
-            [
-              "रातो कपडा (स्पेसल) · 1 m",
-              "10",
-              "5 × 2 m",
-              "0 m"
-            ],
-            [
-              "अक्षता - साधारण · 1 kg",
-              "10",
-              "10 × 500 g + 25 × 200 g",
-              "15 kg"
-            ],
-            [
-              "अक्षता - स्पेसल · 1 kg",
-              "5",
-              "10 × 500 g",
-              "0 kg"
-            ],
-            [
-              "पूजा घिउ (साधारण) · 1 L",
-              "5",
-              "10 × 250 ml + 5 × 500 ml",
-              "0 L"
-            ],
-            [
-              "गाईको शुद्ध घिउ (स्पेसल) · 1 L",
-              "2",
-              "4 × 500 ml",
-              "0 L"
-            ],
-            [
-              "कपूर (साधारण) · 1 kg",
-              "1",
-              "20 × 50 g",
-              "0 kg"
-            ],
-            [
-              "माटोको दियो (पाला) · 1 pcs",
-              "100",
-              "4 × 25 pcs",
-              "0 pcs"
-            ]
+            ["रातो कपडा (स्पेसल) · 1 m", "10", "5 × 2 m", "0 m"],
+            ["अक्षता - साधारण · 1 kg", "10", "10 × 500 g + 25 × 200 g", "15 kg"],
+            ["अक्षता - स्पेसल · 1 kg", "5", "10 × 500 g", "0 kg"],
+            ["पूजा घिउ (साधारण) · 1 L", "5", "10 × 250 ml + 5 × 500 ml", "0 L"],
+            ["गाईको शुद्ध घिउ (स्पेसल) · 1 L", "2", "4 × 500 ml", "0 L"],
+            ["कपूर (साधारण) · 1 kg", "1", "20 × 50 g", "0 kg"],
+            ["माटोको दियो (पाला) · 1 pcs", "100", "4 × 25 pcs", "0 pcs"]
           ],
           "result": "Each small size now has stock and its share of the cost (a 2 m piece costs 2 × the metre cost). Sizes that already had a price are on sale; a new size made with \"+ A new pack\" gets its price on the item page."
         },
@@ -1199,32 +754,12 @@
           "go": "/items?q=घिउ",
           "goLabel": "All items (searched: घिउ)",
           "intro": "Open each item: \"What is left to do\" must be green for price and stock. Change a price in \"Sell 1 for\" and press Save.",
-          "head": [
-            "Item",
-            "Size",
-            "Sell 1 for (example)"
-          ],
+          "head": ["Item", "Size", "Sell 1 for (example)"],
           "rows": [
-            [
-              "पूजा घिउ (साधारण)",
-              "250 ml",
-              "Rs 310"
-            ],
-            [
-              "गाईको शुद्ध घिउ (स्पेसल)",
-              "500 ml",
-              "Rs 940"
-            ],
-            [
-              "रातो कपडा (साधारण)",
-              "0.5 m · 1 m · 2 m",
-              "Rs 80 · 155 · 290"
-            ],
-            [
-              "माटोको दियो (पाला)",
-              "25 pcs",
-              "Rs 120"
-            ]
+            ["पूजा घिउ (साधारण)", "250 ml", "Rs 310"],
+            ["गाईको शुद्ध घिउ (स्पेसल)", "500 ml", "Rs 940"],
+            ["रातो कपडा (साधारण)", "0.5 m · 1 m · 2 m", "Rs 80 · 155 · 290"],
+            ["माटोको दियो (पाला)", "25 pcs", "Rs 120"]
           ],
           "result": "Only sizes on sale can go into a kit."
         },
@@ -1232,42 +767,18 @@
           "title": "Step 7 · Send some stock to another branch",
           "go": "/settings/branches",
           "goLabel": "Settings → Branches",
-          "head": [
-            "Box",
-            "What to write",
-            "What happens"
-          ],
+          "head": ["Box", "What to write", "What happens"],
           "rows": [
-            [
-              "Branches → + Add → Name *",
-              "Pashupati branch",
-              "A second shop."
-            ],
-            [
-              "Address / Phone",
-              "Gaushala, Kathmandu · 01-4xxxxxx",
-              "Printed on its bills."
-            ],
-            [
-              "Bill numbers",
-              "PSP",
-              "Its bills start PSP-."
-            ],
+            ["Branches → + Add → Name *", "Pashupati branch", "A second shop."],
+            ["Address / Phone", "Gaushala, Kathmandu · 01-4xxxxxx", "Printed on its bills."],
+            ["Bill numbers", "PSP", "Its bills start PSP-."],
             [
               "Stock → row अक्षता 500 g → ⋯ → Send to another branch → To branch *",
               "Pashupati branch",
               "—"
             ],
-            [
-              "How many *",
-              "3",
-              "Main goes 10 → 7; Pashupati gets 3."
-            ],
-            [
-              "Note",
-              "For the Tihar stall",
-              "Shown in the history."
-            ]
+            ["How many *", "3", "Main goes 10 → 7; Pashupati gets 3."],
+            ["Note", "For the Tihar stall", "Shown in the history."]
           ],
           "result": "Switch the branch at the top right (Main branch → Pashupati branch) to see its stock."
         },
@@ -1276,17 +787,9 @@
           "go": "/kits/new",
           "goLabel": "Kits → New kit",
           "intro": "One page makes all three packages of one puja. Tick a package, then add its items (item + size + how many). Each package has its own discount and photo.",
-          "head": [
-            "Package",
-            "Items (size × how many)",
-            "Discount"
-          ],
+          "head": ["Package", "Items (size × how many)", "Discount"],
           "rows": [
-            [
-              "Puja *",
-              "गोवर्धन पूजा · Name: गोवर्धन पूजा किट / Govardhan Puja Kit",
-              "—"
-            ],
+            ["Puja *", "गोवर्धन पूजा · Name: गोवर्धन पूजा किट / Govardhan Puja Kit", "—"],
             [
               "Basic",
               "रातो कपडा (साधारण) 0.5 m ×1 · अक्षता साधारण 200 g ×1 · पूजा घिउ 250 ml ×1 · माटोको दियो 25 pcs ×1 · धूप साधारण सानो प्याक ×1 · कपूर 50 g ×1 · सयपत्री माला 1 pcs ×2",
@@ -1310,10 +813,7 @@
           "go": "/kits",
           "goLabel": "Kits → Upload Excel",
           "intro": "Same result without the kit page: the Pujas, kits and groups Excel. Use it instead of step 8, not after it: a puja can have one kit per package.",
-          "head": [
-            "Sheet",
-            "Row to write"
-          ],
+          "head": ["Sheet", "Row to write"],
           "rows": [
             [
               "किट (Kits)",
@@ -1323,10 +823,7 @@
               "किटका सामान (Kit Items)",
               "one row per item: गोवर्धन पूजा किट (प्रिमियम) · रातो कपडा (स्पेसल) · 2 m · 1 · होइन"
             ],
-            [
-              "समूहका सामान (Group Items)",
-              "तिहार सामग्री · गोवर्धन पूजा किट (प्रिमियम)"
-            ]
+            ["समूहका सामान (Group Items)", "तिहार सामग्री · गोवर्धन पूजा किट (प्रिमियम)"]
           ],
           "result": "\"पूजा सामग्रीबाट बनाउने = हो\" instead fills a kit from the puja's samagri list by itself."
         },
@@ -1334,27 +831,11 @@
           "title": "Step 10 · Sell one kit and check",
           "go": "/counter",
           "goLabel": "Counter sale",
-          "head": [
-            "Box",
-            "What to write",
-            "What happens"
-          ],
+          "head": ["Box", "What to write", "What happens"],
           "rows": [
-            [
-              "Item or kit",
-              "गोवर्धन पूजा किट — Standard",
-              "—"
-            ],
-            [
-              "Qty",
-              "1",
-              "—"
-            ],
-            [
-              "Customer name / Phone",
-              "Walk-in customer",
-              "Optional."
-            ],
+            ["Item or kit", "गोवर्धन पूजा किट — Standard", "—"],
+            ["Qty", "1", "—"],
+            ["Customer name / Phone", "Walk-in customer", "Optional."],
             [
               "Record sale",
               "—",
