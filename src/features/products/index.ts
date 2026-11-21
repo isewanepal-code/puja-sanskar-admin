@@ -14,3 +14,4 @@ export {
 } from './resources';
 export { OptionTypesScreen } from './components/option-types-screen';
 export { unitsFor } from './units';
+export { PhotosPanel } from './components/photos-panel';
