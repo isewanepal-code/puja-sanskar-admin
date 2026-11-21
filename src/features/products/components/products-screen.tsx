@@ -7,19 +7,17 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { priceGroups } from '@/features/marketing';
-import { BulkGrid, CountButton, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
-import { Button, IconButton, buttonVariants } from '@/components/ui/button';
+import { CountButton, ResourceScreen, WorkbookUploadButton } from '@/components/resource';
+import { IconButton, buttonVariants } from '@/components/ui/button';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 import { routes } from '@/lib/routes';
 
-import { productsResource, quickItemResource } from '../resources';
+import { productsResource } from '../resources';
 import type { Product } from './use-product';
 
 export function ProductsScreen() {
   const t = useTranslations('actions');
-  const tf = useTranslations('forms');
   const router = useRouter();
-  const [many, setMany] = useState(false);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
   // Only the items in this group, and in the groups inside it.
   const [groupId, setGroupId] = useState('');
@@ -34,6 +32,8 @@ export function ProductsScreen() {
   const resource = useMemo(
     () => ({
       ...productsResource,
+      // Download Excel gives the item list as the shop keeps it: a sheet per category.
+      exportPath: '/admin/items/sheet',
       listQuery: { ...productsResource.listQuery, ...(groupId && { groupId }) },
       // An item is changed on its own page.
       canEdit: false,
@@ -71,15 +71,12 @@ export function ProductsScreen() {
               className="w-44"
             />
             <WorkbookUploadButton
-              path="/admin/products/import"
-              templatePath="/admin/products/import/template"
-              title={t('uploadProducts')}
-              description={t('uploadProductsNote')}
-              refresh={['products', 'stock']}
+              path="/admin/items/sheet"
+              templatePath="/admin/items/sheet"
+              title={t('uploadItemList')}
+              description={t('uploadItemListNote')}
+              refresh={['products', 'stock', 'categories', 'materials']}
             />
-            <Button variant="secondary" icon="list" onClick={() => setMany(true)}>
-              {tf('bulkAdd')}
-            </Button>
             <Link href={routes.addItem()} className={buttonVariants({ variant: 'primary' })}>
               {t('addItem')}
             </Link>
@@ -103,13 +100,6 @@ export function ProductsScreen() {
       />
 
       <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
-
-      <BulkGrid
-        resource={quickItemResource}
-        open={many}
-        onOpenChange={(next) => setMany(next ? true : false)}
-        description={t('addManyItemsNote')}
-      />
     </>
   );
 }

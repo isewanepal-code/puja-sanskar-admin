@@ -2704,7 +2704,9 @@
     "unpackKitsNote": "The kits are opened and their items go back on the shelf.",
     "kitsUnpacked": "Done: the items are back on the shelf",
     "newKitPage": "New puja kit",
-    "openKit": "Open"
+    "openKit": "Open",
+    "uploadItemList": "Add items from the Excel list",
+    "uploadItemListNote": "Download the list first (Download the layout). Each sheet is a category; grey rows are already in the shop and stay locked. Write new items in the empty rows under them: Nepali name, English name, search group and variants (50 gm, 1 kg, 5 पिस). Rule A: weights and counts of one thing are its variants. Rule B: a different size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own row. A new sheet makes a new category. New items come in off sale until you set a selling price."
   },
   "media": {
     "pickTitle": "Choose an image",
