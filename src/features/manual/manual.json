@@ -1,0 +1,577 @@
+{
+  "title": "Puja Sanskar Admin — Full Manual",
+  "subtitle": "From setting up the shop to selling: every page, every box and every column, in plain words.",
+  "updated": "2026-11-21",
+  "chapters": [
+    {
+      "id": "start",
+      "title": "0 · Before you start",
+      "nepali": "Suru garnu aghi yo padhnus.",
+      "where": "Every page",
+      "intro": "The sidebar on the left goes in the order the work is done: 1 Setup, 2 Items, 3 Buy, 4 Stock, 5 Kits and pujas, 6 Sell, 7 Money. Do them in that order the first time.",
+      "steps": [
+        "Look at the top bar: Staging (yellow strip) is for practice; anything can be deleted. Production is real work: things already bought or sold cannot be deleted.",
+        "Main branch (top right) is the shop whose stock you see and change.",
+        "A red * next to a box means it must be filled.",
+        "Leaving a page with typed work asks first: Discard or Keep editing.",
+        "An (i) next to a column name explains that column; hover or tap it."
+      ],
+      "terms": [
+        [
+          "Item",
+          "One thing the shop sells: अबिर (रातो) - साधारण. Each size or quality is its own item (Rule B): तामाको थाली सानो and तामाको थाली ठूलो are two items."
+        ],
+        [
+          "Size (sold as)",
+          "How one item is sold: 50 g, 100 g, 1 kg, 1 set, 1.5 m. One item can be sold in many sizes (Rule A). Each size has its own price and its own stock."
+        ],
+        [
+          "Bulk size",
+          "The size stock is bought in: 1 kg (25 kg bag = 25 × 1 kg), 1 m (100 m roll). It is turned into small sizes with Make packets. It stays off sale unless you give it a price."
+        ],
+        [
+          "Search group (मूल सामग्री / samagri)",
+          "Groups items of the same thing for search and puja lists: अबिर holds Abir Sadharan and Abir Special. A puja's samagri list names search groups, not items."
+        ],
+        [
+          "Category",
+          "Big shelf of the shop and the website: आधारभूत सामग्री, हवन सामग्री… (the sheet names of the item Excel)."
+        ],
+        [
+          "Item group",
+          "A list you make yourself (Tihar items, Copper vessels). Can sit inside another group. Shown on the website as a filter when you tick it."
+        ],
+        [
+          "Kit",
+          "Many items sold together for one puja: लक्ष्मी पूजा किट. Packages: Basic, Standard, Premium."
+        ],
+        [
+          "Grey / yellow / white rows in Excel",
+          "Grey = already in the shop, locked. Pale yellow = may be changed (price, supplier). White = new rows you can fill."
+        ]
+      ]
+    },
+    {
+      "id": "categories",
+      "title": "1.1 · Categories",
+      "nepali": "Pasal ra website ko thulo khanda (shelf).",
+      "where": "Sidebar → 1 Setup → Categories",
+      "intro": "Made once. Items are filed under a category. The 5 categories from your Excel are already there.",
+      "fields": [
+        ["Name in Nepali *", "आधारभूत सामग्री", "Shown on the website menu and item lists."],
+        ["Name in English *", "Basic Dry Goods", "Shown on the English website."],
+        [
+          "Under",
+          "(empty) or another category",
+          "Empty = top level. Choosing one makes this a sub-category inside it."
+        ],
+        ["Order", "1, 2, 3", "Smaller number comes first in menus."],
+        [
+          "Shown on the website",
+          "On / Off",
+          "Off hides the category and its items from the website menu."
+        ]
+      ],
+      "tips": ["Do not delete a category that has items; move the items first."]
+    },
+    {
+      "id": "units",
+      "title": "1.2 · Units",
+      "nepali": "Naap: g, kg, ml, L, m, pcs, set, मुठा…",
+      "where": "Sidebar → 1 Setup → Units",
+      "intro": "The words sizes are counted in. Already made: g, kg, ml, L, m, cm, pcs, pack, box, set, pair, bundle (मुठा), leaf (पात), kit, dala, ghari, stalk, plant, roll, skein. Add one only if a new kind of size is needed.",
+      "fields": [
+        ["Symbol *", "kg", "The short word shown everywhere: 1 kg, 50 g."],
+        ["Name in Nepali *", "किलोग्राम", "Shown in Nepali."],
+        [
+          "What it measures",
+          "Weight / Volume / Length / Count",
+          "Decides which items may use it: rice (By weight) only gets g and kg."
+        ]
+      ]
+    },
+    {
+      "id": "options",
+      "title": "1.3 · Colours and sizes",
+      "nepali": "Rang (rato, pahenlo) ra size (S, M, L) ko list.",
+      "where": "Sidebar → 1 Setup → Colours and sizes",
+      "intro": "Only for items bought in colours or clothing sizes (cloth in red and yellow; a kurta in S, M, L). Puja items whose sizes are weights or counts (50 g, 5 pcs) do not need this.",
+      "steps": [
+        "Press \"Add common colours and sizes\" once: Red, Yellow, White, Black… and S, M, L, XL are made.",
+        "When you buy a red cloth, choose Red in the Buy line's \"Colour or size\": red cloth comes into stock and is sold as red."
+      ]
+    },
+    {
+      "id": "suppliers",
+      "title": "1.4 · Suppliers",
+      "nepali": "Jaha bata saman kinchhau: pasal, thok, kishan.",
+      "where": "Sidebar → 1 Setup → Suppliers (or \"+ New supplier\" on the Buy page)",
+      "intro": "Needed before buying. 8 sample suppliers are there (Asan, Patan, Bhaktapur, Pharping, Kalimati, Birgunj, Janakpur, Indra Chowk); their phone numbers are made up.",
+      "fields": [
+        [
+          "Name *",
+          "Asan Puja Samagri Thok",
+          "Shown on bills and the Buy page. The code is made by itself."
+        ],
+        ["Phone", "98XXXXXXXX", "To call them."],
+        ["Address", "Asan, Kathmandu", "Where they are."],
+        ["Contact person", "Ram Kumar", "Who to ask for."],
+        [
+          "PAN",
+          "9 digits",
+          "Fill it for a VAT-registered seller. In the Buy sheet a blank VAT then means the item's VAT; without a PAN it means 0%."
+        ],
+        ["Days to pay", "15", "How many days after a bill you pay them."],
+        ["Owed before", "12000", "What the shop already owed them before using this system."],
+        ["Note", "Delivers on Tuesday", "Anything to remember."]
+      ],
+      "columns": [
+        ["Name", "The supplier."],
+        ["Owed now", "Bills not yet paid, minus payments."],
+        ["Active", "Off hides them from the Buy page."]
+      ]
+    },
+    {
+      "id": "add-item",
+      "title": "2.1 · Add item",
+      "nepali": "Saman ko naam matra. Rang/size, kati ra mol pachhi Buy ma.",
+      "where": "Sidebar → 2 Items → Add item",
+      "intro": "Say what the item is, nothing more. Rule B: each size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own item — add each one separately.",
+      "fields": [
+        [
+          "Name (English) *",
+          "Copper Worship Plate Small",
+          "Without colour (red cloth is just \"Cloth\"; colour comes when buying). Must not be the same as another item."
+        ],
+        ["Name (Nepali) *", "तामाको पूजा थाली सानो", "Shown on the website and the bill."],
+        [
+          "How do you sell it? *",
+          "By piece / By weight / By length / By litre / By size",
+          "Decides the units offered when buying: By weight → g, kg; By length → m."
+        ],
+        ["Category *", "भाँडाकुँडा र घरमै हुने", "Where it is filed in the shop and website."],
+        [
+          "Name in Roman (More details)",
+          "Tamako Puja Thali Sano",
+          "Helps people find it typing English letters."
+        ],
+        ["Other names (More details)", "thal, plate", "More search words; Enter after each."],
+        ["Brand (More details)", "Patanjali", "Optional."],
+        [
+          "Usually bought from (More details)",
+          "Patan Dhatu Kala Udhyog",
+          "Chosen first on the Buy page."
+        ],
+        [
+          "\"Save it anyway\" tick",
+          "—",
+          "Only when a warning says a similar name exists but this really is a different item."
+        ]
+      ],
+      "steps": [
+        "Fill the boxes and press Save item.",
+        "Then choose: Buy it now (go to Buy with this item), Add another item, or Open the item."
+      ],
+      "tips": ["Many items at once? Use All items → Upload Excel (chapter 2.4)."]
+    },
+    {
+      "id": "items-list",
+      "title": "2.2 · All items (the list)",
+      "nepali": "Pasal ko sabai saman ko list.",
+      "where": "Sidebar → 2 Items → All items",
+      "columns": [
+        ["Item", "Photo, Nepali name, English name. Click Open to see the item."],
+        [
+          "Sold as",
+          "The sizes it is sold in: 50 g · 100 g · 1 kg. \"+2\" = two more. A dotted chip = that size has no selling price (not on sale). Click to jump to its stock and prices."
+        ],
+        ["Sells for", "Its selling price; with many sizes, the cheapest."],
+        ["Shown on the website", "On = on the website and can be sold. Off = hidden."],
+        [
+          "Buttons",
+          "Open = the item page. Box icon = Archive (hide an item you stopped selling; it can come back). Bin = Delete."
+        ]
+      ],
+      "steps": [
+        "Search: type any name, Nepali or English.",
+        "Every group: show only the items of one item group.",
+        "Download Excel: the whole list, one sheet per category, in your Excel layout.",
+        "Upload Excel: add new items and change prices and suppliers (chapter 2.4)."
+      ]
+    },
+    {
+      "id": "item-page",
+      "title": "2.3 · The item page",
+      "nepali": "Euta saman ko sabai kura euta page ma, tab bina.",
+      "where": "All items → Open (or click the item anywhere)",
+      "intro": "One page, top to bottom.",
+      "columns": [
+        [
+          "What is left to do",
+          "Three lines: selling price, stock, photo. Yellow = still to do, with the button that does it. Green = done."
+        ],
+        ["Sold as", "One line per size: 1 set, 50 g, 1.5 m."],
+        [
+          "In stock",
+          "How many of that size are in the shop: \"18 × 1.5 m\" = 18 pieces of 1.5 m. \"None — buy\" = buy it first."
+        ],
+        ["Cost of 1", "What one cost when bought (from the bills)."],
+        [
+          "Sell 1 for",
+          "Type the price (Rs, VAT included) and press Save. A size not on sale shows \"Put on sale\"."
+        ],
+        ["On sale", "Green = can be sold. Click it to take that size off sale."]
+      ],
+      "fields": [
+        ["Edit name and website text → Names", "—", "Change the Nepali and English names."],
+        [
+          "Edit name and website text → Website text",
+          "Used in every puja for…",
+          "A line or two under the name on the website."
+        ],
+        ["Edit name and website text → Show on the website", "tick", "Untick to hide the item."],
+        [
+          "Add another size → How much + Unit + Sell for",
+          "2 + kg + 250",
+          "A new size of the same item (2 kg next to 1 kg), on sale at once."
+        ],
+        [
+          "Photos → Add photos",
+          "pick files",
+          "The first photo is the main one. Shown for: leave \"All colours and sizes\", or pick one colour if the photo shows only it."
+        ],
+        [
+          "Item groups",
+          "Tihar Items",
+          "Tick the groups it belongs to; the × removes it from a group."
+        ]
+      ],
+      "tips": [
+        "Expert settings (link at the bottom): tax, HS code, offers, quality grades, \"goes with\". Rarely needed."
+      ]
+    },
+    {
+      "id": "item-excel",
+      "title": "2.4 · Item list in Excel",
+      "nepali": "Dherai saman ekaipatak: Excel ma lekhera upload.",
+      "where": "All items → Download Excel / Upload Excel",
+      "intro": "Same layout as your master list. Each sheet is a category. The first sheet (गृहपृष्ठ) has the rules.",
+      "columns": [
+        ["क्र.सं.", "Row number."],
+        ["सामग्री (Nepali Item Name) *", "Nepali name. Each size/quality is its own row (Rule B)."],
+        [
+          "English Name *",
+          "Must be different from every other item; add Small/Medium/Large, Regular/Special."
+        ],
+        ["Romanized Form", "Name in English letters."],
+        [
+          "मूल सामग्री (Search Group)",
+          "Search group: अबिर, कलश, धूप. Same word = same group. A new word makes a new group."
+        ],
+        ["Variant प्रकार (Type)", "Only for reading; how it sells is found from the sizes."],
+        [
+          "सुझाएका Variants",
+          "The sizes, comma between: 50 gm, 100 gm, 1 kg — or 1 पिस, 5 पिस — or सानो प्याक, ठूलो बक्स. Empty = 1 piece."
+        ],
+        [
+          "बेच्ने मूल्य Rs (pale yellow)",
+          "One price per size in the same order: 35, 65, 580. A blank place keeps that size as it is. A price puts that size on sale."
+        ],
+        ["मुख्य सप्लायर (pale yellow)", "Pick from the list: who you usually buy it from."],
+        [
+          "नपाइएमा वैकल्पिक / प्रयोजन",
+          "What to use if it is not found, or what it is for; shown as website text."
+        ],
+        ["Code (नछुनुहोस्)", "Made by the shop; do not touch. Leave empty for new rows."]
+      ],
+      "steps": [
+        "Download Excel. Grey rows are in the shop (locked); only their yellow price and supplier can change.",
+        "Write new items in the white rows below. A new sheet = a new category (sheet name = category name).",
+        "Upload Excel → Choose the .xlsx → Check the file. Mistakes are listed by sheet, row and column; nothing is saved until all are fixed.",
+        "Press Import. Uploading the same file again adds only the new rows."
+      ]
+    },
+    {
+      "id": "prices-groups",
+      "title": "2.5 · Selling price and Item groups",
+      "nepali": "Mol ek thau ma; samuha banaune.",
+      "where": "Sidebar → 2 Items → Selling price / Item groups",
+      "steps": [
+        "Selling price: every size of every item with its price, to change many at once.",
+        "Item groups: make a group (Tihar Items), put it inside another (Festival Items → Tihar Items → Laxmi Puja Items), tick \"Show on website\" to make it a website filter, and add items or kits to it. Many groups at once: Pujas, kits and groups Excel (chapter 5.3)."
+      ]
+    },
+    {
+      "id": "buy",
+      "title": "3.1 · Buy (bring stock in)",
+      "nepali": "Bazar bata kineko saman: kun, kati, kati ma. Save garda stock ma thapincha.",
+      "where": "Sidebar → 3 Buy → Buy",
+      "fields": [
+        [
+          "Bought from (supplier) *",
+          "Birgunj Kirana Thok Bikreta",
+          "Who sold it. Not in the list? \"+ New supplier\" (name and phone) right there."
+        ],
+        ["Bill number", "BKT-7781", "The number on the paper bill. Empty = one is made."],
+        ["Date", "2026-11-21", "The bill's date."],
+        ["Item *", "अक्षता - साधारण", "What was bought. Not in the list? Add item first."],
+        [
+          "Colour or size",
+          "Red",
+          "Only for coloured/sized items; what comes from red cloth stays red."
+        ],
+        [
+          "How much * + Unit *",
+          "25 + kg",
+          "How much came: 25 kg bag, 100 m roll, 20 pcs. It is stored as 25 × \"1 kg\" (the bulk size)."
+        ],
+        ["Cost of 1 (before VAT) *", "97.50", "What one kg / m / pcs cost, without VAT."],
+        ["Sell 1 for", "125", "Optional: filled in, that size goes on sale now."],
+        [
+          "VAT",
+          "As the item's tax / 13% / No VAT",
+          "VAT bill = 13%. No VAT bill (farmer, small seller) = No VAT."
+        ],
+        ["Expires on", "2027-05-31", "For food, ghee, flowers. Shown later on Expiring stock."]
+      ],
+      "columns": [
+        ["Total", "How much × cost; the line under shows it with VAT."],
+        ["Before VAT / VAT / Total to pay", "The bill's totals at the bottom."]
+      ],
+      "steps": [
+        "Fill the top (supplier, bill no., date), then one line per thing bought. \"Add another item\" adds a line.",
+        "Press Save: the bill is saved and everything goes into stock at once.",
+        "Missing something? The box turns red and a message says what."
+      ],
+      "tips": [
+        "While the shop is not VAT registered (Settings → Business), VAT paid is added to the cost.",
+        "Many bills at once: \"Buy many with Excel\" (chapter 3.2)."
+      ]
+    },
+    {
+      "id": "buy-excel",
+      "title": "3.2 · Buy many with Excel (Buy sheet)",
+      "nepali": "Dherai bill ekaipatak.",
+      "where": "Buy page or Purchase bills → Upload Excel → Download the layout",
+      "columns": [
+        ["सप्लायर (Supplier) *", "Pick from the list."],
+        ["बिल नं. (Bill No.) *", "Rows with the same supplier + bill number = one bill."],
+        ["मिति (Date) *", "2026-11-21; the same on every row of one bill."],
+        ["सामान (Item) *", "Pick or type the Nepali name."],
+        ["कति (How much) *", "25"],
+        ["एकाइ (Unit) *", "kg, g, m, pcs, L… must fit how the item sells."],
+        ["एकको मूल्य Rs *", "Cost of one unit, before VAT."],
+        ["VAT %", "13 or 0. Blank: 0 if the supplier has no PAN, else the item's VAT."],
+        ["Expiry", "2027-05-31, optional."],
+        ["बेच्ने मूल्य Rs", "Optional selling price: puts that size on sale."]
+      ],
+      "steps": [
+        "The Example sheet shows filled rows (rice 25 kg, ghee 5 L, red cloth 100 m).",
+        "Check the file, then Import: each bill is saved and goes into stock.",
+        "A bill already entered (same supplier + bill no.) is skipped, so nothing is doubled."
+      ]
+    },
+    {
+      "id": "bills",
+      "title": "3.3 · Purchase bills",
+      "nepali": "Kineko bill haru.",
+      "where": "Sidebar → 3 Buy → Purchase bills",
+      "columns": [
+        ["Date", "The bill's date."],
+        ["Supplier", "Who sold it."],
+        ["Lines", "How many things on the bill."],
+        ["VAT / Total", "VAT and the amount to pay."],
+        ["Status", "Draft = saved, not in stock yet (✓ posts it). Posted = in stock."]
+      ],
+      "tips": ["In Staging a posted bill can be deleted; its stock goes back out."]
+    },
+    {
+      "id": "stock",
+      "title": "4.1 · Stock",
+      "nepali": "Kati saman baki chha.",
+      "where": "Sidebar → 4 Stock → Stock",
+      "columns": [
+        ["Stock value (tile)", "What all stock cost (VAT included while not VAT registered)."],
+        ["Sizes in stock (tile)", "How many item sizes have stock."],
+        ["Running low (tile)", "Sizes below their \"Warn when below\"."],
+        ["Sizes with no stock (tile)", "Sizes never bought or sold out."],
+        ["Item", "Nepali and English name."],
+        ["Sold as", "The size the stock is counted in: 1 set, 1 L, 1 kg."],
+        [
+          "In stock",
+          "How many of that size: 5 = 5 sets; 0.2 = 0.2 L. Click the number to correct it after counting."
+        ],
+        [
+          "Status",
+          "OK = enough. Low = below the warning level. None = sold out. \"2 kept for orders\" shows only when customer orders hold some."
+        ],
+        ["Warn when below", "Set with ✏️: below this it shows as Low."],
+        ["Worth", "In stock × cost."]
+      ],
+      "steps": [
+        "Filters: category, item group, supplier, brand, item; All / Running low / No stock.",
+        "Row buttons: Damaged / lost (broken, expired, missing: stock goes down as a loss), Count (type what you counted), Make packets (chapter 4.2).",
+        "⋯ menu: History (every in and out), Update, Send to another branch; in Staging also Delete this stock."
+      ]
+    },
+    {
+      "id": "packets",
+      "title": "4.2 · Make packets (big to small sizes)",
+      "nepali": "Thok (bora, than) kholera sano pack banaune.",
+      "where": "Stock → Make packets on the bulk size's row",
+      "fields": [
+        [
+          "How many of the bulk pack are opened",
+          "70 (of a 100 m roll stored as 1 m)",
+          "Taken out of the bulk size."
+        ],
+        [
+          "Smaller packs that come out → Pack + How many",
+          "1.5 m × 20, 2 m × 20",
+          "Added to stock. \"+ A new pack\" makes a size that does not exist yet."
+        ]
+      ],
+      "steps": [
+        "Example cloth: 100 m bought → open 70 → 20 × 1.5 m (30 m) + 20 × 2 m (40 m); 30 m stays on the roll.",
+        "Example rice: 25 kg bag → open 10 → 10 × 500 g + 25 × 200 g; 15 kg stays in the bag.",
+        "The screen shows what was opened, what the packs make, and any wastage; the cost is shared over the new packs."
+      ]
+    },
+    {
+      "id": "expiring",
+      "title": "4.3 · Expiring stock and Archive",
+      "nepali": "Miti sakine saman; bechna chhodeko saman.",
+      "where": "Sidebar → 4 Stock → Expiring stock / Archive",
+      "steps": [
+        "Expiring stock: everything with an \"Expires on\" date from Buy, soonest first. Write off = remove expired stock as a loss.",
+        "Archive: items and kits you stopped selling. Restore brings them back; Not sold for (days) finds items to retire."
+      ]
+    },
+    {
+      "id": "kits",
+      "title": "5.1 · Kits",
+      "nepali": "Euta puja ko lagi dherai saman ek sath.",
+      "where": "Sidebar → 5 Kits and pujas → Kits",
+      "fields": [
+        ["Puja", "लक्ष्मी पूजा", "Which puja the kit is for."],
+        ["Name in Nepali / English *", "लक्ष्मी पूजा किट", "Shown on the website."],
+        [
+          "Packages",
+          "Basic / Standard / Premium",
+          "Each package has its own items, photo and discount."
+        ],
+        [
+          "Items + How many",
+          "माटोको दियो 12 pcs × 2",
+          "What is inside. Each item size must be on sale."
+        ],
+        ["Discount", "5 %", "Taken off the items' total when bought as a kit."]
+      ],
+      "tips": [
+        "The fastest way: in the Excel (chapter 5.3) write \"Make from puja samagri = हो\" and the kit is filled from the puja's samagri list."
+      ]
+    },
+    {
+      "id": "pujas",
+      "title": "5.2 · Pujas and puja groups",
+      "nepali": "Puja haru tah-tah ma (वर्ग → उपवर्ग → समूह).",
+      "where": "Sidebar → 5 Kits and pujas → Pujas",
+      "steps": [
+        "Puja groups form a tree, as deep as needed: चाडपर्व → दशैं → नवरात्र. Levels are called वर्ग, उपवर्ग, समूह.",
+        "Each puja sits in a group, has a type (पूजा, चाडपर्व, संस्कार, व्रत, शान्ति, श्राद्ध, पाठ, हवन) and a samagri list.",
+        "The samagri list names search groups (अबिर, धूप, कलश) with how much and Required / Optional. The website shows this list and the puja's kits."
+      ]
+    },
+    {
+      "id": "catalogue-excel",
+      "title": "5.3 · Pujas, kits and groups Excel",
+      "nepali": "Puja, kit ra samuha ekaipatak Excel bata.",
+      "where": "Pujas, Kits or Item groups page → Upload Excel → Download the layout",
+      "intro": "Fill the sheets in order; a name typed on one sheet can be used on the next.",
+      "columns": [
+        [
+          "पूजा समूह: समूह, English, माथिको समूह",
+          "Group, its English name, and its parent group (empty = top). The parent makes the nesting, any depth."
+        ],
+        ["पूजा: पूजा, English, समूह, प्रकार", "The puja, its group and type."],
+        [
+          "पूजा सामग्री: पूजा, मूल सामग्री, कति, एकाइ, अनिवार्य/ऐच्छिक",
+          "One row per samagri a puja needs. Empty amount = \"as the ritual needs\"."
+        ],
+        [
+          "किट: किट, English, पूजा, प्याकेज, पूजा सामग्रीबाट बनाउने?, छुट %",
+          "\"हो\" fills the kit from the puja's samagri (items on sale). \"होइन\" takes the items from the next sheet."
+        ],
+        [
+          "किटका सामान: किट, सामान, प्याक, कति वटा, ऐच्छिक?",
+          "Items and sizes (100 g, 1 pcs) in a kit."
+        ],
+        [
+          "सामान समूह: समूह, English, माथिको समूह, वेबसाइटमा देखाउने?",
+          "Item groups, nested the same way; \"हो\" makes a website filter."
+        ],
+        ["समूहका सामान: समूह, सामान वा किट", "What goes in each group."]
+      ],
+      "steps": [
+        "Grey rows are saved (locked); write in the empty rows.",
+        "Check the file, then Import. The same file uploaded again adds only new rows."
+      ]
+    },
+    {
+      "id": "sell",
+      "title": "6 · Sell",
+      "nepali": "Pasal ma ra website bata bechne.",
+      "where": "Sidebar → 6 Sell → Counter sale / Orders and bills / Customers",
+      "fields": [
+        ["Item or kit", "पूजा घिउ 250 ml", "Tap a kit or choose an item size."],
+        ["Qty", "2", "How many."],
+        ["Customer name / Phone", "Walk-in customer", "Optional."],
+        [
+          "Coupon / Counter discount + Why",
+          "10 % — regular customer",
+          "A discount needs a reason."
+        ],
+        [
+          "Record sale",
+          "—",
+          "Stock goes down at once; the sale opens as an order where payment is taken and the bill issued."
+        ]
+      ],
+      "steps": [
+        "Orders and bills: every sale from the counter and the website; take payment and print the bill there.",
+        "Customers: people who bought, with their orders."
+      ],
+      "tips": [
+        "Bills need the business profile: Settings → Business (shop name, address, PAN, VAT registered or not)."
+      ]
+    },
+    {
+      "id": "money",
+      "title": "7 · Money, offers, website, settings",
+      "nepali": "Paisa, offer, website ra setting.",
+      "where": "Sidebar → 7 Money, Offers, Website, Settings",
+      "steps": [
+        "Cash and bank: the shop's accounts and what moved in and out.",
+        "Expenses: rent, salary, transport; Reports: what sold, by item and day.",
+        "Offers / Coupons / Pandits: price offers, coupon codes, and pandit partners.",
+        "Website → Pages and banners: FAQs, pages and the home banners.",
+        "Settings: Business profile (needed for bills), tax, delivery areas, branches. Staff: who may log in and what they may do. Clear data: wipes shop data (only when switched on)."
+      ]
+    },
+    {
+      "id": "daily",
+      "title": "Daily routine (checklist)",
+      "nepali": "Hare din garne kam.",
+      "where": "—",
+      "steps": [
+        "Morning: Dashboard; Stock → Running low; Expiring stock.",
+        "Goods arrive: Buy (or the Buy sheet) with the paper bill.",
+        "Bulk opened: Stock → Make packets.",
+        "Customer in the shop: Counter sale → Orders and bills → payment and bill.",
+        "Something broken or expired: Stock → Damaged / lost.",
+        "New item: Add item → Buy → set the price on the item page.",
+        "End of day: Cash and bank; count a few shelves with Count."
+      ]
+    }
+  ]
+}

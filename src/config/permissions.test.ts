@@ -14,23 +14,28 @@ describe('can', () => {
     const groups = navigationFor(['reports:read']);
     expect(groups.map((group) => group.key)).toEqual(['overview', 'money']);
     expect(groups[1]!.sections.map((section) => section.key)).toEqual(['reports']);
+    // The dashboard and the manual are open to everyone.
+    expect(groups[0]!.sections.map((section) => section.key)).toEqual(['dashboard', 'manual']);
   });
 
   it('should show catalogue sections to a content manager', () => {
     const keys = navigationFor(['catalogue:read', 'catalogue:write']).flatMap((group) =>
       group.sections.map((section) => section.key),
     );
+    // In the order the work is done: setup, items, stock, kits and pujas, then the website.
     expect(keys).toEqual([
       'dashboard',
+      'manual',
+      'catalogue',
+      'units',
+      'options',
       'addItem',
       'items',
       'sellPrice',
-      'kits',
-      'options',
       'archive',
+      'kits',
       'pujas',
       'content',
-      'catalogue',
     ]);
   });
 });

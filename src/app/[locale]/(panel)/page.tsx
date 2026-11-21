@@ -89,6 +89,20 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
 
   return (
     <div className="grid gap-8">
+      {/* The way in for new staff: the whole flow, every box and column, in plain words. */}
+      <Link
+        href={routes.manual()}
+        className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm hover:bg-primary/10"
+      >
+        <span>
+          <span className="font-semibold">New here? Read the manual.</span>{' '}
+          <span className="text-muted-foreground">
+            Setup → Items → Buy → Stock → Kits and pujas → Sell, every box and column explained ·
+            Kasari chalaune
+          </span>
+        </span>
+        <span className="font-medium text-primary">Open the manual →</span>
+      </Link>
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-heading text-2xl font-semibold">{t('title')}</h1>

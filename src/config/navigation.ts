@@ -6,6 +6,7 @@ import { can, type Permission } from './permissions';
 export type NavSection = {
   key:
     | 'dashboard'
+    | 'manual'
     | 'counterSale'
     | 'orders'
     | 'customers'
@@ -29,6 +30,7 @@ export type NavSection = {
     | 'discounts'
     | 'pandits'
     | 'options'
+    | 'units'
     | 'dataReset'
     | 'catalogue'
     | 'settings'
@@ -41,46 +43,82 @@ export type NavSection = {
 
 export type NavGroup = {
   key:
-    'overview' | 'inventory' | 'sell' | 'catalogue' | 'money' | 'marketing' | 'website' | 'setup';
+    | 'overview'
+    | 'setup'
+    | 'items'
+    | 'buying'
+    | 'stock'
+    | 'kits'
+    | 'sell'
+    | 'money'
+    | 'marketing'
+    | 'website'
+    | 'settings';
   sections: NavSection[];
 };
 
-// The sidebar in the order the shop works: bring stock in, sell, count money, run the website, set up.
+// The sidebar in the order the shop works, numbered: what must exist first (categories, units,
+// colours and sizes, suppliers), then the items, buying them, the stock, kits and pujas, selling,
+// and the money. Offers, the website and settings come last.
 export const navigation: NavGroup[] = [
   {
     key: 'overview',
-    sections: [{ key: 'dashboard', href: routes.dashboard(), icon: 'grid' }],
+    sections: [
+      { key: 'dashboard', href: routes.dashboard(), icon: 'grid' },
+      { key: 'manual', href: routes.manual(), icon: 'book' },
+    ],
   },
   {
-    // Everything about the goods in one place, in the order they come in: name the item, buy it,
-    // see what is left. Each is its own page; none hides behind tabs.
-    key: 'inventory',
+    key: 'setup',
+    sections: [
+      { key: 'catalogue', href: routes.categories(), icon: 'list', permission: 'catalogue:read' },
+      { key: 'units', href: routes.units(), icon: 'grain', permission: 'catalogue:read' },
+      { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
+      { key: 'suppliers', href: routes.suppliers(), icon: 'users', permission: 'purchases:read' },
+    ],
+  },
+  {
+    key: 'items',
     sections: [
       { key: 'addItem', href: routes.addItem(), icon: 'plus', permission: 'catalogue:write' },
-      { key: 'buy', href: routes.buy(), icon: 'truck', permission: 'purchases:write' },
-      { key: 'stock', href: routes.stock(), icon: 'box', permission: 'inventory:read' },
       { key: 'items', href: routes.products(), icon: 'leaf', permission: 'catalogue:read' },
       { key: 'sellPrice', href: routes.itemPrices(), icon: 'tag', permission: 'catalogue:write' },
+      {
+        key: 'priceGroups',
+        href: routes.priceGroups(),
+        icon: 'archive',
+        permission: 'promotions:manage',
+      },
+    ],
+  },
+  {
+    key: 'buying',
+    sections: [
+      { key: 'buy', href: routes.buy(), icon: 'truck', permission: 'purchases:write' },
       { key: 'buying', href: routes.purchaseBills(), icon: 'list', permission: 'purchases:read' },
-      { key: 'suppliers', href: routes.suppliers(), icon: 'users', permission: 'purchases:read' },
+    ],
+  },
+  {
+    key: 'stock',
+    sections: [
+      { key: 'stock', href: routes.stock(), icon: 'box', permission: 'inventory:read' },
+      { key: 'flowWork', href: routes.expiring(), icon: 'clock', permission: 'inventory:read' },
+      { key: 'archive', href: routes.archive(), icon: 'archive', permission: 'catalogue:read' },
+    ],
+  },
+  {
+    key: 'kits',
+    sections: [
+      { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
+      { key: 'pujas', href: routes.pujaGroups(), icon: 'temple', permission: 'catalogue:read' },
     ],
   },
   {
     key: 'sell',
     sections: [
       { key: 'counterSale', href: routes.counterSale(), icon: 'store', permission: 'orders:sell' },
-      { key: 'orders', href: routes.orders(), icon: 'box', permission: 'orders:read' },
+      { key: 'orders', href: routes.orders(), icon: 'bag', permission: 'orders:read' },
       { key: 'customers', href: routes.customers(), icon: 'user', permission: 'customers:read' },
-    ],
-  },
-  {
-    // The less daily work: kits made of items, colours and sizes, repacking, and what was retired.
-    key: 'catalogue',
-    sections: [
-      { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
-      { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
-      { key: 'flowWork', href: routes.expiring(), icon: 'clock', permission: 'inventory:read' },
-      { key: 'archive', href: routes.archive(), icon: 'archive', permission: 'catalogue:read' },
     ],
   },
   {
@@ -95,38 +133,18 @@ export const navigation: NavGroup[] = [
     key: 'marketing',
     sections: [
       { key: 'offers', href: routes.offers(), icon: 'percent', permission: 'promotions:manage' },
-      {
-        key: 'priceGroups',
-        href: routes.priceGroups(),
-        icon: 'list',
-        permission: 'promotions:manage',
-      },
       { key: 'discounts', href: routes.discounts(), icon: 'tag', permission: 'promotions:manage' },
       { key: 'pandits', href: routes.pandits(), icon: 'users', permission: 'promotions:manage' },
     ],
   },
   {
     key: 'website',
-    sections: [
-      { key: 'pujas', href: routes.pujaGroups(), icon: 'temple', permission: 'catalogue:read' },
-      { key: 'content', href: routes.faqs(), icon: 'book', permission: 'catalogue:read' },
-    ],
+    sections: [{ key: 'content', href: routes.faqs(), icon: 'book', permission: 'catalogue:read' }],
   },
   {
-    key: 'setup',
+    key: 'settings',
     sections: [
-      {
-        key: 'catalogue',
-        href: routes.categories(),
-        icon: 'palette',
-        permission: 'catalogue:read',
-      },
-      {
-        key: 'settings',
-        href: routes.taxClasses(),
-        icon: 'check',
-        permission: 'settings:manage',
-      },
+      { key: 'settings', href: routes.taxClasses(), icon: 'check', permission: 'settings:manage' },
       { key: 'staff', href: routes.staff(), icon: 'users', permission: 'users:read' },
       { key: 'dataReset', href: routes.dataReset(), icon: 'trash', permission: 'data:reset' },
     ],

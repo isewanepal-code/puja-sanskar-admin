@@ -8,6 +8,7 @@ const withQuery = (path: string, query: Record<string, string | undefined>) => {
 // Every path the admin panel links to.
 export const routes = {
   dashboard: () => '/',
+  manual: () => '/manual',
   orders: () => '/orders',
   order: (id: string) => `/orders/${id}`,
   counterSale: () => '/counter',
