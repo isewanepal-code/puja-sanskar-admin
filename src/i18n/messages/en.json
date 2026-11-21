@@ -4419,5 +4419,10 @@
     "wiping": "Deleting…",
     "done": "Stock deleted.",
     "failed": "Could not delete the stock."
+  },
+  "catalogueSheet": {
+    "hint": "Dherai puja, kit wa samuha ekaipatak?",
+    "title": "Pujas, kits and groups with Excel",
+    "note": "Download the layout: it has the pujas, kits and groups already saved (grey, locked) and empty rows below. Fill the sheets in order: Puja Groups (a parent group nests them as deep as you like: चाडपर्व → दशैं → नवरात्र), Pujas, Puja Samagri (a search group from the item list), Kits (\"make from puja samagri: हो\" fills it from items on sale; \"होइन\" takes the items on Kit Items), Kit Items, Item Groups (nested the same way; \"show on website: हो\" makes a filter) and Group Items. Check the file, then Import. Uploading the same file again adds only the new rows."
   }
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
+import { CatalogueSheetBar } from '@/features/catalogue-sheet';
 import { PriceGroupsScreen } from '@/features/marketing';
 import { resolveLocale } from '@/i18n/server';
 
@@ -14,5 +15,10 @@ export async function generateMetadata({
 
 export default async function Page({ params }: PageProps<'/[locale]/marketing/groups'>) {
   await resolveLocale(params);
-  return <PriceGroupsScreen />;
+  return (
+    <div className="grid grid-cols-1 gap-4">
+      <CatalogueSheetBar />
+      <PriceGroupsScreen />
+    </div>
+  );
 }

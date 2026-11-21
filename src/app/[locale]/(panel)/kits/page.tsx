@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import { PageHeader } from '@/components/navigation';
+import { CatalogueSheetBar } from '@/features/catalogue-sheet';
 import { KitsScreen } from '@/features/kits';
 import { resolveLocale } from '@/i18n/server';
 
@@ -17,6 +18,7 @@ export default async function KitsPage({ params }: PageProps<'/[locale]/kits'>) 
   return (
     <div className="grid grid-cols-1 gap-6">
       <PageHeader title={t('title')} intro={t('intro')} />
+      <CatalogueSheetBar />
       <KitsScreen />
     </div>
   );
