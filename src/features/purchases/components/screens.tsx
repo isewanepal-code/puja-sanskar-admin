@@ -5,7 +5,13 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useRef, useState } from 'react';
 
 import { useToast } from '@/components/overlays';
-import { ActionModal, ConfirmDelete, ResourceScreen, useResourceText } from '@/components/resource';
+import {
+  ActionModal,
+  ConfirmDelete,
+  ResourceScreen,
+  useResourceText,
+  WorkbookUploadButton,
+} from '@/components/resource';
 import { Button, IconButton } from '@/components/ui/button';
 import { useTestModeOn } from '@/hooks/use-test-mode';
 import { isApiError, request } from '@/lib/api';
@@ -31,6 +37,7 @@ export function SuppliersScreen() {
 export function PurchaseBillsScreen() {
   const t = useResourceText('purchaseBills');
   const tp = useTranslations('purchases');
+  const tb = useTranslations('inventory.buy');
   const tf = useTranslations('forms');
   const toast = useToast();
   const queryClient = useQueryClient();
@@ -73,9 +80,18 @@ export function PurchaseBillsScreen() {
       <ResourceScreen
         resource={resource}
         toolbar={
-          <Button icon="plus" onClick={() => setEditing('new')}>
-            {tp('newBill')}
-          </Button>
+          <>
+            <WorkbookUploadButton
+              path="/admin/purchase-bills/sheet"
+              templatePath="/admin/purchase-bills/sheet"
+              title={tb('manyTitle')}
+              description={tb('manyNote')}
+              refresh={['purchaseBills', 'stock', 'products', 'suppliers']}
+            />
+            <Button icon="plus" onClick={() => setEditing('new')}>
+              {tp('newBill')}
+            </Button>
+          </>
         }
         rowActions={(row) =>
           row.status === 'DRAFT' ? (

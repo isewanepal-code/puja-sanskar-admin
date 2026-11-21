@@ -2706,7 +2706,7 @@
     "newKitPage": "New puja kit",
     "openKit": "Open",
     "uploadItemList": "Add items from the Excel list",
-    "uploadItemListNote": "Download the list first (Download the layout). Each sheet is a category; grey rows are already in the shop and stay locked. Write new items in the empty rows under them: Nepali name, English name, search group and variants (50 gm, 1 kg, 5 पिस). Rule A: weights and counts of one thing are its variants. Rule B: a different size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own row. A new sheet makes a new category. New items come in off sale until you set a selling price."
+    "uploadItemListNote": "Download the list first (Download the layout). Each sheet is a category. Grey rows are already in the shop: their names and variants are locked, but the pale-yellow Selling price and Usual supplier can be changed. Prices go in the order of the variants, VAT included: variants \"50 gm, 100 gm, 1 kg\" → prices \"35, 65, 580\". Write new items in the empty rows: Nepali name, English name, search group, variants, and price and supplier if you know them. Rule A: weights and counts of one thing are its variants. Rule B: a different size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own row. A new sheet makes a new category."
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -4366,7 +4366,10 @@
       "newSupplierName": "Supplier name, e.g. Asan Bazar Pasal",
       "newSupplierPhone": "Phone (optional)",
       "newSupplierSave": "Add supplier",
-      "supplierAdded": "{name} added and chosen."
+      "supplierAdded": "{name} added and chosen.",
+      "manyHint": "Dherai bill ekaipatak?",
+      "manyTitle": "Buy many with Excel",
+      "manyNote": "Download the Buy sheet (Download the layout). One row = one thing bought: supplier, bill no., date, item, how much, unit, cost of 1 before VAT, VAT (13 or 0), expiry and selling price, as on this page. Rows with the same supplier and bill no. become one bill. Check the file, then Import: each bill goes into stock. A bill already entered is skipped."
     },
     "itemPage": {
       "back": "All items",

@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
+import { WorkbookUploadButton } from '@/components/resource';
 import { Icon } from '@/components/icons';
 import { useToast } from '@/components/overlays';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
@@ -399,6 +400,18 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
   return (
     <div className="grid max-w-6xl gap-6">
       {guard}
+
+      {/* Many things from many bills at once: the same columns as this page, in Excel. */}
+      <div className="flex flex-wrap items-center justify-end gap-2 text-sm text-muted-foreground">
+        <span>{t('manyHint')}</span>
+        <WorkbookUploadButton
+          path="/admin/purchase-bills/sheet"
+          templatePath="/admin/purchase-bills/sheet"
+          title={t('manyTitle')}
+          description={t('manyNote')}
+          refresh={['purchaseBills', 'stock', 'products', 'suppliers']}
+        />
+      </div>
 
       <section className="grid gap-4 rounded-xl border border-border bg-card p-5 sm:grid-cols-3">
         <Field
