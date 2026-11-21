@@ -1,5 +1,6 @@
 'use client';
 
+import { SearchSelect } from '@/components/controls/search-select';
 import { Popover } from '@base-ui/react/popover';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -40,7 +41,7 @@ const today = (): CalendarDay => {
 const sameDay = (a: CalendarDay | null, b: CalendarDay) =>
   !!a && a.year === b.year && a.month === b.month && a.day === b.day;
 
-const select =
+const timeBox =
   'h-8 rounded-sm border border-border bg-card px-1.5 text-sm text-foreground focus:border-primary focus:outline-none';
 
 // Picks a day on the Nepali calendar and hands back its AD date.
@@ -113,30 +114,25 @@ export function BsDatePicker({ id, value, onChange, withTime, invalid }: BsDateP
               >
                 <Icon name="left" size={14} />
               </button>
-              <select
+              <SearchSelect
                 aria-label={t('month')}
-                value={shown.month}
-                onChange={(event) => setShown({ ...shown, month: Number(event.target.value) })}
-                className={cn(select, 'flex-1')}
-              >
-                {BS_MONTHS.map(([en, ne], index) => (
-                  <option key={en} value={index + 1}>
-                    {en} · {ne}
-                  </option>
-                ))}
-              </select>
-              <select
+                className="flex-1"
+                required
+                options={BS_MONTHS.map(([en, ne], index) => ({
+                  value: String(index + 1),
+                  label: `${en} · ${ne}`,
+                }))}
+                value={String(shown.month)}
+                onChange={(value) => setShown({ ...shown, month: Number(value) })}
+              />
+              <SearchSelect
                 aria-label={t('year')}
-                value={shown.year}
-                onChange={(event) => setShown({ ...shown, year: Number(event.target.value) })}
-                className={select}
-              >
-                {YEARS.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
+                className="w-28"
+                required
+                options={YEARS.map((year) => ({ value: String(year), label: String(year) }))}
+                value={String(shown.year)}
+                onChange={(value) => setShown({ ...shown, year: Number(value) })}
+              />
               <button
                 type="button"
                 onClick={() => move(1)}
@@ -186,7 +182,7 @@ export function BsDatePicker({ id, value, onChange, withTime, invalid }: BsDateP
                   value={time}
                   disabled={!day}
                   onChange={(event) => emit(day, event.target.value)}
-                  className={cn(select, 'w-32')}
+                  className={cn(timeBox, 'w-32')}
                 />
               </label>
             ) : null}

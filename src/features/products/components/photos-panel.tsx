@@ -1,5 +1,6 @@
 'use client';
 
+import { SearchSelect } from '@/components/controls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
@@ -108,22 +109,17 @@ export function PhotosPanel({ product }: { product: Product }) {
                 disabled={save.isPending}
                 onSave={(altText) => change(index, { altText })}
               />
-              <label className="grid gap-1 text-xs">
+              <div className="grid gap-1 text-xs">
                 {t('shownFor')}
-                <select
-                  className="h-8 rounded-md border border-border bg-card px-2 text-sm"
+                <SearchSelect
+                  aria-label={t('shownFor')}
+                  options={values.map((value) => ({ value: value.id, label: value.label }))}
+                  placeholder={t('all')}
                   value={photo.optionValueId ?? ''}
                   disabled={save.isPending}
-                  onChange={(event) => change(index, { optionValueId: event.target.value || null })}
-                >
-                  <option value="">{t('all')}</option>
-                  {values.map((value) => (
-                    <option key={value.id} value={value.id}>
-                      {value.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  onChange={(value) => change(index, { optionValueId: String(value) || null })}
+                />
+              </div>
               <div className="flex items-center justify-between gap-2 text-xs">
                 {index === 0 ? (
                   <span className="rounded-sm bg-primary/10 px-1.5 py-0.5 font-medium text-primary">

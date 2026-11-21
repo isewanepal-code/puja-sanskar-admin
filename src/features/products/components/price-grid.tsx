@@ -1,5 +1,6 @@
 'use client';
 
+import { SearchSelect } from '@/components/controls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
@@ -119,21 +120,17 @@ export function PriceGrid({ product }: { product: Product }) {
 
       {values.length > 0 ? (
         <div className="flex flex-wrap items-end gap-2 rounded-lg border border-border bg-muted/30 p-3">
-          <label className="grid gap-1 text-xs">
+          <div className="grid gap-1 text-xs">
             {t('forAll')}
-            <select
-              className="h-9 min-w-48 rounded-md border border-border bg-card px-2 text-sm"
+            <SearchSelect
+              aria-label={t('forAll')}
+              className="min-w-48"
+              options={values.map((value) => ({ value: value.id, label: value.label }))}
+              placeholder={t('choose')}
               value={target}
-              onChange={(event) => setTarget(event.target.value)}
-            >
-              <option value="">{t('choose')}</option>
-              {values.map((value) => (
-                <option key={value.id} value={value.id}>
-                  {value.label}
-                </option>
-              ))}
-            </select>
-          </label>
+              onChange={(value) => setTarget(String(value))}
+            />
+          </div>
           <label className="grid gap-1 text-xs">
             {t('price')}
             <Input

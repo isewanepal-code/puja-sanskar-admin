@@ -1,5 +1,6 @@
 'use client';
 
+import { SearchSelect } from '@/components/controls';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
@@ -143,20 +144,20 @@ export function ArchiveScreen() {
             className="sm:w-72"
           />
         ) : (
-          <label className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm">
             {t('notSoldFor')}
-            <select
-              value={days}
-              onChange={(event) => setDays(Number(event.target.value))}
-              className="h-9 rounded-md border border-border bg-card px-2 text-sm"
-            >
-              {[60, 90, 180, 365].map((value) => (
-                <option key={value} value={value}>
-                  {t('days', { count: value })}
-                </option>
-              ))}
-            </select>
-          </label>
+            <SearchSelect
+              aria-label={t('notSoldFor')}
+              className="w-36"
+              required
+              options={[60, 90, 180, 365].map((value) => ({
+                value: String(value),
+                label: t('days', { count: value }),
+              }))}
+              value={String(days)}
+              onChange={(value) => setDays(Number(value))}
+            />
+          </div>
         )}
       </div>
 
