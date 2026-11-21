@@ -78,6 +78,8 @@ export function ProductsScreen() {
     <>
       <ResourceScreen
         resource={resource}
+        // A link with ?q= (from the manual) opens the list already searched.
+        deepLink
         toolbar={
           <>
             <SearchSelect

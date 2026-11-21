@@ -111,6 +111,8 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
       ) : null}
       <ResourceScreen
         resource={resource}
+        // A link with ?q= (from the manual) opens the list already searched.
+        deepLink
         toolbar={
           <>
             <SearchSelect

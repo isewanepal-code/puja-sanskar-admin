@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import manual from './manual.json';
 import { PrintButton } from './print-button';
 
@@ -12,6 +14,16 @@ type Chapter = {
   fields?: string[][];
   columns?: string[][];
   tips?: string[];
+  // A worked example: steps, each with a direct link to its page.
+  example?: Array<{
+    title: string;
+    go: string;
+    goLabel: string;
+    intro?: string;
+    head: string[];
+    rows: string[][];
+    result?: string;
+  }>;
 };
 
 const th = 'border-b border-border px-3 py-2 text-left text-xs font-semibold text-muted-foreground';
@@ -31,8 +43,9 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row[0]}>
+          {rows.map((row, index) => (
+            // Rows may start alike (several lines of one bill).
+            <tr key={index}>
               {head.map((h, i) => (
                 <td key={h} className={i === 0 ? `${td} font-medium` : td}>
                   {row[i] ?? ''}
@@ -116,6 +129,32 @@ export function ManualPage() {
                 ))}
               </ol>
             </>
+          ) : null}
+          {c.example ? (
+            <ol className="grid gap-4">
+              {c.example.map((step) => (
+                <li key={step.title} className="grid gap-2 rounded-lg border border-border p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h3 className="text-sm font-semibold">{step.title}</h3>
+                    {/* Straight to the page, no detour. */}
+                    <Link
+                      href={step.go}
+                      className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 print:hidden"
+                    >
+                      Go there: {step.goLabel} →
+                    </Link>
+                  </div>
+                  {step.intro ? <p className="text-sm">{step.intro}</p> : null}
+                  <Table head={step.head} rows={step.rows} />
+                  {step.result ? (
+                    <p className="rounded-md bg-success/10 px-3 py-2 text-sm">
+                      <span className="font-semibold">You see: </span>
+                      {step.result}
+                    </p>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
           ) : null}
           {c.tips ? (
             <ul className="grid gap-1 rounded-lg bg-muted/50 p-3 text-xs">
