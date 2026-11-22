@@ -105,14 +105,24 @@ export function TestModeSwitch({
 }
 
 // The strip under the header while test mode is on, so nobody forgets it.
-export function TestModeBanner({ initialOn }: { initialOn: boolean }) {
+export function TestModeBanner({
+  initialOn,
+  locked = false,
+}: {
+  initialOn: boolean;
+  locked?: boolean;
+}) {
   const t = useTranslations('testMode');
   const state = useTestMode();
   if (!initialOn || !state.data?.allowed) return null;
   return (
-    <div className="sticky top-14 z-20 flex items-center gap-2 bg-warning/15 px-4 py-1.5 text-xs text-foreground md:px-6">
-      <Icon name="info" size={14} className="shrink-0" />
-      <span>{t('banner')}</span>
+    // An opaque strip (the tint sits on the card colour), so the page never shows through it as it
+    // scrolls underneath.
+    <div className="sticky top-14 z-20 bg-card shadow-sm">
+      <div className="flex items-center gap-2 bg-warning/15 px-4 py-1.5 text-xs text-foreground md:px-6">
+        <Icon name="info" size={14} className="shrink-0" />
+        <span>{locked ? t('bannerStaging') : t('banner')}</span>
+      </div>
     </div>
   );
 }

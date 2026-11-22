@@ -118,7 +118,7 @@ export function HeaderBar({
         </div>
         <ChangePasswordModal open={changing} onOpenChange={setChanging} />
       </header>
-      <TestModeBanner initialOn={testMode} />
+      <TestModeBanner initialOn={testMode} locked={testModeLocked} />
     </>
   );
 }

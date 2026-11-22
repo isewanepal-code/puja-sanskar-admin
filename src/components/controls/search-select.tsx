@@ -44,6 +44,8 @@ type Props = {
   required?: boolean;
   // Borderless, for a cell of the bulk grid.
   bare?: boolean;
+  // A long chosen name wraps onto a second line instead of being cut with "…".
+  wrapValue?: boolean;
   className?: string;
   'aria-label'?: string;
 };
@@ -63,6 +65,7 @@ export function SearchSelect({
   disabled,
   required,
   bare,
+  wrapValue = false,
   className,
   'aria-label': ariaLabel,
 }: Props) {
@@ -202,7 +205,7 @@ export function SearchSelect({
         aria-haspopup="listbox"
         className={cn(
           bare
-            ? 'flex h-8 w-full items-center gap-1 bg-transparent px-2 text-left text-sm outline-none focus:bg-primary/5'
+            ? 'flex min-h-9 w-full items-center gap-1 bg-transparent px-2 py-1 text-left text-sm outline-none focus:bg-primary/5'
             : cn(control, 'flex min-h-9 items-center gap-1 py-1 text-left'),
           className,
         )}
@@ -233,7 +236,9 @@ export function SearchSelect({
               </span>
             ))
           ) : (
-            <span className="truncate">{labelOf(values[0]!)}</span>
+            <span className={wrapValue ? 'line-clamp-2 break-words' : 'truncate'}>
+              {labelOf(values[0]!)}
+            </span>
           )}
         </span>
         {!required && !disabled && values.length > 0 ? (

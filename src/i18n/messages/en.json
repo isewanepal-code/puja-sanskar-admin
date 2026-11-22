@@ -4419,7 +4419,8 @@
     "production": "Production",
     "help": "Staging is for testing: anything can be deleted, even when it is used. Production works safely, as the real shop.",
     "liveOnlyHelp": "This is the real shop. Deleting is checked: something in use cannot be deleted.",
-    "banner": "Staging mode (testing): you can delete items, bills and stock even when they are used. Switch to Production for real work."
+    "banner": "Staging mode (testing): you can delete items, bills and stock even when they are used. Switch to Production for real work.",
+    "bannerStaging": "Staging server (testing): you can delete items, bills and stock even when they are used. Real work is done on the production site."
   },
   "inventory": {
     "addItem": {
@@ -4549,7 +4550,9 @@
       "discountFormat": "The discount is an amount such as 50 or 50.50.",
       "discountTooBig": "The discount cannot be more than the bill ({total}).",
       "billTooBig": "The bill is too large. Check the amounts.",
-      "billDateFuture": "The bill date cannot be in the future."
+      "billDateFuture": "The bill date cannot be in the future.",
+      "newColour": "New colour",
+      "colourAdded": "{name} added and chosen."
     },
     "itemPage": {
       "back": "All items",

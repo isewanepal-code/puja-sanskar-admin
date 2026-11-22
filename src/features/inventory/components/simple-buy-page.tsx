@@ -16,7 +16,7 @@ import { Button, IconButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { brandsResource } from '@/features/catalogue';
 import { suppliersResource } from '@/features/purchases';
-import { unitsFor } from '@/features/products';
+import { optionValueResource, unitsFor, type OptionType } from '@/features/products';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
@@ -93,6 +93,7 @@ function LineRow({
   onChange,
   onRemove,
   onNewBrand,
+  onNewColour,
   removable,
   showErrors,
 }: {
@@ -101,6 +102,8 @@ function LineRow({
   onChange: (patch: Partial<Line>) => void;
   onRemove: () => void;
   onNewBrand: () => void;
+  // Only when a colour kind exists to add a value to.
+  onNewColour?: () => void;
   removable: boolean;
   // After Save was pressed with something missing: the empty cells turn red.
   showErrors: boolean;
@@ -175,6 +178,7 @@ function LineRow({
           aria-label={label(t('item'))}
           source={choices.buyItems}
           placeholder={t('itemSearch')}
+          wrapValue
           value={line.productId}
           onChange={(value) =>
             onChange({
@@ -212,16 +216,28 @@ function LineRow({
         className={cell}
         title={known.length ? t('colourKnown', { list: known.join(', ') }) : t('colourHint')}
       >
-        <SearchSelect
-          bare
-          multiple
-          aria-label={label(t('colour'))}
-          disabled={!line.productId}
-          placeholder={t('colourNone')}
-          source={choices.optionValues}
-          value={line.optionValueIds}
-          onChange={(value) => onChange({ optionValueIds: value as string[] })}
-        />
+        <div className="flex items-center">
+          <div className="min-w-0 flex-1">
+            <SearchSelect
+              bare
+              multiple
+              aria-label={label(t('colour'))}
+              disabled={!line.productId}
+              placeholder={t('colourNone')}
+              source={choices.optionValues}
+              value={line.optionValueIds}
+              onChange={(value) => onChange({ optionValueIds: value as string[] })}
+            />
+          </div>
+          {onNewColour ? (
+            <IconButton
+              icon="plus"
+              label={t('newColour')}
+              disabled={!line.productId}
+              onClick={onNewColour}
+            />
+          ) : null}
+        </div>
       </td>
       <td className={cn(cell, bad(!(num(line.quantity) > 0)))}>
         <input
@@ -334,6 +350,34 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
   const supplierForm = useMemo(() => suppliersResource(), []);
   const [addingSupplier, setAddingSupplier] = useState(false);
   const [brandFor, setBrandFor] = useState<number | null>(null);
+  const [colourFor, setColourFor] = useState<number | null>(null);
+  // The colour kind new colours are added to, found among the option kinds.
+  const optionTypes = useQuery({
+    queryKey: ['option-types', 'buy'],
+    queryFn: () =>
+      request<OptionType[]>('GET', '/admin/option-types', { query: { isActive: true } }),
+    staleTime: 5 * 60 * 1000,
+  });
+  const colourType = optionTypes.data?.find((type) => type.kind === 'COLOR');
+  // A shop that has never set up colours gets the colour kind made here, then the value form.
+  const openColour = async (index: number) => {
+    if (!colourType) {
+      try {
+        await request('POST', '/admin/option-types', {
+          body: { code: 'COLOUR', nameEn: 'Colour', nameNe: 'रङ', kind: 'COLOR', isActive: true },
+        });
+        await optionTypes.refetch();
+      } catch (error) {
+        toast.error(isApiError(error) ? error.message : tf('failed'));
+        return;
+      }
+    }
+    setColourFor(index);
+  };
+  const colourForm = useMemo(
+    () => (colourType ? optionValueResource(colourType) : null),
+    [colourType],
+  );
   // The bill once made, so a retry after a failed step posts it instead of making a second one.
   const made = useRef<Bill | null>(null);
   const change = (index: number, patch: Partial<Line>) => {
@@ -467,7 +511,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
   );
 
   return (
-    <div className="grid max-w-7xl gap-6">
+    <div className="grid max-w-[1700px] gap-6">
       {guard}
 
       {/* Many things from many bills at once: the same columns as this page, in Excel. */}
@@ -527,20 +571,20 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         <h2 className="font-heading text-base font-semibold">{t('what')}</h2>
         <p className="text-xs text-muted-foreground">{t('sheetNote')}</p>
         <div className="overflow-x-auto rounded-lg border border-border bg-card">
-          <table className="w-full min-w-[1120px] table-fixed border-separate border-spacing-0 text-sm">
+          <table className="w-full min-w-[1180px] table-fixed border-separate border-spacing-0 text-sm">
             <colgroup>
               <col style={{ width: 32 }} />
-              <col style={{ width: '22%' }} />
+              <col style={{ width: '24%' }} />
               <col style={{ width: 120 }} />
-              <col style={{ width: '11%' }} />
-              <col style={{ width: 72 }} />
-              <col style={{ width: 90 }} />
-              <col style={{ width: '12%' }} />
+              <col style={{ width: 130 }} />
+              <col style={{ width: 66 }} />
+              <col style={{ width: 84 }} />
+              <col style={{ width: '10%' }} />
               <col style={{ width: 80 }} />
-              <col style={{ width: 96 }} />
+              <col style={{ width: 92 }} />
               <col style={{ width: 120 }} />
-              <col style={{ width: 96 }} />
-              <col style={{ width: 44 }} />
+              <col style={{ width: 90 }} />
+              <col style={{ width: 40 }} />
             </colgroup>
             <thead className="bg-muted text-xs whitespace-nowrap text-muted-foreground">
               <tr>
@@ -567,6 +611,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
                   onChange={(patch) => change(index, patch)}
                   onRemove={() => setLines((all) => all.filter((_, i) => i !== index))}
                   onNewBrand={() => setBrandFor(index)}
+                  onNewColour={() => void openColour(index)}
                   removable={lines.length > 1}
                   showErrors={showErrors}
                 />
@@ -657,6 +702,22 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
           toast.success(t('brandAdded', { name: brand.name }));
         }}
       />
+
+      {colourForm ? (
+        <CreateModal
+          resource={colourForm}
+          open={colourFor !== null}
+          onOpenChange={(open) => (open ? undefined : setColourFor(null))}
+          onCreated={(row) => {
+            const created = row as unknown as { id: string; valueEn?: string };
+            if (colourFor !== null) {
+              const line = lines[colourFor];
+              change(colourFor, { optionValueIds: [...(line?.optionValueIds ?? []), created.id] });
+            }
+            toast.success(t('colourAdded', { name: created.valueEn ?? '' }));
+          }}
+        />
+      ) : null}
 
       <p className="text-xs text-muted-foreground">
         {t('packetsNote')}{' '}
