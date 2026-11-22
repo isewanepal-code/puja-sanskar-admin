@@ -3,7 +3,14 @@ import { redirect } from 'next/navigation';
 
 import { navigationFor } from '@/config/navigation';
 import { can } from '@/config/permissions';
-import { getMe, HeaderBar, PanelShell, Sidebar, SIDEBAR_COOKIE } from '@/features/staff';
+import {
+  getAdminLanguage,
+  getMe,
+  HeaderBar,
+  PanelShell,
+  Sidebar,
+  SIDEBAR_COOKIE,
+} from '@/features/staff';
 import { BRANCH_COOKIE, TEST_MODE_COOKIE } from '@/lib/session';
 import { resolveLocale } from '@/i18n/server';
 import { isApiError } from '@/lib/api';
@@ -18,6 +25,7 @@ export default async function PanelLayout({ children, params }: LayoutProps<'/[l
     throw error;
   });
 
+  const defaultLanguage = await getAdminLanguage();
   const jar = await cookies();
   const collapsed = jar.get(SIDEBAR_COOKIE)?.value === 'collapsed';
   const branch = jar.get(BRANCH_COOKIE)?.value ?? '';
@@ -32,6 +40,7 @@ export default async function PanelLayout({ children, params }: LayoutProps<'/[l
           branch={branch}
           canEditWebsite={can(me.permissions, 'site-texts:edit')}
           testMode={testMode}
+          defaultLanguage={defaultLanguage}
         />
         <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>
       </div>

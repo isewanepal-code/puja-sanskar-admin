@@ -46,6 +46,7 @@ function Control({
   placeholder?: string;
 }) {
   const { register, getValues, setValue } = form;
+  const guideText = useTranslations('fieldGuide') as unknown as Translate;
   const common = { id, 'aria-invalid': invalid || undefined, ...register(field.name) };
 
   const setByPicker = (value: string) =>
@@ -58,7 +59,10 @@ function Control({
       <SearchSelect
         id={id}
         source={field.optionsFor ? field.optionsFor(form.watch()) : field.optionsFrom}
-        options={field.options}
+        options={field.options?.map((option) => {
+          const key = `options.${field.name}.${option.value}`;
+          return guideText.has(key) ? { ...option, label: guideText(key) } : option;
+        })}
         multiple={multiple}
         value={multiple ? (Array.isArray(value) ? value : []) : String(value ?? '')}
         known={record && field.known ? field.known(record) : undefined}

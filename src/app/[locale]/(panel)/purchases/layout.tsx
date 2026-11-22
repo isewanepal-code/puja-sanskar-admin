@@ -1,24 +1,4 @@
-import { getTranslations } from 'next-intl/server';
-
-import { PageHeader } from '@/components/navigation';
-import { resolveLocale } from '@/i18n/server';
-import { routes } from '@/lib/routes';
-
-export default async function Layout({ children, params }: LayoutProps<'/[locale]/purchases'>) {
-  const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'purchases' });
-
-  return (
-    <div className="grid grid-cols-1 gap-6">
-      <PageHeader
-        title={t('title')}
-        tabs={[
-          { href: routes.purchaseBills(), label: t('tabs.bills') },
-          { href: routes.purchaseReturns(), label: t('tabs.returns') },
-          { href: routes.supplierPayments(), label: t('tabs.payments') },
-        ]}
-      />
-      {children}
-    </div>
-  );
+// Bills, returns and payments are sidebar pages of their own; each has its header.
+export default function Layout({ children }: LayoutProps<'/[locale]/purchases'>) {
+  return <div className="grid grid-cols-1 gap-6">{children}</div>;
 }

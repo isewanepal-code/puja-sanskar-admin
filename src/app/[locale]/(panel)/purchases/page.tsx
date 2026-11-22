@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import { PurchaseBillsScreen } from '@/features/purchases';
+import { PageHeader } from '@/components/navigation';
 import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
@@ -13,6 +14,13 @@ export async function generateMetadata({
 }
 
 export default async function PurchaseBillsPage({ params }: PageProps<'/[locale]/purchases'>) {
-  await resolveLocale(params);
-  return <PurchaseBillsScreen />;
+  const locale = await resolveLocale(params);
+  const t = await getTranslations({ locale, namespace: 'panel.sections' });
+  const about = await getTranslations({ locale, namespace: 'resources.purchaseBills' });
+  return (
+    <>
+      <PageHeader title={t('buying')} intro={about('about')} />
+      <PurchaseBillsScreen />
+    </>
+  );
 }

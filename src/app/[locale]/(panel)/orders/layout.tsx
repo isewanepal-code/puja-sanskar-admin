@@ -1,22 +1,10 @@
-import { getTranslations } from 'next-intl/server';
+import { SectionHeader } from '@/components/navigation';
 
-import { PageHeader } from '@/components/navigation';
-import { resolveLocale } from '@/i18n/server';
-import { routes } from '@/lib/routes';
-
-export default async function OrdersLayout({ children, params }: LayoutProps<'/[locale]/orders'>) {
-  const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'salesSection' });
-
+// Every page here has its own sidebar entry; the header names it from the address.
+export default function OrdersLayout({ children }: LayoutProps<'/[locale]/orders'>) {
   return (
     <div className="grid grid-cols-1 gap-6">
-      <PageHeader
-        title={t('title')}
-        tabs={[
-          { href: routes.orders(), label: t('tabs.orders') },
-          { href: routes.bills(), label: t('tabs.bills') },
-        ]}
-      />
+      <SectionHeader />
       {children}
     </div>
   );

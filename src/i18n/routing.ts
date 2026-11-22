@@ -1,11 +1,12 @@
 import { defineRouting } from 'next-intl/routing';
 
-// English only, with no prefix; adding Nepali later is a locale here and a messages file.
+// English and Nepali, with no prefix: the chosen language is kept in the NEXT_LOCALE cookie.
 export const routing = defineRouting({
-  locales: ['en'],
+  locales: ['en', 'ne'],
   defaultLocale: 'en',
   localePrefix: 'never',
-  localeDetection: false,
+  // Without a prefix the cookie is how the chosen language is found.
+  localeDetection: true,
 });
 
 // The shared formatters speak both of the website's languages.

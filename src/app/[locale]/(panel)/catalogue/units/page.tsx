@@ -15,10 +15,10 @@ export async function generateMetadata({
 
 export default async function UnitsPage({ params }: PageProps<'/[locale]/catalogue/units'>) {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'catalogue.tabs' });
+  const t = await getTranslations({ locale, namespace: 'catalogue' });
   return (
     <div className="grid grid-cols-1 gap-6">
-      <PageHeader title={t('units')} />
+      <PageHeader title={t('tabs.units')} intro={t('intro.units')} />
       <UnitsScreen />
     </div>
   );

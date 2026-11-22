@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 
 type Product = Schema<'AdminProductResponse'>;
-type Page = { items: Product[] };
+type Page = { items: Product[]; meta: { page: number; totalPages: number } };
 type Edit = { price?: string; on?: boolean };
 
 const AMOUNT = /^\d{1,13}(\.\d{1,2})?$/;
@@ -32,8 +32,17 @@ export function PricesPage() {
   const [edits, setEdits] = useState<Record<string, Edit>>({});
   const products = useQuery({
     queryKey: ['products', 'prices'],
-    queryFn: () =>
-      request<Page>('GET', '/admin/products', { query: { limit: 100, sort: 'NEWEST' } }),
+    // Every page of items, not just the first: a shop has hundreds, and each one needs its price.
+    queryFn: async () => {
+      const items: Product[] = [];
+      for (let page = 1; ; page += 1) {
+        const got = await request<Page>('GET', '/admin/products', {
+          query: { limit: 100, page, sort: 'NEWEST' },
+        });
+        items.push(...got.items);
+        if (got.meta.page >= got.meta.totalPages) return { items };
+      }
+    },
   });
 
   const rows = (products.data?.items ?? []).flatMap((product) =>
@@ -51,7 +60,7 @@ export function PricesPage() {
   });
   const bad = (variantId: string, was: string) => {
     const price = priceOf(variantId, was);
-    return !AMOUNT.test(price) || Number(price) <= 0;
+    return !AMOUNT.test(price) || Number(price) <= 0 || Number(price) > 100_000_000;
   };
   const problem = changed.some(({ variant }) => bad(variant.id, variant.price));
 
@@ -80,8 +89,6 @@ export function PricesPage() {
   return (
     <>
       {guard}
-      <p className="text-sm text-muted-foreground">{t('note')}</p>
-
       <div className="flex flex-wrap items-center gap-2">
         {[false, true].map((all) => (
           <button

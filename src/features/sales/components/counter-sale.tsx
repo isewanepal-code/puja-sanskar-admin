@@ -85,8 +85,17 @@ export function CounterSale() {
           (v) =>
             form.discountKind !== 'PERCENT' || !v.discountValue || Number(v.discountValue) <= 100,
           { path: ['discountValue'], message: t('percent') },
+        )
+        // A flat discount cannot be more than what is being sold.
+        .refine(
+          (v) =>
+            form.discountKind !== 'FLAT' ||
+            !v.discountValue ||
+            Number(v.discountValue) <=
+              lines.reduce((sum, line) => sum + Number(line.price) * line.quantity, 0),
+          { path: ['discountValue'], message: t('discountTooBig') },
         ),
-    [t, form.discountKind],
+    [t, form.discountKind, lines],
   );
 
   // Tapping a thing again adds one more of it.

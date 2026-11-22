@@ -15,10 +15,10 @@ export async function generateMetadata({
 
 export default async function BrandsPage({ params }: PageProps<'/[locale]/catalogue/brands'>) {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'catalogue.tabs' });
+  const t = await getTranslations({ locale, namespace: 'catalogue' });
   return (
     <div className="grid grid-cols-1 gap-6">
-      <PageHeader title={t('brands')} />
+      <PageHeader title={t('tabs.brands')} intro={t('intro.brands')} />
       <BrandsScreen />
     </div>
   );

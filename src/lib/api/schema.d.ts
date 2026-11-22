@@ -720,6 +720,23 @@ export interface paths {
     patch: operations['AdminSettingsController_update'];
     trace?: never;
   };
+  '/api/v1/admin/settings/language': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** The language the admin panel opens in */
+    get: operations['AdminLanguageController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/site-texts': {
     parameters: {
       query?: never;
@@ -6985,6 +7002,11 @@ export interface components {
        *     ]
        */
       popularSearches: string[];
+      /**
+       * @example en
+       * @enum {string}
+       */
+      adminLanguage: 'en' | 'ne';
       /** Format: uuid */
       updatedById: string | null;
       /** Format: date-time */
@@ -7038,6 +7060,18 @@ export interface components {
        *     ]
        */
       popularSearches?: string[];
+      /**
+       * @description The language the admin panel opens in: en or ne
+       * @enum {string}
+       */
+      adminLanguage?: 'en' | 'ne';
+    };
+    AdminLanguageResponse: {
+      /**
+       * @example ne
+       * @enum {string}
+       */
+      language: 'en' | 'ne';
     };
     SiteTextsResponse: {
       /** @description Changed texts by message key, English */
@@ -15406,6 +15440,8 @@ export interface components {
       packName: string;
       /** @example 2026-12-01 */
       expiresOn: string | null;
+      /** @example Fresh batch */
+      remarks: string | null;
     };
     PurchaseBillResponse: {
       /** Format: uuid */
@@ -15433,6 +15469,11 @@ export interface components {
       exemptTotal: string;
       /** @example 265.20 */
       vatTotal: string;
+      /**
+       * @description Taken off the whole bill
+       * @example 0.00
+       */
+      discount: string;
       /** @example 2305.20 */
       total: string;
       note: string | null;
@@ -15474,6 +15515,8 @@ export interface components {
        * @example 2026-11-02
        */
       expiresOn?: string | null;
+      /** @example Fresh batch */
+      remarks?: string | null;
     };
     SavePurchaseBillDto: {
       /** Format: uuid */
@@ -15488,6 +15531,8 @@ export interface components {
       lines: components['schemas']['PurchaseLineDto'][];
       /** @example Dashain stock */
       note?: string | null;
+      /** @example 50.00 */
+      discount?: string | null;
     };
     PurchaseReturnResponse: {
       /** Format: uuid */
@@ -18744,6 +18789,49 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminLanguageController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminLanguageResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
         headers: {
           [name: string]: unknown;
         };

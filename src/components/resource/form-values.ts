@@ -21,6 +21,13 @@ const PATTERN: Partial<Record<Field['kind'], { regex: RegExp; message: string }>
   color: { regex: /^#[0-9a-fA-F]{6}$/, message: 'A colour such as #ffffff' },
 };
 
+// The numbers a box may hold; text that is not a number is caught by the pattern first.
+const RANGE: Partial<Record<Field['kind'], { min: number; max: number; message: string }>> = {
+  money: { min: 0, max: 100_000_000, message: 'An amount up to 10,00,00,000' },
+  percent: { min: 0, max: 100, message: 'A percentage from 0 to 100' },
+  number: { min: -2_147_483_648, max: 2_147_483_647, message: 'A smaller whole number' },
+};
+
 export type FormValues = Record<string, string | boolean | string[]>;
 
 export type Image = { url: string; altText: string | null };
@@ -44,7 +51,15 @@ function fieldSchema(field: Field): z.ZodType {
   let text = z.string().trim();
   if (field.max) text = text.max(field.max, `At most ${field.max} characters`);
   const pattern = field.pattern ?? PATTERN[field.kind];
-  const shaped = pattern ? text.regex(pattern.regex, pattern.message) : text;
+  const ranged = RANGE[field.kind];
+  const withPattern = pattern ? text.regex(pattern.regex, pattern.message) : text;
+  // The same limits the API holds to: no amount past 10 crore, no percentage past 100.
+  const shaped = ranged
+    ? withPattern.refine(
+        (value) => value === '' || (Number(value) >= ranged.min && Number(value) <= ranged.max),
+        ranged.message,
+      )
+    : withPattern;
   return field.required
     ? z.string().trim().min(1, 'Required').pipe(shaped)
     : z.union([z.literal(''), shaped]);

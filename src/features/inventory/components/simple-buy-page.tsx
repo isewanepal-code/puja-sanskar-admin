@@ -8,15 +8,16 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
-import { WorkbookUploadButton } from '@/components/resource';
+import { CreateModal, WorkbookUploadButton } from '@/components/resource';
 import { Icon } from '@/components/icons';
 import { useToast } from '@/components/overlays';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { Button, IconButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { brandsResource } from '@/features/catalogue';
+import { suppliersResource } from '@/features/purchases';
 import { unitsFor } from '@/features/products';
 import { isApiError, request, type Schema } from '@/lib/api';
-import { autoCode } from '@/lib/auto-code';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
@@ -33,12 +34,19 @@ type Line = {
   quantity: string;
   unitId: string;
   rate: string;
-  // What one unit sells for; empty leaves the price for later.
-  sellPrice: string;
+  // The brand or company of the item: filled from the item, and saved back to it when changed.
+  brand: string;
+  // The brand the item had when it loaded, to see whether it was changed here.
+  itemBrand: string;
+  // A word about this line, kept on the bill.
+  remarks: string;
+  // 'AUTO' takes the item's own VAT; the default is no VAT.
   vat: string;
   expiresOn: string;
   // The item's own VAT %, learnt when it loads; used for the totals only.
   itemVat: string;
+  // How the item is sold (piece, weight…), learnt when it loads: a piece item cannot be bought by halves.
+  sellBy: string;
 };
 
 const emptyLine = (productId = ''): Line => ({
@@ -47,19 +55,26 @@ const emptyLine = (productId = ''): Line => ({
   quantity: '',
   unitId: '',
   rate: '',
-  sellPrice: '',
-  vat: '',
+  brand: '',
+  itemBrand: '',
+  remarks: '',
+  vat: '0',
   expiresOn: '',
   itemVat: '0',
+  sellBy: '',
 });
 const cell = 'border-r border-b border-border p-0 align-middle';
 const th = 'border-r border-b border-border px-2 py-2 font-medium';
 const box =
   'h-9 w-full bg-transparent px-2 text-sm outline-none focus:bg-primary/5 disabled:opacity-40';
 const today = () => new Date().toISOString().slice(0, 10);
+// The same limits the server holds to: a typo like an extra zero is caught here, beside the box.
+const MAX_QUANTITY = 1_000_000;
+const MAX_MONEY = 100_000_000;
 const num = (text: string) => Number(text.replace(/,/g, ''));
 // The VAT % a line pays: chosen on the line, else the item's own.
-const vatOf = (l: { vat: string; itemVat: string }) => num(l.vat === '' ? l.itemVat : l.vat) || 0;
+const vatOf = (l: { vat: string; itemVat: string }) =>
+  num(l.vat === 'AUTO' ? l.itemVat : l.vat) || 0;
 // The unit most shops count each way of selling in, picked first: kg, metre, litre.
 const USUAL = ['pc', 'pcs', 'kg', 'm', 'l', 'ltr'];
 
@@ -77,6 +92,7 @@ function LineRow({
   index,
   onChange,
   onRemove,
+  onNewBrand,
   removable,
   showErrors,
 }: {
@@ -84,6 +100,7 @@ function LineRow({
   index: number;
   onChange: (patch: Partial<Line>) => void;
   onRemove: () => void;
+  onNewBrand: () => void;
   removable: boolean;
   // After Save was pressed with something missing: the empty cells turn red.
   showErrors: boolean;
@@ -121,6 +138,19 @@ function LineRow({
     if (line.productId && item.data && line.itemVat !== itemVat) onChange({ itemVat });
   }, [line.productId, item.data, line.itemVat, itemVat, onChange]);
 
+  // How the item is sold, for the checks on the amount.
+  const sellByNow = item.data?.sellBy ?? '';
+  useEffect(() => {
+    if (line.productId && item.data && line.sellBy !== sellByNow) onChange({ sellBy: sellByNow });
+  }, [line.productId, item.data, line.sellBy, sellByNow, onChange]);
+  // The item's brand fills the brand cell once, until someone picks another.
+  const itemBrand = item.data?.brand ?? '';
+  useEffect(() => {
+    if (line.productId && item.data && line.itemBrand !== itemBrand) {
+      onChange({ itemBrand, brand: itemBrand });
+    }
+  }, [line.productId, item.data, line.itemBrand, itemBrand, onChange]);
+
   const unitSymbol = unitList.find((u) => u.value === line.unitId)?.detail ?? '';
   // Colours and sizes this item already comes in, as a reminder.
   const known = [
@@ -143,12 +173,40 @@ function LineRow({
           bare
           invalid={showErrors && !line.productId}
           aria-label={label(t('item'))}
-          source={choices.products}
+          source={choices.buyItems}
+          placeholder={t('itemSearch')}
           value={line.productId}
           onChange={(value) =>
-            onChange({ productId: String(value), unitId: '', optionValueIds: [] })
+            onChange({
+              productId: String(value),
+              unitId: '',
+              optionValueIds: [],
+              brand: '',
+              itemBrand: '',
+            })
           }
         />
+      </td>
+      <td className={cell}>
+        <div className="flex items-center">
+          <div className="min-w-0 flex-1">
+            <SearchSelect
+              bare
+              aria-label={label(t('brand'))}
+              disabled={!line.productId}
+              placeholder="—"
+              source={choices.brands}
+              value={line.brand}
+              onChange={(value) => onChange({ brand: String(value) })}
+            />
+          </div>
+          <IconButton
+            icon="plus"
+            label={t('newBrand')}
+            disabled={!line.productId}
+            onClick={onNewBrand}
+          />
+        </div>
       </td>
       <td
         className={cell}
@@ -187,6 +245,15 @@ function LineRow({
           onChange={(value) => onChange({ unitId: String(value) })}
         />
       </td>
+      <td className={cell}>
+        <input
+          aria-label={label(t('remarks'))}
+          value={line.remarks}
+          maxLength={200}
+          onChange={(e) => onChange({ remarks: e.target.value })}
+          className={box}
+        />
+      </td>
       <td className={cn(cell, bad(!(num(line.rate) > 0)))}>
         <input
           aria-label={label(t('rate', { unit: unitSymbol || t('one') }))}
@@ -198,36 +265,26 @@ function LineRow({
         />
       </td>
       <td className={cell}>
-        <input
-          aria-label={label(t('sellPrice', { unit: unitSymbol || t('one') }))}
-          inputMode="decimal"
-          value={line.sellPrice}
-          placeholder={t('later')}
-          onChange={(e) => onChange({ sellPrice: e.target.value })}
-          className={`${box} text-right`}
-        />
-      </td>
-      <td className={cell}>
         <SearchSelect
           bare
           required
           aria-label={label(t('vat'))}
-          value={line.vat || 'AUTO'}
+          value={line.vat}
           options={[
-            { value: 'AUTO', label: t('vatAuto') },
-            { value: '13', label: '13%' },
             { value: '0', label: t('vatNone') },
+            { value: '13', label: '13%' },
+            { value: 'AUTO', label: t('vatAuto') },
           ]}
-          onChange={(value) => onChange({ vat: value === 'AUTO' ? '' : String(value) })}
+          onChange={(value) => onChange({ vat: String(value) })}
         />
       </td>
       <td className={cell}>
-        <input
-          type="date"
+        <BsDatePicker
+          bare
           aria-label={label(t('expires'))}
           value={line.expiresOn}
-          onChange={(e) => onChange({ expiresOn: e.target.value })}
-          className={box}
+          min={new Date().toISOString().slice(0, 10)}
+          onChange={(expiresOn) => onChange({ expiresOn })}
         />
       </td>
       <td className="border-r border-b border-border px-2 text-right text-sm whitespace-nowrap tabular-nums">
@@ -268,11 +325,15 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
   const [billNo, setBillNo] = useState('');
   const [day, setDay] = useState(today());
   const [note, setNote] = useState('');
+  // Taken off the whole bill by the supplier; optional.
+  const [discount, setDiscount] = useState('');
   const [lines, setLines] = useState<Line[]>([emptyLine(itemId)]);
   // Save pressed with something missing: the missing places turn red and are named.
   const [showErrors, setShowErrors] = useState(false);
-  // A supplier added right here, for a shop buying from someone new.
-  const [newSupplier, setNewSupplier] = useState<{ name: string; phone: string } | null>(null);
+  // The real supplier and brand forms, opened right here for something new.
+  const supplierForm = useMemo(() => suppliersResource(), []);
+  const [addingSupplier, setAddingSupplier] = useState(false);
+  const [brandFor, setBrandFor] = useState<number | null>(null);
   // The bill once made, so a retry after a failed step posts it instead of making a second one.
   const made = useRef<Bill | null>(null);
   const change = (index: number, patch: Partial<Line>) => {
@@ -285,45 +346,52 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
     const n = i + 1;
     if (!l.productId) return t('needItem', { n });
     if (!(num(l.quantity) > 0) || !l.unitId) return t('needQuantity', { n });
+    if (!/^\d+(\.\d{1,3})?$/.test(l.quantity.trim().replace(/,/g, '')))
+      return t('quantityDecimals', { n });
+    if (num(l.quantity) > MAX_QUANTITY) return t('quantityTooBig', { n });
+    if (l.sellBy === 'PIECE' && !Number.isInteger(num(l.quantity)))
+      return t('quantityWhole', { n });
     if (!(num(l.rate) > 0)) return t('needRate', { n });
-    if (l.sellPrice.trim() && !(num(l.sellPrice) > 0)) return t('needSellPrice', { n });
+    if (!/^\d+(\.\d{1,2})?$/.test(l.rate.trim().replace(/,/g, ''))) return t('rateDecimals', { n });
+    if (num(l.rate) > MAX_MONEY) return t('rateTooBig', { n });
+    if (l.expiresOn && l.expiresOn < day) return t('expiryBeforeBill', { n });
     return null;
   };
   const firstProblem = lines.map(problem).find(Boolean) ?? null;
-  const ready = Boolean(supplierId) && !firstProblem;
+
   const grand = lines.reduce((sum, l) => sum + (num(l.quantity) || 0) * (num(l.rate) || 0), 0);
   const vatTotal = lines.reduce(
     (sum, l) => sum + (num(l.quantity) || 0) * (num(l.rate) || 0) * (vatOf(l) / 100),
     0,
   );
+  const billTotal = grand + vatTotal;
+  const discountAmount = num(discount) || 0;
+  // A discount is a number of rupees, no more than the bill itself.
+  const discountProblem =
+    discount.trim() === ''
+      ? null
+      : !/^\d+(\.\d{1,2})?$/.test(discount.trim().replace(/,/g, ''))
+        ? t('discountFormat')
+        : discountAmount > billTotal
+          ? t('discountTooBig', { total: formatMoney(billTotal.toFixed(2), 'en') })
+          : null;
+  const discountBad = discountProblem !== null;
+  const billProblem =
+    billTotal > MAX_MONEY ? t('billTooBig') : day > today() ? t('billDateFuture') : null;
+  const ready = Boolean(supplierId) && !firstProblem && !discountBad && !billProblem;
   const tryToSave = () => {
     if (ready) {
       save.mutate();
       return;
     }
     setShowErrors(true);
-    toast.error(!supplierId ? t('needSupplier') : (firstProblem ?? t('needSupplier')));
+    toast.error(
+      !supplierId
+        ? t('needSupplier')
+        : (firstProblem ?? discountProblem ?? billProblem ?? t('needSupplier')),
+    );
     if (!supplierId) document.getElementById('buy-supplier')?.focus();
   };
-
-  const addSupplier = useMutation({
-    mutationFn: (input: { name: string; phone: string }) =>
-      request<{ id: string; name: string }>('POST', '/admin/suppliers', {
-        body: {
-          code: autoCode({ from: input.name, fallback: 'SUPPLIER' }),
-          name: input.name.trim(),
-          ...(input.phone.trim() && { phone: input.phone.trim() }),
-          isActive: true,
-        },
-      }),
-    onSuccess: async (supplier) => {
-      await queryClient.invalidateQueries({ queryKey: ['suppliers'] });
-      setSupplierId(supplier.id);
-      setNewSupplier(null);
-      toast.success(t('supplierAdded', { name: supplier.name }));
-    },
-    onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
-  });
 
   const save = useMutation({
     mutationFn: async () => {
@@ -332,6 +400,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         supplierBillNumber: billNo.trim() || autoBillNo(),
         billDay: day,
         note: note.trim() || null,
+        ...(discountAmount > 0 && { discount: discountAmount.toFixed(2) }),
         lines: lines.map((l) => ({
           newPack: {
             productId: l.productId,
@@ -341,8 +410,9 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
           },
           quantity: num(l.quantity),
           unitCost: String(num(l.rate)),
-          ...(l.vat !== '' && { vatRate: l.vat }),
+          ...(l.vat !== 'AUTO' && { vatRate: l.vat }),
           ...(l.expiresOn && { expiresOn: l.expiresOn }),
+          ...(l.remarks.trim() && { remarks: l.remarks.trim() }),
         })),
       };
       const bill = made.current ?? (await request<Bill>('POST', '/admin/purchase-bills', { body }));
@@ -354,20 +424,15 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         });
         made.current = { ...bill, status: 'POSTED' };
       }
-      // A selling price given here puts that colour/size on sale straight away.
-      const priced = lines
-        .map((l, i) => ({ line: l, variantId: bill.lines[i]?.variantId }))
-        .filter((row) => row.variantId && num(row.line.sellPrice) > 0);
-      for (const row of priced) {
-        await request('PATCH', `/admin/products/${row.line.productId}/variants/${row.variantId}`, {
-          body: {
-            price: String(num(row.line.sellPrice)),
-            pricesIncludeTax: true,
-            isActive: true,
-          },
-        });
+      // A brand changed here is kept on the item, so the next purchase starts from it.
+      const rebranded = new Map<string, string>();
+      for (const l of lines) {
+        if (l.productId && l.brand !== l.itemBrand) rebranded.set(l.productId, l.brand);
       }
-      return { unpriced: lines.length - priced.length };
+      for (const [productId, brand] of rebranded) {
+        await request('PATCH', `/admin/products/${productId}`, { body: { brand: brand || null } });
+      }
+      return { unpriced: lines.length };
     },
     onSuccess: async ({ unpriced }) => {
       toast.success(unpriced > 0 ? t('savedNeedPrice', { n: unpriced }) : t('saved'));
@@ -387,18 +452,22 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
     (i > 0 && l.productId !== '') ||
     (i === 0 && l.productId !== start.productId) ||
     l.optionValueIds.length > 0 ||
-    [l.quantity, l.rate, l.sellPrice, l.vat, l.expiresOn].some((v) => v.trim() !== '');
+    l.vat !== '0' ||
+    l.remarks.trim() !== '' ||
+    l.brand !== l.itemBrand ||
+    [l.quantity, l.rate, l.expiresOn].some((v) => v.trim() !== '');
   const guard = useUnsavedGuard(
     !save.isSuccess &&
       (supplierId !== '' ||
         billNo.trim() !== '' ||
         note.trim() !== '' ||
+        discount.trim() !== '' ||
         lines.length > 1 ||
         lines.some(lineTouched)),
   );
 
   return (
-    <div className="grid max-w-6xl gap-6">
+    <div className="grid max-w-7xl gap-6">
       {guard}
 
       {/* Many things from many bills at once: the same columns as this page, in Excel. */}
@@ -426,46 +495,14 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
             invalid={showErrors && !supplierId}
             onChange={(value) => setSupplierId(String(value))}
           />
-          {newSupplier ? (
-            <div className="mt-2 grid gap-2 rounded-md border border-border p-2">
-              <Input
-                aria-label={t('newSupplierName')}
-                placeholder={t('newSupplierName')}
-                value={newSupplier.name}
-                maxLength={160}
-                autoFocus
-                onChange={(e) => setNewSupplier({ ...newSupplier, name: e.target.value })}
-              />
-              <Input
-                aria-label={t('newSupplierPhone')}
-                placeholder={t('newSupplierPhone')}
-                value={newSupplier.phone}
-                maxLength={20}
-                onChange={(e) => setNewSupplier({ ...newSupplier, phone: e.target.value })}
-              />
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  disabled={!newSupplier.name.trim() || addSupplier.isPending}
-                  onClick={() => addSupplier.mutate(newSupplier)}
-                >
-                  {addSupplier.isPending ? tf('saving') : t('newSupplierSave')}
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => setNewSupplier(null)}>
-                  {tf('cancel')}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <button
-              type="button"
-              className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
-              onClick={() => setNewSupplier({ name: '', phone: '' })}
-            >
-              <Icon name="plus" size={12} />
-              {t('newSupplier')}
-            </button>
-          )}
+          <button
+            type="button"
+            className="mt-1 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+            onClick={() => setAddingSupplier(true)}
+          >
+            <Icon name="plus" size={12} />
+            {t('newSupplier')}
+          </button>
         </Field>
         <Field label={t('billNo')} htmlFor="buy-bill" hint={t('billNoHint')}>
           <Input
@@ -477,7 +514,12 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
           />
         </Field>
         <Field label={t('day')} htmlFor="buy-day">
-          <BsDatePicker id="buy-day" value={day} onChange={setDay} />
+          <BsDatePicker
+            id="buy-day"
+            value={day}
+            max={new Date().toISOString().slice(0, 10)}
+            onChange={setDay}
+          />
         </Field>
       </section>
 
@@ -485,29 +527,31 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         <h2 className="font-heading text-base font-semibold">{t('what')}</h2>
         <p className="text-xs text-muted-foreground">{t('sheetNote')}</p>
         <div className="overflow-x-auto rounded-lg border border-border bg-card">
-          <table className="w-full min-w-[1080px] table-fixed border-separate border-spacing-0 text-sm">
+          <table className="w-full min-w-[1120px] table-fixed border-separate border-spacing-0 text-sm">
             <colgroup>
               <col style={{ width: 32 }} />
-              <col style={{ width: '19%' }} />
-              <col style={{ width: '14%' }} />
-              <col style={{ width: 80 }} />
-              <col style={{ width: 100 }} />
-              <col style={{ width: 90 }} />
-              <col style={{ width: 90 }} />
-              <col style={{ width: 110 }} />
-              <col style={{ width: 130 }} />
+              <col style={{ width: '22%' }} />
               <col style={{ width: 120 }} />
+              <col style={{ width: '11%' }} />
+              <col style={{ width: 72 }} />
+              <col style={{ width: 90 }} />
+              <col style={{ width: '12%' }} />
+              <col style={{ width: 80 }} />
+              <col style={{ width: 96 }} />
+              <col style={{ width: 120 }} />
+              <col style={{ width: 96 }} />
               <col style={{ width: 44 }} />
             </colgroup>
             <thead className="bg-muted text-xs whitespace-nowrap text-muted-foreground">
               <tr>
                 <th className={`${th} text-center`}>#</th>
                 <th className={`${th} text-left`}>{t('item')} *</th>
+                <th className={`${th} text-left`}>{t('brand')}</th>
                 <th className={`${th} text-left`}>{t('colour')}</th>
                 <th className={`${th} text-right`}>{t('quantity')} *</th>
                 <th className={`${th} text-left`}>{t('unit')} *</th>
+                <th className={`${th} text-left`}>{t('remarks')}</th>
                 <th className={`${th} text-right`}>{t('rateCol')} *</th>
-                <th className={`${th} text-right`}>{t('sellCol')}</th>
                 <th className={`${th} text-left`}>{t('vat')}</th>
                 <th className={`${th} text-left`}>{t('expires')}</th>
                 <th className={`${th} text-right`}>{t('total')}</th>
@@ -522,6 +566,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
                   index={index}
                   onChange={(patch) => change(index, patch)}
                   onRemove={() => setLines((all) => all.filter((_, i) => i !== index))}
+                  onNewBrand={() => setBrandFor(index)}
                   removable={lines.length > 1}
                   showErrors={showErrors}
                 />
@@ -539,9 +584,34 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
             <dd className="text-right">{formatMoney(grand.toFixed(2), 'en')}</dd>
             <dt className="text-muted-foreground">{t('vatTotal')}</dt>
             <dd className="text-right">{formatMoney(vatTotal.toFixed(2), 'en')}</dd>
+            <dt className="self-center text-muted-foreground">
+              <label htmlFor="buy-discount">{t('discount')}</label>
+            </dt>
+            <dd className="text-right">
+              <input
+                id="buy-discount"
+                inputMode="decimal"
+                value={discount}
+                placeholder="0"
+                aria-invalid={discountBad || undefined}
+                onChange={(e) => {
+                  made.current = null;
+                  setDiscount(e.target.value);
+                }}
+                className={cn(
+                  'h-8 w-28 rounded-md border border-border bg-card px-2 text-right text-sm outline-none focus:border-primary',
+                  discountBad && 'border-destructive',
+                )}
+              />
+            </dd>
+            {discountProblem ? (
+              <dd role="alert" className="col-span-2 text-right text-xs text-destructive">
+                {discountProblem}
+              </dd>
+            ) : null}
             <dt className="font-semibold">{t('payTotal')}</dt>
             <dd className="text-right font-semibold">
-              {formatMoney((grand + vatTotal).toFixed(2), 'en')}
+              {formatMoney(Math.max(0, billTotal - discountAmount).toFixed(2), 'en')}
             </dd>
           </dl>
         </div>
@@ -558,13 +628,35 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
         <p className={cn('text-sm', ready ? 'text-muted-foreground' : 'text-destructive')}>
-          {!supplierId ? t('needSupplier') : (firstProblem ?? t('ready'))}
+          {!supplierId
+            ? t('needSupplier')
+            : (firstProblem ?? discountProblem ?? billProblem ?? t('ready'))}
         </p>
         {/* Never greyed out: pressing it with something missing shows what, in red. */}
         <Button disabled={save.isPending} onClick={tryToSave}>
           {save.isPending ? tf('saving') : t('save')}
         </Button>
       </div>
+
+      <CreateModal
+        resource={supplierForm}
+        open={addingSupplier}
+        onOpenChange={setAddingSupplier}
+        onCreated={(supplier) => {
+          void queryClient.invalidateQueries({ queryKey: ['suppliers'] });
+          setSupplierId(supplier.id);
+          toast.success(t('supplierAdded', { name: supplier.name }));
+        }}
+      />
+      <CreateModal
+        resource={brandsResource}
+        open={brandFor !== null}
+        onOpenChange={(open) => (open ? undefined : setBrandFor(null))}
+        onCreated={(brand) => {
+          if (brandFor !== null) change(brandFor, { brand: brand.name });
+          toast.success(t('brandAdded', { name: brand.name }));
+        }}
+      />
 
       <p className="text-xs text-muted-foreground">
         {t('packetsNote')}{' '}

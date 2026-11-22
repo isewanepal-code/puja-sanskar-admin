@@ -206,12 +206,12 @@ function LineRow({
         />
       </td>
       <td className={cell}>
-        <input
-          type="date"
+        <BsDatePicker
+          bare
           aria-label={label(t('expiresCol'))}
           value={line.expiresOn}
-          onChange={(e) => onChange({ expiresOn: e.target.value })}
-          className={box}
+          min={new Date().toISOString().slice(0, 10)}
+          onChange={(expiresOn) => onChange({ expiresOn })}
         />
       </td>
       <td className="sticky right-[50px] z-[5] border-r border-b border-border bg-card px-3 text-right text-sm whitespace-nowrap tabular-nums shadow-[-1px_0_0_var(--color-border)]">
@@ -372,7 +372,12 @@ export function BuyPage() {
           />
         </Field>
         <Field label={t('day')} htmlFor="buy-day">
-          <BsDatePicker id="buy-day" value={day} onChange={setDay} />
+          <BsDatePicker
+            id="buy-day"
+            value={day}
+            max={new Date().toISOString().slice(0, 10)}
+            onChange={setDay}
+          />
         </Field>
       </section>
 

@@ -12,6 +12,7 @@ import { routes } from '@/lib/routes';
 import { BranchSwitcher } from './branch-switcher';
 import { EditWebsiteButton } from './edit-website-button';
 import { GlobalSearch } from './global-search';
+import { LanguageSwitch } from './language-switch';
 import { ChangePasswordModal } from './change-password-modal';
 import { usePanel } from './panel-shell';
 import { TestModeBanner, TestModeSwitch } from './test-mode-switch';
@@ -24,6 +25,8 @@ type HeaderBarProps = {
   canEditWebsite?: boolean;
   // Test mode was switched on (cookie); the API still decides whether this server allows it.
   testMode?: boolean;
+  // The language for staff who have not picked one (the shop's setting).
+  defaultLanguage?: 'en' | 'ne';
 };
 
 const initials = (name: string) =>
@@ -42,6 +45,7 @@ export function HeaderBar({
   branch,
   canEditWebsite = false,
   testMode = false,
+  defaultLanguage = 'en',
 }: HeaderBarProps) {
   const t = useTranslations('panel');
   const router = useRouter();
@@ -70,6 +74,7 @@ export function HeaderBar({
           <GlobalSearch permissions={staff.permissions} />
         </div>
         <div className="flex items-center gap-3">
+          <LanguageSwitch defaultLanguage={defaultLanguage} />
           <TestModeSwitch initialOn={testMode} />
           {canEditWebsite ? <EditWebsiteButton /> : null}
           <NotesButton />

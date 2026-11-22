@@ -119,7 +119,8 @@ export function AddItemPage() {
             variant="secondary"
             onClick={() => {
               setSaved(null);
-              setForm(empty);
+              // The next item is most often the same kind: keep how it is sold and its category.
+              setForm({ ...empty, sellBy: form.sellBy, categoryId: form.categoryId });
               setSameNameOk(false);
               setMore(false);
             }}

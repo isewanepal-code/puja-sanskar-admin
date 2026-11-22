@@ -1,7 +1,14 @@
 import { request, type Schema } from '@/lib/api';
 
 // One choice of a dropdown; `group` heads a run of choices, `detail` is shown muted after the label.
-export type Choice = { value: string; label: string; detail?: string; group?: string };
+export type Choice = {
+  value: string;
+  label: string;
+  detail?: string;
+  // A second, smaller line under the label (the English name and brand of an item).
+  sub?: string;
+  group?: string;
+};
 
 // Where a dropdown's choices come from: a short list loaded whole and searched in the browser,
 // or a long one the API searches a page at a time.
@@ -105,6 +112,19 @@ export const choices = {
   products: pagedSource<Product>('products', {
     path: '/admin/products',
     toChoices: coded,
+    find: (id) => `/admin/products/${id}`,
+  }),
+  // Items to buy: the Nepali name, then the English name and brand under it, then the code.
+  buyItems: pagedSource<Product>('products-buy', {
+    path: '/admin/products',
+    toChoices: (p) => [
+      {
+        value: p.id,
+        label: p.nameNe,
+        detail: p.code,
+        sub: [p.nameEn, p.brand].filter(Boolean).join(' · ') || undefined,
+      },
+    ],
     find: (id) => `/admin/products/${id}`,
   }),
   // Every pack of the products that match (by name, code or SKU), as "product · pack".

@@ -67,5 +67,17 @@ export function shopSettingsResource(name: Name): Resource<never> {
     { name: 'cashOnDelivery', kind: 'switch' },
     { name: 'emailOrderUpdates', kind: 'switch' },
     { name: 'popularSearches', kind: 'tags', wide: true, section: 'search' },
+    {
+      name: 'adminLanguage',
+      kind: 'select',
+      section: 'language',
+      required: true,
+      defaultValue: 'en',
+      // Each language is named in itself, so it reads right from either screen.
+      options: [
+        { value: 'en', label: 'English' },
+        { value: 'ne', label: 'नेपाली' },
+      ],
+    },
   ]);
 }

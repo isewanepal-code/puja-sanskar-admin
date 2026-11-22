@@ -2,7 +2,7 @@
 
 import { SearchSelect } from '@/components/controls/search-select';
 import { Popover } from '@base-ui/react/popover';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { Icon } from '@/components/icons';
@@ -28,6 +28,12 @@ type BsDatePickerProps = {
   onChange: (value: string) => void;
   withTime?: boolean;
   invalid?: boolean;
+  // The earliest and latest AD day that may be chosen ("2026-11-03"); days outside are greyed out.
+  min?: string;
+  max?: string;
+  // Fits inside a table cell: no box of its own.
+  bare?: boolean;
+  'aria-label'?: string;
 };
 
 const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -45,8 +51,19 @@ const timeBox =
   'h-8 rounded-sm border border-border bg-card px-1.5 text-sm text-foreground focus:border-primary focus:outline-none';
 
 // Picks a day on the Nepali calendar and hands back its AD date.
-export function BsDatePicker({ id, value, onChange, withTime, invalid }: BsDatePickerProps) {
+export function BsDatePicker({
+  id,
+  value,
+  onChange,
+  withTime,
+  invalid,
+  min,
+  max,
+  bare,
+  'aria-label': ariaLabel,
+}: BsDatePickerProps) {
   const t = useTranslations('datePicker');
+  const locale = useLocale() === 'ne' ? 'ne' : 'en';
   const day = value ? value.slice(0, 10) : '';
   const time = value.length > 10 ? value.slice(11, 16) : '';
   const chosen = day ? adToBs(parseIsoDay(day)) : null;
@@ -79,9 +96,12 @@ export function BsDatePicker({ id, value, onChange, withTime, invalid }: BsDateP
     >
       <Popover.Trigger
         id={id}
+        aria-label={ariaLabel}
         aria-invalid={invalid || undefined}
         className={cn(
-          'flex h-10 w-full items-center gap-2 rounded-md border border-input bg-card px-3 text-left text-sm transition-colors hover:border-foreground/30 focus-visible:border-primary focus-visible:outline-none aria-invalid:border-destructive',
+          bare
+            ? 'flex h-9 w-full items-center gap-1.5 bg-transparent px-2 text-left text-sm outline-none focus:bg-primary/5'
+            : 'flex h-10 w-full items-center gap-2 rounded-md border border-input bg-card px-3 text-left text-sm transition-colors hover:border-foreground/30 focus-visible:border-primary focus-visible:outline-none aria-invalid:border-destructive',
           !value && 'text-muted-foreground',
         )}
       >
@@ -89,7 +109,7 @@ export function BsDatePicker({ id, value, onChange, withTime, invalid }: BsDateP
         <span className="flex-1 truncate">
           {day ? (
             <>
-              {formatBsDate(day, 'en')}
+              {formatBsDate(day, locale)}
               {time ? `, ${time}` : ''}
               <span className="ml-2 text-xs text-muted-foreground">{day}</span>
             </>
@@ -157,14 +177,17 @@ export function BsDatePicker({ id, value, onChange, withTime, invalid }: BsDateP
               {Array.from({ length }, (_, i) => {
                 const cell = { ...shown, day: i + 1 };
                 const selected = sameDay(chosen, cell);
+                const ad = toIsoDay(bsToAd(cell));
+                const outside = (min !== undefined && ad < min) || (max !== undefined && ad > max);
                 return (
                   <button
                     key={cell.day}
                     type="button"
+                    disabled={outside}
                     onClick={() => pick(cell)}
                     aria-pressed={selected}
                     className={cn(
-                      'grid h-8 place-items-center rounded-sm text-sm transition-colors hover:bg-muted',
+                      'grid h-8 place-items-center rounded-sm text-sm transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-30',
                       sameDay(todayBs, cell) && 'font-semibold text-primary',
                       selected && 'bg-primary text-primary-foreground hover:bg-primary',
                     )}
@@ -189,11 +212,15 @@ export function BsDatePicker({ id, value, onChange, withTime, invalid }: BsDateP
             <div className="mt-3 flex items-center justify-between border-t border-border pt-2 text-sm">
               <button
                 type="button"
+                disabled={
+                  (min !== undefined && toIsoDay(bsToAd(todayBs)) < min) ||
+                  (max !== undefined && toIsoDay(bsToAd(todayBs)) > max)
+                }
                 onClick={() => {
                   setShown(todayBs);
                   pick(todayBs);
                 }}
-                className="font-medium text-primary hover:underline"
+                className="font-medium text-primary hover:underline disabled:no-underline disabled:opacity-40"
               >
                 {t('today')}
               </button>

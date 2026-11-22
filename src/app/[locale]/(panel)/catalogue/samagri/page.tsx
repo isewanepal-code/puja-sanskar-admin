@@ -15,10 +15,10 @@ export async function generateMetadata({
 
 export default async function MaterialsPage({ params }: PageProps<'/[locale]/catalogue/samagri'>) {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'catalogue.tabs' });
+  const t = await getTranslations({ locale, namespace: 'catalogue' });
   return (
     <div className="grid grid-cols-1 gap-6">
-      <PageHeader title={t('materials')} />
+      <PageHeader title={t('tabs.materials')} intro={t('intro.materials')} />
       <MaterialsScreen />
     </div>
   );

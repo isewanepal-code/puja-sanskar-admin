@@ -66,7 +66,8 @@ export function PriceGrid({ product }: { product: Product }) {
   const bad = (id: string) => {
     const price = valueOf(id, 'price');
     const was = valueOf(id, 'compareAtPrice');
-    if (!AMOUNT.test(price) || Number(price) <= 0) return t('badPrice');
+    if (!AMOUNT.test(price) || Number(price) <= 0 || Number(price) > 100_000_000)
+      return t('badPrice');
     if (was && (!AMOUNT.test(was) || Number(was) <= Number(price))) return t('badCompare');
     return null;
   };

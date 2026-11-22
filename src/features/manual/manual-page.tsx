@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import { getLocale, getTranslations } from 'next-intl/server';
 
-import manual from './manual.json';
+import manualEn from './manual.json';
+import manualNe from './manual.ne.json';
 import { PrintButton } from './print-button';
 
 type Chapter = {
@@ -61,7 +63,9 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
 
 // The shop's manual: every page, box and column in plain words, in the order the work is done.
 // Kept in manual.json, the same file the shareable copy is made from.
-export function ManualPage() {
+export async function ManualPage() {
+  const manual = (await getLocale()) === 'ne' ? manualNe : manualEn;
+  const t = await getTranslations('manual');
   const chapters = manual.chapters as Chapter[];
   return (
     <div className="grid max-w-5xl gap-8 print:max-w-none">
@@ -69,16 +73,16 @@ export function ManualPage() {
         <div>
           <h1 className="font-heading text-2xl font-semibold">{manual.title}</h1>
           <p className="text-sm text-muted-foreground">{manual.subtitle}</p>
-          <p className="text-xs text-muted-foreground">Updated {manual.updated}</p>
+          <p className="text-xs text-muted-foreground">{t('updated', { date: manual.updated })}</p>
         </div>
         <PrintButton />
       </header>
 
       <nav
-        aria-label="Contents"
+        aria-label={t('contents')}
         className="rounded-xl border border-border bg-card p-4 print:hidden"
       >
-        <p className="mb-2 text-sm font-semibold">Contents · Suchi</p>
+        <p className="mb-2 text-sm font-semibold">{t('contents')}</p>
         <ol className="grid gap-1 text-sm sm:grid-cols-2">
           {chapters.map((c) => (
             <li key={c.id}>
@@ -101,28 +105,28 @@ export function ManualPage() {
             {c.nepali ? <p className="text-sm text-muted-foreground">{c.nepali}</p> : null}
             {c.where ? (
               <p className="mt-1 text-xs">
-                <span className="font-semibold">Where: </span>
+                <span className="font-semibold">{t('where')} </span>
                 {c.where}
               </p>
             ) : null}
           </div>
           {c.intro ? <p className="text-sm">{c.intro}</p> : null}
-          {c.terms ? <Table head={['Word', 'What it means']} rows={c.terms} /> : null}
+          {c.terms ? <Table head={[t('word'), t('means')]} rows={c.terms} /> : null}
           {c.fields ? (
             <>
-              <h3 className="text-sm font-semibold">Boxes to fill</h3>
-              <Table head={['Box', 'Example', 'What happens']} rows={c.fields} />
+              <h3 className="text-sm font-semibold">{t('boxes')}</h3>
+              <Table head={[t('box'), t('example'), t('happens')]} rows={c.fields} />
             </>
           ) : null}
           {c.columns ? (
             <>
-              <h3 className="text-sm font-semibold">What you see</h3>
-              <Table head={['Column / part', 'What it means']} rows={c.columns} />
+              <h3 className="text-sm font-semibold">{t('whatYouSee')}</h3>
+              <Table head={[t('column'), t('means')]} rows={c.columns} />
             </>
           ) : null}
           {c.steps ? (
             <>
-              <h3 className="text-sm font-semibold">Steps</h3>
+              <h3 className="text-sm font-semibold">{t('steps')}</h3>
               <ol className="ml-5 list-decimal space-y-1 text-sm">
                 {c.steps.map((s) => (
                   <li key={s}>{s}</li>
@@ -141,14 +145,14 @@ export function ManualPage() {
                       href={step.go}
                       className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 print:hidden"
                     >
-                      Go there: {step.goLabel} →
+                      {t('goThere', { label: step.goLabel })}
                     </Link>
                   </div>
                   {step.intro ? <p className="text-sm">{step.intro}</p> : null}
                   <Table head={step.head} rows={step.rows} />
                   {step.result ? (
                     <p className="rounded-md bg-success/10 px-3 py-2 text-sm">
-                      <span className="font-semibold">You see: </span>
+                      <span className="font-semibold">{t('youSee')} </span>
                       {step.result}
                     </p>
                   ) : null}

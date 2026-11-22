@@ -12,8 +12,18 @@ describe('can', () => {
 
   it('should leave a staff member only the sections and groups they may open', () => {
     const groups = navigationFor(['reports:read']);
-    expect(groups.map((group) => group.key)).toEqual(['overview', 'money']);
-    expect(groups[1]!.sections.map((section) => section.key)).toEqual(['reports']);
+    expect(groups.map((group) => group.key)).toEqual(['overview', 'reports']);
+    expect(groups[1]!.sections.map((section) => section.key)).toEqual([
+      'reports',
+      'salesBook',
+      'vat',
+      'dayBook',
+      'receivables',
+      'profitAndLoss',
+      'purchaseBook',
+      'supplierStatement',
+      'searchTerms',
+    ]);
     // The dashboard and the manual are open to everyone.
     expect(groups[0]!.sections.map((section) => section.key)).toEqual(['dashboard', 'manual']);
   });
@@ -38,7 +48,19 @@ describe('can', () => {
       'archive',
       'kits',
       'pujas',
+      'pujaList',
+      'ritualTypes',
+      'mantras',
+      'pujaLevels',
+      'festivals',
       'content',
+      'menus',
+      'articles',
+      'banners',
+      'homeSections',
+      'stories',
+      'reviews',
+      'media',
     ]);
   });
 });

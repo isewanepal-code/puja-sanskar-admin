@@ -29,7 +29,7 @@ import { InlineToggle } from './inline-toggle';
 import { ConfirmDelete, type Usage } from './confirm-delete';
 import { ReorderModal } from './reorder-modal';
 import { ResourceForm } from './resource-form';
-import { useResourceText } from './translate';
+import { useResourceText, type Translate } from './translate';
 import type { Resource } from './types';
 
 // How long a deleted record can still be brought back.
@@ -61,6 +61,7 @@ export function ResourceScreen<T>({
   deepLink = false,
 }: ResourceScreenProps<T>) {
   const t = useResourceText(resource.key);
+  const guide = useTranslations('fieldGuide') as unknown as Translate;
   const tf = useTranslations('forms');
   const tt = useTranslations('table');
   const toast = useToast();
@@ -333,7 +334,15 @@ export function ResourceScreen<T>({
         loading={list.isPending}
         initialSort={resource.initialSort}
         empty={t('empty')}
-        groupBy={resource.groupBy}
+        groupBy={
+          resource.groupBy && {
+            ...resource.groupBy,
+            label: (key) => {
+              const name = `groups.${key}`;
+              return guide.has(name) ? guide(name) : resource.groupBy!.label(key);
+            },
+          }
+        }
         onRowClick={canEdit ? (row) => setEditing(row) : undefined}
         onTextSearch={
           resource.list === 'paged' && resource.searchable !== false

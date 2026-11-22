@@ -19,6 +19,8 @@ export type NavSection = {
     | 'sellPrice'
     | 'flowWork'
     | 'buying'
+    | 'purchaseReturns'
+    | 'supplierPayments'
     | 'suppliers'
     | 'money'
     | 'expenses'
@@ -37,7 +39,40 @@ export type NavSection = {
     | 'dataReset'
     | 'catalogue'
     | 'settings'
-    | 'staff';
+    | 'staff'
+    | 'bills'
+    | 'carts'
+    | 'listPhotos'
+    | 'messages'
+    | 'reminders'
+    | 'expenseCategories'
+    | 'pujaList'
+    | 'ritualTypes'
+    | 'mantras'
+    | 'pujaLevels'
+    | 'festivals'
+    | 'salesBook'
+    | 'vat'
+    | 'dayBook'
+    | 'receivables'
+    | 'profitAndLoss'
+    | 'purchaseBook'
+    | 'supplierStatement'
+    | 'searchTerms'
+    | 'menus'
+    | 'articles'
+    | 'banners'
+    | 'homeSections'
+    | 'stories'
+    | 'reviews'
+    | 'media'
+    | 'deliveryZones'
+    | 'deliverySlots'
+    | 'shopSettings'
+    | 'businessProfile'
+    | 'branches'
+    | 'dataTools'
+    | 'activity';
   href: string;
   icon: IconName;
   // Shown only to staff who hold it; the API refuses the rest anyway.
@@ -54,6 +89,7 @@ export type NavGroup = {
     | 'kits'
     | 'sell'
     | 'money'
+    | 'reports'
     | 'marketing'
     | 'website'
     | 'settings';
@@ -103,6 +139,18 @@ export const navigation: NavGroup[] = [
     sections: [
       { key: 'buy', href: routes.buy(), icon: 'truck', permission: 'purchases:write' },
       { key: 'buying', href: routes.purchaseBills(), icon: 'list', permission: 'purchases:read' },
+      {
+        key: 'purchaseReturns',
+        href: routes.purchaseReturns(),
+        icon: 'archive',
+        permission: 'purchases:read',
+      },
+      {
+        key: 'supplierPayments',
+        href: routes.supplierPayments(),
+        icon: 'coin',
+        permission: 'purchases:read',
+      },
     ],
   },
   {
@@ -118,6 +166,21 @@ export const navigation: NavGroup[] = [
     sections: [
       { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
       { key: 'pujas', href: routes.pujaGroups(), icon: 'temple', permission: 'catalogue:read' },
+      { key: 'pujaList', href: routes.pujas(), icon: 'temple', permission: 'catalogue:read' },
+      {
+        key: 'ritualTypes',
+        href: routes.ritualTypes(),
+        icon: 'list',
+        permission: 'catalogue:read',
+      },
+      { key: 'mantras', href: routes.mantras(), icon: 'book', permission: 'catalogue:read' },
+      { key: 'pujaLevels', href: routes.pujaLevels(), icon: 'list', permission: 'catalogue:read' },
+      {
+        key: 'festivals',
+        href: routes.festivals(),
+        icon: 'calendar',
+        permission: 'catalogue:read',
+      },
     ],
   },
   {
@@ -125,7 +188,12 @@ export const navigation: NavGroup[] = [
     sections: [
       { key: 'counterSale', href: routes.counterSale(), icon: 'store', permission: 'orders:sell' },
       { key: 'orders', href: routes.orders(), icon: 'bag', permission: 'orders:read' },
+      { key: 'bills', href: routes.bills(), icon: 'list', permission: 'orders:read' },
       { key: 'customers', href: routes.customers(), icon: 'user', permission: 'customers:read' },
+      { key: 'carts', href: routes.carts(), icon: 'bag', permission: 'customers:read' },
+      { key: 'listPhotos', href: routes.listPhotos(), icon: 'book', permission: 'customers:read' },
+      { key: 'messages', href: routes.messages(), icon: 'list', permission: 'customers:read' },
+      { key: 'reminders', href: routes.reminders(), icon: 'clock', permission: 'customers:read' },
     ],
   },
   {
@@ -133,7 +201,41 @@ export const navigation: NavGroup[] = [
     sections: [
       { key: 'money', href: routes.moneyAccounts(), icon: 'coin', permission: 'money:read' },
       { key: 'expenses', href: routes.expenses(), icon: 'tag', permission: 'expenses:read' },
+      {
+        key: 'expenseCategories',
+        href: routes.expenseCategories(),
+        icon: 'list',
+        permission: 'expenses:read',
+      },
+    ],
+  },
+  {
+    key: 'reports',
+    sections: [
       { key: 'reports', href: routes.itemSales(), icon: 'calendar', permission: 'reports:read' },
+      { key: 'salesBook', href: routes.salesBook(), icon: 'calendar', permission: 'reports:read' },
+      { key: 'vat', href: routes.vat(), icon: 'percent', permission: 'reports:read' },
+      { key: 'dayBook', href: routes.dayBook(), icon: 'calendar', permission: 'reports:read' },
+      { key: 'receivables', href: routes.receivables(), icon: 'coin', permission: 'reports:read' },
+      {
+        key: 'profitAndLoss',
+        href: routes.profitAndLoss(),
+        icon: 'coin',
+        permission: 'reports:read',
+      },
+      {
+        key: 'purchaseBook',
+        href: routes.purchaseBook(),
+        icon: 'list',
+        permission: 'reports:read',
+      },
+      {
+        key: 'supplierStatement',
+        href: routes.supplierStatement(),
+        icon: 'users',
+        permission: 'reports:read',
+      },
+      { key: 'searchTerms', href: routes.searchTerms(), icon: 'list', permission: 'reports:read' },
     ],
   },
   {
@@ -146,13 +248,54 @@ export const navigation: NavGroup[] = [
   },
   {
     key: 'website',
-    sections: [{ key: 'content', href: routes.faqs(), icon: 'book', permission: 'catalogue:read' }],
+    sections: [
+      { key: 'content', href: routes.faqs(), icon: 'book', permission: 'catalogue:read' },
+      { key: 'menus', href: routes.menus(), icon: 'list', permission: 'catalogue:read' },
+      { key: 'articles', href: routes.articles(), icon: 'book', permission: 'catalogue:read' },
+      { key: 'banners', href: routes.banners(), icon: 'tag', permission: 'catalogue:read' },
+      {
+        key: 'homeSections',
+        href: routes.homeSections(),
+        icon: 'grid',
+        permission: 'catalogue:read',
+      },
+      { key: 'stories', href: routes.stories(), icon: 'book', permission: 'catalogue:read' },
+      { key: 'reviews', href: routes.reviews(), icon: 'user', permission: 'catalogue:read' },
+      { key: 'media', href: routes.media(), icon: 'leaf', permission: 'catalogue:read' },
+    ],
   },
   {
     key: 'settings',
     sections: [
       { key: 'settings', href: routes.taxClasses(), icon: 'check', permission: 'settings:manage' },
+      {
+        key: 'deliveryZones',
+        href: routes.deliveryZones(),
+        icon: 'truck',
+        permission: 'settings:manage',
+      },
+      {
+        key: 'deliverySlots',
+        href: routes.deliverySlots(),
+        icon: 'clock',
+        permission: 'settings:manage',
+      },
+      {
+        key: 'shopSettings',
+        href: routes.shopSettings(),
+        icon: 'check',
+        permission: 'settings:manage',
+      },
+      {
+        key: 'businessProfile',
+        href: routes.businessProfile(),
+        icon: 'book',
+        permission: 'settings:manage',
+      },
+      { key: 'branches', href: routes.branches(), icon: 'store', permission: 'settings:manage' },
+      { key: 'dataTools', href: routes.dataTools(), icon: 'box', permission: 'settings:manage' },
       { key: 'staff', href: routes.staff(), icon: 'users', permission: 'users:read' },
+      { key: 'activity', href: routes.activity(), icon: 'clock', permission: 'users:read' },
       { key: 'dataReset', href: routes.dataReset(), icon: 'trash', permission: 'data:reset' },
     ],
   },

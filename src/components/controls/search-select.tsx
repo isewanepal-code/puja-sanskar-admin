@@ -262,7 +262,7 @@ export function SearchSelect({
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner sideOffset={4} align="start" className="z-[60]">
-          <Popover.Popup className="w-[var(--anchor-width)] min-w-48 overflow-hidden rounded-md bg-card shadow-lg ring-1 ring-border outline-none">
+          <Popover.Popup className="w-[var(--anchor-width)] min-w-[min(22rem,92vw)] overflow-hidden rounded-md bg-card shadow-lg ring-1 ring-border outline-none">
             {searchable ? (
               <div className="flex items-center gap-2 border-b border-border px-2.5">
                 <Icon name="search" size={14} className="text-muted-foreground" />
@@ -359,11 +359,18 @@ export function SearchSelect({
                           {selected ? <Icon name="check" size={12} /> : null}
                         </span>
                       ) : null}
-                      <span className="min-w-0 flex-1 truncate">
+                      <span
+                        className={cn('min-w-0 flex-1', choice.sub ? 'break-words' : 'truncate')}
+                      >
                         {choice.label}
                         {choice.detail ? (
                           <span className="ml-2 text-xs text-muted-foreground">
                             {choice.detail}
+                          </span>
+                        ) : null}
+                        {choice.sub ? (
+                          <span className="block text-xs font-normal text-muted-foreground">
+                            {choice.sub}
                           </span>
                         ) : null}
                       </span>

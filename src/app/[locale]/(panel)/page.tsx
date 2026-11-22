@@ -95,13 +95,10 @@ export default async function DashboardPage({ params, searchParams }: PageProps<
         className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm hover:bg-primary/10"
       >
         <span>
-          <span className="font-semibold">New here? Read the manual.</span>{' '}
-          <span className="text-muted-foreground">
-            Setup → Items → Buy → Stock → Kits and pujas → Sell, every box and column explained ·
-            Kasari chalaune
-          </span>
+          <span className="font-semibold">{t('manualTitle')}</span>{' '}
+          <span className="text-muted-foreground">{t('manualNote')}</span>
         </span>
-        <span className="font-medium text-primary">Open the manual →</span>
+        <span className="font-medium text-primary">{t('manualOpen')}</span>
       </Link>
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>

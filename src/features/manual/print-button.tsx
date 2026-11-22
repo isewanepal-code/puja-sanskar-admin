@@ -1,9 +1,12 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 import { Button } from '@/components/ui/button';
 
 // Prints the manual, or saves it as a PDF to share.
 export function PrintButton() {
+  const t = useTranslations('manual');
   return (
     <Button
       variant="secondary"
@@ -11,7 +14,7 @@ export function PrintButton() {
       onClick={() => window.print()}
       className="print:hidden"
     >
-      Print / Save as PDF
+      {t('print')}
     </Button>
   );
 }
