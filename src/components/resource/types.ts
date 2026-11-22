@@ -138,6 +138,8 @@ export type Resource<T> = {
   bulk?: string[];
   // Where a row is used (groups, offers, kits ...): asked before a delete, and a row in use is not deleted.
   usagePath?: (row: T) => string;
+  // Rows kept together under a heading each: units by what they measure. `order` fixes the headings.
+  groupBy?: { of: (row: T) => string; label: (key: string) => string; order: readonly string[] };
   // Columns whose number is changed right in the list: click, type, Enter. The column's key is the field.
   inline?: Record<string, InlineEdit<T>>;
 };

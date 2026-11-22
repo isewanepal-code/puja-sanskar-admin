@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import { UnitsScreen } from '@/features/catalogue';
+import { PageHeader } from '@/components/navigation';
 import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
@@ -13,6 +14,12 @@ export async function generateMetadata({
 }
 
 export default async function UnitsPage({ params }: PageProps<'/[locale]/catalogue/units'>) {
-  await resolveLocale(params);
-  return <UnitsScreen />;
+  const locale = await resolveLocale(params);
+  const t = await getTranslations({ locale, namespace: 'catalogue.tabs' });
+  return (
+    <div className="grid grid-cols-1 gap-6">
+      <PageHeader title={t('units')} />
+      <UnitsScreen />
+    </div>
+  );
 }

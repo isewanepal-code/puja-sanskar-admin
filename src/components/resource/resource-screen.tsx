@@ -333,6 +333,7 @@ export function ResourceScreen<T>({
         loading={list.isPending}
         initialSort={resource.initialSort}
         empty={t('empty')}
+        groupBy={resource.groupBy}
         onRowClick={canEdit ? (row) => setEditing(row) : undefined}
         onTextSearch={
           resource.list === 'paged' && resource.searchable !== false

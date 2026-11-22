@@ -2553,6 +2553,49 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/brands': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List brands, with how many items carry each */
+    get: operations['AdminBrandController_list'];
+    put?: never;
+    /** Add a brand */
+    post: operations['AdminBrandController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/brands/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a brand */
+    get: operations['AdminBrandController_get'];
+    put?: never;
+    post?: never;
+    /**
+     * Delete a brand
+     * @description Refused while items carry it: change those items first.
+     */
+    delete: operations['AdminBrandController_delete'];
+    options?: never;
+    head?: never;
+    /**
+     * Rename or switch off a brand
+     * @description A new name is saved on every item that carries the brand.
+     */
+    patch: operations['AdminBrandController_update'];
+    trace?: never;
+  };
   '/api/v1/admin/stock-levels': {
     parameters: {
       query?: never;
@@ -5888,6 +5931,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/purchase-bills/sheet': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The Buy sheet: many purchase lines in one Excel
+     * @description Columns as the Buy page (supplier, bill number, date, item, how much, unit, cost of 1 before VAT, VAT %, expiry, selling price), with dropdowns for supplier, item, unit and VAT.
+     */
+    get: operations['AdminPurchaseSheetController_sheet'];
+    put?: never;
+    /**
+     * Enter purchase bills from the Buy sheet
+     * @description Rows with the same supplier and bill number are one bill. Each bill is saved and posted into stock at the X-Branch branch, as the Buy page does; a selling price puts that pack on sale. Every row is checked first; nothing is entered if any is wrong. A bill already entered is left alone.
+     */
+    post: operations['AdminPurchaseSheetController_enter'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/suppliers': {
     parameters: {
       query?: never;
@@ -6133,6 +6200,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/items/sheet': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The item list as Excel, a sheet per category
+     * @description Columns as the shop keeps its list (Nepali name, English, Romanized, search group, variant type, variants, note). Items already in the shop are locked; the empty rows under them take new items.
+     */
+    get: operations['AdminItemController_sheet'];
+    put?: never;
+    /**
+     * Add new items from the item list workbook
+     * @description A sheet per category (sheet name = category; a new name makes a new category). Rows with a Code are already in the shop and are left alone; rows without one become items: Rule A, the variants become packs (off sale until priced); Rule B, each size or quality is its own row. Every row is checked first; nothing is added if any is wrong.
+     */
+    post: operations['AdminItemController_addFromSheet'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/items/similar': {
     parameters: {
       query?: never;
@@ -6167,6 +6258,30 @@ export interface paths {
      * @description Makes the samagri (unless one is given), the product and its first pack, and brings in opening stock at the X-Branch branch.
      */
     post: operations['AdminItemController_add'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/catalogue-sheet': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Pujas, kits and item groups as one Excel
+     * @description Sheets: puja groups (nested by parent), pujas, puja samagri, kits, kit items, item groups (nested by parent) and group items. Saved rows are locked; the empty rows under them take new ones; dropdowns offer every name.
+     */
+    get: operations['AdminCatalogueSheetController_sheet'];
+    put?: never;
+    /**
+     * Add pujas, kits and item groups from the Excel
+     * @description Sheets are read in order, so a puja group, puja or kit typed on one sheet can be used on the next. Every row is checked first; nothing is added if any is wrong. Saved rows and pairs already there are left alone.
+     */
+    post: operations['AdminCatalogueSheetController_add'];
     delete?: never;
     options?: never;
     head?: never;
@@ -9929,7 +10044,8 @@ export interface components {
         | 'REVIEW'
         | 'PAIRING'
         | 'PARENT_GROUP'
-        | 'WISHLIST';
+        | 'WISHLIST'
+        | 'BRAND_ITEM';
       /** @example 2 */
       count: number;
       /**
@@ -9945,6 +10061,40 @@ export interface components {
       /** @description False while it is used somewhere that matters */
       canDelete: boolean;
       lines: components['schemas']['UsageLineResponse'][];
+    };
+    BrandResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Patanjali */
+      name: string;
+      /** @example पतञ्जलि */
+      nameNe: string | null;
+      isActive: boolean;
+      /**
+       * @description Items carrying this brand
+       * @example 12
+       */
+      itemCount: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateBrandDto: {
+      /** @example Patanjali */
+      name: string;
+      /** @example पतञ्जलि */
+      nameNe?: string | null;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdateBrandDto: {
+      /** @example Patanjali */
+      name?: string;
+      /** @example पतञ्जलि */
+      nameNe?: string | null;
+      /** @default true */
+      isActive: boolean;
     };
     VariantSummary: {
       /** Format: uuid */
@@ -15138,6 +15288,31 @@ export interface components {
       items: components['schemas']['ReceivableRowResponse'][];
       meta: components['schemas']['PageMetaResponse'];
     };
+    RowIssueResponse: {
+      /** @example Unit_Master */
+      sheet: string;
+      /** @example 20 */
+      row: number;
+      /** @example symbol */
+      field?: string;
+      /** @example as_offered is a quantity type, not a unit */
+      message: string;
+    };
+    SheetReportResponse: {
+      /** @example Category_Master */
+      sheet: string;
+      /** @example 18 */
+      created: number;
+      /** @example 0 */
+      updated: number;
+      /** @example 0 */
+      unchanged: number;
+      skipped: components['schemas']['RowIssueResponse'][];
+    };
+    ImportReportResponse: {
+      dryRun: boolean;
+      sheets: components['schemas']['SheetReportResponse'][];
+    };
     SupplierResponse: {
       /** Format: uuid */
       id: string;
@@ -15640,31 +15815,6 @@ export interface components {
       /** @example viber://forward?text=... */
       viberUrl: string;
       smsUrl: string | null;
-    };
-    RowIssueResponse: {
-      /** @example Unit_Master */
-      sheet: string;
-      /** @example 20 */
-      row: number;
-      /** @example symbol */
-      field?: string;
-      /** @example as_offered is a quantity type, not a unit */
-      message: string;
-    };
-    SheetReportResponse: {
-      /** @example Category_Master */
-      sheet: string;
-      /** @example 18 */
-      created: number;
-      /** @example 0 */
-      updated: number;
-      /** @example 0 */
-      unchanged: number;
-      skipped: components['schemas']['RowIssueResponse'][];
-    };
-    ImportReportResponse: {
-      dryRun: boolean;
-      sheets: components['schemas']['SheetReportResponse'][];
     };
     ActivityActorResponse: {
       /** Format: uuid */
@@ -27802,6 +27952,335 @@ export interface operations {
       };
       /** @description FORBIDDEN */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBrandController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['BrandResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBrandController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateBrandDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BrandResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBrandController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BrandResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBrandController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBrandController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateBrandDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['BrandResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
         headers: {
           [name: string]: unknown;
         };
@@ -42207,6 +42686,124 @@ export interface operations {
       };
     };
   };
+  AdminPurchaseSheetController_sheet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPurchaseSheetController_enter: {
+    parameters: {
+      query?: {
+        /** @description Validate and report without writing anything */
+        dryRun?: boolean;
+      };
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ImportReportResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description PAYLOAD_TOO_LARGE */
+      413: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminSupplierController_list: {
     parameters: {
       query?: {
@@ -43858,6 +44455,121 @@ export interface operations {
       };
     };
   };
+  AdminItemController_sheet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminItemController_addFromSheet: {
+    parameters: {
+      query?: {
+        /** @description Validate and report without writing anything */
+        dryRun?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ImportReportResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description PAYLOAD_TOO_LARGE */
+      413: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminItemController_similar: {
     parameters: {
       query?: {
@@ -43972,6 +44684,121 @@ export interface operations {
       };
       /** @description CONFLICT */
       409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminCatalogueSheetController_sheet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminCatalogueSheetController_add: {
+    parameters: {
+      query?: {
+        /** @description Validate and report without writing anything */
+        dryRun?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ImportReportResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description PAYLOAD_TOO_LARGE */
+      413: {
         headers: {
           [name: string]: unknown;
         };

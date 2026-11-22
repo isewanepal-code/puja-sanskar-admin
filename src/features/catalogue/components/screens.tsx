@@ -8,6 +8,7 @@ import { ResourceScreen } from '@/components/resource';
 import {
   categoriesResource,
   categoryChoices,
+  brandsResource,
   materialsResource,
   sourcesResource,
   unitsResource,
@@ -31,3 +32,4 @@ export function CategoriesScreen() {
 export const MaterialsScreen = () => <ResourceScreen resource={materialsResource} />;
 export const UnitsScreen = () => <ResourceScreen resource={unitsResource} />;
 export const SourcesScreen = () => <ResourceScreen resource={sourcesResource} />;
+export const BrandsScreen = () => <ResourceScreen resource={brandsResource} />;

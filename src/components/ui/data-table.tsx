@@ -2,7 +2,7 @@
 
 import { Popover } from '@base-ui/react/popover';
 import { useTranslations } from 'next-intl';
-import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 
 import { Icon } from '@/components/icons';
 import { InfoTip } from '@/components/ui/info-tip';
@@ -39,6 +39,9 @@ type DataTableProps<T> = {
   // For a list that comes a page at a time: text typed under a heading goes here (the API
   // searches every page) instead of narrowing only the rows on screen.
   onTextSearch?: (texts: Record<string, string>) => void;
+  // Rows kept together under a heading each (units by what they measure). `order` is the order of the
+  // headings; the column sort still orders the rows inside each one.
+  groupBy?: { of: (row: T) => string; label: (key: string) => string; order: readonly string[] };
 };
 
 const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
@@ -74,6 +77,7 @@ export function DataTable<T>({
   columnSearch = true,
   pinFirst = true,
   onTextSearch,
+  groupBy,
 }: DataTableProps<T>) {
   const t = useTranslations('table');
   const [sort, setSort] = useState(initialSort);
@@ -140,11 +144,17 @@ export function DataTable<T>({
         )
       : rows;
     const column = columns.find((c) => c.key === sort?.key);
-    if (!sort || !column?.sortValue) return filtered;
-    const by = column.sortValue;
-    const sign = sort.direction === 'asc' ? 1 : -1;
-    return [...filtered].sort((a, b) => sign * compare(by(a), by(b)));
-  }, [rows, columns, sort, filters, onTextSearch, yesNoKeys]);
+    const by = column?.sortValue;
+    const sign = sort?.direction === 'desc' ? -1 : 1;
+    const ordered = by ? [...filtered].sort((a, b) => sign * compare(by(a), by(b))) : filtered;
+    if (!groupBy) return ordered;
+    // The headings in their own order; the order above is kept inside each (the sort is stable).
+    const rank = (row: T) => {
+      const at = groupBy.order.indexOf(groupBy.of(row));
+      return at === -1 ? groupBy.order.length : at;
+    };
+    return [...ordered].sort((a, b) => rank(a) - rank(b));
+  }, [rows, columns, sort, filters, onTextSearch, yesNoKeys, groupBy]);
   const filtering = Object.values(filters).some((value) => value.trim() !== '');
 
   const toggle = (key: string) =>
@@ -262,41 +272,55 @@ export function DataTable<T>({
               </td>
             </tr>
           ) : (
-            sorted.map((row) => (
-              <tr
-                key={rowKey(row)}
-                onClick={onRowClick ? () => onRowClick(row) : undefined}
-                className={cn('data-row group/row', onRowClick && 'cursor-pointer')}
-              >
-                {columns.map((column, index) => (
-                  <td
-                    key={column.key}
-                    className={cn(
-                      'border-r border-b border-border px-3 py-2.5 align-middle group-last/row:border-b-0',
-                      column.align === 'right' && 'text-right',
-                      pinFirst && index === 0 && 'pin sticky left-0 z-[5] whitespace-nowrap',
-                      pinFirst &&
-                        index === 0 &&
-                        under.left &&
-                        'shadow-[6px_0_8px_-6px_rgb(0_0_0/0.18)]',
-                      column.className,
-                    )}
-                  >
-                    {column.cell(row)}
-                  </td>
-                ))}
-                {actions ? (
-                  <td
-                    className={cn(
-                      'pin sticky right-0 z-[5] border-b border-border px-3 py-1.5 text-right whitespace-nowrap group-last/row:border-b-0',
-                      under.right && 'shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.18)]',
-                    )}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {actions(row)}
-                  </td>
+            sorted.map((row, at) => (
+              <Fragment key={rowKey(row)}>
+                {groupBy && (at === 0 || groupBy.of(sorted[at - 1]!) !== groupBy.of(row)) ? (
+                  <tr className="group-head">
+                    <td
+                      colSpan={columns.length + 1}
+                      className="sticky left-0 border-r border-b border-border bg-muted px-3 py-2 text-xs font-semibold tracking-wide uppercase"
+                    >
+                      {groupBy.label(groupBy.of(row))}
+                      <span className="ml-2 font-normal text-muted-foreground">
+                        {sorted.filter((r) => groupBy.of(r) === groupBy.of(row)).length}
+                      </span>
+                    </td>
+                  </tr>
                 ) : null}
-              </tr>
+                <tr
+                  onClick={onRowClick ? () => onRowClick(row) : undefined}
+                  className={cn('data-row group/row', onRowClick && 'cursor-pointer')}
+                >
+                  {columns.map((column, index) => (
+                    <td
+                      key={column.key}
+                      className={cn(
+                        'border-r border-b border-border px-3 py-2.5 align-middle group-last/row:border-b-0',
+                        column.align === 'right' && 'text-right',
+                        pinFirst && index === 0 && 'pin sticky left-0 z-[5] whitespace-nowrap',
+                        pinFirst &&
+                          index === 0 &&
+                          under.left &&
+                          'shadow-[6px_0_8px_-6px_rgb(0_0_0/0.18)]',
+                        column.className,
+                      )}
+                    >
+                      {column.cell(row)}
+                    </td>
+                  ))}
+                  {actions ? (
+                    <td
+                      className={cn(
+                        'pin sticky right-0 z-[5] border-b border-border px-3 py-1.5 text-right whitespace-nowrap group-last/row:border-b-0',
+                        under.right && 'shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.18)]',
+                      )}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {actions(row)}
+                    </td>
+                  ) : null}
+                </tr>
+              </Fragment>
             ))
           )}
         </tbody>

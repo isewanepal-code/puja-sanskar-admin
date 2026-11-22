@@ -129,7 +129,10 @@
       "buy": "Buy",
       "sellPrice": "Selling price",
       "manual": "Manual",
-      "units": "Units"
+      "units": "Units",
+      "materials": "Samagri",
+      "sources": "Sources",
+      "brands": "Brands"
     },
     "changePassword": "Change password",
     "groups": {
@@ -184,7 +187,10 @@
       "buy": "Bazar bata kineko saman: kun supplier, kun item, kun rang/size, kati ra kati ma. Stock ma thapincha.",
       "sellPrice": "Kineko saman ko bechne mol rakhne ra bikri ma rakhne (On sale).",
       "manual": "How to use every page, box and column, step by step. Print it or save it as PDF to share.",
-      "units": "The words sizes are counted in: g, kg, ml, L, m, pcs, set, मुठा. Add one only for a new kind of size."
+      "units": "The words sizes are counted in: g, kg, ml, L, m, pcs, set, मुठा. Add one only for a new kind of size.",
+      "materials": "Puja ko lagi chahine kachho kura (jastai kapur). Item banaunda aafai banchha; puja ko samagri-suchi yahi bata.",
+      "sources": "Samagri ko jankari kahan bata aayo (kitab, website, pandit). Record rakhna matra.",
+      "brands": "Brand ko list: ek patak banaune, item ma chunne. Naam badalyo bhane sabai item ma badalinchha."
     },
     "sectionHint": {
       "dashboard": "Aajako hisab",
@@ -209,7 +215,10 @@
       "customers": "Grahak",
       "money": "Nagad ra bank",
       "expenses": "Kharcha",
-      "reports": "Bikri report"
+      "reports": "Bikri report",
+      "materials": "Kachho samagri",
+      "sources": "Jankari ko srot",
+      "brands": "Brand haru"
     }
   },
   "dashboard": {
@@ -2552,6 +2561,25 @@
       "fields": {
         "counted": "How many of this pack are there really"
       }
+    },
+    "brands": {
+      "title": "Brands",
+      "add": "Add a brand",
+      "empty": "No brands yet.",
+      "none": "—",
+      "fields": {
+        "name": "Brand",
+        "nameNe": "Name in Nepali",
+        "itemCount": "Items",
+        "isActive": "In use"
+      },
+      "hints": {
+        "name": "Jastai Patanjali, Tata. Item ma yehi naam chunincha; spelling ek ठाउँ ma matra.",
+        "nameNe": "Optional."
+      },
+      "sections": {},
+      "about": "Item ko brand yaha ek patak banaune, item ma list bata chunne (type garne hoina). Naam badalyo bhane tyo brand ka sabai item ma badalinchha; item ma prayog bhayeko brand hataina milcha.",
+      "aboutForm": "Brand ko naam halnus. Item banaunda yahi list bata chunnus."
     }
   },
   "catalogue": {
@@ -2562,7 +2590,8 @@
       "units": "Units",
       "sources": "Sources",
       "products": "Products",
-      "stock": "Stock"
+      "stock": "Stock",
+      "brands": "Brands"
     }
   },
   "contentSection": {
@@ -4271,7 +4300,8 @@
       "REVIEW": "{count, plural, one {# review} other {# reviews}}",
       "PAIRING": "{count, plural, one {# \"goes with\" link} other {# \"goes with\" links}}",
       "PARENT_GROUP": "{count, plural, one {# group it is inside} other {# groups it is inside}}",
-      "WISHLIST": "{count, plural, one {# wish list} other {# wish lists}}"
+      "WISHLIST": "{count, plural, one {# wish list} other {# wish lists}}",
+      "BRAND_ITEM": "{count, plural, one {# item carries it} other {# items carry it}}"
     }
   },
   "testMode": {

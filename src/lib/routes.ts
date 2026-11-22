@@ -42,6 +42,7 @@ export const routes = {
   stock: (show?: 'low' | 'out') => (show ? `/stock?show=${show}` : '/stock'),
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
+  brands: () => '/catalogue/brands',
   optionTypes: () => '/options',
   dataReset: () => '/data-reset',
 

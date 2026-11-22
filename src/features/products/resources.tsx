@@ -81,7 +81,7 @@ export const productsResource: Resource<Product> = {
     },
     { name: 'nameRomanized', kind: 'text', max: 160 },
     { name: 'aliases', kind: 'tags', wide: true },
-    { name: 'brand', kind: 'text', max: 80 },
+    { name: 'brand', kind: 'select', optionsFrom: choices.brands },
     { name: 'taxClassId', kind: 'select', optionsFrom: choices.taxClasses },
     { name: 'defaultSupplierId', kind: 'select', optionsFrom: choices.suppliers },
     { name: 'hsCode', kind: 'text', max: 8, pattern: HS_CODE },
@@ -186,7 +186,7 @@ export const quickItemResource: Resource<never> = {
     },
     { name: 'categoryId', kind: 'select', optionsFrom: categoryChoices },
     { name: 'materialId', kind: 'select', optionsFrom: choices.sellableMaterials },
-    { name: 'brand', kind: 'text', max: 80 },
+    { name: 'brand', kind: 'select', optionsFrom: choices.brands },
     { name: 'defaultSupplierId', kind: 'select', optionsFrom: choices.suppliers },
     { name: 'packQuantity', kind: 'number', required: true, pattern: QUANTITY, section: 'pack' },
     {
@@ -247,7 +247,7 @@ export const bareItemResource: Resource<never> = {
     },
     { name: 'categoryId', kind: 'select', optionsFrom: categoryChoices },
     { name: 'materialId', kind: 'select', optionsFrom: choices.sellableMaterials },
-    { name: 'brand', kind: 'text', max: 80 },
+    { name: 'brand', kind: 'select', optionsFrom: choices.brands },
     { name: 'defaultSupplierId', kind: 'select', optionsFrom: choices.suppliers },
   ],
 };

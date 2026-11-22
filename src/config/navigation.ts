@@ -31,6 +31,9 @@ export type NavSection = {
     | 'pandits'
     | 'options'
     | 'units'
+    | 'materials'
+    | 'sources'
+    | 'brands'
     | 'dataReset'
     | 'catalogue'
     | 'settings'
@@ -57,8 +60,8 @@ export type NavGroup = {
   sections: NavSection[];
 };
 
-// The sidebar in the order the shop works, numbered: what must exist first (categories, units,
-// colours and sizes, suppliers), then the items, buying them, the stock, kits and pujas, selling,
+// The sidebar in the order the shop works, numbered: what must exist first (categories, units, brands,
+// colours and sizes, suppliers, then the puja knowledge: samagri and sources), then the items, buying them, the stock, kits and pujas, selling,
 // and the money. Offers, the website and settings come last.
 export const navigation: NavGroup[] = [
   {
@@ -73,8 +76,12 @@ export const navigation: NavGroup[] = [
     sections: [
       { key: 'catalogue', href: routes.categories(), icon: 'list', permission: 'catalogue:read' },
       { key: 'units', href: routes.units(), icon: 'grain', permission: 'catalogue:read' },
+      { key: 'brands', href: routes.brands(), icon: 'tag', permission: 'catalogue:read' },
       { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
       { key: 'suppliers', href: routes.suppliers(), icon: 'users', permission: 'purchases:read' },
+      // Puja knowledge, not daily work: last of the setup.
+      { key: 'materials', href: routes.materials(), icon: 'leaf', permission: 'catalogue:read' },
+      { key: 'sources', href: routes.sources(), icon: 'book', permission: 'catalogue:read' },
     ],
   },
   {

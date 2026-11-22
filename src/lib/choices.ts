@@ -165,6 +165,18 @@ export const choices = {
     toChoices: (s) => (s.isActive ? [{ value: s.id, label: s.name, detail: s.code }] : []),
     find: (id) => `/admin/suppliers/${id}`,
   }),
+  // A brand is picked by its name: an item keeps the name, in the spelling set up under Brands.
+  brands: wholeSource('brands', async () =>
+    (
+      await request<Page<{ name: string; nameNe: string | null }>>('GET', '/admin/brands', {
+        query: { limit: 100 },
+      })
+    ).items.map((brand) => ({
+      value: brand.name,
+      label: brand.name,
+      detail: brand.nameNe ?? undefined,
+    })),
+  ),
   units: wholeSource('units', async () =>
     (await request<Page<Unit>>('GET', '/admin/units', { query: { limit: 100 } })).items.map(
       (unit) => ({ value: unit.id, label: unit.nameNe, detail: unit.symbol }),

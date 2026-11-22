@@ -139,12 +139,13 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
               aria-label={t('supplier')}
               className="w-44"
             />
-            <input
+            <SearchSelect
+              source={choices.brands}
               value={brand}
-              onChange={(e) => setBrand(e.target.value)}
+              onChange={(value) => setBrand(String(value))}
               placeholder={t('brand')}
               aria-label={t('brand')}
-              className="h-9 w-32 rounded-md border border-border bg-card px-3 text-sm"
+              className="w-36"
             />
             <SearchSelect
               source={choices.products}

@@ -269,11 +269,11 @@ export function AddItemPage() {
               />
             </Field>
             <Field label={t('brand')} htmlFor="add-brand">
-              <Input
+              <SearchSelect
                 id="add-brand"
+                source={choices.brands}
                 value={form.brand}
-                maxLength={80}
-                onChange={(e) => change({ brand: e.target.value })}
+                onChange={(value) => change({ brand: String(value) })}
               />
             </Field>
             <Field label={t('supplier')} htmlFor="add-supplier" hint={t('supplierHint')}>

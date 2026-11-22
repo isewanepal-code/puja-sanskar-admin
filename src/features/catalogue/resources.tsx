@@ -8,6 +8,7 @@ type CategoryNode = Category & { children: CategoryNode[] };
 type Material = Schema<'AdminMaterialResponse'>;
 type Unit = Schema<'UnitResponse'>;
 type Source = Schema<'SourceResponse'>;
+type Brand = Schema<'BrandResponse'>;
 
 const flatten = (nodes: CategoryNode[]): CategoryNode[] =>
   nodes.flatMap((node) => [node, ...flatten(node.children)]);
@@ -125,19 +126,78 @@ export const materialsResource: Resource<Material> = {
   ],
 };
 
+// Units sit under what they measure, in the order a shop thinks of them; inside each, smallest first
+// (mg, g, kg …). A unit not named here goes after the named ones, by symbol.
+const DIMENSION_ORDER = ['WEIGHT', 'LENGTH', 'VOLUME', 'AREA', 'COUNT'] as const;
+const DIMENSION_NAME: Record<string, string> = {
+  WEIGHT: 'Weight (mg, g, kg …)',
+  LENGTH: 'Length (mm, cm, inch, ft, m …)',
+  VOLUME: 'Volume (ml, L …)',
+  AREA: 'Area (sq ft …)',
+  COUNT: 'Count (pieces, pairs, sets …)',
+};
+const SIZE_ORDER = [
+  'mg',
+  'g',
+  'gm',
+  'kg',
+  'quintal',
+  'ton',
+  'mm',
+  'cm',
+  'in',
+  'inch',
+  'ft',
+  'foot',
+  'yd',
+  'm',
+  'meter',
+  'km',
+  'ml',
+  'l',
+  'ltr',
+  'litre',
+  'sqft',
+  'sq ft',
+  'sqm',
+  'pc',
+  'pcs',
+  'piece',
+  'pair',
+  'dozen',
+  'set',
+  'box',
+  'packet',
+  'bottle',
+];
+const sizeRank = (unit: Unit) => {
+  const at = SIZE_ORDER.indexOf(unit.symbol.toLowerCase());
+  return String(at === -1 ? 999 : at).padStart(3, '0') + unit.symbol.toLowerCase();
+};
+const loadUnits = async () =>
+  (await request<{ items: Unit[] }>('GET', '/admin/units', { query: { limit: 100 } })).items;
+
 export const unitsResource: Resource<Unit> = {
   key: 'units',
   path: '/admin/units',
-  list: 'paged',
+  // All of them at once, so each heading shows its whole run of units.
+  list: 'all',
+  loadAll: loadUnits,
+  matches: (row, q) =>
+    `${row.code} ${row.symbol} ${row.nameNe} ${row.nameEn ?? ''}`.toLowerCase().includes(q),
   rowId: (row) => row.id,
   rowLabel: (row) => `${row.symbol} · ${row.nameNe}`,
-  initialSort: { key: 'code', direction: 'asc' },
+  initialSort: { key: 'symbol', direction: 'asc' },
+  groupBy: {
+    of: (row) => row.dimension,
+    label: (key) => DIMENSION_NAME[key] ?? key,
+    order: DIMENSION_ORDER,
+  },
   modalSize: 'sm',
   bulk: ['code', 'symbol', 'dimension', 'nameNe', 'nameEn'],
   columns: [
     codeColumn<Unit>(),
-    { key: 'symbol', cell: (row) => row.symbol, sortValue: (row) => row.symbol },
-    { key: 'dimension', cell: (row) => row.dimension, sortValue: (row) => row.dimension },
+    { key: 'symbol', cell: (row) => row.symbol, sortValue: sizeRank },
     recordColumn(),
     activeColumn<Unit>(),
   ],
@@ -199,6 +259,46 @@ export const sourcesResource: Resource<Source> = {
     { name: 'topic', kind: 'text', max: 255, wide: true },
     { name: 'url', kind: 'url', wide: true },
     { name: 'note', kind: 'textarea', max: 1000 },
+    { name: 'isActive', kind: 'switch' },
+  ],
+};
+
+// The shop's brands, set up first and picked on an item (a new name typed on an item also lands here).
+export const brandsResource: Resource<Brand> = {
+  key: 'brands',
+  path: '/admin/brands',
+  list: 'paged',
+  rowId: (row) => row.id,
+  rowLabel: (row) => row.name,
+  usagePath: undefined,
+  initialSort: { key: 'name', direction: 'asc' },
+  modalSize: 'sm',
+  bulk: ['name', 'nameNe'],
+  columns: [
+    {
+      key: 'name',
+      cell: (row) => (
+        <>
+          <span className="font-semibold">{row.name}</span>
+          {row.nameNe ? (
+            <span className="ml-2 text-xs text-muted-foreground">{row.nameNe}</span>
+          ) : null}
+        </>
+      ),
+      sortValue: (row) => row.name,
+      filterValue: (row) => `${row.name} ${row.nameNe ?? ''}`,
+    },
+    {
+      key: 'itemCount',
+      cell: (row) => <Badge>{row.itemCount}</Badge>,
+      sortValue: (row) => row.itemCount,
+      align: 'right',
+    },
+    activeColumn<Brand>(),
+  ],
+  fields: [
+    { name: 'name', kind: 'text', required: true, max: 80 },
+    { name: 'nameNe', kind: 'text', max: 80 },
     { name: 'isActive', kind: 'switch' },
   ],
 };

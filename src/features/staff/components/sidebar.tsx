@@ -14,6 +14,14 @@ import { usePanel } from './panel-shell';
 const isActive = (pathname: string, href: string) =>
   href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
 
+// The one section that fits the page best: the longest address that still matches, so Units lights
+// up on /catalogue/units and Categories (/catalogue) does not light with it.
+const currentHref = (pathname: string, groups: NavGroup[]) =>
+  groups
+    .flatMap((group) => group.sections.map((section) => section.href))
+    .filter((href) => isActive(pathname, href))
+    .sort((a, b) => b.length - a.length)[0];
+
 const initial = siteConfig.name.slice(0, 1);
 
 // Only some sections have a hint; t.has() checks it, so the key is typed as one that exists.
@@ -24,6 +32,7 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
   const t = useTranslations('panel');
   const pathname = usePathname();
   const { collapsed, open, close, toggle } = usePanel();
+  const current = currentHref(pathname, groups);
 
   return (
     <>
@@ -88,7 +97,7 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
                 )}
               >
                 {group.sections.map((section) => {
-                  const active = isActive(pathname, section.href);
+                  const active = section.href === current;
                   const label = t(`sections.${section.key}`);
                   // What the screen is for, shown on hover.
                   const help = t(`sectionHelp.${section.key}`);
