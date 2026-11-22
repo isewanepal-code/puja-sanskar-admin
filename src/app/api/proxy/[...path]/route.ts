@@ -45,7 +45,9 @@ async function forward(
   const branch = request.headers.get('x-branch') ?? request.cookies.get(BRANCH_COOKIE)?.value;
   if (branch) headers.set('X-Branch', branch);
   // Test mode rides along; the API ignores it on a server that does not allow it.
-  if (request.cookies.get(TEST_MODE_COOKIE)?.value === 'on') headers.set('X-Test-Mode', 'on');
+  if (serverEnv.TEST_MODE_ALWAYS || request.cookies.get(TEST_MODE_COOKIE)?.value === 'on') {
+    headers.set('X-Test-Mode', 'on');
+  }
   const ip = request.headers.get('x-forwarded-for');
   if (ip) headers.set('X-Forwarded-For', ip);
 

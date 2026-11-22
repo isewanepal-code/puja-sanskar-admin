@@ -16,6 +16,7 @@ import {
 import { BRANCH_COOKIE, TEST_MODE_COOKIE } from '@/lib/session';
 import { resolveLocale } from '@/i18n/server';
 import { isApiError } from '@/lib/api';
+import { serverEnv } from '@/lib/env/server';
 import { routes } from '@/lib/routes';
 
 export default async function PanelLayout({ children, params }: LayoutProps<'/[locale]'>) {
@@ -33,7 +34,7 @@ export default async function PanelLayout({ children, params }: LayoutProps<'/[l
   const jar = await cookies();
   const collapsed = jar.get(SIDEBAR_COOKIE)?.value === 'collapsed';
   const branch = jar.get(BRANCH_COOKIE)?.value ?? '';
-  const testMode = jar.get(TEST_MODE_COOKIE)?.value === 'on';
+  const testMode = serverEnv.TEST_MODE_ALWAYS || jar.get(TEST_MODE_COOKIE)?.value === 'on';
 
   return (
     <PanelShell initialCollapsed={collapsed}>
@@ -42,7 +43,7 @@ export default async function PanelLayout({ children, params }: LayoutProps<'/[l
         extras={
           <>
             <BranchSwitcher current={branch} />
-            <TestModeSwitch initialOn={testMode} />
+            <TestModeSwitch initialOn={testMode} locked={serverEnv.TEST_MODE_ALWAYS} />
           </>
         }
       />
@@ -52,6 +53,7 @@ export default async function PanelLayout({ children, params }: LayoutProps<'/[l
           branch={branch}
           canEditWebsite={can(me.permissions, 'site-texts:edit')}
           testMode={testMode}
+          testModeLocked={serverEnv.TEST_MODE_ALWAYS}
           defaultLanguage={defaultLanguage}
         />
         <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>

@@ -24,7 +24,7 @@ export async function sessionApi() {
   const access = jar.get(SESSION_COOKIES.access)?.value;
   const cart = jar.get(SESSION_COOKIES.guestCart)?.value;
   const branch = jar.get(BRANCH_COOKIE)?.value;
-  const testMode = jar.get(TEST_MODE_COOKIE)?.value === 'on';
+  const testMode = serverEnv.TEST_MODE_ALWAYS || jar.get(TEST_MODE_COOKIE)?.value === 'on';
   return createClient<paths>({
     baseUrl: serverEnv.API_URL,
     redirect: 'manual',

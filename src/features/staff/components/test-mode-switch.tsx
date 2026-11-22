@@ -19,7 +19,14 @@ const remember = (on: boolean) => {
 // Staging or Production, in the header. On a staging server staff may switch to Staging: then
 // anything (items, bills, stock) can be deleted even when it is used. Production works as always,
 // and a production server never shows the switch at all.
-export function TestModeSwitch({ initialOn }: { initialOn: boolean }) {
+export function TestModeSwitch({
+  initialOn,
+  locked = false,
+}: {
+  initialOn: boolean;
+  // A staging server: always Staging, nothing to switch.
+  locked?: boolean;
+}) {
   const t = useTranslations('testMode');
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -44,6 +51,18 @@ export function TestModeSwitch({ initialOn }: { initialOn: boolean }) {
       >
         <span className="size-2 rounded-full bg-success" />
         {t('production')}
+      </span>
+    );
+  }
+
+  if (locked) {
+    return (
+      <span
+        title={t('help')}
+        className="inline-flex items-center gap-1.5 rounded-md bg-warning/20 px-2.5 py-1 text-xs font-semibold text-foreground"
+      >
+        <span className="size-2 rounded-full bg-warning" />
+        {t('staging')}
       </span>
     );
   }

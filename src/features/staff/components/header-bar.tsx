@@ -25,6 +25,8 @@ type HeaderBarProps = {
   canEditWebsite?: boolean;
   // Test mode was switched on (cookie); the API still decides whether this server allows it.
   testMode?: boolean;
+  // The server is always in test mode (staging): no switch, only a badge.
+  testModeLocked?: boolean;
   // The language for staff who have not picked one (the shop's setting).
   defaultLanguage?: 'en' | 'ne';
 };
@@ -45,6 +47,7 @@ export function HeaderBar({
   branch,
   canEditWebsite = false,
   testMode = false,
+  testModeLocked = false,
   defaultLanguage = 'en',
 }: HeaderBarProps) {
   const t = useTranslations('panel');
@@ -76,7 +79,7 @@ export function HeaderBar({
         <div className="flex shrink-0 items-center gap-2 md:gap-3">
           <LanguageSwitch defaultLanguage={defaultLanguage} />
           <div className="hidden md:block">
-            <TestModeSwitch initialOn={testMode} />
+            <TestModeSwitch initialOn={testMode} locked={testModeLocked} />
           </div>
           {canEditWebsite ? <EditWebsiteButton /> : null}
           <NotesButton />
