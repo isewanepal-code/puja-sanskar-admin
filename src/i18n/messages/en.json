@@ -485,7 +485,8 @@
     "markDone": "Mark as done",
     "reopen": "Move back to to do",
     "openImage": "Open the screenshot",
-    "removeImage": "Remove the screenshot"
+    "removeImage": "Remove the screenshot",
+    "close": "Close"
   },
   "table": {
     "search": "Search",

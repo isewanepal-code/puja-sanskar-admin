@@ -152,6 +152,13 @@ export function NotesButton() {
         size="lg"
         title={t('titleFor', { screen: everywhere ? t('allScreens') : screen })}
         description={t('note')}
+        // What is typed stays here until it is added, so closing never loses it and never asks.
+        askBeforeClosing={false}
+        footer={
+          <Button variant="secondary" onClick={() => setOpen(false)}>
+            {t('close')}
+          </Button>
+        }
       >
         <div className="grid gap-5" onPaste={onPaste}>
           <div className="grid gap-2">

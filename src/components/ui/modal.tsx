@@ -36,6 +36,8 @@ type ModalProps = {
   footer?: ReactNode;
   // The caller holds work the modal cannot see (rows in a grid): treated as typed-in.
   dirty?: boolean;
+  // False for a modal that keeps what is typed in it by itself (the notes): closing never asks.
+  askBeforeClosing?: boolean;
   // Changed when the form inside starts over (saved, and another one begins): typed-in state clears.
   resetKey?: unknown;
   children: ReactNode;
@@ -70,6 +72,7 @@ export function Modal({
   size = 'md',
   footer,
   dirty: held = false,
+  askBeforeClosing = true,
   resetKey,
   children,
 }: ModalProps) {
@@ -82,7 +85,7 @@ export function Modal({
   const [nudge, setNudge] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const drag = useRef<{ px: number; py: number; ox: number; oy: number } | null>(null);
-  const dirty = typed || reported || held;
+  const dirty = askBeforeClosing && (typed || reported || held);
   const moved = offset.x !== 0 || offset.y !== 0;
 
   // A closed modal starts clean next time (state follows the prop during render, not in an effect).
