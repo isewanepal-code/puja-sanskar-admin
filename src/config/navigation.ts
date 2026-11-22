@@ -41,6 +41,7 @@ export type NavSection = {
     | 'settings'
     | 'staff'
     | 'bills'
+    | 'customerReturns'
     | 'carts'
     | 'listPhotos'
     | 'messages'
@@ -88,6 +89,7 @@ export type NavGroup = {
     | 'stock'
     | 'kits'
     | 'sell'
+    | 'returns'
     | 'money'
     | 'reports'
     | 'marketing'
@@ -140,12 +142,6 @@ export const navigation: NavGroup[] = [
       { key: 'buy', href: routes.buy(), icon: 'truck', permission: 'purchases:write' },
       { key: 'buying', href: routes.purchaseBills(), icon: 'list', permission: 'purchases:read' },
       {
-        key: 'purchaseReturns',
-        href: routes.purchaseReturns(),
-        icon: 'archive',
-        permission: 'purchases:read',
-      },
-      {
         key: 'supplierPayments',
         href: routes.supplierPayments(),
         icon: 'coin',
@@ -194,6 +190,23 @@ export const navigation: NavGroup[] = [
       { key: 'listPhotos', href: routes.listPhotos(), icon: 'book', permission: 'customers:read' },
       { key: 'messages', href: routes.messages(), icon: 'list', permission: 'customers:read' },
       { key: 'reminders', href: routes.reminders(), icon: 'clock', permission: 'customers:read' },
+    ],
+  },
+  {
+    key: 'returns',
+    sections: [
+      {
+        key: 'customerReturns',
+        href: routes.customerReturns(),
+        icon: 'archive',
+        permission: 'orders:read',
+      },
+      {
+        key: 'purchaseReturns',
+        href: routes.purchaseReturns(),
+        icon: 'archive',
+        permission: 'purchases:read',
+      },
     ],
   },
   {

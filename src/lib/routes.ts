@@ -13,6 +13,8 @@ export const routes = {
   order: (id: string) => `/orders/${id}`,
   counterSale: () => '/counter',
   bills: () => '/orders/bills',
+  customerReturns: () => '/orders/returns',
+  newCustomerReturn: (orderId?: string) => withQuery('/orders/returns/new', { order: orderId }),
   login: (next?: string) => (next ? `/login?next=${encodeURIComponent(next)}` : '/login'),
 
   // The tree, opened at a group.

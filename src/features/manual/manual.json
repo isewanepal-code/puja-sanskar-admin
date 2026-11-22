@@ -1,7 +1,7 @@
 {
   "title": "Puja Sanskar Admin — Full Manual",
   "subtitle": "From setting up the shop to selling: every page, every box and every column, in plain words.",
-  "updated": "2026-11-23",
+  "updated": "2026-11-24",
   "chapters": [
     {
       "id": "start",
@@ -558,6 +558,57 @@
       ],
       "tips": [
         "Bills need the business profile: Settings → Business (shop name, address, PAN, VAT registered or not)."
+      ]
+    },
+    {
+      "id": "customer-returns",
+      "title": "6.1 · Customer returns",
+      "nepali": "ग्राहकले फिर्ता ल्याएको सामान।",
+      "where": "Sidebar → 6 Sell → Customer returns (or an order's \"Return goods\")",
+      "intro": "A customer brings something back from an order. Record it here so stock, money and the order all agree. This is not the same as Purchase returns, which is goods you send back to a supplier.",
+      "fields": [
+        [
+          "Order *",
+          "PS-000123",
+          "Search by order number, name or phone. Opening it from the order page chooses it for you."
+        ],
+        [
+          "Return now",
+          "1",
+          "How many of each line came back. It cannot be more than was sold less what already came back."
+        ],
+        [
+          "What happens to it",
+          "Back on the shelf / Write off (loss)",
+          "Back on the shelf: counted in stock again and can be sold. Write off: broken, spoiled or used, so stock does not go up and it shows as a loss."
+        ],
+        [
+          "Why it came back *",
+          "Damaged or broken",
+          "The reason, for your own records and to see patterns later."
+        ],
+        ["Note", "Box was crushed", "Optional."],
+        [
+          "Pay the money back now",
+          "tick",
+          "On: money goes back to the customer (cash, eSewa, Khalti, bank…) in the same step. Off: the order shows a refund due and you pay it later from the order page."
+        ],
+        [
+          "Amount to pay back",
+          "175.00",
+          "Empty pays all of the credit. It cannot be more than the customer has paid beyond what the order is owed."
+        ],
+        ["Reference", "FP2026…", "Needed for every way of paying except cash."]
+      ],
+      "steps": [
+        "Open the order and press Return goods (or open Customer returns → Record a customer return).",
+        "Enter how many of each item came back and what happens to each.",
+        "Choose the reason, decide whether to pay back now, and press Record the return."
+      ],
+      "tips": [
+        "A return lowers what the order is owed by the worth of the goods (their price less their share of any discount). Delivery fees are not credited.",
+        "A return is kept as recorded and is not edited. If the refund could not be recorded, the stock and credit are already saved: refund from the order.",
+        "Reports still show the original sale; returns are listed here."
       ]
     },
     {

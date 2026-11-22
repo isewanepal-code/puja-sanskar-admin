@@ -133,7 +133,7 @@
       "materials": "Samagri",
       "sources": "Sources",
       "brands": "Brands",
-      "purchaseReturns": "Purchase returns",
+      "purchaseReturns": "Supplier returns",
       "supplierPayments": "Supplier payments",
       "bills": "Bills",
       "carts": "Carts",
@@ -167,7 +167,8 @@
       "businessProfile": "Business profile",
       "branches": "Branches",
       "dataTools": "Data tools",
-      "activity": "Activity log"
+      "activity": "Activity log",
+      "customerReturns": "Customer returns"
     },
     "changePassword": "Change password",
     "groups": {
@@ -178,11 +179,12 @@
       "stock": "4 · Stock",
       "kits": "5 · Kits and pujas",
       "sell": "6 · Sell",
-      "money": "7 · Money",
+      "money": "8 · Money",
       "marketing": "Offers",
       "website": "Website",
       "settings": "Settings",
-      "reports": "8 · Reports"
+      "reports": "9 · Reports",
+      "returns": "7 · Returns"
     },
     "showMenu": "Show the menu",
     "hideMenu": "Hide the menu",
@@ -261,7 +263,8 @@
       "businessProfile": "The business details printed on bills.",
       "branches": "Shops and branches, each with its own stock and orders.",
       "dataTools": "Master Excel import and search index.",
-      "activity": "Who did what, and when."
+      "activity": "Who did what, and when.",
+      "customerReturns": "Goods customers brought back from an order: back on the shelf or written off, and the money paid back."
     },
     "sectionHint": {
       "dashboard": "Today's summary",
@@ -293,7 +296,9 @@
       "purchaseReturns": "Sent back",
       "supplierPayments": "Paid out"
     },
-    "language": "Language"
+    "language": "Language",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -2661,6 +2666,36 @@
       "sections": {},
       "about": "Add each brand once here, then pick it from the list on an item (no typing). Renaming a brand renames it on all its items; a brand not used by any item can be deleted.",
       "aboutForm": "Enter the brand name. You will pick it from this list when you make an item."
+    },
+    "salesReturns": {
+      "title": "Customer returns",
+      "add": "Record a return",
+      "empty": "No customer returns yet.",
+      "none": "—",
+      "about": "Goods customers brought back from an order: why, whether they went back on the shelf or were written off, and the money paid back.",
+      "fields": {
+        "displayNumber": "Return",
+        "orderNumber": "Order",
+        "customer": "Customer",
+        "reason": "Reason",
+        "items": "Items",
+        "creditTotal": "Credit",
+        "createdAt": "When"
+      },
+      "reasons": {
+        "DAMAGED": "Damaged or broken",
+        "WRONG_ITEM": "Wrong item sent",
+        "QUALITY": "Quality not good",
+        "NOT_AS_DESCRIBED": "Not as shown or described",
+        "CHANGED_MIND": "Customer changed their mind",
+        "NOT_NEEDED": "No longer needed",
+        "LATE_DELIVERY": "Delivered too late",
+        "OTHER": "Another reason"
+      },
+      "outcomes": {
+        "RESTOCK": "Back on the shelf",
+        "WRITE_OFF": "Write off (loss)"
+      }
     }
   },
   "catalogue": {
@@ -2914,7 +2949,8 @@
     "void": "Void",
     "voidTitle": "Void this payment",
     "voidNote": "It stays on record, struck through, with the reason.",
-    "voided": "Payment voided"
+    "voided": "Payment voided",
+    "returnGoods": "Return goods"
   },
   "bills": {
     "print": "Print",
@@ -3298,7 +3334,16 @@
     "voidNote": "It stays listed as voided and leaves the balance.",
     "voided": "Voided",
     "saveAndPost": "Save and add to stock",
-    "deletePosted": "Delete (staging): also takes its stock back out"
+    "deletePosted": "Delete (staging): also takes its stock back out",
+    "returnBillHint": "Pick the bill the goods came on: its items fill in below, ready to lower to what goes back.",
+    "returnPickBill": "Choose a bill (optional)",
+    "boughtOnBill": "Bought {n}",
+    "retQuantity": "Line {n}: the amount must be a number above 0 with at most 3 decimals.",
+    "retMoreThanBought": "Line {n}: only {max} came on this bill.",
+    "retRate": "Line {n}: the rate must be an amount above 0 with at most 2 decimals.",
+    "retNoLines": "Choose at least one pack to send back.",
+    "retDayFuture": "The return date cannot be in the future.",
+    "retDayBeforeBill": "The return date is before the bill date."
   },
   "expensesSection": {
     "title": "Expenses",
@@ -4233,7 +4278,9 @@
     "saved": "Kit saved with its packages",
     "aliases": "Other names (optional)",
     "aliasesHelp": "Other names: add one at a time with Enter or a comma. For example: chhath set, chhath samagri. The website search finds it by these names too.",
-    "needItem": "an item in {tier}"
+    "needItem": "an item in {tier}",
+    "nameRomanized": "Name in Roman letters",
+    "nameRomanizedHelp": "How people type it in English letters: chhath kit. Helps search."
   },
   "kitEdit": {
     "back": "All kits",
@@ -4466,7 +4513,9 @@
       "savedNext": "Next: buy it. On the Buy page you choose its colour or size, how much came, and what it cost.",
       "buyNow": "Buy it now",
       "addAnother": "Add another item",
-      "openItem": "Open the item"
+      "openItem": "Open the item",
+      "description": "About this item (description)",
+      "descriptionHint": "A line or two on what it is and what it is used for. The website shows it as a tooltip beside the name, in kit lists too."
     },
     "buy": {
       "title": "Buy",
@@ -4657,5 +4706,53 @@
     "goThere": "Go there: {label} →",
     "youSee": "You see:",
     "print": "Print / Save as PDF"
+  },
+  "customerReturn": {
+    "record": "Record a customer return",
+    "view": "View",
+    "detailTitle": "Return {number} · order {order}",
+    "detailNote": "The goods went back on the shelf or were written off as shown. The credit lowers what the order is owed; money paid back is in the order's payments.",
+    "item": "Item",
+    "quantity": "Quantity",
+    "outcome": "What happens to it",
+    "credit": "Credit",
+    "creditTotal": "Credit in all",
+    "note": "A customer brought something back from an order: choose the order, what came back, why, whether it can be sold again, and whether the money goes back now.",
+    "order": "Order",
+    "orderHint": "Search by order number, name or phone.",
+    "customer": "Customer",
+    "orderTotal": "Order total",
+    "status": "Status",
+    "needOrder": "Choose the order first.",
+    "whatReturned": "What came back",
+    "sold": "Sold",
+    "alreadyBack": "Already returned",
+    "returnNow": "Return now",
+    "returnNowFor": "Quantity returned of {name}",
+    "outcomeFor": "What happens to {name}",
+    "outcomeNote": "Back on the shelf: it is counted in stock again and can be sold. Write off: it is a loss (broken, spoiled, used); stock does not go up.",
+    "needLines": "Enter how many came back of at least one item.",
+    "fixLines": "Fix the quantities marked in red.",
+    "qtyFormat": "A number such as 1 or 0.5.",
+    "qtyTooMany": "At most {max}.",
+    "reason": "Why it came back",
+    "chooseReason": "Choose a reason…",
+    "needReason": "Choose why it came back.",
+    "noteLabel": "Note",
+    "noteHint": "Optional: anything worth remembering (the box was crushed, wrong colour).",
+    "payBack": "Pay the money back now",
+    "payLater": "No money is paid now. The order will show a refund due, to pay from the order page.",
+    "method": "Paid back by",
+    "amount": "Amount to pay back",
+    "amountHint": "Up to {max}. Empty pays all of it.",
+    "reference": "Reference",
+    "needAmount": "Enter the amount to pay back.",
+    "amountTooBig": "At most {max} can be paid back on this order.",
+    "amountFormat": "An amount such as 150 or 150.50.",
+    "needReference": "A reference (receipt or transaction number) is needed for this way of paying.",
+    "summary": "Credit for the returned goods: {credit}.",
+    "submit": "Record the return",
+    "saved": "Return {number} recorded",
+    "nothing": "This order has nothing that can be returned."
   }
 }

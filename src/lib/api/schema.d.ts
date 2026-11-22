@@ -720,7 +720,7 @@ export interface paths {
     patch: operations['AdminSettingsController_update'];
     trace?: never;
   };
-  '/api/v1/admin/settings/language': {
+  '/api/v1/settings/language': {
     parameters: {
       query?: never;
       header?: never;
@@ -3688,115 +3688,36 @@ export interface paths {
     patch: operations['AdminArticleController_verify'];
     trace?: never;
   };
-  '/api/v1/home': {
+  '/api/v1/admin/sales-returns': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /**
-     * Banners and hand-picked rows for the home page
-     * @description Only what is scheduled for now; items no longer on sale or published drop out, and an emptied row is skipped.
-     */
-    get: operations['HomeController_home'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/banners': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** All banners, by placement and order */
-    get: operations['AdminBannerController_list'];
-    put?: never;
-    /** Add a banner */
-    post: operations['AdminBannerController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/banners/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get a banner */
-    get: operations['AdminBannerController_get'];
-    put?: never;
-    post?: never;
-    /** Remove a banner */
-    delete: operations['AdminBannerController_delete'];
-    options?: never;
-    head?: never;
-    /** Change a banner or its schedule */
-    patch: operations['AdminBannerController_update'];
-    trace?: never;
-  };
-  '/api/v1/admin/home-sections': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** All home page rows, in order */
-    get: operations['AdminHomeSectionController_list'];
+    /** Goods customers brought back, newest first */
+    get: operations['AdminSalesReturnController_list'];
     put?: never;
     /**
-     * Add a row of hand-picked products, kits or pujas
-     * @description Every item must be on sale or published now.
+     * Record goods a customer brought back
+     * @description Puts each line back on this branch’s shelf or writes it off, lowers what the order is owed, and, when asked, pays the money back, together.
      */
-    post: operations['AdminHomeSectionController_create'];
+    post: operations['AdminSalesReturnController_create'];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/api/v1/admin/home-sections/{id}': {
+  '/api/v1/admin/sales-returns/orders/{orderId}/returnable': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** Get a home page row */
-    get: operations['AdminHomeSectionController_get'];
-    put?: never;
-    post?: never;
-    /** Remove a home page row */
-    delete: operations['AdminHomeSectionController_delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Change a row, its items or its schedule
-     * @description itemIds replaces the whole list, in display order.
-     */
-    patch: operations['AdminHomeSectionController_update'];
-    trace?: never;
-  };
-  '/api/v1/account/wishlist': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** My saved products, newest first */
-    get: operations['AccountWishlistController_list'];
+    /** What an order sold and how much of each line can still come back */
+    get: operations['AdminSalesReturnController_returnable'];
     put?: never;
     post?: never;
     delete?: never;
@@ -3805,1216 +3726,21 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  '/api/v1/account/wishlist/{productId}': {
+  '/api/v1/admin/sales-returns/{id}': {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    /**
-     * Save a product
-     * @description Saving it again changes nothing.
-     */
-    put: operations['AccountWishlistController_add'];
-    post?: never;
-    /** Remove a saved product */
-    delete: operations['AccountWishlistController_remove'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/account/saved-lists': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Puja lists I kept, latest changed first */
-    get: operations['AccountSavedListController_list'];
-    put?: never;
-    /**
-     * Keep a puja's list with what I have at home ticked
-     * @description At most 30 lists.
-     */
-    post: operations['AccountSavedListController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/account/saved-lists/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete a list */
-    delete: operations['AccountSavedListController_delete'];
-    options?: never;
-    head?: never;
-    /** Rename a list or change what is ticked */
-    patch: operations['AccountSavedListController_update'];
-    trace?: never;
-  };
-  '/api/v1/products/{slug}/reviews': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * A product's published reviews, newest first
-     * @description The average and count are on the product's rating.
-     */
-    get: operations['ProductReviewController_list'];
+    /** One return with its lines */
+    get: operations['AdminSalesReturnController_get'];
     put?: never;
     post?: never;
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
-    trace?: never;
-  };
-  '/api/v1/account/reviews': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Reviews I wrote, newest first */
-    get: operations['AccountReviewController_mine'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/account/reviews/{productId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /**
-     * Write or change my review of a product
-     * @description Open once an order with the product is completed; one review per product.
-     */
-    put: operations['AccountReviewController_write'];
-    post?: never;
-    /** Take my review down */
-    delete: operations['AccountReviewController_withdraw'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/reviews': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Reviews to read and moderate, newest first */
-    get: operations['AdminReviewController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/reviews/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Hide a review from the product page, or show it again
-     * @description The product's rating counts published reviews only.
-     */
-    patch: operations['AdminReviewController_moderate'];
-    trace?: never;
-  };
-  '/api/v1/reviews': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * The shop's rating and its best recent reviews
-     * @description Published reviews of four stars or more with words, each with the product bought.
-     */
-    get: operations['ShopReviewController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/orders/track': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Where is my order? No account needed
-     * @description The order number and the phone it was placed with. A wrong number and a wrong phone look the same.
-     */
-    post: operations['OrderTrackingController_track'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/orders': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** My orders, newest first */
-    get: operations['OrderController_list'];
-    put?: never;
-    /**
-     * Place an order from my cart
-     * @description Send the cart version you showed the customer. Stock is held until the shop confirms or cancels the order.
-     */
-    post: operations['OrderController_place'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/orders/summary': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** How many orders I placed and what I saved */
-    get: operations['OrderController_summary'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/orders/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** One of my orders */
-    get: operations['OrderController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/orders/{id}/cancel': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Cancel my order while it is still pending */
-    post: operations['OrderController_cancel'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/orders': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** List orders, newest first */
-    get: operations['AdminOrderController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/orders/export': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Orders as Excel
-     * @description Same filters as the list, every match up to 50,000 rows.
-     */
-    get: operations['AdminOrderController_export'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/orders/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get an order with its history */
-    get: operations['AdminOrderController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/orders/{id}/status': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Move an order to its next status
-     * @description Confirming turns the held stock into sales (and may set the delivery fee); cancelling releases or returns it.
-     */
-    patch: operations['AdminOrderController_changeStatus'];
-    trace?: never;
-  };
-  '/api/v1/admin/orders/{id}/delivery-fee': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Quote the delivery fee before the customer pays
-     * @description Pending delivery orders only; the total and QR follow it.
-     */
-    patch: operations['AdminOrderController_setDeliveryFee'];
-    trace?: never;
-  };
-  '/api/v1/admin/store-sales': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Record a counter sale
-     * @description Priced at today's prices; stock leaves at once and the order is COMPLETED.
-     */
-    post: operations['AdminStoreSaleController_sell'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/store-sales/items': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Items the counter can sell at this branch
-     * @description Each active pack with the units that can be sold here now, so staff see what is short before the sale.
-     */
-    get: operations['AdminStoreShelfController_items'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/pandits': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Pandits families can name at checkout */
-    get: operations['PanditController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/pandits/{slug}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** A pandit's page with their code */
-    get: operations['PanditController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/account/pandit': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * The pandit I saved
-     * @description null when none; checkout uses this code unless another is given.
-     */
-    get: operations['AccountPanditController_get'];
-    /** Save my pandit's code once, for every order */
-    put: operations['AccountPanditController_save'];
-    post?: never;
-    /** Stop using a saved pandit */
-    delete: operations['AccountPanditController_forget'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/pandits': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Pandit partners with the orders they brought
-     * @description Their orders: GET /admin/orders?panditId=
-     */
-    get: operations['AdminPanditController_list'];
-    put?: never;
-    /**
-     * Add a pandit partner
-     * @description The referral code never changes once given out.
-     */
-    post: operations['AdminPanditController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/pandits/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get a pandit partner */
-    get: operations['AdminPanditController_get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete a pandit added by mistake
-     * @description Refused with PANDIT_IN_USE once an order names them; deactivate instead.
-     */
-    delete: operations['AdminPanditController_delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Change a pandit partner
-     * @description A new discount or commission applies to orders from now on.
-     */
-    patch: operations['AdminPanditController_update'];
-    trace?: never;
-  };
-  '/api/v1/admin/discounts': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** List discount rules */
-    get: operations['AdminDiscountController_list'];
-    put?: never;
-    /**
-     * Create an automatic discount or a coupon
-     * @description PERCENT or FLAT, for the whole order or chosen categories or products, on the channels listed. Of the automatic rules an order qualifies for, the one worth most applies; a coupon stacks on it or competes with it as the shop settings say.
-     */
-    post: operations['AdminDiscountController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/discounts/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Get a discount rule */
-    get: operations['AdminDiscountController_get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete a discount rule no order has used
-     * @description A rule already on an order is kept; deactivate it instead.
-     */
-    delete: operations['AdminDiscountController_delete'];
-    options?: never;
-    head?: never;
-    /** Change, pause or end a discount rule */
-    patch: operations['AdminDiscountController_update'];
-    trace?: never;
-  };
-  '/api/v1/offers': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Offers running now
-     * @description Discount rules staff chose to show, soonest ending first. Checkout still decides what applies.
-     */
-    get: operations['OfferController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/data-reset': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * What clearing the shop data would remove
-     * @description Rows per part of the shop, and whether clearing is switched on for this server.
-     */
-    get: operations['AdminDataResetController_preview'];
-    put?: never;
-    /**
-     * Clear the shop data (development only)
-     * @description Removes every item, kit, category, offer, order, cart, customer, stock and purchase record. Staff accounts, settings, the website menu, banners and texts stay, and so do pujas, puja groups, units, mantras and festivals unless named in `also`. Needs DATA_RESET_ENABLED and the word DELETE.
-     */
-    post: operations['AdminDataResetController_clear'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/test-mode': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Whether test mode can be switched on here
-     * @description Test mode is sent as the X-Test-Mode: on header. While it is on, items, packs, purchase bills and stock can be deleted even when they are used elsewhere. Never allowed when APP_ENVIRONMENT=production.
-     */
-    get: operations['AdminTestModeController_state'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/list-requests': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Send photos of a samagri list without signing in
-     * @description Staff match every line and send the list back; keep the accessToken to follow it.
-     */
-    post: operations['ListRequestController_send'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/list-requests/{token}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** A list I sent: its status and what staff matched, priced now */
-    get: operations['ListRequestController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/list-requests/{token}/guest-cart': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Put the ready list in my guest cart
-     * @description Adds the matched packs on sale, once.
-     */
-    post: operations['ListRequestController_toGuestCart'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/account/list-requests': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists I sent, newest first */
-    get: operations['AccountListRequestController_mine'];
-    put?: never;
-    /** Send photos of a samagri list */
-    post: operations['AccountListRequestController_send'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/list-requests/{token}/carts/{cartId}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Put the ready list in a cart I am in
-     * @description Adds the matched packs on sale, once.
-     */
-    post: operations['AccountListRequestController_toCart'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/list-requests': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lists customers sent, newest first */
-    get: operations['AdminListRequestController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/list-requests/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** A list with its photos and what was matched */
-    get: operations['AdminListRequestController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Take a list, write to the customer, or close it */
-    patch: operations['AdminListRequestController_update'];
-    trace?: never;
-  };
-  '/api/v1/admin/list-requests/{id}/items': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /**
-     * Set what each line of the list became
-     * @description Replaces every line: a pack and quantity, or a note when we do not sell it.
-     */
-    put: operations['AdminListRequestController_setItems'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/list-requests/{id}/ready': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Send the list back to the customer
-     * @description Needs a matched pack. Answers the link with WhatsApp, Viber and SMS buttons for the customer.
-     */
-    post: operations['AdminListRequestController_ready'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/contact-messages': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Send the shop a message */
-    post: operations['ContactController_send'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/reminder-subscriptions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Festival reminders on WhatsApp
-     * @description Signing up twice changes nothing but the language.
-     */
-    post: operations['ContactController_subscribe'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/reminder-subscriptions/{token}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Stop festival reminders, from the link in one */
-    delete: operations['ContactController_unsubscribe'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/contact-messages': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Messages from the contact form, newest first */
-    get: operations['AdminContactController_messageList'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/contact-messages/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Mark a message handled, or add a note */
-    patch: operations['AdminContactController_handle'];
-    trace?: never;
-  };
-  '/api/v1/admin/reminder-subscriptions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Phones that want festival reminders */
-    get: operations['AdminContactController_subscriptionList'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/reminder-subscriptions/export': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Phones that want festival reminders, as Excel */
-    get: operations['AdminContactController_exportSubscriptions'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/video-stories': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Video stories of families and pandits, in order */
-    get: operations['VideoStoryController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/video-stories': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Every video story, shown or not */
-    get: operations['AdminVideoStoryController_list'];
-    put?: never;
-    /** Add a video story */
-    post: operations['AdminVideoStoryController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/video-stories/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete a video story */
-    delete: operations['AdminVideoStoryController_delete'];
-    options?: never;
-    head?: never;
-    /** Change a video story */
-    patch: operations['AdminVideoStoryController_update'];
-    trace?: never;
-  };
-  '/api/v1/faqs': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Questions and answers, by topic and in order */
-    get: operations['FaqController_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/faqs': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Every question, shown or not */
-    get: operations['AdminFaqController_list'];
-    put?: never;
-    /** Add a question and its answer */
-    post: operations['AdminFaqController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/faqs/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete a question */
-    delete: operations['AdminFaqController_delete'];
-    options?: never;
-    head?: never;
-    /** Change a question */
-    patch: operations['AdminFaqController_update'];
-    trace?: never;
-  };
-  '/api/v1/admin/archive/summary': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** How many items and kits are archived, and what stock they hold */
-    get: operations['AdminArchiveController_summary'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/archive/items': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Archived items, latest first, with units still held */
-    get: operations['AdminArchiveController_items'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/archive/kits': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Archived kits, latest first */
-    get: operations['AdminArchiveController_kits'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/archive/suggestions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Items and kits not sold for a while, that could be archived
-     * @description Items inside a live kit are left out: archive the kit first.
-     */
-    get: operations['AdminArchiveController_suggestions'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/archive/items/{id}/archive': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Archive an item
-     * @description Out of every list and sale, kept whole. Refused while live kits hold it, unless withKits archives them too.
-     */
-    post: operations['AdminArchiveController_archiveItem'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/archive/items/{id}/restore': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Bring an item back */
-    post: operations['AdminArchiveController_restoreItem'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/archive/kits/{id}/archive': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Archive a kit */
-    post: operations['AdminArchiveController_archiveKit'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/archive/kits/{id}/restore': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Bring a kit back
-     * @description Refused while it holds archived items, unless withItems brings them back with it.
-     */
-    post: operations['AdminArchiveController_restoreKit'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/navigation': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * The website's menus
-     * @description Header, its side links, footer columns and the phone bar, each in order (2.41).
-     */
-    get: operations['NavigationController_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/menu-items': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Every menu link, shown or not, in order */
-    get: operations['AdminMenuItemController_list'];
-    put?: never;
-    /** Add a menu link, heading or sub-menu link */
-    post: operations['AdminMenuItemController_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/menu-items/{id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete a link and the links under it */
-    delete: operations['AdminMenuItemController_delete'];
-    options?: never;
-    head?: never;
-    /** Rename, relink, reorder, show or hide a link */
-    patch: operations['AdminMenuItemController_update'];
     trace?: never;
   };
   '/api/v1/admin/billing/profile': {
@@ -5946,6 +4672,1335 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  '/api/v1/orders/track': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Where is my order? No account needed
+     * @description The order number and the phone it was placed with. A wrong number and a wrong phone look the same.
+     */
+    post: operations['OrderTrackingController_track'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/orders': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** My orders, newest first */
+    get: operations['OrderController_list'];
+    put?: never;
+    /**
+     * Place an order from my cart
+     * @description Send the cart version you showed the customer. Stock is held until the shop confirms or cancels the order.
+     */
+    post: operations['OrderController_place'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/orders/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** How many orders I placed and what I saved */
+    get: operations['OrderController_summary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/orders/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** One of my orders */
+    get: operations['OrderController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/orders/{id}/cancel': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Cancel my order while it is still pending */
+    post: operations['OrderController_cancel'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/orders': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List orders, newest first */
+    get: operations['AdminOrderController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/orders/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Orders as Excel
+     * @description Same filters as the list, every match up to 50,000 rows.
+     */
+    get: operations['AdminOrderController_export'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/orders/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get an order with its history */
+    get: operations['AdminOrderController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/orders/{id}/status': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Move an order to its next status
+     * @description Confirming turns the held stock into sales (and may set the delivery fee); cancelling releases or returns it.
+     */
+    patch: operations['AdminOrderController_changeStatus'];
+    trace?: never;
+  };
+  '/api/v1/admin/orders/{id}/delivery-fee': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Quote the delivery fee before the customer pays
+     * @description Pending delivery orders only; the total and QR follow it.
+     */
+    patch: operations['AdminOrderController_setDeliveryFee'];
+    trace?: never;
+  };
+  '/api/v1/admin/store-sales': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Record a counter sale
+     * @description Priced at today's prices; stock leaves at once and the order is COMPLETED.
+     */
+    post: operations['AdminStoreSaleController_sell'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/store-sales/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Items the counter can sell at this branch
+     * @description Each active pack with the units that can be sold here now, so staff see what is short before the sale.
+     */
+    get: operations['AdminStoreShelfController_items'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/pandits': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Pandits families can name at checkout */
+    get: operations['PanditController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/pandits/{slug}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** A pandit's page with their code */
+    get: operations['PanditController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/account/pandit': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The pandit I saved
+     * @description null when none; checkout uses this code unless another is given.
+     */
+    get: operations['AccountPanditController_get'];
+    /** Save my pandit's code once, for every order */
+    put: operations['AccountPanditController_save'];
+    post?: never;
+    /** Stop using a saved pandit */
+    delete: operations['AccountPanditController_forget'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/pandits': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Pandit partners with the orders they brought
+     * @description Their orders: GET /admin/orders?panditId=
+     */
+    get: operations['AdminPanditController_list'];
+    put?: never;
+    /**
+     * Add a pandit partner
+     * @description The referral code never changes once given out.
+     */
+    post: operations['AdminPanditController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/pandits/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a pandit partner */
+    get: operations['AdminPanditController_get'];
+    put?: never;
+    post?: never;
+    /**
+     * Delete a pandit added by mistake
+     * @description Refused with PANDIT_IN_USE once an order names them; deactivate instead.
+     */
+    delete: operations['AdminPanditController_delete'];
+    options?: never;
+    head?: never;
+    /**
+     * Change a pandit partner
+     * @description A new discount or commission applies to orders from now on.
+     */
+    patch: operations['AdminPanditController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/discounts': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List discount rules */
+    get: operations['AdminDiscountController_list'];
+    put?: never;
+    /**
+     * Create an automatic discount or a coupon
+     * @description PERCENT or FLAT, for the whole order or chosen categories or products, on the channels listed. Of the automatic rules an order qualifies for, the one worth most applies; a coupon stacks on it or competes with it as the shop settings say.
+     */
+    post: operations['AdminDiscountController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/discounts/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a discount rule */
+    get: operations['AdminDiscountController_get'];
+    put?: never;
+    post?: never;
+    /**
+     * Delete a discount rule no order has used
+     * @description A rule already on an order is kept; deactivate it instead.
+     */
+    delete: operations['AdminDiscountController_delete'];
+    options?: never;
+    head?: never;
+    /** Change, pause or end a discount rule */
+    patch: operations['AdminDiscountController_update'];
+    trace?: never;
+  };
+  '/api/v1/offers': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Offers running now
+     * @description Discount rules staff chose to show, soonest ending first. Checkout still decides what applies.
+     */
+    get: operations['OfferController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/home': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Banners and hand-picked rows for the home page
+     * @description Only what is scheduled for now; items no longer on sale or published drop out, and an emptied row is skipped.
+     */
+    get: operations['HomeController_home'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/banners': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** All banners, by placement and order */
+    get: operations['AdminBannerController_list'];
+    put?: never;
+    /** Add a banner */
+    post: operations['AdminBannerController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/banners/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a banner */
+    get: operations['AdminBannerController_get'];
+    put?: never;
+    post?: never;
+    /** Remove a banner */
+    delete: operations['AdminBannerController_delete'];
+    options?: never;
+    head?: never;
+    /** Change a banner or its schedule */
+    patch: operations['AdminBannerController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/home-sections': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** All home page rows, in order */
+    get: operations['AdminHomeSectionController_list'];
+    put?: never;
+    /**
+     * Add a row of hand-picked products, kits or pujas
+     * @description Every item must be on sale or published now.
+     */
+    post: operations['AdminHomeSectionController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/home-sections/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a home page row */
+    get: operations['AdminHomeSectionController_get'];
+    put?: never;
+    post?: never;
+    /** Remove a home page row */
+    delete: operations['AdminHomeSectionController_delete'];
+    options?: never;
+    head?: never;
+    /**
+     * Change a row, its items or its schedule
+     * @description itemIds replaces the whole list, in display order.
+     */
+    patch: operations['AdminHomeSectionController_update'];
+    trace?: never;
+  };
+  '/api/v1/account/wishlist': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** My saved products, newest first */
+    get: operations['AccountWishlistController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/account/wishlist/{productId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Save a product
+     * @description Saving it again changes nothing.
+     */
+    put: operations['AccountWishlistController_add'];
+    post?: never;
+    /** Remove a saved product */
+    delete: operations['AccountWishlistController_remove'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/account/saved-lists': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Puja lists I kept, latest changed first */
+    get: operations['AccountSavedListController_list'];
+    put?: never;
+    /**
+     * Keep a puja's list with what I have at home ticked
+     * @description At most 30 lists.
+     */
+    post: operations['AccountSavedListController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/account/saved-lists/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a list */
+    delete: operations['AccountSavedListController_delete'];
+    options?: never;
+    head?: never;
+    /** Rename a list or change what is ticked */
+    patch: operations['AccountSavedListController_update'];
+    trace?: never;
+  };
+  '/api/v1/products/{slug}/reviews': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * A product's published reviews, newest first
+     * @description The average and count are on the product's rating.
+     */
+    get: operations['ProductReviewController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/account/reviews': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Reviews I wrote, newest first */
+    get: operations['AccountReviewController_mine'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/account/reviews/{productId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Write or change my review of a product
+     * @description Open once an order with the product is completed; one review per product.
+     */
+    put: operations['AccountReviewController_write'];
+    post?: never;
+    /** Take my review down */
+    delete: operations['AccountReviewController_withdraw'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/reviews': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Reviews to read and moderate, newest first */
+    get: operations['AdminReviewController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/reviews/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Hide a review from the product page, or show it again
+     * @description The product's rating counts published reviews only.
+     */
+    patch: operations['AdminReviewController_moderate'];
+    trace?: never;
+  };
+  '/api/v1/reviews': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The shop's rating and its best recent reviews
+     * @description Published reviews of four stars or more with words, each with the product bought.
+     */
+    get: operations['ShopReviewController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/data-reset': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * What clearing the shop data would remove
+     * @description Rows per part of the shop, and whether clearing is switched on for this server.
+     */
+    get: operations['AdminDataResetController_preview'];
+    put?: never;
+    /**
+     * Clear the shop data (development only)
+     * @description Removes every item, kit, category, offer, order, cart, customer, stock and purchase record. Staff accounts, settings, the website menu, banners and texts stay, and so do pujas, puja groups, units, mantras and festivals unless named in `also`. Needs DATA_RESET_ENABLED and the word DELETE.
+     */
+    post: operations['AdminDataResetController_clear'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/test-mode': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Whether test mode can be switched on here
+     * @description Test mode is sent as the X-Test-Mode: on header. While it is on, items, packs, purchase bills and stock can be deleted even when they are used elsewhere. Never allowed when APP_ENVIRONMENT=production.
+     */
+    get: operations['AdminTestModeController_state'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/list-requests': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Send photos of a samagri list without signing in
+     * @description Staff match every line and send the list back; keep the accessToken to follow it.
+     */
+    post: operations['ListRequestController_send'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/list-requests/{token}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** A list I sent: its status and what staff matched, priced now */
+    get: operations['ListRequestController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/list-requests/{token}/guest-cart': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Put the ready list in my guest cart
+     * @description Adds the matched packs on sale, once.
+     */
+    post: operations['ListRequestController_toGuestCart'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/account/list-requests': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Lists I sent, newest first */
+    get: operations['AccountListRequestController_mine'];
+    put?: never;
+    /** Send photos of a samagri list */
+    post: operations['AccountListRequestController_send'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/list-requests/{token}/carts/{cartId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Put the ready list in a cart I am in
+     * @description Adds the matched packs on sale, once.
+     */
+    post: operations['AccountListRequestController_toCart'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/list-requests': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Lists customers sent, newest first */
+    get: operations['AdminListRequestController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/list-requests/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** A list with its photos and what was matched */
+    get: operations['AdminListRequestController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Take a list, write to the customer, or close it */
+    patch: operations['AdminListRequestController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/list-requests/{id}/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Set what each line of the list became
+     * @description Replaces every line: a pack and quantity, or a note when we do not sell it.
+     */
+    put: operations['AdminListRequestController_setItems'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/list-requests/{id}/ready': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Send the list back to the customer
+     * @description Needs a matched pack. Answers the link with WhatsApp, Viber and SMS buttons for the customer.
+     */
+    post: operations['AdminListRequestController_ready'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/contact-messages': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Send the shop a message */
+    post: operations['ContactController_send'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/reminder-subscriptions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Festival reminders on WhatsApp
+     * @description Signing up twice changes nothing but the language.
+     */
+    post: operations['ContactController_subscribe'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/reminder-subscriptions/{token}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Stop festival reminders, from the link in one */
+    delete: operations['ContactController_unsubscribe'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/contact-messages': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Messages from the contact form, newest first */
+    get: operations['AdminContactController_messageList'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/contact-messages/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Mark a message handled, or add a note */
+    patch: operations['AdminContactController_handle'];
+    trace?: never;
+  };
+  '/api/v1/admin/reminder-subscriptions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Phones that want festival reminders */
+    get: operations['AdminContactController_subscriptionList'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/reminder-subscriptions/export': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Phones that want festival reminders, as Excel */
+    get: operations['AdminContactController_exportSubscriptions'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/video-stories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Video stories of families and pandits, in order */
+    get: operations['VideoStoryController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/video-stories': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Every video story, shown or not */
+    get: operations['AdminVideoStoryController_list'];
+    put?: never;
+    /** Add a video story */
+    post: operations['AdminVideoStoryController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/video-stories/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a video story */
+    delete: operations['AdminVideoStoryController_delete'];
+    options?: never;
+    head?: never;
+    /** Change a video story */
+    patch: operations['AdminVideoStoryController_update'];
+    trace?: never;
+  };
+  '/api/v1/faqs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Questions and answers, by topic and in order */
+    get: operations['FaqController_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/faqs': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Every question, shown or not */
+    get: operations['AdminFaqController_list'];
+    put?: never;
+    /** Add a question and its answer */
+    post: operations['AdminFaqController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/faqs/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a question */
+    delete: operations['AdminFaqController_delete'];
+    options?: never;
+    head?: never;
+    /** Change a question */
+    patch: operations['AdminFaqController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/archive/summary': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** How many items and kits are archived, and what stock they hold */
+    get: operations['AdminArchiveController_summary'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Archived items, latest first, with units still held */
+    get: operations['AdminArchiveController_items'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/kits': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Archived kits, latest first */
+    get: operations['AdminArchiveController_kits'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/suggestions': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Items and kits not sold for a while, that could be archived
+     * @description Items inside a live kit are left out: archive the kit first.
+     */
+    get: operations['AdminArchiveController_suggestions'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/items/{id}/archive': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Archive an item
+     * @description Out of every list and sale, kept whole. Refused while live kits hold it, unless withKits archives them too.
+     */
+    post: operations['AdminArchiveController_archiveItem'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/items/{id}/restore': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Bring an item back */
+    post: operations['AdminArchiveController_restoreItem'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/kits/{id}/archive': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Archive a kit */
+    post: operations['AdminArchiveController_archiveKit'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/archive/kits/{id}/restore': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Bring a kit back
+     * @description Refused while it holds archived items, unless withItems brings them back with it.
+     */
+    post: operations['AdminArchiveController_restoreKit'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/navigation': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * The website's menus
+     * @description Header, its side links, footer columns and the phone bar, each in order (2.41).
+     */
+    get: operations['NavigationController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/menu-items': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Every menu link, shown or not, in order */
+    get: operations['AdminMenuItemController_list'];
+    put?: never;
+    /** Add a menu link, heading or sub-menu link */
+    post: operations['AdminMenuItemController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/menu-items/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a link and the links under it */
+    delete: operations['AdminMenuItemController_delete'];
+    options?: never;
+    head?: never;
+    /** Rename, relink, reorder, show or hide a link */
+    patch: operations['AdminMenuItemController_update'];
     trace?: never;
   };
   '/api/v1/admin/purchase-bills/sheet': {
@@ -10750,6 +10805,8 @@ export interface components {
       /** @example कपूर */
       nameNe: string;
       imageUrl: string | null;
+      /** @description What the item is, for a tooltip beside its name */
+      description: string | null;
     };
     KitLineResponse: {
       sku: components['schemas']['KitSkuResponse'];
@@ -11888,1877 +11945,143 @@ export interface components {
        */
       status: 'UNVERIFIED' | 'REVIEWED' | 'VERIFIED';
     };
-    BannerResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Dashain kits are here */
-      title: string;
-      subtitle: string | null;
-      /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
-      imageUrl: string;
-      /** @example /kits/dashain-kit */
-      linkUrl: string | null;
-      /** @enum {string} */
-      placement: 'HOME_HERO' | 'HOME_STRIP';
-    };
-    SearchCardResponse: {
-      /** @enum {string} */
-      type: 'PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE' | 'CATEGORY';
-      /** Format: uuid */
-      id: string;
-      /** @example kapur */
-      slug: string;
-      /**
-       * @description Page on the website
-       * @example /products/kapur
-       */
-      path: string;
-      /** @example Kapur */
-      nameEn: string;
-      /** @example कपूर */
-      nameNe: string | null;
-      /** @example Camphor */
-      subtitle: string | null;
-      imageUrl: string | null;
-      /**
-       * @description Products: cheapest pack
-       * @example 120.00
-       */
-      fromPrice: string | null;
-    };
-    HomeSectionResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Dashain essentials */
-      title: string;
-      titleNe: string | null;
-      /** @enum {string} */
-      kind: 'PRODUCTS' | 'KITS' | 'PUJAS';
-      items: components['schemas']['SearchCardResponse'][];
-    };
-    HomePageResponse: {
-      banners: components['schemas']['BannerResponse'][];
-      sections: components['schemas']['HomeSectionResponse'][];
-    };
-    ScheduleFields: {
-      sortOrder: number;
-      isActive: boolean;
-      /** Format: date-time */
-      startsAt: string | null;
-      /** Format: date-time */
-      endsAt: string | null;
-    };
-    AdminBannerResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Dashain kits are here */
-      title: string;
-      subtitle: string | null;
-      /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
-      imageUrl: string;
-      /** @example /kits/dashain-kit */
-      linkUrl: string | null;
-      /** @enum {string} */
-      placement: 'HOME_HERO' | 'HOME_STRIP';
-      schedule: components['schemas']['ScheduleFields'];
-    };
-    CreateBannerDto: {
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-      /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: string | null;
-      /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: string | null;
-      /** @example Dashain kits are here */
-      title: string;
-      /** @example Everything for Ghatasthapana */
-      subtitle?: string | null;
-      /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
-      imageUrl: string;
-      /**
-       * @description A path on the website or an https URL
-       * @example /kits/dashain-kit
-       */
-      linkUrl?: string | null;
-      /** @enum {string} */
-      placement: 'HOME_HERO' | 'HOME_STRIP';
-    };
-    UpdateBannerDto: {
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-      /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: string | null;
-      /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: string | null;
-      /** @example Dashain kits are here */
-      title?: string;
-      /** @example Everything for Ghatasthapana */
-      subtitle?: string | null;
-      /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
-      imageUrl?: string;
-      /**
-       * @description A path on the website or an https URL
-       * @example /kits/dashain-kit
-       */
-      linkUrl?: string | null;
-      /** @enum {string} */
-      placement?: 'HOME_HERO' | 'HOME_STRIP';
-    };
-    AdminHomeSectionResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Dashain essentials */
-      title: string;
-      titleNe: string | null;
-      /** @enum {string} */
-      kind: 'PRODUCTS' | 'KITS' | 'PUJAS';
-      itemIds: string[];
-      schedule: components['schemas']['ScheduleFields'];
-    };
-    CreateHomeSectionDto: {
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-      /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: string | null;
-      /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: string | null;
-      /** @example Dashain essentials */
-      title: string;
-      /** @example दशैंका सामग्री */
-      titleNe?: string | null;
-      /** @enum {string} */
-      kind: 'PRODUCTS' | 'KITS' | 'PUJAS';
-      /** @description Products, kits or pujas, in display order */
-      itemIds: string[];
-    };
-    UpdateHomeSectionDto: {
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-      /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: string | null;
-      /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: string | null;
-      /** @example Dashain essentials */
-      title?: string;
-      /** @example दशैंका सामग्री */
-      titleNe?: string | null;
-      /** @enum {string} */
-      kind?: 'PRODUCTS' | 'KITS' | 'PUJAS';
-      /** @description Products, kits or pujas, in display order */
-      itemIds?: string[];
-    };
-    WishlistItemResponse: {
-      /** Format: uuid */
-      productId: string;
-      /** Format: date-time */
-      addedAt: string;
-      /** @description Null once the product is no longer on sale */
-      product: components['schemas']['SearchCardResponse'] | null;
-    };
-    SavedListPujaResponse: {
-      /** @example satyanarayan-puja */
-      slug: string;
-      nameEn: string;
-      nameNe: string;
-      imageUrl: string | null;
-      /** @description Still shown on the website */
-      isActive: boolean;
-    };
-    SavedListResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Satyanarayan, Purnima */
-      name: string;
-      puja: components['schemas']['SavedListPujaResponse'];
-      haveMaterialIds: string[];
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    CreateSavedListDto: {
-      /** Format: uuid */
-      pujaId: string;
-      /** @example Satyanarayan, Purnima */
-      name: string;
-      /** @description Materials already at home */
-      haveMaterialIds?: string[];
-    };
-    UpdateSavedListDto: {
-      /** @example Satyanarayan, Purnima */
-      name?: string;
-      /** @description Materials already at home */
-      haveMaterialIds?: string[];
-    };
-    ReviewResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Sita S. */
-      authorName: string;
-      /** @example 5 */
-      rating: number;
-      title: string | null;
-      body: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    MyReviewResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Sita S. */
-      authorName: string;
-      /** @example 5 */
-      rating: number;
-      title: string | null;
-      body: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-      /** Format: uuid */
-      productId: string;
-      /**
-       * @description HIDDEN: the shop took it off the product page
-       * @enum {string}
-       */
-      status: 'PUBLISHED' | 'HIDDEN';
-    };
-    WriteReviewDto: {
-      /** @example 5 */
-      rating: number;
-      /** @example Fresh and fragrant */
-      title?: string | null;
-      /** @example The kapur burnt clean and the pack was sealed. */
-      body?: string | null;
-    };
-    AdminReviewResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Sita S. */
-      authorName: string;
-      /** @example 5 */
-      rating: number;
-      title: string | null;
-      body: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-      /** Format: uuid */
-      productId: string;
-      /**
-       * @description HIDDEN: the shop took it off the product page
-       * @enum {string}
-       */
-      status: 'PUBLISHED' | 'HIDDEN';
-      /** Format: uuid */
-      customerId: string;
-      /** Format: uuid */
-      moderatedById: string | null;
-      moderationNote: string | null;
-    };
-    ModerateReviewDto: {
-      /** @enum {string} */
-      status: 'PUBLISHED' | 'HIDDEN';
-      /** @example Mentions a phone number */
-      note?: string | null;
-    };
-    ReviewedProductResponse: {
-      /** @example brass-bell */
-      slug: string;
-      /** @example पित्तलको घण्टी */
-      nameNe: string;
-      /** @example Brass bell */
-      nameEn: string;
-      imageUrl: string | null;
-    };
-    ShopReviewResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Sita S. */
-      authorName: string;
-      /** @example 5 */
-      rating: number;
-      title: string | null;
-      body: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-      product: components['schemas']['ReviewedProductResponse'] | null;
-    };
-    ShopReviewsResponse: {
-      /** @example 4.8 */
-      average: number | null;
-      /** @example 1240 */
-      count: number;
-      reviews: components['schemas']['ShopReviewResponse'][];
-    };
-    TrackedStepResponse: {
-      /** @enum {string} */
-      status:
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED';
-      /** Format: date-time */
-      at: string;
-    };
-    OrderTrackingResponse: {
-      /** @example PS-000123 */
-      number: string;
-      /** @enum {string} */
-      status:
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED';
-      /** @enum {string} */
-      fulfilment: 'DELIVERY' | 'PICKUP';
-      /** @enum {string} */
-      deliverySpeed: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
-      /** Format: date */
-      neededBy: string | null;
-      /** @example 07:00-10:00 */
-      deliveryWindow: string | null;
-      /**
-       * @description Units ordered
-       * @example 6
-       */
-      itemCount: number;
-      /** @example 1240.00 */
-      total: string;
-      /** @description Oldest first */
-      history: components['schemas']['TrackedStepResponse'][];
-      /** Format: date-time */
-      placedAt: string;
-    };
-    TrackOrderDto: {
-      /**
-       * @description As on the confirmation
-       * @example PS-000123
-       */
-      number: string;
-      /** @example +9779801234567 */
-      phone: string;
-    };
-    DeliveryAddressResponse: {
-      addressLine: string | null;
-      area: string | null;
-      city: string | null;
-      landmark: string | null;
-    };
-    OrderLineKitResponse: {
-      /**
-       * @description Which kit of the order
-       * @example 1
-       */
-      bundleNo: number;
-      /** @example KIT001 */
-      code: string;
-      /** @example Satyanarayan Puja Kit */
-      nameEn: string;
-      /** @example सत्यनारायण पूजा किट */
-      nameNe: string;
-    };
-    OrderLineResponse: {
+    SalesReturnLineResponse: {
       /** Format: uuid */
       variantId: string;
-      /** @example KAP-050 */
-      sku: string;
-      /** @example Kapur */
+      /** @example 0 */
+      bundleNo: number;
+      /** @example लोबान धूप */
+      productNameNe: string;
+      /** @example Loban Dhoop */
       productNameEn: string;
-      /** @example कपूर */
+      /** @example 50 g */
+      variantLabel: string;
+      /** @example 1 */
+      quantity: number;
+      /** @example 85.00 */
+      unitCredit: string;
+      /** @example 85.00 */
+      lineCredit: string;
+      /** @enum {string} */
+      outcome: 'RESTOCK' | 'WRITE_OFF';
+    };
+    SalesReturnResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example 12 */
+      number: number;
+      /** @example SR-000012 */
+      displayNumber: string;
+      /** Format: uuid */
+      orderId: string;
+      /** @example PS-000123 */
+      orderNumber: string;
+      contactName: string | null;
+      contactPhone: string | null;
+      /** Format: uuid */
+      branchId: string;
+      /** @enum {string} */
+      reason:
+        | 'DAMAGED'
+        | 'WRONG_ITEM'
+        | 'QUALITY'
+        | 'NOT_AS_DESCRIBED'
+        | 'CHANGED_MIND'
+        | 'NOT_NEEDED'
+        | 'LATE_DELIVERY'
+        | 'OTHER';
+      note: string | null;
+      /**
+       * @description What the returned goods were worth to the customer
+       * @example 170.00
+       */
+      creditTotal: string;
+      /** Format: date-time */
+      createdAt: string;
+      lines: components['schemas']['SalesReturnLineResponse'][];
+    };
+    ReturnableLineResponse: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example 0 */
+      bundleNo: number;
+      /** @example LOBAN-50 */
+      sku: string;
+      /** @example Loban Dhoop */
+      productNameEn: string;
+      /** @example लोबान धूप */
       productNameNe: string;
       /** @example 50 g */
       variantLabel: string;
-      /**
-       * @description Price paid per unit
-       * @example 120.00
-       */
-      unitPrice: string;
+      kitNameEn: string | null;
+      kitNameNe: string | null;
       /** @example 3 */
-      quantity: number;
+      sold: number;
+      /** @example 1 */
+      returned: number;
+      /** @example 2 */
+      remaining: number;
       /**
-       * @description Before discount
-       * @example 360.00
+       * @description One unit: its price less its share of the order discount
+       * @example 85.00000
        */
-      lineTotal: string;
-      /**
-       * @description This line's share of the order discount
-       * @example 18.00
-       */
-      discount: string;
-      /** @description The kit it was bought in; null when bought on its own */
-      kit: components['schemas']['OrderLineKitResponse'] | null;
+      unitCredit: string;
     };
-    OrderDiscountResponse: {
-      /** @enum {string} */
-      source: 'KIT' | 'AUTOMATIC' | 'COUPON' | 'REFERRAL' | 'COUNTER';
-      /** @example 10% off Dashain samagri */
-      label: string;
-      /** @example DASHAIN10 */
-      couponCode: string | null;
-      /** @example 62.50 */
-      amount: string;
-      /** @description Why a counter discount was given */
-      reason: string | null;
+    ReturnableResponse: {
+      lines: components['schemas']['ReturnableLineResponse'][];
+      /**
+       * @description Money already paid beyond what the order is owed
+       * @example 0.00
+       */
+      refundable: string;
     };
-    OrderStatusChangeResponse: {
-      /** @enum {string|null} */
-      fromStatus:
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED'
-        | null;
-      /** @enum {string} */
-      status:
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED';
-      note: string | null;
-      /** Format: date-time */
-      at: string;
-    };
-    OrderResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example PS-000123 */
-      number: string;
-      /** @enum {string} */
-      channel: 'ONLINE' | 'STORE';
-      /** @enum {string} */
-      fulfilment: 'DELIVERY' | 'PICKUP';
-      /**
-       * @description Null for a counter sale
-       * @enum {string|null}
-       */
-      checkoutMethod: 'ACCOUNT' | 'QUICK_PAY' | null;
-      /** @enum {string|null} */
-      quickPayChannel: 'WHATSAPP' | 'MESSENGER' | 'VIBER' | null;
-      /** @enum {string} */
-      status:
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED';
-      contactName: string | null;
-      contactPhone: string | null;
-      address: components['schemas']['DeliveryAddressResponse'] | null;
-      /** Format: date */
-      neededBy: string | null;
-      note: string | null;
-      cancelReason: string | null;
-      items: components['schemas']['OrderLineResponse'][];
-      /** @example 360.00 */
-      subtotal: string;
-      /** @example 18.00 */
-      discountTotal: string;
-      discounts: components['schemas']['OrderDiscountResponse'][];
-      /** @example 100.00 */
-      deliveryFee: string;
-      /**
-       * @description The delivery zone that priced delivery
-       * @example Inside Ring Road
-       */
-      deliveryZone: string | null;
-      /** @description The shop still has to quote the delivery fee */
-      deliveryQuoteNeeded: boolean;
-      /** @enum {string} */
-      paymentPlan: 'PAY_NOW' | 'CASH_ON_DELIVERY' | 'SOMEONE_ELSE';
-      /** @enum {string} */
-      deliverySpeed: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
-      /**
-       * @description Hours of a scheduled delivery on neededBy
-       * @example 07:00-10:00
-       */
-      deliveryWindow: string | null;
-      /** @example 460.00 */
-      total: string;
-      /** @example NPR */
-      currency: string;
-      history: components['schemas']['OrderStatusChangeResponse'][];
-      /** Format: date-time */
-      createdAt: string;
-    };
-    DeliveryAddressDto: {
-      /** @example House 12, Tole Marg */
-      addressLine: string;
-      /** @example Baneshwor */
-      area: string;
-      /** @example Kathmandu */
-      city: string;
-      /** @example Opposite the temple gate */
-      landmark?: string | null;
-    };
-    CheckoutDto: {
-      /** Format: uuid */
-      cartId: string;
-      /**
-       * @description The cart version the customer reviewed; checkout stops if it changed
-       * @example 7
-       */
-      cartVersion: number;
-      /** @enum {string} */
-      fulfilment: 'DELIVERY' | 'PICKUP';
-      /** @example Sita Sharma */
-      contactName: string;
-      /** @example +9779801234567 */
-      contactPhone: string;
-      /** @description For DELIVERY: this address or addressId */
-      address?: components['schemas']['DeliveryAddressDto'];
-      /**
-       * Format: uuid
-       * @description For DELIVERY: one of my saved addresses (signed in only)
-       */
-      addressId?: string;
-      /** @example Home */
-      saveAddressAs?: string | null;
-      /**
-       * @description For DELIVERY: EXPRESS where the zone offers it; SCHEDULED needs neededBy and slotId
-       * @default STANDARD
-       * @enum {string}
-       */
-      speed: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
-      /**
-       * Format: uuid
-       * @description For SCHEDULED: one of GET /delivery-slots
-       */
-      slotId?: string;
-      /**
-       * Format: date
-       * @example 2026-11-02
-       */
-      neededBy?: string | null;
-      /** @example Please call before coming */
-      note?: string | null;
-      /**
-       * @description A coupon code; matched in any case
-       * @example DASHAIN10
-       */
-      couponCode?: string;
-      /**
-       * @description CASH_ON_DELIVERY where the shop allows it; SOMEONE_ELSE then asks POST /orders/:id/pay-link
-       * @default PAY_NOW
-       * @enum {string}
-       */
-      paymentPlan: 'PAY_NOW' | 'CASH_ON_DELIVERY' | 'SOMEONE_ELSE';
-      /**
-       * @description A pandit's code
-       * @example PANDIT-RAM
-       */
-      panditCode?: string;
-    };
-    OrderSummaryResponse: {
-      /**
-       * @description Placed and not cancelled
-       * @example 4
-       */
-      orders: number;
-      /**
-       * @description Every discount they got
-       * @example 1840.00
-       */
-      saved: string;
-    };
-    CancelOrderDto: {
-      /** @example Ordered the wrong items */
-      reason?: string | null;
-    };
-    OrderPersonResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Sita Sharma */
-      fullName: string;
-      /** @example sita@example.com */
-      email: string;
-      phone: string | null;
-    };
-    AdminStatusChangeResponse: {
-      /** @enum {string|null} */
-      fromStatus:
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED'
-        | null;
-      /** @enum {string} */
-      status:
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED';
-      note: string | null;
-      /** Format: date-time */
-      at: string;
-      /** @description Null when the system made the change */
-      by: components['schemas']['OrderPersonResponse'] | null;
-    };
-    AdminOrderResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example PS-000123 */
-      number: string;
-      /** @enum {string} */
-      channel: 'ONLINE' | 'STORE';
-      /** @enum {string} */
-      fulfilment: 'DELIVERY' | 'PICKUP';
-      /**
-       * @description Null for a counter sale
-       * @enum {string|null}
-       */
-      checkoutMethod: 'ACCOUNT' | 'QUICK_PAY' | null;
-      /** @enum {string|null} */
-      quickPayChannel: 'WHATSAPP' | 'MESSENGER' | 'VIBER' | null;
-      /** @enum {string} */
-      status:
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED';
-      contactName: string | null;
-      contactPhone: string | null;
-      address: components['schemas']['DeliveryAddressResponse'] | null;
-      /** Format: date */
-      neededBy: string | null;
-      note: string | null;
-      cancelReason: string | null;
-      items: components['schemas']['OrderLineResponse'][];
-      /** @example 360.00 */
-      subtotal: string;
-      /** @example 18.00 */
-      discountTotal: string;
-      discounts: components['schemas']['OrderDiscountResponse'][];
-      /** @example 100.00 */
-      deliveryFee: string;
-      /**
-       * @description The delivery zone that priced delivery
-       * @example Inside Ring Road
-       */
-      deliveryZone: string | null;
-      /** @description The shop still has to quote the delivery fee */
-      deliveryQuoteNeeded: boolean;
-      /** @enum {string} */
-      paymentPlan: 'PAY_NOW' | 'CASH_ON_DELIVERY' | 'SOMEONE_ELSE';
-      /** @enum {string} */
-      deliverySpeed: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
-      /**
-       * @description Hours of a scheduled delivery on neededBy
-       * @example 07:00-10:00
-       */
-      deliveryWindow: string | null;
-      /** @example 460.00 */
-      total: string;
-      /** @example NPR */
-      currency: string;
-      history: components['schemas']['AdminStatusChangeResponse'][];
-      /** Format: date-time */
-      createdAt: string;
-      /** @description The branch that sold it */
-      branch: components['schemas']['BranchSummary'];
-      customer: components['schemas']['OrderPersonResponse'] | null;
-      /** @description The customer, or the staff member at the counter; null for a guest quick-pay order */
-      createdBy: components['schemas']['OrderPersonResponse'] | null;
-      /** Format: uuid */
-      cartId: string | null;
-      /** @description Statuses this order can move to next */
-      nextStatuses: (
-        | 'PENDING'
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED'
-      )[];
-      /**
-       * @description The pandit's code the order used
-       * @example PANDIT-RAM
-       */
-      referralCode: string | null;
-      /** Format: uuid */
-      panditId: string | null;
-      /**
-       * @description What the shop owes the pandit: the commission of the day on the goods after discounts
-       * @example 61.20
-       */
-      panditCommission: string | null;
-    };
-    ChangeOrderStatusDto: {
-      /** @enum {string} */
-      status:
-        | 'CONFIRMED'
-        | 'PACKED'
-        | 'OUT_FOR_DELIVERY'
-        | 'READY_FOR_PICKUP'
-        | 'COMPLETED'
-        | 'CANCELLED';
-      /** @example Payment received on eSewa */
-      note?: string | null;
-      /** @example 100.00 */
-      deliveryFee?: string | null;
-    };
-    SetDeliveryFeeDto: {
-      /** @example 100.00 */
-      deliveryFee: string;
-    };
-    StoreSaleLineDto: {
+    ReturnLineDto: {
       /** Format: uuid */
       variantId: string;
+      /**
+       * @description Which kit bundle of the order (0: bought on its own)
+       * @default 0
+       */
+      bundleNo: number;
       /**
        * @description Up to three decimals; whole numbers for items sold one by one
-       * @example 2
+       * @example 1
        */
       quantity: number;
-    };
-    StoreSaleKitDto: {
-      /** Format: uuid */
-      kitId: string;
-      /** @example 1 */
-      quantity: number;
-    };
-    CounterDiscountDto: {
-      /** @enum {string} */
-      kind: 'PERCENT' | 'FLAT';
-      /** @example 5 */
-      value: string;
-      /** @example Regular customer */
-      reason: string;
-    };
-    StoreSaleDto: {
-      /** @description Packs sold on their own; may be empty when kits are sold */
-      lines: components['schemas']['StoreSaleLineDto'][];
-      /** @description Whole kits: their included items, at this branch’s prices less the kit discount */
-      kits?: components['schemas']['StoreSaleKitDto'][];
-      /** @example Walk-in customer */
-      contactName?: string | null;
-      /** @example +9779801234567 */
-      contactPhone?: string | null;
-      /** @example Paid in cash */
-      note?: string | null;
-      /** @example DASHAIN10 */
-      couponCode?: string;
-      /** @description Taken off after any automatic discount or coupon; above the shop limit it needs discounts:override */
-      discount?: components['schemas']['CounterDiscountDto'];
-    };
-    ShelfPackResponse: {
-      /** Format: uuid */
-      variantId: string;
-      /** @example KAP-050 */
-      sku: string;
-      /** @example 50 g */
-      label: string;
-      /** @example 120.00 */
-      price: string;
       /**
-       * @description Units that can be sold now at this branch
-       * @example 18
-       */
-      available: number;
-      /**
-       * @description Sold by weight, volume or length, so a part of a pack (1.5 m) may be sold
-       * @example false
-       */
-      allowsFraction: boolean;
-    };
-    ShelfItemResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example KAPUR */
-      code: string;
-      /** @example Camphor */
-      nameEn: string;
-      /** @example कपूर */
-      nameNe: string;
-      imageUrl: string | null;
-      packs: components['schemas']['ShelfPackResponse'][];
-    };
-    PanditCardResponse: {
-      /** @example pt-ramprasad-adhikari */
-      slug: string;
-      /** @example PANDIT-RAM */
-      referralCode: string;
-      /** @example Pt. Ramprasad Adhikari */
-      nameEn: string;
-      /** @example पं. रामप्रसाद अधिकारी */
-      nameNe: string;
-      /** @example Baneshwor */
-      area: string | null;
-      photoUrl: string | null;
-      bioEn: string | null;
-      bioNe: string | null;
-      /**
-       * @description How the code discount is given
+       * @description RESTOCK: back on the shelf. WRITE_OFF: a loss.
        * @enum {string}
        */
-      customerDiscountKind: 'PERCENT' | 'FLAT';
-      /**
-       * @description Off for families using the code, when PERCENT
-       * @example 5.00
-       */
-      customerDiscountPercent: string;
-      /**
-       * @description Rupees off the order, when FLAT
-       * @example 0.00
-       */
-      customerDiscountAmount: string;
-      /** @description Search engine title */
-      metaTitle: string | null;
-      /** @description Search engine description */
-      metaDescription: string | null;
-      /**
-       * @description Orders families placed with the code
-       * @example 140
-       */
-      ordersBrought: number;
+      outcome: 'RESTOCK' | 'WRITE_OFF';
     };
-    PanditResponse: {
-      /** @example pt-ramprasad-adhikari */
-      slug: string;
-      /** @example PANDIT-RAM */
-      referralCode: string;
-      /** @example Pt. Ramprasad Adhikari */
-      nameEn: string;
-      /** @example पं. रामप्रसाद अधिकारी */
-      nameNe: string;
-      /** @example Baneshwor */
-      area: string | null;
-      photoUrl: string | null;
-      bioEn: string | null;
-      bioNe: string | null;
-      /**
-       * @description How the code discount is given
-       * @enum {string}
-       */
-      customerDiscountKind: 'PERCENT' | 'FLAT';
-      /**
-       * @description Off for families using the code, when PERCENT
-       * @example 5.00
-       */
-      customerDiscountPercent: string;
-      /**
-       * @description Rupees off the order, when FLAT
-       * @example 0.00
-       */
-      customerDiscountAmount: string;
-      /** @description Search engine title */
-      metaTitle: string | null;
-      /** @description Search engine description */
-      metaDescription: string | null;
-    };
-    SavePanditDto: {
-      /** @example PANDIT-RAM */
-      referralCode: string;
-    };
-    AdminPanditResponse: {
-      /** @example pt-ramprasad-adhikari */
-      slug: string;
-      /** @example PANDIT-RAM */
-      referralCode: string;
-      /** @example Pt. Ramprasad Adhikari */
-      nameEn: string;
-      /** @example पं. रामप्रसाद अधिकारी */
-      nameNe: string;
-      /** @example Baneshwor */
-      area: string | null;
-      photoUrl: string | null;
-      bioEn: string | null;
-      bioNe: string | null;
-      /**
-       * @description How the code discount is given
-       * @enum {string}
-       */
-      customerDiscountKind: 'PERCENT' | 'FLAT';
-      /**
-       * @description Off for families using the code, when PERCENT
-       * @example 5.00
-       */
-      customerDiscountPercent: string;
-      /**
-       * @description Rupees off the order, when FLAT
-       * @example 0.00
-       */
-      customerDiscountAmount: string;
-      /** @description Search engine title */
-      metaTitle: string | null;
-      /** @description Search engine description */
-      metaDescription: string | null;
-      /**
-       * @description Orders families placed with the code
-       * @example 140
-       */
-      ordersBrought: number;
-      /** Format: uuid */
-      id: string;
-      /** @example PANDIT_RAM */
-      code: string;
-      phone: string | null;
-      /** @example 5.00 */
-      commissionPercent: string;
-      /**
-       * @description Orders brought, not cancelled
-       * @example 182400.00
-       */
-      salesBrought: string;
-      isActive: boolean;
-      sortOrder: number;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    CreatePanditDto: {
-      /** @example PANDIT_RAM */
-      code: string;
-      /** @description Generated from nameEn when omitted */
-      slug?: string;
-      /** @example PANDIT-RAM */
-      referralCode: string;
-      /** @example Pt. Ramprasad Adhikari */
-      nameEn: string;
-      /** @example पं. रामप्रसाद अधिकारी */
-      nameNe: string;
-      /** @example Baneshwor */
-      area?: string | null;
-      /** @example https://cdn.pujasanskar.com/pandits/ram.webp */
-      photoUrl?: string | null;
-      /** @example Thirty years of Satyanarayan katha */
-      bioEn?: string | null;
-      /** @example तीस वर्षदेखि सत्यनारायण कथा */
-      bioNe?: string | null;
-      /** @example +9779801234567 */
-      phone?: string | null;
-      /**
-       * @description PERCENT gives customerDiscountPercent off; FLAT gives customerDiscountAmount rupees
-       * @default PERCENT
-       * @enum {string}
-       */
-      customerDiscountKind: 'PERCENT' | 'FLAT';
-      /** @example 5.00 */
-      customerDiscountPercent?: string | null;
-      /** @example 100.00 */
-      customerDiscountAmount?: string | null;
-      /** @example 5.00 */
-      commissionPercent?: string | null;
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-      /** @example Kapur for aarti: pure camphor tablets */
-      metaTitle?: string | null;
-      /** @example Pure camphor for aarti and havan, delivered home. */
-      metaDescription?: string | null;
-    };
-    UpdatePanditDto: {
-      /** @description Generated from nameEn when omitted */
-      slug?: string;
-      /** @example Pt. Ramprasad Adhikari */
-      nameEn?: string;
-      /** @example पं. रामप्रसाद अधिकारी */
-      nameNe?: string;
-      /** @example Baneshwor */
-      area?: string | null;
-      /** @example https://cdn.pujasanskar.com/pandits/ram.webp */
-      photoUrl?: string | null;
-      /** @example Thirty years of Satyanarayan katha */
-      bioEn?: string | null;
-      /** @example तीस वर्षदेखि सत्यनारायण कथा */
-      bioNe?: string | null;
-      /** @example +9779801234567 */
-      phone?: string | null;
-      /**
-       * @description PERCENT gives customerDiscountPercent off; FLAT gives customerDiscountAmount rupees
-       * @default PERCENT
-       * @enum {string}
-       */
-      customerDiscountKind: 'PERCENT' | 'FLAT';
-      /** @example 5.00 */
-      customerDiscountPercent?: string | null;
-      /** @example 100.00 */
-      customerDiscountAmount?: string | null;
-      /** @example 5.00 */
-      commissionPercent?: string | null;
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-      /** @example Kapur for aarti: pure camphor tablets */
-      metaTitle?: string | null;
-      /** @example Pure camphor for aarti and havan, delivered home. */
-      metaDescription?: string | null;
-    };
-    DiscountRuleResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example DASHAIN10 */
-      code: string;
-      /** @example 10% off Dashain samagri */
-      name: string;
-      channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
+    ReturnRefundDto: {
       /** @enum {string} */
-      trigger: 'AUTOMATIC' | 'COUPON';
-      /** @example DASHAIN10 */
-      couponCode: string | null;
-      /** @enum {string} */
-      scope: 'ORDER' | 'CATEGORIES' | 'PRODUCTS';
-      scopeIds: string[];
-      /** @enum {string} */
-      kind: 'PERCENT' | 'FLAT';
-      /**
-       * @description Percent, or rupees for FLAT
-       * @example 10.00
-       */
-      value: string;
-      /** @example 500.00 */
-      minSubtotal: string;
-      /** @example 200.00 */
-      maxDiscount: string | null;
-      firstOrderOnly: boolean;
-      usageLimit: number | null;
-      perCustomerLimit: number | null;
-      /**
-       * @description Uses on orders not cancelled
-       * @example 12
-       */
-      timesUsed: number;
-      /** Format: date-time */
-      startsAt: string | null;
-      /** Format: date-time */
-      endsAt: string | null;
-      isPublic: boolean;
-      titleEn: string | null;
-      titleNe: string | null;
-      isActive: boolean;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    CreateDiscountRuleDto: {
-      /** @example DASHAIN10 */
-      code: string;
-      /** @example 10% off Dashain samagri */
-      name: string;
-      /**
-       * @description Where it applies: signed-in checkout, quick pay, the counter
-       * @default [
-       *       "ACCOUNT_CHECKOUT"
-       *     ]
-       */
-      channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
-      /**
-       * @description AUTOMATIC applies by itself; COUPON when its code is entered
-       * @default AUTOMATIC
-       * @enum {string}
-       */
-      trigger: 'AUTOMATIC' | 'COUPON';
-      /**
-       * @description Required for a COUPON; stored in capitals, matched in any case
-       * @example DASHAIN10
-       */
-      couponCode?: string | null;
-      /**
-       * @description ORDER, or only the listed categories (with their subcategories) or products
-       * @default ORDER
-       * @enum {string}
-       */
-      scope: 'ORDER' | 'CATEGORIES' | 'PRODUCTS';
-      scopeIds?: string[];
-      /** @enum {string} */
-      kind: 'PERCENT' | 'FLAT';
-      /** @example 10 */
-      value: string;
-      /** @example 500 */
-      minSubtotal?: string | null;
-      /** @example 200 */
-      maxDiscount?: string | null;
-      /** @default false */
-      firstOrderOnly: boolean;
-      /** @description Uses in total */
-      usageLimit?: number | null;
-      /** @description Uses per customer; such a discount needs a signed-in customer */
-      perCustomerLimit?: number | null;
-      /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: string | null;
-      /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: string | null;
-      /**
-       * @description Show it on the website's offers; needs both titles
-       * @default false
-       */
-      isPublic: boolean;
-      /** @example Tihar: 10% off above Rs 2000 */
-      titleEn?: string | null;
-      /** @example तिहार: रु २००० माथि १०% छुट */
-      titleNe?: string | null;
-      /** @default true */
-      isActive: boolean;
-    };
-    UpdateDiscountRuleDto: {
-      /** @example 10% off Dashain samagri */
-      name?: string;
-      /**
-       * @description Where it applies: signed-in checkout, quick pay, the counter
-       * @default [
-       *       "ACCOUNT_CHECKOUT"
-       *     ]
-       */
-      channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
-      /**
-       * @description AUTOMATIC applies by itself; COUPON when its code is entered
-       * @default AUTOMATIC
-       * @enum {string}
-       */
-      trigger: 'AUTOMATIC' | 'COUPON';
-      /**
-       * @description Required for a COUPON; stored in capitals, matched in any case
-       * @example DASHAIN10
-       */
-      couponCode?: string | null;
-      /**
-       * @description ORDER, or only the listed categories (with their subcategories) or products
-       * @default ORDER
-       * @enum {string}
-       */
-      scope: 'ORDER' | 'CATEGORIES' | 'PRODUCTS';
-      scopeIds?: string[];
-      /** @enum {string} */
-      kind?: 'PERCENT' | 'FLAT';
-      /** @example 10 */
-      value?: string;
-      /** @example 500 */
-      minSubtotal?: string | null;
-      /** @example 200 */
-      maxDiscount?: string | null;
-      /** @default false */
-      firstOrderOnly: boolean;
-      /** @description Uses in total */
-      usageLimit?: number | null;
-      /** @description Uses per customer; such a discount needs a signed-in customer */
-      perCustomerLimit?: number | null;
-      /** @example 2026-10-10T00:00:00+05:45 */
-      startsAt?: string | null;
-      /** @example 2026-10-31T00:00:00+05:45 */
-      endsAt?: string | null;
-      /**
-       * @description Show it on the website's offers; needs both titles
-       * @default false
-       */
-      isPublic: boolean;
-      /** @example Tihar: 10% off above Rs 2000 */
-      titleEn?: string | null;
-      /** @example तिहार: रु २००० माथि १०% छुट */
-      titleNe?: string | null;
-      /** @default true */
-      isActive: boolean;
-    };
-    OfferResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example Tihar: 10% off above Rs 2000 */
-      titleEn: string;
-      /** @example तिहार: रु २००० माथि १०% छुट */
-      titleNe: string;
-      /**
-       * @description Type this at checkout; null when it applies by itself
-       * @example TIHAR10
-       */
-      couponCode: string | null;
-      /** @enum {string} */
-      kind: 'PERCENT' | 'FLAT';
-      /**
-       * @description Percent or rupees
-       * @example 10.00
-       */
-      value: string;
-      /** @example 2000.00 */
-      minSubtotal: string;
-      /** @example 500.00 */
-      maxDiscount: string | null;
-      firstOrderOnly: boolean;
-      channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
-      /** Format: date-time */
-      endsAt: string | null;
-    };
-    ResetCountResponse: {
-      /** @example catalogue */
-      key: string;
-      /** @example 120 */
-      rows: number;
-    };
-    ResetExtraResponse: {
-      /** @enum {string} */
-      key: 'pujas' | 'pujaGroups' | 'units' | 'mantras' | 'festivals';
-      /** @example 14 */
-      rows: number;
-    };
-    DataResetPreviewResponse: {
-      /** @description Switched on for this server (DATA_RESET_ENABLED) */
-      enabled: boolean;
-      counts: components['schemas']['ResetCountResponse'][];
-      /** @description Left alone unless chosen; rows each would remove */
-      extras: components['schemas']['ResetExtraResponse'][];
-    };
-    ConfirmDataResetDto: {
-      /**
-       * @description Type DELETE to confirm
-       * @example DELETE
-       */
-      confirm: string;
-      /** @description Also remove every puja (groups and ritual types stay) */
-      includePujas?: boolean;
-      /** @description More to remove: pujas, pujaGroups (with ritual types and levels), units, mantras, festivals */
-      also?: ('pujas' | 'pujaGroups' | 'units' | 'mantras' | 'festivals')[];
-    };
-    TestModeResponse: {
-      /**
-       * @description Which server this is, for the badge in the admin header
-       * @enum {string}
-       */
-      environment: 'staging' | 'production';
-      /** @description Whether this server lets staff switch on test mode (never on production) */
-      allowed: boolean;
-      /** @description Whether this request came in test mode (X-Test-Mode: on) */
-      on: boolean;
-    };
-    ListPujaResponse: {
-      /** @example lakshmi-puja */
-      slug: string;
-      nameEn: string;
-      nameNe: string;
-    };
-    ListPhotoResponse: {
-      thumb: string;
-      large: string;
-    };
-    ListPackResponse: {
-      /**
-       * Format: uuid
-       * @description Add this to a cart
-       */
-      variantId: string;
-      /** @example 1 pack */
-      label: string;
-      /**
-       * @description Today's price
-       * @example 80.00
-       */
-      price: string;
-      /** @example dhoop */
-      productSlug: string;
-      productNameEn: string;
-      productNameNe: string;
-      imageUrl: string | null;
-    };
-    ListItemResponse: {
-      /** @example धुप - २ पोका */
-      writtenText: string | null;
-      /** @description What staff matched; null when we do not sell it */
-      pack: components['schemas']['ListPackResponse'] | null;
-      /** @example 2 */
-      quantity: number | null;
-      note: string | null;
-      /** @description The pack is on sale right now */
-      onSale: boolean;
-      /** @example 160.00 */
-      lineTotal: string | null;
-    };
-    OwnListRequestResponse: {
-      /** @example REQ-001042 */
-      number: string;
-      /** @enum {string} */
-      status: 'RECEIVED' | 'IN_PROGRESS' | 'READY' | 'ORDERED' | 'CLOSED';
-      /** @example Rajesh */
-      firstName: string;
-      puja: components['schemas']['ListPujaResponse'] | null;
-      /** Format: date */
-      pujaDate: string | null;
-      note: string | null;
-      /** @description From the staff */
-      staffNote: string | null;
-      photos: components['schemas']['ListPhotoResponse'][];
-      items: components['schemas']['ListItemResponse'][];
-      /**
-       * @description Matched packs on sale
-       * @example 1840.00
-       */
-      total: string;
-      /** Format: date-time */
-      readyAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** @description Opens /lists/:token on the website */
-      accessToken: string;
-    };
-    ListRequestResponse: {
-      /** @example REQ-001042 */
-      number: string;
-      /** @enum {string} */
-      status: 'RECEIVED' | 'IN_PROGRESS' | 'READY' | 'ORDERED' | 'CLOSED';
-      /** @example Rajesh */
-      firstName: string;
-      puja: components['schemas']['ListPujaResponse'] | null;
-      /** Format: date */
-      pujaDate: string | null;
-      note: string | null;
-      /** @description From the staff */
-      staffNote: string | null;
-      photos: components['schemas']['ListPhotoResponse'][];
-      items: components['schemas']['ListItemResponse'][];
-      /**
-       * @description Matched packs on sale
-       * @example 1840.00
-       */
-      total: string;
-      /** Format: date-time */
-      readyAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    AdminListRequestResponse: {
-      /** @example REQ-001042 */
-      number: string;
-      /** @enum {string} */
-      status: 'RECEIVED' | 'IN_PROGRESS' | 'READY' | 'ORDERED' | 'CLOSED';
-      /** @example Rajesh */
-      firstName: string;
-      puja: components['schemas']['ListPujaResponse'] | null;
-      /** Format: date */
-      pujaDate: string | null;
-      note: string | null;
-      /** @description From the staff */
-      staffNote: string | null;
-      photos: components['schemas']['ListPhotoResponse'][];
-      items: components['schemas']['ListItemResponse'][];
-      /**
-       * @description Matched packs on sale
-       * @example 1840.00
-       */
-      total: string;
-      /** Format: date-time */
-      readyAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** @description Opens /lists/:token on the website */
-      accessToken: string;
-      /** Format: uuid */
-      id: string;
-      name: string;
-      phone: string;
-      panditCode: string | null;
-      preferBetterGrade: boolean;
-      /** Format: uuid */
-      customerId: string | null;
-      /** Format: uuid */
-      assignedToId: string | null;
-    };
-    UpdateListRequestDto: {
-      /**
-       * @description READY comes from POST …/ready; ORDERED when the customer takes it
-       * @enum {string}
-       */
-      status?: 'IN_PROGRESS' | 'CLOSED';
-      /** @example Pure cow ghee and Bhimseni camphor */
-      staffNote?: string | null;
-      /** @description true: I take it; false: leave it for anyone */
-      assignToMe?: boolean;
-    };
-    ListRequestItemDto: {
-      /** @example धुप - २ पोका */
-      writtenText?: string | null;
-      /**
-       * Format: uuid
-       * @description The pack matched; leave out for something we do not sell
-       */
-      variantId?: string | null;
-      quantity?: number | null;
-      /** @example We do not sell walnuts */
+      method: 'CASH' | 'QR' | 'ESEWA' | 'KHALTI' | 'BANK_TRANSFER' | 'CARD' | 'OTHER';
+      /** @example 450.00 */
+      amount?: string | null;
+      /** @example FP2026100812345 */
+      reference?: string | null;
+      /** @example Paid back in cash */
       note?: string | null;
     };
-    SetListItemsDto: {
-      items: components['schemas']['ListRequestItemDto'][];
-    };
-    ReadyListResponse: {
-      request: components['schemas']['AdminListRequestResponse'];
-      /** @description The customer's link */
-      link: string;
-      message: string;
-      whatsappUrl: string;
-      viberUrl: string;
-      smsUrl: string | null;
-    };
-    SendContactMessageDto: {
-      /** @example Sita Sharma */
-      name: string;
-      /** @example +9779801234567 */
-      phone: string;
-      /** @example sita@example.com */
-      email?: string;
-      /** @example Do you deliver to Kirtipur on Sundays? */
-      message: string;
-    };
-    ReminderSubscribedResponse: {
-      /** @enum {string} */
-      language: 'ne' | 'en';
-      /** @description For DELETE /reminder-subscriptions/:token; staff put it in every reminder */
-      unsubscribeToken: string;
-    };
-    SubscribeRemindersDto: {
-      /** @example +9779801234567 */
-      phone: string;
-      /**
-       * @example ne
-       * @enum {string}
-       */
-      language: 'ne' | 'en';
-    };
-    ContactMessageResponse: {
+    CreateSalesReturnDto: {
       /** Format: uuid */
-      id: string;
-      name: string;
-      phone: string;
-      email: string | null;
-      message: string;
+      orderId: string;
       /** @enum {string} */
-      status: 'NEW' | 'HANDLED';
-      staffNote: string | null;
-      /** Format: uuid */
-      handledById: string | null;
-      /** Format: date-time */
-      handledAt: string | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    HandleContactMessageDto: {
-      /** @enum {string} */
-      status?: 'NEW' | 'HANDLED';
-      /** @example Called back, delivery booked */
-      staffNote?: string | null;
-    };
-    ReminderSubscriptionResponse: {
-      /** @enum {string} */
-      language: 'ne' | 'en';
-      /** @description For DELETE /reminder-subscriptions/:token; staff put it in every reminder */
-      unsubscribeToken: string;
-      /** @example 9841000000 */
-      phone: string;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    VideoStoryResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @enum {string} */
-      kind: 'CUSTOMER' | 'PANDIT';
-      /** @example Sunita Adhikari */
-      personEn: string;
-      /** @example सुनिता अधिकारी */
-      personNe: string;
-      /** @example Baneshwor */
-      place: string | null;
-      topicEn: string;
-      topicNe: string;
-      /** @description Null until the video is up */
-      youtubeId: string | null;
-      imageUrl: string | null;
-      /** @example 102 */
-      durationSeconds: number | null;
-    };
-    AdminVideoStoryResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @enum {string} */
-      kind: 'CUSTOMER' | 'PANDIT';
-      /** @example Sunita Adhikari */
-      personEn: string;
-      /** @example सुनिता अधिकारी */
-      personNe: string;
-      /** @example Baneshwor */
-      place: string | null;
-      topicEn: string;
-      topicNe: string;
-      /** @description Null until the video is up */
-      youtubeId: string | null;
-      imageUrl: string | null;
-      /** @example 102 */
-      durationSeconds: number | null;
-      isActive: boolean;
-      sortOrder: number;
-    };
-    CreateVideoStoryDto: {
-      /** @enum {string} */
-      kind: 'CUSTOMER' | 'PANDIT';
-      /** @example Sunita Adhikari */
-      personEn: string;
-      /** @example सुनिता अधिकारी */
-      personNe: string;
-      /** @example Baneshwor */
-      place?: string | null;
-      /** @example Ordered the Satyanarayan kit the day before */
-      topicEn: string;
-      /** @example सत्यनारायण किट: पूजाको अघिल्लो दिन मगाएँ */
-      topicNe: string;
-      /**
-       * @description The 11 characters after watch?v=
-       * @example dQw4w9WgXcQ
-       */
-      youtubeId?: string | null;
-      /** @example https://cdn.pujasanskar.com/stories/sunita.webp */
-      imageUrl?: string | null;
-      /** @example 102 */
-      durationSeconds?: number | null;
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-    };
-    UpdateVideoStoryDto: {
-      /** @enum {string} */
-      kind?: 'CUSTOMER' | 'PANDIT';
-      /** @example Sunita Adhikari */
-      personEn?: string;
-      /** @example सुनिता अधिकारी */
-      personNe?: string;
-      /** @example Baneshwor */
-      place?: string | null;
-      /** @example Ordered the Satyanarayan kit the day before */
-      topicEn?: string;
-      /** @example सत्यनारायण किट: पूजाको अघिल्लो दिन मगाएँ */
-      topicNe?: string;
-      /**
-       * @description The 11 characters after watch?v=
-       * @example dQw4w9WgXcQ
-       */
-      youtubeId?: string | null;
-      /** @example https://cdn.pujasanskar.com/stories/sunita.webp */
-      imageUrl?: string | null;
-      /** @example 102 */
-      durationSeconds?: number | null;
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-    };
-    FaqResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @enum {string} */
-      topic: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
-      questionEn: string;
-      questionNe: string;
-      answerEn: string;
-      answerNe: string;
-    };
-    AdminFaqResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @enum {string} */
-      topic: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
-      questionEn: string;
-      questionNe: string;
-      answerEn: string;
-      answerNe: string;
-      isActive: boolean;
-      sortOrder: number;
-    };
-    CreateFaqDto: {
-      /** @enum {string} */
-      topic: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
-      /** @example Can I change what is in a kit? */
-      questionEn: string;
-      /** @example किटमा भएको सामान घटाउन-बढाउन मिल्छ? */
-      questionNe: string;
-      /** @example Yes. Choose "Customise" on the kit page… */
-      answerEn: string;
-      /** @example मिल्छ। किटको पेजमा "आफैं मिलाउनुहोस्" छान्नुहोस्… */
-      answerNe: string;
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-    };
-    UpdateFaqDto: {
-      /** @enum {string} */
-      topic?: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
-      /** @example Can I change what is in a kit? */
-      questionEn?: string;
-      /** @example किटमा भएको सामान घटाउन-बढाउन मिल्छ? */
-      questionNe?: string;
-      /** @example Yes. Choose "Customise" on the kit page… */
-      answerEn?: string;
-      /** @example मिल्छ। किटको पेजमा "आफैं मिलाउनुहोस्" छान्नुहोस्… */
-      answerNe?: string;
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-    };
-    ItemSummaryResponse: {
-      /** @example 12 */
-      archived: number;
-      /**
-       * @description Items still live
-       * @example 120
-       */
-      active: number;
-      /**
-       * @description Packs of the archived items
-       * @example 30
-       */
-      packs: number;
-      /**
-       * @description Units of archived items still held, in the branches in view
-       * @example 85
-       */
-      unitsOnHand: number;
-      /**
-       * @description What those units cost
-       * @example 12500.00
-       */
-      stockValue: string;
-    };
-    KitSummaryResponse: {
-      /** @example 4 */
-      archived: number;
-      /**
-       * @description Kits still live
-       * @example 30
-       */
-      active: number;
-      /**
-       * @description Item lines the archived kits hold
-       * @example 80
-       */
-      itemLines: number;
-    };
-    ArchiveSummaryResponse: {
-      items: components['schemas']['ItemSummaryResponse'];
-      kits: components['schemas']['KitSummaryResponse'];
-    };
-    ArchivedItemResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example TIHAR01 */
-      code: string;
-      nameEn: string;
-      nameNe: string;
-      imageUrl: string | null;
-      /** Format: date-time */
-      archivedAt: string;
-      archivedByName: string | null;
-      reason: string | null;
-      /** @example 3 */
-      packs: number;
-      /**
-       * @description Units still held
-       * @example 25
-       */
-      unitsOnHand: number;
-    };
-    ArchivedKitResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example TIHAR01 */
-      code: string;
-      nameEn: string;
-      nameNe: string;
-      imageUrl: string | null;
-      /** Format: date-time */
-      archivedAt: string;
-      archivedByName: string | null;
-      reason: string | null;
-      /** @example PREMIUM */
-      tier: string | null;
-      pujaName: string | null;
-      /** @example 19 */
-      itemLines: number;
-    };
-    SuggestionResponse: {
-      /** Format: uuid */
-      id: string;
-      code: string;
-      nameEn: string;
-      nameNe: string;
-      /**
-       * @description Null when never sold
-       * @example 2026-03-02
-       */
-      lastSoldOn: string | null;
-      /**
-       * @description Units held (items only)
-       * @example 12
-       */
-      unitsOnHand: number;
-    };
-    SuggestionsResponse: {
-      /** @example 180 */
-      days: number;
-      items: components['schemas']['SuggestionResponse'][];
-      kits: components['schemas']['SuggestionResponse'][];
-    };
-    ArchiveDto: {
-      /** @example Not stocked until next Tihar */
-      reason?: string | null;
-      /**
-       * @description Items only: also archive the live kits that hold it (otherwise it is refused while one does)
-       * @default false
-       */
-      withKits: boolean;
-    };
-    RestoreDto: {
-      /**
-       * @description Show it on the website at once; false brings it back hidden
-       * @default true
-       */
-      show: boolean;
-      /**
-       * @description Kits only: also bring back the archived items the kit holds (otherwise it is refused while any is archived)
-       * @default false
-       */
-      withItems: boolean;
-    };
-    MenuLinkResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @example पूजा किट */
-      labelNe: string;
-      /** @example Puja kits */
-      labelEn: string;
-      tooltipNe: string | null;
-      tooltipEn: string | null;
-      /** @example /kits */
-      href: string | null;
-      /** @example truck */
-      icon: string | null;
-      isHighlighted: boolean;
-      children: components['schemas']['MenuLinkResponse'][];
-    };
-    NavigationResponse: {
-      header: components['schemas']['MenuLinkResponse'][];
-      headerSide: components['schemas']['MenuLinkResponse'][];
-      /** @description Headings, each with its links */
-      footer: components['schemas']['MenuLinkResponse'][];
-      mobileBar: components['schemas']['MenuLinkResponse'][];
-    };
-    AdminMenuItemResponse: {
-      /** Format: uuid */
-      id: string;
-      /** @enum {string} */
-      place: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
-      /** Format: uuid */
-      parentId: string | null;
-      labelNe: string;
-      labelEn: string;
-      tooltipNe: string | null;
-      tooltipEn: string | null;
-      href: string | null;
-      icon: string | null;
-      isHighlighted: boolean;
-      isActive: boolean;
-      sortOrder: number;
-    };
-    CreateMenuItemDto: {
-      /** @enum {string} */
-      place: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
-      /**
-       * Format: uuid
-       * @description A top item of the same place; its sub-menu or footer column
-       */
-      parentId?: string | null;
-      /** @example पूजा किट */
-      labelNe: string;
-      /** @example Puja kits */
-      labelEn: string;
-      /**
-       * @description A short note shown when a visitor rests on the link (Nepali)
-       * @example मुख्य मुख्य पूजाहरूका तयारी किटहरू
-       */
-      tooltipNe?: string | null;
-      /**
-       * @description A short note shown when a visitor rests on the link (English)
-       * @example Ready kits for the main pujas
-       */
-      tooltipEn?: string | null;
-      /**
-       * @description A site path or an https address; none for a heading
-       * @example /kits
-       */
-      href?: string | null;
-      /** @example truck */
-      icon?: string | null;
-      /**
-       * @description Drawn in the accent
-       * @default false
-       */
-      isHighlighted: boolean;
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
-    };
-    UpdateMenuItemDto: {
-      /** @example पूजा किट */
-      labelNe?: string;
-      /** @example Puja kits */
-      labelEn?: string;
-      /**
-       * @description A short note shown when a visitor rests on the link (Nepali)
-       * @example मुख्य मुख्य पूजाहरूका तयारी किटहरू
-       */
-      tooltipNe?: string | null;
-      /**
-       * @description A short note shown when a visitor rests on the link (English)
-       * @example Ready kits for the main pujas
-       */
-      tooltipEn?: string | null;
-      /**
-       * @description A site path or an https address; none for a heading
-       * @example /kits
-       */
-      href?: string | null;
-      /** @example truck */
-      icon?: string | null;
-      /**
-       * @description Drawn in the accent
-       * @default false
-       */
-      isHighlighted: boolean;
-      /** @default true */
-      isActive: boolean;
-      /** @default 0 */
-      sortOrder: number;
+      reason:
+        | 'DAMAGED'
+        | 'WRONG_ITEM'
+        | 'QUALITY'
+        | 'NOT_AS_DESCRIBED'
+        | 'CHANGED_MIND'
+        | 'NOT_NEEDED'
+        | 'LATE_DELIVERY'
+        | 'OTHER';
+      /** @example Box was crushed on arrival */
+      note?: string | null;
+      lines: components['schemas']['ReturnLineDto'][];
+      /** @description Pay money back now; leave out to refund later from the order */
+      refund?: components['schemas']['ReturnRefundDto'];
     };
     BillingProfileResponse: {
       /** @example Puja Sanskar Pvt. Ltd. */
@@ -14264,6 +12587,156 @@ export interface components {
       quickPay: components['schemas']['QuickPayOptionResponse'];
       share: components['schemas']['ShareOptionResponse'];
     };
+    DeliveryAddressResponse: {
+      addressLine: string | null;
+      area: string | null;
+      city: string | null;
+      landmark: string | null;
+    };
+    OrderLineKitResponse: {
+      /**
+       * @description Which kit of the order
+       * @example 1
+       */
+      bundleNo: number;
+      /** @example KIT001 */
+      code: string;
+      /** @example Satyanarayan Puja Kit */
+      nameEn: string;
+      /** @example सत्यनारायण पूजा किट */
+      nameNe: string;
+    };
+    OrderLineResponse: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example KAP-050 */
+      sku: string;
+      /** @example Kapur */
+      productNameEn: string;
+      /** @example कपूर */
+      productNameNe: string;
+      /** @example 50 g */
+      variantLabel: string;
+      /**
+       * @description Price paid per unit
+       * @example 120.00
+       */
+      unitPrice: string;
+      /** @example 3 */
+      quantity: number;
+      /**
+       * @description Before discount
+       * @example 360.00
+       */
+      lineTotal: string;
+      /**
+       * @description This line's share of the order discount
+       * @example 18.00
+       */
+      discount: string;
+      /** @description The kit it was bought in; null when bought on its own */
+      kit: components['schemas']['OrderLineKitResponse'] | null;
+    };
+    OrderDiscountResponse: {
+      /** @enum {string} */
+      source: 'KIT' | 'AUTOMATIC' | 'COUPON' | 'REFERRAL' | 'COUNTER';
+      /** @example 10% off Dashain samagri */
+      label: string;
+      /** @example DASHAIN10 */
+      couponCode: string | null;
+      /** @example 62.50 */
+      amount: string;
+      /** @description Why a counter discount was given */
+      reason: string | null;
+    };
+    OrderStatusChangeResponse: {
+      /** @enum {string|null} */
+      fromStatus:
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED'
+        | null;
+      /** @enum {string} */
+      status:
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED';
+      note: string | null;
+      /** Format: date-time */
+      at: string;
+    };
+    OrderResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example PS-000123 */
+      number: string;
+      /** @enum {string} */
+      channel: 'ONLINE' | 'STORE';
+      /** @enum {string} */
+      fulfilment: 'DELIVERY' | 'PICKUP';
+      /**
+       * @description Null for a counter sale
+       * @enum {string|null}
+       */
+      checkoutMethod: 'ACCOUNT' | 'QUICK_PAY' | null;
+      /** @enum {string|null} */
+      quickPayChannel: 'WHATSAPP' | 'MESSENGER' | 'VIBER' | null;
+      /** @enum {string} */
+      status:
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED';
+      contactName: string | null;
+      contactPhone: string | null;
+      address: components['schemas']['DeliveryAddressResponse'] | null;
+      /** Format: date */
+      neededBy: string | null;
+      note: string | null;
+      cancelReason: string | null;
+      items: components['schemas']['OrderLineResponse'][];
+      /** @example 360.00 */
+      subtotal: string;
+      /** @example 18.00 */
+      discountTotal: string;
+      discounts: components['schemas']['OrderDiscountResponse'][];
+      /** @example 100.00 */
+      deliveryFee: string;
+      /**
+       * @description The delivery zone that priced delivery
+       * @example Inside Ring Road
+       */
+      deliveryZone: string | null;
+      /** @description The shop still has to quote the delivery fee */
+      deliveryQuoteNeeded: boolean;
+      /** @enum {string} */
+      paymentPlan: 'PAY_NOW' | 'CASH_ON_DELIVERY' | 'SOMEONE_ELSE';
+      /** @enum {string} */
+      deliverySpeed: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
+      /**
+       * @description Hours of a scheduled delivery on neededBy
+       * @example 07:00-10:00
+       */
+      deliveryWindow: string | null;
+      /** @example 460.00 */
+      total: string;
+      /** @example NPR */
+      currency: string;
+      history: components['schemas']['OrderStatusChangeResponse'][];
+      /** Format: date-time */
+      createdAt: string;
+    };
     QuickPayResponse: {
       order: components['schemas']['OrderResponse'];
       /** @enum {string} */
@@ -14280,6 +12753,16 @@ export interface components {
        * @example https://wa.me/9779801234567?text=Namaste…
        */
       chatUrl: string;
+    };
+    DeliveryAddressDto: {
+      /** @example House 12, Tole Marg */
+      addressLine: string;
+      /** @example Baneshwor */
+      area: string;
+      /** @example Kathmandu */
+      city: string;
+      /** @example Opposite the temple gate */
+      landmark?: string | null;
     };
     QuickPayDto: {
       /**
@@ -15322,6 +13805,1718 @@ export interface components {
       items: components['schemas']['ReceivableRowResponse'][];
       meta: components['schemas']['PageMetaResponse'];
     };
+    TrackedStepResponse: {
+      /** @enum {string} */
+      status:
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED';
+      /** Format: date-time */
+      at: string;
+    };
+    OrderTrackingResponse: {
+      /** @example PS-000123 */
+      number: string;
+      /** @enum {string} */
+      status:
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED';
+      /** @enum {string} */
+      fulfilment: 'DELIVERY' | 'PICKUP';
+      /** @enum {string} */
+      deliverySpeed: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
+      /** Format: date */
+      neededBy: string | null;
+      /** @example 07:00-10:00 */
+      deliveryWindow: string | null;
+      /**
+       * @description Units ordered
+       * @example 6
+       */
+      itemCount: number;
+      /** @example 1240.00 */
+      total: string;
+      /** @description Oldest first */
+      history: components['schemas']['TrackedStepResponse'][];
+      /** Format: date-time */
+      placedAt: string;
+    };
+    TrackOrderDto: {
+      /**
+       * @description As on the confirmation
+       * @example PS-000123
+       */
+      number: string;
+      /** @example +9779801234567 */
+      phone: string;
+    };
+    CheckoutDto: {
+      /** Format: uuid */
+      cartId: string;
+      /**
+       * @description The cart version the customer reviewed; checkout stops if it changed
+       * @example 7
+       */
+      cartVersion: number;
+      /** @enum {string} */
+      fulfilment: 'DELIVERY' | 'PICKUP';
+      /** @example Sita Sharma */
+      contactName: string;
+      /** @example +9779801234567 */
+      contactPhone: string;
+      /** @description For DELIVERY: this address or addressId */
+      address?: components['schemas']['DeliveryAddressDto'];
+      /**
+       * Format: uuid
+       * @description For DELIVERY: one of my saved addresses (signed in only)
+       */
+      addressId?: string;
+      /** @example Home */
+      saveAddressAs?: string | null;
+      /**
+       * @description For DELIVERY: EXPRESS where the zone offers it; SCHEDULED needs neededBy and slotId
+       * @default STANDARD
+       * @enum {string}
+       */
+      speed: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
+      /**
+       * Format: uuid
+       * @description For SCHEDULED: one of GET /delivery-slots
+       */
+      slotId?: string;
+      /**
+       * Format: date
+       * @example 2026-11-02
+       */
+      neededBy?: string | null;
+      /** @example Please call before coming */
+      note?: string | null;
+      /**
+       * @description A coupon code; matched in any case
+       * @example DASHAIN10
+       */
+      couponCode?: string;
+      /**
+       * @description CASH_ON_DELIVERY where the shop allows it; SOMEONE_ELSE then asks POST /orders/:id/pay-link
+       * @default PAY_NOW
+       * @enum {string}
+       */
+      paymentPlan: 'PAY_NOW' | 'CASH_ON_DELIVERY' | 'SOMEONE_ELSE';
+      /**
+       * @description A pandit's code
+       * @example PANDIT-RAM
+       */
+      panditCode?: string;
+    };
+    OrderSummaryResponse: {
+      /**
+       * @description Placed and not cancelled
+       * @example 4
+       */
+      orders: number;
+      /**
+       * @description Every discount they got
+       * @example 1840.00
+       */
+      saved: string;
+    };
+    CancelOrderDto: {
+      /** @example Ordered the wrong items */
+      reason?: string | null;
+    };
+    OrderPersonResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Sita Sharma */
+      fullName: string;
+      /** @example sita@example.com */
+      email: string;
+      phone: string | null;
+    };
+    AdminStatusChangeResponse: {
+      /** @enum {string|null} */
+      fromStatus:
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED'
+        | null;
+      /** @enum {string} */
+      status:
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED';
+      note: string | null;
+      /** Format: date-time */
+      at: string;
+      /** @description Null when the system made the change */
+      by: components['schemas']['OrderPersonResponse'] | null;
+    };
+    AdminOrderResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example PS-000123 */
+      number: string;
+      /** @enum {string} */
+      channel: 'ONLINE' | 'STORE';
+      /** @enum {string} */
+      fulfilment: 'DELIVERY' | 'PICKUP';
+      /**
+       * @description Null for a counter sale
+       * @enum {string|null}
+       */
+      checkoutMethod: 'ACCOUNT' | 'QUICK_PAY' | null;
+      /** @enum {string|null} */
+      quickPayChannel: 'WHATSAPP' | 'MESSENGER' | 'VIBER' | null;
+      /** @enum {string} */
+      status:
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED';
+      contactName: string | null;
+      contactPhone: string | null;
+      address: components['schemas']['DeliveryAddressResponse'] | null;
+      /** Format: date */
+      neededBy: string | null;
+      note: string | null;
+      cancelReason: string | null;
+      items: components['schemas']['OrderLineResponse'][];
+      /** @example 360.00 */
+      subtotal: string;
+      /** @example 18.00 */
+      discountTotal: string;
+      discounts: components['schemas']['OrderDiscountResponse'][];
+      /** @example 100.00 */
+      deliveryFee: string;
+      /**
+       * @description The delivery zone that priced delivery
+       * @example Inside Ring Road
+       */
+      deliveryZone: string | null;
+      /** @description The shop still has to quote the delivery fee */
+      deliveryQuoteNeeded: boolean;
+      /** @enum {string} */
+      paymentPlan: 'PAY_NOW' | 'CASH_ON_DELIVERY' | 'SOMEONE_ELSE';
+      /** @enum {string} */
+      deliverySpeed: 'STANDARD' | 'EXPRESS' | 'SCHEDULED';
+      /**
+       * @description Hours of a scheduled delivery on neededBy
+       * @example 07:00-10:00
+       */
+      deliveryWindow: string | null;
+      /** @example 460.00 */
+      total: string;
+      /** @example NPR */
+      currency: string;
+      history: components['schemas']['AdminStatusChangeResponse'][];
+      /** Format: date-time */
+      createdAt: string;
+      /** @description The branch that sold it */
+      branch: components['schemas']['BranchSummary'];
+      customer: components['schemas']['OrderPersonResponse'] | null;
+      /** @description The customer, or the staff member at the counter; null for a guest quick-pay order */
+      createdBy: components['schemas']['OrderPersonResponse'] | null;
+      /** Format: uuid */
+      cartId: string | null;
+      /** @description Statuses this order can move to next */
+      nextStatuses: (
+        | 'PENDING'
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED'
+      )[];
+      /**
+       * @description The pandit's code the order used
+       * @example PANDIT-RAM
+       */
+      referralCode: string | null;
+      /** Format: uuid */
+      panditId: string | null;
+      /**
+       * @description What the shop owes the pandit: the commission of the day on the goods after discounts
+       * @example 61.20
+       */
+      panditCommission: string | null;
+    };
+    ChangeOrderStatusDto: {
+      /** @enum {string} */
+      status:
+        | 'CONFIRMED'
+        | 'PACKED'
+        | 'OUT_FOR_DELIVERY'
+        | 'READY_FOR_PICKUP'
+        | 'COMPLETED'
+        | 'CANCELLED';
+      /** @example Payment received on eSewa */
+      note?: string | null;
+      /** @example 100.00 */
+      deliveryFee?: string | null;
+    };
+    SetDeliveryFeeDto: {
+      /** @example 100.00 */
+      deliveryFee: string;
+    };
+    StoreSaleLineDto: {
+      /** Format: uuid */
+      variantId: string;
+      /**
+       * @description Up to three decimals; whole numbers for items sold one by one
+       * @example 2
+       */
+      quantity: number;
+    };
+    StoreSaleKitDto: {
+      /** Format: uuid */
+      kitId: string;
+      /** @example 1 */
+      quantity: number;
+    };
+    CounterDiscountDto: {
+      /** @enum {string} */
+      kind: 'PERCENT' | 'FLAT';
+      /** @example 5 */
+      value: string;
+      /** @example Regular customer */
+      reason: string;
+    };
+    StoreSaleDto: {
+      /** @description Packs sold on their own; may be empty when kits are sold */
+      lines: components['schemas']['StoreSaleLineDto'][];
+      /** @description Whole kits: their included items, at this branch’s prices less the kit discount */
+      kits?: components['schemas']['StoreSaleKitDto'][];
+      /** @example Walk-in customer */
+      contactName?: string | null;
+      /** @example +9779801234567 */
+      contactPhone?: string | null;
+      /** @example Paid in cash */
+      note?: string | null;
+      /** @example DASHAIN10 */
+      couponCode?: string;
+      /** @description Taken off after any automatic discount or coupon; above the shop limit it needs discounts:override */
+      discount?: components['schemas']['CounterDiscountDto'];
+    };
+    ShelfPackResponse: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example KAP-050 */
+      sku: string;
+      /** @example 50 g */
+      label: string;
+      /** @example 120.00 */
+      price: string;
+      /**
+       * @description Units that can be sold now at this branch
+       * @example 18
+       */
+      available: number;
+      /**
+       * @description Sold by weight, volume or length, so a part of a pack (1.5 m) may be sold
+       * @example false
+       */
+      allowsFraction: boolean;
+    };
+    ShelfItemResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example KAPUR */
+      code: string;
+      /** @example Camphor */
+      nameEn: string;
+      /** @example कपूर */
+      nameNe: string;
+      imageUrl: string | null;
+      packs: components['schemas']['ShelfPackResponse'][];
+    };
+    PanditCardResponse: {
+      /** @example pt-ramprasad-adhikari */
+      slug: string;
+      /** @example PANDIT-RAM */
+      referralCode: string;
+      /** @example Pt. Ramprasad Adhikari */
+      nameEn: string;
+      /** @example पं. रामप्रसाद अधिकारी */
+      nameNe: string;
+      /** @example Baneshwor */
+      area: string | null;
+      photoUrl: string | null;
+      bioEn: string | null;
+      bioNe: string | null;
+      /**
+       * @description How the code discount is given
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off for families using the code, when PERCENT
+       * @example 5.00
+       */
+      customerDiscountPercent: string;
+      /**
+       * @description Rupees off the order, when FLAT
+       * @example 0.00
+       */
+      customerDiscountAmount: string;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
+      /**
+       * @description Orders families placed with the code
+       * @example 140
+       */
+      ordersBrought: number;
+    };
+    PanditResponse: {
+      /** @example pt-ramprasad-adhikari */
+      slug: string;
+      /** @example PANDIT-RAM */
+      referralCode: string;
+      /** @example Pt. Ramprasad Adhikari */
+      nameEn: string;
+      /** @example पं. रामप्रसाद अधिकारी */
+      nameNe: string;
+      /** @example Baneshwor */
+      area: string | null;
+      photoUrl: string | null;
+      bioEn: string | null;
+      bioNe: string | null;
+      /**
+       * @description How the code discount is given
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off for families using the code, when PERCENT
+       * @example 5.00
+       */
+      customerDiscountPercent: string;
+      /**
+       * @description Rupees off the order, when FLAT
+       * @example 0.00
+       */
+      customerDiscountAmount: string;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
+    };
+    SavePanditDto: {
+      /** @example PANDIT-RAM */
+      referralCode: string;
+    };
+    AdminPanditResponse: {
+      /** @example pt-ramprasad-adhikari */
+      slug: string;
+      /** @example PANDIT-RAM */
+      referralCode: string;
+      /** @example Pt. Ramprasad Adhikari */
+      nameEn: string;
+      /** @example पं. रामप्रसाद अधिकारी */
+      nameNe: string;
+      /** @example Baneshwor */
+      area: string | null;
+      photoUrl: string | null;
+      bioEn: string | null;
+      bioNe: string | null;
+      /**
+       * @description How the code discount is given
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Off for families using the code, when PERCENT
+       * @example 5.00
+       */
+      customerDiscountPercent: string;
+      /**
+       * @description Rupees off the order, when FLAT
+       * @example 0.00
+       */
+      customerDiscountAmount: string;
+      /** @description Search engine title */
+      metaTitle: string | null;
+      /** @description Search engine description */
+      metaDescription: string | null;
+      /**
+       * @description Orders families placed with the code
+       * @example 140
+       */
+      ordersBrought: number;
+      /** Format: uuid */
+      id: string;
+      /** @example PANDIT_RAM */
+      code: string;
+      phone: string | null;
+      /** @example 5.00 */
+      commissionPercent: string;
+      /**
+       * @description Orders brought, not cancelled
+       * @example 182400.00
+       */
+      salesBrought: string;
+      isActive: boolean;
+      sortOrder: number;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CreatePanditDto: {
+      /** @example PANDIT_RAM */
+      code: string;
+      /** @description Generated from nameEn when omitted */
+      slug?: string;
+      /** @example PANDIT-RAM */
+      referralCode: string;
+      /** @example Pt. Ramprasad Adhikari */
+      nameEn: string;
+      /** @example पं. रामप्रसाद अधिकारी */
+      nameNe: string;
+      /** @example Baneshwor */
+      area?: string | null;
+      /** @example https://cdn.pujasanskar.com/pandits/ram.webp */
+      photoUrl?: string | null;
+      /** @example Thirty years of Satyanarayan katha */
+      bioEn?: string | null;
+      /** @example तीस वर्षदेखि सत्यनारायण कथा */
+      bioNe?: string | null;
+      /** @example +9779801234567 */
+      phone?: string | null;
+      /**
+       * @description PERCENT gives customerDiscountPercent off; FLAT gives customerDiscountAmount rupees
+       * @default PERCENT
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
+      /** @example 5.00 */
+      customerDiscountPercent?: string | null;
+      /** @example 100.00 */
+      customerDiscountAmount?: string | null;
+      /** @example 5.00 */
+      commissionPercent?: string | null;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
+    };
+    UpdatePanditDto: {
+      /** @description Generated from nameEn when omitted */
+      slug?: string;
+      /** @example Pt. Ramprasad Adhikari */
+      nameEn?: string;
+      /** @example पं. रामप्रसाद अधिकारी */
+      nameNe?: string;
+      /** @example Baneshwor */
+      area?: string | null;
+      /** @example https://cdn.pujasanskar.com/pandits/ram.webp */
+      photoUrl?: string | null;
+      /** @example Thirty years of Satyanarayan katha */
+      bioEn?: string | null;
+      /** @example तीस वर्षदेखि सत्यनारायण कथा */
+      bioNe?: string | null;
+      /** @example +9779801234567 */
+      phone?: string | null;
+      /**
+       * @description PERCENT gives customerDiscountPercent off; FLAT gives customerDiscountAmount rupees
+       * @default PERCENT
+       * @enum {string}
+       */
+      customerDiscountKind: 'PERCENT' | 'FLAT';
+      /** @example 5.00 */
+      customerDiscountPercent?: string | null;
+      /** @example 100.00 */
+      customerDiscountAmount?: string | null;
+      /** @example 5.00 */
+      commissionPercent?: string | null;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+      /** @example Kapur for aarti: pure camphor tablets */
+      metaTitle?: string | null;
+      /** @example Pure camphor for aarti and havan, delivered home. */
+      metaDescription?: string | null;
+    };
+    DiscountRuleResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example DASHAIN10 */
+      code: string;
+      /** @example 10% off Dashain samagri */
+      name: string;
+      channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
+      /** @enum {string} */
+      trigger: 'AUTOMATIC' | 'COUPON';
+      /** @example DASHAIN10 */
+      couponCode: string | null;
+      /** @enum {string} */
+      scope: 'ORDER' | 'CATEGORIES' | 'PRODUCTS';
+      scopeIds: string[];
+      /** @enum {string} */
+      kind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Percent, or rupees for FLAT
+       * @example 10.00
+       */
+      value: string;
+      /** @example 500.00 */
+      minSubtotal: string;
+      /** @example 200.00 */
+      maxDiscount: string | null;
+      firstOrderOnly: boolean;
+      usageLimit: number | null;
+      perCustomerLimit: number | null;
+      /**
+       * @description Uses on orders not cancelled
+       * @example 12
+       */
+      timesUsed: number;
+      /** Format: date-time */
+      startsAt: string | null;
+      /** Format: date-time */
+      endsAt: string | null;
+      isPublic: boolean;
+      titleEn: string | null;
+      titleNe: string | null;
+      isActive: boolean;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateDiscountRuleDto: {
+      /** @example DASHAIN10 */
+      code: string;
+      /** @example 10% off Dashain samagri */
+      name: string;
+      /**
+       * @description Where it applies: signed-in checkout, quick pay, the counter
+       * @default [
+       *       "ACCOUNT_CHECKOUT"
+       *     ]
+       */
+      channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
+      /**
+       * @description AUTOMATIC applies by itself; COUPON when its code is entered
+       * @default AUTOMATIC
+       * @enum {string}
+       */
+      trigger: 'AUTOMATIC' | 'COUPON';
+      /**
+       * @description Required for a COUPON; stored in capitals, matched in any case
+       * @example DASHAIN10
+       */
+      couponCode?: string | null;
+      /**
+       * @description ORDER, or only the listed categories (with their subcategories) or products
+       * @default ORDER
+       * @enum {string}
+       */
+      scope: 'ORDER' | 'CATEGORIES' | 'PRODUCTS';
+      scopeIds?: string[];
+      /** @enum {string} */
+      kind: 'PERCENT' | 'FLAT';
+      /** @example 10 */
+      value: string;
+      /** @example 500 */
+      minSubtotal?: string | null;
+      /** @example 200 */
+      maxDiscount?: string | null;
+      /** @default false */
+      firstOrderOnly: boolean;
+      /** @description Uses in total */
+      usageLimit?: number | null;
+      /** @description Uses per customer; such a discount needs a signed-in customer */
+      perCustomerLimit?: number | null;
+      /** @example 2026-10-10T00:00:00+05:45 */
+      startsAt?: string | null;
+      /** @example 2026-10-31T00:00:00+05:45 */
+      endsAt?: string | null;
+      /**
+       * @description Show it on the website's offers; needs both titles
+       * @default false
+       */
+      isPublic: boolean;
+      /** @example Tihar: 10% off above Rs 2000 */
+      titleEn?: string | null;
+      /** @example तिहार: रु २००० माथि १०% छुट */
+      titleNe?: string | null;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdateDiscountRuleDto: {
+      /** @example 10% off Dashain samagri */
+      name?: string;
+      /**
+       * @description Where it applies: signed-in checkout, quick pay, the counter
+       * @default [
+       *       "ACCOUNT_CHECKOUT"
+       *     ]
+       */
+      channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
+      /**
+       * @description AUTOMATIC applies by itself; COUPON when its code is entered
+       * @default AUTOMATIC
+       * @enum {string}
+       */
+      trigger: 'AUTOMATIC' | 'COUPON';
+      /**
+       * @description Required for a COUPON; stored in capitals, matched in any case
+       * @example DASHAIN10
+       */
+      couponCode?: string | null;
+      /**
+       * @description ORDER, or only the listed categories (with their subcategories) or products
+       * @default ORDER
+       * @enum {string}
+       */
+      scope: 'ORDER' | 'CATEGORIES' | 'PRODUCTS';
+      scopeIds?: string[];
+      /** @enum {string} */
+      kind?: 'PERCENT' | 'FLAT';
+      /** @example 10 */
+      value?: string;
+      /** @example 500 */
+      minSubtotal?: string | null;
+      /** @example 200 */
+      maxDiscount?: string | null;
+      /** @default false */
+      firstOrderOnly: boolean;
+      /** @description Uses in total */
+      usageLimit?: number | null;
+      /** @description Uses per customer; such a discount needs a signed-in customer */
+      perCustomerLimit?: number | null;
+      /** @example 2026-10-10T00:00:00+05:45 */
+      startsAt?: string | null;
+      /** @example 2026-10-31T00:00:00+05:45 */
+      endsAt?: string | null;
+      /**
+       * @description Show it on the website's offers; needs both titles
+       * @default false
+       */
+      isPublic: boolean;
+      /** @example Tihar: 10% off above Rs 2000 */
+      titleEn?: string | null;
+      /** @example तिहार: रु २००० माथि १०% छुट */
+      titleNe?: string | null;
+      /** @default true */
+      isActive: boolean;
+    };
+    OfferResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Tihar: 10% off above Rs 2000 */
+      titleEn: string;
+      /** @example तिहार: रु २००० माथि १०% छुट */
+      titleNe: string;
+      /**
+       * @description Type this at checkout; null when it applies by itself
+       * @example TIHAR10
+       */
+      couponCode: string | null;
+      /** @enum {string} */
+      kind: 'PERCENT' | 'FLAT';
+      /**
+       * @description Percent or rupees
+       * @example 10.00
+       */
+      value: string;
+      /** @example 2000.00 */
+      minSubtotal: string;
+      /** @example 500.00 */
+      maxDiscount: string | null;
+      firstOrderOnly: boolean;
+      channels: ('ACCOUNT_CHECKOUT' | 'QUICK_PAY' | 'COUNTER')[];
+      /** Format: date-time */
+      endsAt: string | null;
+    };
+    BannerResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Dashain kits are here */
+      title: string;
+      subtitle: string | null;
+      /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
+      imageUrl: string;
+      /** @example /kits/dashain-kit */
+      linkUrl: string | null;
+      /** @enum {string} */
+      placement: 'HOME_HERO' | 'HOME_STRIP';
+    };
+    SearchCardResponse: {
+      /** @enum {string} */
+      type: 'PUJA' | 'KIT' | 'PRODUCT' | 'MATERIAL' | 'FESTIVAL' | 'ARTICLE' | 'CATEGORY';
+      /** Format: uuid */
+      id: string;
+      /** @example kapur */
+      slug: string;
+      /**
+       * @description Page on the website
+       * @example /products/kapur
+       */
+      path: string;
+      /** @example Kapur */
+      nameEn: string;
+      /** @example कपूर */
+      nameNe: string | null;
+      /** @example Camphor */
+      subtitle: string | null;
+      imageUrl: string | null;
+      /**
+       * @description Products: cheapest pack
+       * @example 120.00
+       */
+      fromPrice: string | null;
+    };
+    HomeSectionResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Dashain essentials */
+      title: string;
+      titleNe: string | null;
+      /** @enum {string} */
+      kind: 'PRODUCTS' | 'KITS' | 'PUJAS';
+      items: components['schemas']['SearchCardResponse'][];
+    };
+    HomePageResponse: {
+      banners: components['schemas']['BannerResponse'][];
+      sections: components['schemas']['HomeSectionResponse'][];
+    };
+    ScheduleFields: {
+      sortOrder: number;
+      isActive: boolean;
+      /** Format: date-time */
+      startsAt: string | null;
+      /** Format: date-time */
+      endsAt: string | null;
+    };
+    AdminBannerResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Dashain kits are here */
+      title: string;
+      subtitle: string | null;
+      /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
+      imageUrl: string;
+      /** @example /kits/dashain-kit */
+      linkUrl: string | null;
+      /** @enum {string} */
+      placement: 'HOME_HERO' | 'HOME_STRIP';
+      schedule: components['schemas']['ScheduleFields'];
+    };
+    CreateBannerDto: {
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+      /** @example 2026-10-10T00:00:00+05:45 */
+      startsAt?: string | null;
+      /** @example 2026-10-31T00:00:00+05:45 */
+      endsAt?: string | null;
+      /** @example Dashain kits are here */
+      title: string;
+      /** @example Everything for Ghatasthapana */
+      subtitle?: string | null;
+      /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
+      imageUrl: string;
+      /**
+       * @description A path on the website or an https URL
+       * @example /kits/dashain-kit
+       */
+      linkUrl?: string | null;
+      /** @enum {string} */
+      placement: 'HOME_HERO' | 'HOME_STRIP';
+    };
+    UpdateBannerDto: {
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+      /** @example 2026-10-10T00:00:00+05:45 */
+      startsAt?: string | null;
+      /** @example 2026-10-31T00:00:00+05:45 */
+      endsAt?: string | null;
+      /** @example Dashain kits are here */
+      title?: string;
+      /** @example Everything for Ghatasthapana */
+      subtitle?: string | null;
+      /** @example https://cdn.pujasanskar.com/banners/dashain.webp */
+      imageUrl?: string;
+      /**
+       * @description A path on the website or an https URL
+       * @example /kits/dashain-kit
+       */
+      linkUrl?: string | null;
+      /** @enum {string} */
+      placement?: 'HOME_HERO' | 'HOME_STRIP';
+    };
+    AdminHomeSectionResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Dashain essentials */
+      title: string;
+      titleNe: string | null;
+      /** @enum {string} */
+      kind: 'PRODUCTS' | 'KITS' | 'PUJAS';
+      itemIds: string[];
+      schedule: components['schemas']['ScheduleFields'];
+    };
+    CreateHomeSectionDto: {
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+      /** @example 2026-10-10T00:00:00+05:45 */
+      startsAt?: string | null;
+      /** @example 2026-10-31T00:00:00+05:45 */
+      endsAt?: string | null;
+      /** @example Dashain essentials */
+      title: string;
+      /** @example दशैंका सामग्री */
+      titleNe?: string | null;
+      /** @enum {string} */
+      kind: 'PRODUCTS' | 'KITS' | 'PUJAS';
+      /** @description Products, kits or pujas, in display order */
+      itemIds: string[];
+    };
+    UpdateHomeSectionDto: {
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+      /** @example 2026-10-10T00:00:00+05:45 */
+      startsAt?: string | null;
+      /** @example 2026-10-31T00:00:00+05:45 */
+      endsAt?: string | null;
+      /** @example Dashain essentials */
+      title?: string;
+      /** @example दशैंका सामग्री */
+      titleNe?: string | null;
+      /** @enum {string} */
+      kind?: 'PRODUCTS' | 'KITS' | 'PUJAS';
+      /** @description Products, kits or pujas, in display order */
+      itemIds?: string[];
+    };
+    WishlistItemResponse: {
+      /** Format: uuid */
+      productId: string;
+      /** Format: date-time */
+      addedAt: string;
+      /** @description Null once the product is no longer on sale */
+      product: components['schemas']['SearchCardResponse'] | null;
+    };
+    SavedListPujaResponse: {
+      /** @example satyanarayan-puja */
+      slug: string;
+      nameEn: string;
+      nameNe: string;
+      imageUrl: string | null;
+      /** @description Still shown on the website */
+      isActive: boolean;
+    };
+    SavedListResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Satyanarayan, Purnima */
+      name: string;
+      puja: components['schemas']['SavedListPujaResponse'];
+      haveMaterialIds: string[];
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateSavedListDto: {
+      /** Format: uuid */
+      pujaId: string;
+      /** @example Satyanarayan, Purnima */
+      name: string;
+      /** @description Materials already at home */
+      haveMaterialIds?: string[];
+    };
+    UpdateSavedListDto: {
+      /** @example Satyanarayan, Purnima */
+      name?: string;
+      /** @description Materials already at home */
+      haveMaterialIds?: string[];
+    };
+    ReviewResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Sita S. */
+      authorName: string;
+      /** @example 5 */
+      rating: number;
+      title: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    MyReviewResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Sita S. */
+      authorName: string;
+      /** @example 5 */
+      rating: number;
+      title: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      productId: string;
+      /**
+       * @description HIDDEN: the shop took it off the product page
+       * @enum {string}
+       */
+      status: 'PUBLISHED' | 'HIDDEN';
+    };
+    WriteReviewDto: {
+      /** @example 5 */
+      rating: number;
+      /** @example Fresh and fragrant */
+      title?: string | null;
+      /** @example The kapur burnt clean and the pack was sealed. */
+      body?: string | null;
+    };
+    AdminReviewResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Sita S. */
+      authorName: string;
+      /** @example 5 */
+      rating: number;
+      title: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      /** Format: uuid */
+      productId: string;
+      /**
+       * @description HIDDEN: the shop took it off the product page
+       * @enum {string}
+       */
+      status: 'PUBLISHED' | 'HIDDEN';
+      /** Format: uuid */
+      customerId: string;
+      /** Format: uuid */
+      moderatedById: string | null;
+      moderationNote: string | null;
+    };
+    ModerateReviewDto: {
+      /** @enum {string} */
+      status: 'PUBLISHED' | 'HIDDEN';
+      /** @example Mentions a phone number */
+      note?: string | null;
+    };
+    ReviewedProductResponse: {
+      /** @example brass-bell */
+      slug: string;
+      /** @example पित्तलको घण्टी */
+      nameNe: string;
+      /** @example Brass bell */
+      nameEn: string;
+      imageUrl: string | null;
+    };
+    ShopReviewResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Sita S. */
+      authorName: string;
+      /** @example 5 */
+      rating: number;
+      title: string | null;
+      body: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+      product: components['schemas']['ReviewedProductResponse'] | null;
+    };
+    ShopReviewsResponse: {
+      /** @example 4.8 */
+      average: number | null;
+      /** @example 1240 */
+      count: number;
+      reviews: components['schemas']['ShopReviewResponse'][];
+    };
+    ResetCountResponse: {
+      /** @example catalogue */
+      key: string;
+      /** @example 120 */
+      rows: number;
+    };
+    ResetExtraResponse: {
+      /** @enum {string} */
+      key: 'pujas' | 'pujaGroups' | 'units' | 'mantras' | 'festivals';
+      /** @example 14 */
+      rows: number;
+    };
+    DataResetPreviewResponse: {
+      /** @description Switched on for this server (DATA_RESET_ENABLED) */
+      enabled: boolean;
+      counts: components['schemas']['ResetCountResponse'][];
+      /** @description Left alone unless chosen; rows each would remove */
+      extras: components['schemas']['ResetExtraResponse'][];
+    };
+    ConfirmDataResetDto: {
+      /**
+       * @description Type DELETE to confirm
+       * @example DELETE
+       */
+      confirm: string;
+      /** @description Also remove every puja (groups and ritual types stay) */
+      includePujas?: boolean;
+      /** @description More to remove: pujas, pujaGroups (with ritual types and levels), units, mantras, festivals */
+      also?: ('pujas' | 'pujaGroups' | 'units' | 'mantras' | 'festivals')[];
+    };
+    TestModeResponse: {
+      /**
+       * @description Which server this is, for the badge in the admin header
+       * @enum {string}
+       */
+      environment: 'staging' | 'production';
+      /** @description Whether this server lets staff switch on test mode (never on production) */
+      allowed: boolean;
+      /** @description Whether this request came in test mode (X-Test-Mode: on) */
+      on: boolean;
+    };
+    ListPujaResponse: {
+      /** @example lakshmi-puja */
+      slug: string;
+      nameEn: string;
+      nameNe: string;
+    };
+    ListPhotoResponse: {
+      thumb: string;
+      large: string;
+    };
+    ListPackResponse: {
+      /**
+       * Format: uuid
+       * @description Add this to a cart
+       */
+      variantId: string;
+      /** @example 1 pack */
+      label: string;
+      /**
+       * @description Today's price
+       * @example 80.00
+       */
+      price: string;
+      /** @example dhoop */
+      productSlug: string;
+      productNameEn: string;
+      productNameNe: string;
+      imageUrl: string | null;
+    };
+    ListItemResponse: {
+      /** @example धुप - २ पोका */
+      writtenText: string | null;
+      /** @description What staff matched; null when we do not sell it */
+      pack: components['schemas']['ListPackResponse'] | null;
+      /** @example 2 */
+      quantity: number | null;
+      note: string | null;
+      /** @description The pack is on sale right now */
+      onSale: boolean;
+      /** @example 160.00 */
+      lineTotal: string | null;
+    };
+    OwnListRequestResponse: {
+      /** @example REQ-001042 */
+      number: string;
+      /** @enum {string} */
+      status: 'RECEIVED' | 'IN_PROGRESS' | 'READY' | 'ORDERED' | 'CLOSED';
+      /** @example Rajesh */
+      firstName: string;
+      puja: components['schemas']['ListPujaResponse'] | null;
+      /** Format: date */
+      pujaDate: string | null;
+      note: string | null;
+      /** @description From the staff */
+      staffNote: string | null;
+      photos: components['schemas']['ListPhotoResponse'][];
+      items: components['schemas']['ListItemResponse'][];
+      /**
+       * @description Matched packs on sale
+       * @example 1840.00
+       */
+      total: string;
+      /** Format: date-time */
+      readyAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** @description Opens /lists/:token on the website */
+      accessToken: string;
+    };
+    ListRequestResponse: {
+      /** @example REQ-001042 */
+      number: string;
+      /** @enum {string} */
+      status: 'RECEIVED' | 'IN_PROGRESS' | 'READY' | 'ORDERED' | 'CLOSED';
+      /** @example Rajesh */
+      firstName: string;
+      puja: components['schemas']['ListPujaResponse'] | null;
+      /** Format: date */
+      pujaDate: string | null;
+      note: string | null;
+      /** @description From the staff */
+      staffNote: string | null;
+      photos: components['schemas']['ListPhotoResponse'][];
+      items: components['schemas']['ListItemResponse'][];
+      /**
+       * @description Matched packs on sale
+       * @example 1840.00
+       */
+      total: string;
+      /** Format: date-time */
+      readyAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    AdminListRequestResponse: {
+      /** @example REQ-001042 */
+      number: string;
+      /** @enum {string} */
+      status: 'RECEIVED' | 'IN_PROGRESS' | 'READY' | 'ORDERED' | 'CLOSED';
+      /** @example Rajesh */
+      firstName: string;
+      puja: components['schemas']['ListPujaResponse'] | null;
+      /** Format: date */
+      pujaDate: string | null;
+      note: string | null;
+      /** @description From the staff */
+      staffNote: string | null;
+      photos: components['schemas']['ListPhotoResponse'][];
+      items: components['schemas']['ListItemResponse'][];
+      /**
+       * @description Matched packs on sale
+       * @example 1840.00
+       */
+      total: string;
+      /** Format: date-time */
+      readyAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** @description Opens /lists/:token on the website */
+      accessToken: string;
+      /** Format: uuid */
+      id: string;
+      name: string;
+      phone: string;
+      panditCode: string | null;
+      preferBetterGrade: boolean;
+      /** Format: uuid */
+      customerId: string | null;
+      /** Format: uuid */
+      assignedToId: string | null;
+    };
+    UpdateListRequestDto: {
+      /**
+       * @description READY comes from POST …/ready; ORDERED when the customer takes it
+       * @enum {string}
+       */
+      status?: 'IN_PROGRESS' | 'CLOSED';
+      /** @example Pure cow ghee and Bhimseni camphor */
+      staffNote?: string | null;
+      /** @description true: I take it; false: leave it for anyone */
+      assignToMe?: boolean;
+    };
+    ListRequestItemDto: {
+      /** @example धुप - २ पोका */
+      writtenText?: string | null;
+      /**
+       * Format: uuid
+       * @description The pack matched; leave out for something we do not sell
+       */
+      variantId?: string | null;
+      quantity?: number | null;
+      /** @example We do not sell walnuts */
+      note?: string | null;
+    };
+    SetListItemsDto: {
+      items: components['schemas']['ListRequestItemDto'][];
+    };
+    ReadyListResponse: {
+      request: components['schemas']['AdminListRequestResponse'];
+      /** @description The customer's link */
+      link: string;
+      message: string;
+      whatsappUrl: string;
+      viberUrl: string;
+      smsUrl: string | null;
+    };
+    SendContactMessageDto: {
+      /** @example Sita Sharma */
+      name: string;
+      /** @example +9779801234567 */
+      phone: string;
+      /** @example sita@example.com */
+      email?: string;
+      /** @example Do you deliver to Kirtipur on Sundays? */
+      message: string;
+    };
+    ReminderSubscribedResponse: {
+      /** @enum {string} */
+      language: 'ne' | 'en';
+      /** @description For DELETE /reminder-subscriptions/:token; staff put it in every reminder */
+      unsubscribeToken: string;
+    };
+    SubscribeRemindersDto: {
+      /** @example +9779801234567 */
+      phone: string;
+      /**
+       * @example ne
+       * @enum {string}
+       */
+      language: 'ne' | 'en';
+    };
+    ContactMessageResponse: {
+      /** Format: uuid */
+      id: string;
+      name: string;
+      phone: string;
+      email: string | null;
+      message: string;
+      /** @enum {string} */
+      status: 'NEW' | 'HANDLED';
+      staffNote: string | null;
+      /** Format: uuid */
+      handledById: string | null;
+      /** Format: date-time */
+      handledAt: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    HandleContactMessageDto: {
+      /** @enum {string} */
+      status?: 'NEW' | 'HANDLED';
+      /** @example Called back, delivery booked */
+      staffNote?: string | null;
+    };
+    ReminderSubscriptionResponse: {
+      /** @enum {string} */
+      language: 'ne' | 'en';
+      /** @description For DELETE /reminder-subscriptions/:token; staff put it in every reminder */
+      unsubscribeToken: string;
+      /** @example 9841000000 */
+      phone: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    VideoStoryResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @enum {string} */
+      kind: 'CUSTOMER' | 'PANDIT';
+      /** @example Sunita Adhikari */
+      personEn: string;
+      /** @example सुनिता अधिकारी */
+      personNe: string;
+      /** @example Baneshwor */
+      place: string | null;
+      topicEn: string;
+      topicNe: string;
+      /** @description Null until the video is up */
+      youtubeId: string | null;
+      imageUrl: string | null;
+      /** @example 102 */
+      durationSeconds: number | null;
+    };
+    AdminVideoStoryResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @enum {string} */
+      kind: 'CUSTOMER' | 'PANDIT';
+      /** @example Sunita Adhikari */
+      personEn: string;
+      /** @example सुनिता अधिकारी */
+      personNe: string;
+      /** @example Baneshwor */
+      place: string | null;
+      topicEn: string;
+      topicNe: string;
+      /** @description Null until the video is up */
+      youtubeId: string | null;
+      imageUrl: string | null;
+      /** @example 102 */
+      durationSeconds: number | null;
+      isActive: boolean;
+      sortOrder: number;
+    };
+    CreateVideoStoryDto: {
+      /** @enum {string} */
+      kind: 'CUSTOMER' | 'PANDIT';
+      /** @example Sunita Adhikari */
+      personEn: string;
+      /** @example सुनिता अधिकारी */
+      personNe: string;
+      /** @example Baneshwor */
+      place?: string | null;
+      /** @example Ordered the Satyanarayan kit the day before */
+      topicEn: string;
+      /** @example सत्यनारायण किट: पूजाको अघिल्लो दिन मगाएँ */
+      topicNe: string;
+      /**
+       * @description The 11 characters after watch?v=
+       * @example dQw4w9WgXcQ
+       */
+      youtubeId?: string | null;
+      /** @example https://cdn.pujasanskar.com/stories/sunita.webp */
+      imageUrl?: string | null;
+      /** @example 102 */
+      durationSeconds?: number | null;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    UpdateVideoStoryDto: {
+      /** @enum {string} */
+      kind?: 'CUSTOMER' | 'PANDIT';
+      /** @example Sunita Adhikari */
+      personEn?: string;
+      /** @example सुनिता अधिकारी */
+      personNe?: string;
+      /** @example Baneshwor */
+      place?: string | null;
+      /** @example Ordered the Satyanarayan kit the day before */
+      topicEn?: string;
+      /** @example सत्यनारायण किट: पूजाको अघिल्लो दिन मगाएँ */
+      topicNe?: string;
+      /**
+       * @description The 11 characters after watch?v=
+       * @example dQw4w9WgXcQ
+       */
+      youtubeId?: string | null;
+      /** @example https://cdn.pujasanskar.com/stories/sunita.webp */
+      imageUrl?: string | null;
+      /** @example 102 */
+      durationSeconds?: number | null;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    FaqResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @enum {string} */
+      topic: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
+      questionEn: string;
+      questionNe: string;
+      answerEn: string;
+      answerNe: string;
+    };
+    AdminFaqResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @enum {string} */
+      topic: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
+      questionEn: string;
+      questionNe: string;
+      answerEn: string;
+      answerNe: string;
+      isActive: boolean;
+      sortOrder: number;
+    };
+    CreateFaqDto: {
+      /** @enum {string} */
+      topic: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
+      /** @example Can I change what is in a kit? */
+      questionEn: string;
+      /** @example किटमा भएको सामान घटाउन-बढाउन मिल्छ? */
+      questionNe: string;
+      /** @example Yes. Choose "Customise" on the kit page… */
+      answerEn: string;
+      /** @example मिल्छ। किटको पेजमा "आफैं मिलाउनुहोस्" छान्नुहोस्… */
+      answerNe: string;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    UpdateFaqDto: {
+      /** @enum {string} */
+      topic?: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
+      /** @example Can I change what is in a kit? */
+      questionEn?: string;
+      /** @example किटमा भएको सामान घटाउन-बढाउन मिल्छ? */
+      questionNe?: string;
+      /** @example Yes. Choose "Customise" on the kit page… */
+      answerEn?: string;
+      /** @example मिल्छ। किटको पेजमा "आफैं मिलाउनुहोस्" छान्नुहोस्… */
+      answerNe?: string;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    ItemSummaryResponse: {
+      /** @example 12 */
+      archived: number;
+      /**
+       * @description Items still live
+       * @example 120
+       */
+      active: number;
+      /**
+       * @description Packs of the archived items
+       * @example 30
+       */
+      packs: number;
+      /**
+       * @description Units of archived items still held, in the branches in view
+       * @example 85
+       */
+      unitsOnHand: number;
+      /**
+       * @description What those units cost
+       * @example 12500.00
+       */
+      stockValue: string;
+    };
+    KitSummaryResponse: {
+      /** @example 4 */
+      archived: number;
+      /**
+       * @description Kits still live
+       * @example 30
+       */
+      active: number;
+      /**
+       * @description Item lines the archived kits hold
+       * @example 80
+       */
+      itemLines: number;
+    };
+    ArchiveSummaryResponse: {
+      items: components['schemas']['ItemSummaryResponse'];
+      kits: components['schemas']['KitSummaryResponse'];
+    };
+    ArchivedItemResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example TIHAR01 */
+      code: string;
+      nameEn: string;
+      nameNe: string;
+      imageUrl: string | null;
+      /** Format: date-time */
+      archivedAt: string;
+      archivedByName: string | null;
+      reason: string | null;
+      /** @example 3 */
+      packs: number;
+      /**
+       * @description Units still held
+       * @example 25
+       */
+      unitsOnHand: number;
+    };
+    ArchivedKitResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example TIHAR01 */
+      code: string;
+      nameEn: string;
+      nameNe: string;
+      imageUrl: string | null;
+      /** Format: date-time */
+      archivedAt: string;
+      archivedByName: string | null;
+      reason: string | null;
+      /** @example PREMIUM */
+      tier: string | null;
+      pujaName: string | null;
+      /** @example 19 */
+      itemLines: number;
+    };
+    SuggestionResponse: {
+      /** Format: uuid */
+      id: string;
+      code: string;
+      nameEn: string;
+      nameNe: string;
+      /**
+       * @description Null when never sold
+       * @example 2026-03-02
+       */
+      lastSoldOn: string | null;
+      /**
+       * @description Units held (items only)
+       * @example 12
+       */
+      unitsOnHand: number;
+    };
+    SuggestionsResponse: {
+      /** @example 180 */
+      days: number;
+      items: components['schemas']['SuggestionResponse'][];
+      kits: components['schemas']['SuggestionResponse'][];
+    };
+    ArchiveDto: {
+      /** @example Not stocked until next Tihar */
+      reason?: string | null;
+      /**
+       * @description Items only: also archive the live kits that hold it (otherwise it is refused while one does)
+       * @default false
+       */
+      withKits: boolean;
+    };
+    RestoreDto: {
+      /**
+       * @description Show it on the website at once; false brings it back hidden
+       * @default true
+       */
+      show: boolean;
+      /**
+       * @description Kits only: also bring back the archived items the kit holds (otherwise it is refused while any is archived)
+       * @default false
+       */
+      withItems: boolean;
+    };
+    MenuLinkResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example पूजा किट */
+      labelNe: string;
+      /** @example Puja kits */
+      labelEn: string;
+      tooltipNe: string | null;
+      tooltipEn: string | null;
+      /** @example /kits */
+      href: string | null;
+      /** @example truck */
+      icon: string | null;
+      isHighlighted: boolean;
+      children: components['schemas']['MenuLinkResponse'][];
+    };
+    NavigationResponse: {
+      header: components['schemas']['MenuLinkResponse'][];
+      headerSide: components['schemas']['MenuLinkResponse'][];
+      /** @description Headings, each with its links */
+      footer: components['schemas']['MenuLinkResponse'][];
+      mobileBar: components['schemas']['MenuLinkResponse'][];
+    };
+    AdminMenuItemResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @enum {string} */
+      place: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
+      /** Format: uuid */
+      parentId: string | null;
+      labelNe: string;
+      labelEn: string;
+      tooltipNe: string | null;
+      tooltipEn: string | null;
+      href: string | null;
+      icon: string | null;
+      isHighlighted: boolean;
+      isActive: boolean;
+      sortOrder: number;
+    };
+    CreateMenuItemDto: {
+      /** @enum {string} */
+      place: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
+      /**
+       * Format: uuid
+       * @description A top item of the same place; its sub-menu or footer column
+       */
+      parentId?: string | null;
+      /** @example पूजा किट */
+      labelNe: string;
+      /** @example Puja kits */
+      labelEn: string;
+      /**
+       * @description A short note shown when a visitor rests on the link (Nepali)
+       * @example मुख्य मुख्य पूजाहरूका तयारी किटहरू
+       */
+      tooltipNe?: string | null;
+      /**
+       * @description A short note shown when a visitor rests on the link (English)
+       * @example Ready kits for the main pujas
+       */
+      tooltipEn?: string | null;
+      /**
+       * @description A site path or an https address; none for a heading
+       * @example /kits
+       */
+      href?: string | null;
+      /** @example truck */
+      icon?: string | null;
+      /**
+       * @description Drawn in the accent
+       * @default false
+       */
+      isHighlighted: boolean;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+    };
+    UpdateMenuItemDto: {
+      /** @example पूजा किट */
+      labelNe?: string;
+      /** @example Puja kits */
+      labelEn?: string;
+      /**
+       * @description A short note shown when a visitor rests on the link (Nepali)
+       * @example मुख्य मुख्य पूजाहरूका तयारी किटहरू
+       */
+      tooltipNe?: string | null;
+      /**
+       * @description A short note shown when a visitor rests on the link (English)
+       * @example Ready kits for the main pujas
+       */
+      tooltipEn?: string | null;
+      /**
+       * @description A site path or an https address; none for a heading
+       * @example /kits
+       */
+      href?: string | null;
+      /** @example truck */
+      icon?: string | null;
+      /**
+       * @description Drawn in the accent
+       * @default false
+       */
+      isHighlighted: boolean;
+      /** @default true */
+      isActive: boolean;
+      /** @default 0 */
+      sortOrder: number;
+    };
     RowIssueResponse: {
       /** @example Unit_Master */
       sheet: string;
@@ -15561,19 +15756,6 @@ export interface components {
       /** @example 2305.20 */
       total: string;
       lines: components['schemas']['PurchaseLineResponse'][];
-    };
-    ReturnLineDto: {
-      /** Format: uuid */
-      variantId: string;
-      /**
-       * @description Up to three decimals; whole numbers for items sold one by one
-       * @example 5
-       */
-      quantity: number;
-      /** @example 85.00 */
-      unitCost: string;
-      /** @example 13 */
-      vatRate?: string | null;
     };
     SavePurchaseReturnDto: {
       /** Format: uuid */
@@ -33429,1851 +33611,14 @@ export interface operations {
       };
     };
   };
-  HomeController_home: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['HomePageResponse'];
-          };
-        };
-      };
-    };
-  };
-  AdminBannerController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminBannerResponse'][];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminBannerController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateBannerDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminBannerResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminBannerController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminBannerResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminBannerController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminBannerController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateBannerDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminBannerResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminHomeSectionController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminHomeSectionResponse'][];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminHomeSectionController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateHomeSectionDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminHomeSectionResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminHomeSectionController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminHomeSectionResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminHomeSectionController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminHomeSectionController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateHomeSectionDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminHomeSectionResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountWishlistController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['WishlistItemResponse'][];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountWishlistController_add: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        productId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountWishlistController_remove: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        productId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountSavedListController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['SavedListResponse'][];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountSavedListController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateSavedListDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['SavedListResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountSavedListController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountSavedListController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateSavedListDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['SavedListResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  ProductReviewController_list: {
+  AdminSalesReturnController_list: {
     parameters: {
       query?: {
         page?: number;
         limit?: number;
-      };
-      header?: never;
-      path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['ReviewResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description MOVED_PERMANENTLY */
-      301: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountReviewController_mine: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['MyReviewResponse'][];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountReviewController_write: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        productId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['WriteReviewDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['MyReviewResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountReviewController_withdraw: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        productId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminReviewController_list: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        status?: 'PUBLISHED' | 'HIDDEN';
-        productId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['AdminReviewResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminReviewController_moderate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ModerateReviewDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminReviewResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  ShopReviewController_list: {
-    parameters: {
-      query?: {
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['ShopReviewsResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  OrderTrackingController_track: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TrackOrderDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['OrderTrackingResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description TOO_MANY_REQUESTS */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  OrderController_list: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        status?:
-          | 'PENDING'
-          | 'CONFIRMED'
-          | 'PACKED'
-          | 'OUT_FOR_DELIVERY'
-          | 'READY_FOR_PICKUP'
-          | 'COMPLETED'
-          | 'CANCELLED';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['OrderResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  OrderController_place: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CheckoutDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['OrderResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  OrderController_summary: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['OrderSummaryResponse'];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  OrderController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['OrderResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  OrderController_cancel: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CancelOrderDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['OrderResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminOrderController_list: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        status?:
-          | 'PENDING'
-          | 'CONFIRMED'
-          | 'PACKED'
-          | 'OUT_FOR_DELIVERY'
-          | 'READY_FOR_PICKUP'
-          | 'COMPLETED'
-          | 'CANCELLED';
-        channel?: 'ONLINE' | 'STORE';
-        /** @description QUICK_PAY lists orders waiting on a chat payment */
-        checkoutMethod?: 'ACCOUNT' | 'QUICK_PAY';
-        /** @description One customer's orders */
-        customerId?: string;
-        /** @description Orders placed with this pandit's code */
-        panditId?: string;
-        /** @description Order number (PS-000123), phone or contact name */
-        q?: string;
+        orderId?: string;
+        /** @description A return or order number (SR-000012, 123), name or phone */
+        search?: string | null;
       };
       header?: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
@@ -35295,21 +33640,12 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: {
-              items: components['schemas']['AdminOrderResponse'][];
+              items: components['schemas']['SalesReturnResponse'][];
               meta: components['schemas']['PageMetaDto'];
             };
           };
         };
       };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
       /** @description UNAUTHORIZED */
       401: {
         headers: {
@@ -35330,310 +33666,7 @@ export interface operations {
       };
     };
   };
-  AdminOrderController_export: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        status?:
-          | 'PENDING'
-          | 'CONFIRMED'
-          | 'PACKED'
-          | 'OUT_FOR_DELIVERY'
-          | 'READY_FOR_PICKUP'
-          | 'COMPLETED'
-          | 'CANCELLED';
-        channel?: 'ONLINE' | 'STORE';
-        /** @description QUICK_PAY lists orders waiting on a chat payment */
-        checkoutMethod?: 'ACCOUNT' | 'QUICK_PAY';
-        /** @description One customer's orders */
-        customerId?: string;
-        /** @description Orders placed with this pandit's code */
-        panditId?: string;
-        /** @description Order number (PS-000123), phone or contact name */
-        q?: string;
-      };
-      header?: {
-        /** @description Branch code to narrow to; left out, every branch the user may see */
-        'X-Branch'?: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminOrderController_get: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Branch code to narrow to; left out, every branch the user may see */
-        'X-Branch'?: string;
-      };
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminOrderResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminOrderController_changeStatus: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Branch code to narrow to; left out, every branch the user may see */
-        'X-Branch'?: string;
-      };
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ChangeOrderStatusDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminOrderResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminOrderController_setDeliveryFee: {
-    parameters: {
-      query?: never;
-      header?: {
-        /** @description Branch code to narrow to; left out, every branch the user may see */
-        'X-Branch'?: string;
-      };
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SetDeliveryFeeDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminOrderResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminStoreSaleController_sell: {
+  AdminSalesReturnController_create: {
     parameters: {
       query?: never;
       header: {
@@ -35647,7 +33680,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['StoreSaleDto'];
+        'application/json': components['schemas']['CreateSalesReturnDto'];
       };
     };
     responses: {
@@ -35661,7 +33694,7 @@ export interface operations {
             success: boolean;
             /** @example Request successful */
             message: string;
-            data: components['schemas']['AdminOrderResponse'];
+            data: components['schemas']['SalesReturnResponse'];
           };
         };
       };
@@ -35701,7 +33734,11 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
-      /** @description CONFLICT */
+      /**
+       * @description CONFLICT
+       *
+       *     CONFLICT
+       */
       409: {
         headers: {
           [name: string]: unknown;
@@ -35725,2653 +33762,16 @@ export interface operations {
       };
     };
   };
-  AdminStoreShelfController_items: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        /** @description Matches code, names or a SKU */
-        q?: string;
-      };
-      header?: {
-        /** @description Branch code; may be left out when the user works at one branch only */
-        'X-Branch'?: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['ShelfItemResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  PanditController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['PanditCardResponse'][];
-          };
-        };
-      };
-    };
-  };
-  PanditController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['PanditCardResponse'];
-          };
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountPanditController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['PanditResponse'] | null;
-          };
-        };
-      };
-    };
-  };
-  AccountPanditController_save: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SavePanditDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['PanditResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountPanditController_forget: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  AdminPanditController_list: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        /** @description Matches code or names */
-        q?: string;
-        isActive?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['AdminPanditResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminPanditController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreatePanditDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminPanditResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminPanditController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminPanditResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminPanditController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminPanditController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdatePanditDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminPanditResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminDiscountController_list: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        /** @description Matches code or names */
-        q?: string;
-        isActive?: boolean;
-        trigger?: 'AUTOMATIC' | 'COUPON';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['DiscountRuleResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminDiscountController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateDiscountRuleDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['DiscountRuleResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminDiscountController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['DiscountRuleResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminDiscountController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description CONFLICT */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminDiscountController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateDiscountRuleDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['DiscountRuleResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  OfferController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['OfferResponse'][];
-          };
-        };
-      };
-    };
-  };
-  AdminDataResetController_preview: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['DataResetPreviewResponse'];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminDataResetController_clear: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConfirmDataResetDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['DataResetPreviewResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminTestModeController_state: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['TestModeResponse'];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  ListRequestController_send: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'multipart/form-data': {
-          photos: string[];
-          name: string;
-          phone: string;
-          /** Format: uuid */
-          pujaId?: string;
-          /** Format: date */
-          pujaDate?: string;
-          note?: string;
-          panditCode?: string;
-          preferBetterGrade?: boolean;
-        };
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['OwnListRequestResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description TOO_MANY_REQUESTS */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  ListRequestController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        token: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['ListRequestResponse'];
-          };
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  ListRequestController_toGuestCart: {
-    parameters: {
-      query?: never;
-      header: {
-        /** @description Token returned by POST /guest-cart */
-        'X-Cart-Token': string;
-      };
-      path: {
-        token: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['CartResponse'];
-          };
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountListRequestController_mine: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['OwnListRequestResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountListRequestController_send: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'multipart/form-data': {
-          photos: string[];
-          name: string;
-          phone: string;
-          /** Format: uuid */
-          pujaId?: string;
-          /** Format: date */
-          pujaDate?: string;
-          note?: string;
-          panditCode?: string;
-          preferBetterGrade?: boolean;
-        };
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['OwnListRequestResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description TOO_MANY_REQUESTS */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AccountListRequestController_toCart: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        token: string;
-        cartId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['CartResponse'];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminListRequestController_list: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        status?: 'RECEIVED' | 'IN_PROGRESS' | 'READY' | 'ORDERED' | 'CLOSED';
-        /** @description Number (REQ-001042), name or phone */
-        q?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['AdminListRequestResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminListRequestController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminListRequestResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminListRequestController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateListRequestDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminListRequestResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminListRequestController_setItems: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SetListItemsDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminListRequestResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminListRequestController_ready: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['ReadyListResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  ContactController_send: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SendContactMessageDto'];
-      };
-    };
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description TOO_MANY_REQUESTS */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  ContactController_subscribe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SubscribeRemindersDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['ReminderSubscribedResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description TOO_MANY_REQUESTS */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  ContactController_unsubscribe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        token: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminContactController_messageList: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        status?: 'NEW' | 'HANDLED';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['ContactMessageResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminContactController_handle: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['HandleContactMessageDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['ContactMessageResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminContactController_subscriptionList: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: {
-              items: components['schemas']['ReminderSubscriptionResponse'][];
-              meta: components['schemas']['PageMetaDto'];
-            };
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminContactController_exportSubscriptions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  VideoStoryController_list: {
-    parameters: {
-      query?: {
-        kind?: 'CUSTOMER' | 'PANDIT';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['VideoStoryResponse'][];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminVideoStoryController_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminVideoStoryResponse'][];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminVideoStoryController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateVideoStoryDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminVideoStoryResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminVideoStoryController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminVideoStoryController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateVideoStoryDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminVideoStoryResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  FaqController_list: {
-    parameters: {
-      query?: {
-        topic?: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['FaqResponse'][];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminFaqController_list: {
-    parameters: {
-      query?: {
-        topic?: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminFaqResponse'][];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminFaqController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateFaqDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminFaqResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminFaqController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminFaqController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateFaqDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminFaqResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminArchiveController_summary: {
+  AdminSalesReturnController_returnable: {
     parameters: {
       query?: never;
       header?: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
         'X-Branch'?: string;
       };
-      path?: never;
+      path: {
+        orderId: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -38386,8 +33786,17 @@ export interface operations {
             success: boolean;
             /** @example Request successful */
             message: string;
-            data: components['schemas']['ArchiveSummaryResponse'];
+            data: components['schemas']['ReturnableResponse'];
           };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
       /** @description UNAUTHORIZED */
@@ -38408,607 +33817,24 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponseDto'];
         };
       };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
     };
   };
-  AdminArchiveController_items: {
+  AdminSalesReturnController_get: {
     parameters: {
       query?: never;
       header?: {
         /** @description Branch code to narrow to; left out, every branch the user may see */
         'X-Branch'?: string;
       };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['ArchivedItemResponse'][];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminArchiveController_kits: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['ArchivedKitResponse'][];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminArchiveController_suggestions: {
-    parameters: {
-      query?: {
-        /** @description Days without a sale */
-        days?: number;
-      };
-      header?: {
-        /** @description Branch code to narrow to; left out, every branch the user may see */
-        'X-Branch'?: string;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['SuggestionsResponse'];
-          };
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminArchiveController_archiveItem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ArchiveDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminProductResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminArchiveController_restoreItem: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RestoreDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminProductResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminArchiveController_archiveKit: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ArchiveDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminKitResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminArchiveController_restoreKit: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RestoreDto'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminKitResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  NavigationController_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['NavigationResponse'];
-          };
-        };
-      };
-    };
-  };
-  AdminMenuItemController_list: {
-    parameters: {
-      query?: {
-        place?: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminMenuItemResponse'][];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminMenuItemController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreateMenuItemDto'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            /** @example true */
-            success: boolean;
-            /** @example Request successful */
-            message: string;
-            data: components['schemas']['AdminMenuItemResponse'];
-          };
-        };
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNPROCESSABLE_ENTITY */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminMenuItemController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
       path: {
         id: string;
       };
@@ -39016,65 +33842,6 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description BAD_REQUEST */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description UNAUTHORIZED */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description FORBIDDEN */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-      /** @description NOT_FOUND */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ErrorResponseDto'];
-        };
-      };
-    };
-  };
-  AdminMenuItemController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdateMenuItemDto'];
-      };
-    };
-    responses: {
       200: {
         headers: {
           [name: string]: unknown;
@@ -39085,7 +33852,7 @@ export interface operations {
             success: boolean;
             /** @example Request successful */
             message: string;
-            data: components['schemas']['AdminMenuItemResponse'];
+            data: components['schemas']['SalesReturnResponse'];
           };
         };
       };
@@ -42765,6 +37532,5704 @@ export interface operations {
       };
       /** @description FORBIDDEN */
       403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  OrderTrackingController_track: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TrackOrderDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OrderTrackingResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description TOO_MANY_REQUESTS */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  OrderController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        status?:
+          | 'PENDING'
+          | 'CONFIRMED'
+          | 'PACKED'
+          | 'OUT_FOR_DELIVERY'
+          | 'READY_FOR_PICKUP'
+          | 'COMPLETED'
+          | 'CANCELLED';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['OrderResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  OrderController_place: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CheckoutDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OrderResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  OrderController_summary: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OrderSummaryResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  OrderController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OrderResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  OrderController_cancel: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CancelOrderDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OrderResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOrderController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        status?:
+          | 'PENDING'
+          | 'CONFIRMED'
+          | 'PACKED'
+          | 'OUT_FOR_DELIVERY'
+          | 'READY_FOR_PICKUP'
+          | 'COMPLETED'
+          | 'CANCELLED';
+        channel?: 'ONLINE' | 'STORE';
+        /** @description QUICK_PAY lists orders waiting on a chat payment */
+        checkoutMethod?: 'ACCOUNT' | 'QUICK_PAY';
+        /** @description One customer's orders */
+        customerId?: string;
+        /** @description Orders placed with this pandit's code */
+        panditId?: string;
+        /** @description Order number (PS-000123), phone or contact name */
+        q?: string;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['AdminOrderResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOrderController_export: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        status?:
+          | 'PENDING'
+          | 'CONFIRMED'
+          | 'PACKED'
+          | 'OUT_FOR_DELIVERY'
+          | 'READY_FOR_PICKUP'
+          | 'COMPLETED'
+          | 'CANCELLED';
+        channel?: 'ONLINE' | 'STORE';
+        /** @description QUICK_PAY lists orders waiting on a chat payment */
+        checkoutMethod?: 'ACCOUNT' | 'QUICK_PAY';
+        /** @description One customer's orders */
+        customerId?: string;
+        /** @description Orders placed with this pandit's code */
+        panditId?: string;
+        /** @description Order number (PS-000123), phone or contact name */
+        q?: string;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOrderController_get: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminOrderResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOrderController_changeStatus: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ChangeOrderStatusDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminOrderResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminOrderController_setDeliveryFee: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetDeliveryFeeDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminOrderResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStoreSaleController_sell: {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+        /** @description A new unique value per action (e.g. a UUID); retries reuse it and replay the first result */
+        'Idempotency-Key': string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['StoreSaleDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminOrderResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /**
+       * @description UNPROCESSABLE_ENTITY
+       *
+       *     UNPROCESSABLE_ENTITY
+       */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStoreShelfController_items: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code, names or a SKU */
+        q?: string;
+      };
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['ShelfItemResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  PanditController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PanditCardResponse'][];
+          };
+        };
+      };
+    };
+  };
+  PanditController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PanditCardResponse'];
+          };
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountPanditController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PanditResponse'] | null;
+          };
+        };
+      };
+    };
+  };
+  AccountPanditController_save: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SavePanditDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PanditResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountPanditController_forget: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  AdminPanditController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['AdminPanditResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPanditController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreatePanditDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminPanditResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPanditController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminPanditResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPanditController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPanditController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdatePanditDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminPanditResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminDiscountController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+        trigger?: 'AUTOMATIC' | 'COUPON';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['DiscountRuleResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminDiscountController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateDiscountRuleDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['DiscountRuleResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminDiscountController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['DiscountRuleResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminDiscountController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminDiscountController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateDiscountRuleDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['DiscountRuleResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  OfferController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OfferResponse'][];
+          };
+        };
+      };
+    };
+  };
+  HomeController_home: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['HomePageResponse'];
+          };
+        };
+      };
+    };
+  };
+  AdminBannerController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminBannerResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBannerController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateBannerDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminBannerResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBannerController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminBannerResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBannerController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBannerController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateBannerDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminBannerResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminHomeSectionController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminHomeSectionResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminHomeSectionController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateHomeSectionDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminHomeSectionResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminHomeSectionController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminHomeSectionResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminHomeSectionController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminHomeSectionController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateHomeSectionDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminHomeSectionResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountWishlistController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['WishlistItemResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountWishlistController_add: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountWishlistController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountSavedListController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SavedListResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountSavedListController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateSavedListDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SavedListResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountSavedListController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountSavedListController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateSavedListDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SavedListResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ProductReviewController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        slug: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['ReviewResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description MOVED_PERMANENTLY */
+      301: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountReviewController_mine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MyReviewResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountReviewController_write: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['WriteReviewDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['MyReviewResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountReviewController_withdraw: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminReviewController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        status?: 'PUBLISHED' | 'HIDDEN';
+        productId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['AdminReviewResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminReviewController_moderate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ModerateReviewDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminReviewResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ShopReviewController_list: {
+    parameters: {
+      query?: {
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ShopReviewsResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminDataResetController_preview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['DataResetPreviewResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminDataResetController_clear: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConfirmDataResetDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['DataResetPreviewResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminTestModeController_state: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['TestModeResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ListRequestController_send: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          photos: string[];
+          name: string;
+          phone: string;
+          /** Format: uuid */
+          pujaId?: string;
+          /** Format: date */
+          pujaDate?: string;
+          note?: string;
+          panditCode?: string;
+          preferBetterGrade?: boolean;
+        };
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OwnListRequestResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description TOO_MANY_REQUESTS */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ListRequestController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        token: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ListRequestResponse'];
+          };
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ListRequestController_toGuestCart: {
+    parameters: {
+      query?: never;
+      header: {
+        /** @description Token returned by POST /guest-cart */
+        'X-Cart-Token': string;
+      };
+      path: {
+        token: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['CartResponse'];
+          };
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountListRequestController_mine: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['OwnListRequestResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountListRequestController_send: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          photos: string[];
+          name: string;
+          phone: string;
+          /** Format: uuid */
+          pujaId?: string;
+          /** Format: date */
+          pujaDate?: string;
+          note?: string;
+          panditCode?: string;
+          preferBetterGrade?: boolean;
+        };
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OwnListRequestResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description TOO_MANY_REQUESTS */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AccountListRequestController_toCart: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        token: string;
+        cartId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['CartResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminListRequestController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        status?: 'RECEIVED' | 'IN_PROGRESS' | 'READY' | 'ORDERED' | 'CLOSED';
+        /** @description Number (REQ-001042), name or phone */
+        q?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['AdminListRequestResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminListRequestController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminListRequestResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminListRequestController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateListRequestDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminListRequestResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminListRequestController_setItems: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetListItemsDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminListRequestResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminListRequestController_ready: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ReadyListResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ContactController_send: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SendContactMessageDto'];
+      };
+    };
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description TOO_MANY_REQUESTS */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ContactController_subscribe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SubscribeRemindersDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ReminderSubscribedResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description TOO_MANY_REQUESTS */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  ContactController_unsubscribe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        token: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminContactController_messageList: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        status?: 'NEW' | 'HANDLED';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['ContactMessageResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminContactController_handle: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['HandleContactMessageDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ContactMessageResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminContactController_subscriptionList: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['ReminderSubscriptionResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminContactController_exportSubscriptions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  VideoStoryController_list: {
+    parameters: {
+      query?: {
+        kind?: 'CUSTOMER' | 'PANDIT';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['VideoStoryResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminVideoStoryController_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminVideoStoryResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminVideoStoryController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateVideoStoryDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminVideoStoryResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminVideoStoryController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminVideoStoryController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateVideoStoryDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminVideoStoryResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  FaqController_list: {
+    parameters: {
+      query?: {
+        topic?: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['FaqResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminFaqController_list: {
+    parameters: {
+      query?: {
+        topic?: 'GENERAL' | 'KITS' | 'DELIVERY' | 'PAYMENT' | 'PANDITS';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminFaqResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminFaqController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateFaqDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminFaqResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminFaqController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminFaqController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateFaqDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminFaqResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_summary: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ArchiveSummaryResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_items: {
+    parameters: {
+      query?: never;
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ArchivedItemResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_kits: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ArchivedKitResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_suggestions: {
+    parameters: {
+      query?: {
+        /** @description Days without a sale */
+        days?: number;
+      };
+      header?: {
+        /** @description Branch code to narrow to; left out, every branch the user may see */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['SuggestionsResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_archiveItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ArchiveDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminProductResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_restoreItem: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RestoreDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminProductResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_archiveKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ArchiveDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminKitResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminArchiveController_restoreKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RestoreDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminKitResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  NavigationController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['NavigationResponse'];
+          };
+        };
+      };
+    };
+  };
+  AdminMenuItemController_list: {
+    parameters: {
+      query?: {
+        place?: 'HEADER' | 'HEADER_SIDE' | 'FOOTER' | 'MOBILE_BAR';
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminMenuItemResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMenuItemController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateMenuItemDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminMenuItemResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMenuItemController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMenuItemController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateMenuItemDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminMenuItemResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };

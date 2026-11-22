@@ -36,6 +36,7 @@ const empty = {
   sellBy: 'PIECE' as SellBy,
   categoryId: '',
   nameRomanized: '',
+  description: '',
   aliases: '',
   brand: '',
   supplierId: '',
@@ -73,6 +74,7 @@ export function AddItemPage() {
           sellBy: form.sellBy,
           categoryId: form.categoryId,
           ...(form.nameRomanized.trim() && { nameRomanized: form.nameRomanized.trim() }),
+          ...(form.description.trim() && { description: form.description.trim() }),
           ...(form.aliases.trim() && {
             aliases: form.aliases
               .split(',')
@@ -253,6 +255,16 @@ export function AddItemPage() {
         </button>
         {more ? (
           <div className="grid gap-4 border-t border-border p-5 sm:grid-cols-2">
+            <Field label={t('description')} htmlFor="add-desc" hint={t('descriptionHint')}>
+              <textarea
+                id="add-desc"
+                value={form.description}
+                maxLength={4000}
+                rows={3}
+                onChange={(e) => change({ description: e.target.value })}
+                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary"
+              />
+            </Field>
             <Field label={t('nameRomanized')} htmlFor="add-roman" hint={t('nameRomanizedHint')}>
               <Input
                 id="add-roman"

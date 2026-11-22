@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useRef, useState } from 'react';
 
@@ -12,14 +12,38 @@ import { BsDatePicker } from '@/components/ui/bs-date-picker';
 import { Button, IconButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
-import { isApiError, request } from '@/lib/api';
+import { isApiError, request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 
-type Line = { variantId: string; quantity: string; unitCost: string; vatRate: string };
+type Bill = Schema<'PurchaseBillResponse'>;
+// `bought` is how many the chosen bill had of this pack: what can go back is no more than that.
+type Line = {
+  variantId: string;
+  quantity: string;
+  unitCost: string;
+  vatRate: string;
+  bought?: number;
+};
+
+const MAX_QUANTITY = 1_000_000;
+const MAX_MONEY = 100_000_000;
 
 const emptyLine = (): Line => ({ variantId: '', quantity: '1', unitCost: '', vatRate: '' });
 const today = () => new Date().toISOString().slice(0, 10);
+// A bill's lines as the lines of a return: the whole bill to start, to be lowered to what goes back.
+const fromBill = (bill: Bill): Line[] => {
+  // A discount on the whole bill is taken off every rate, so goods go back at what they really cost.
+  const gross = Number(bill.taxableTotal) + Number(bill.exemptTotal) + Number(bill.vatTotal);
+  const share = gross > 0 ? 1 - Number(bill.discount) / gross : 1;
+  return bill.lines.map((l) => ({
+    variantId: l.variantId,
+    quantity: String(l.quantity),
+    unitCost: (Number(l.unitCost) * share).toFixed(2),
+    vatRate: String(Number(l.vatRate)),
+    bought: l.quantity,
+  }));
+};
 const amountOf = (l: Line) => (Number(l.quantity) || 0) * (Number(l.unitCost) || 0);
 const vatOf = (l: Line) => (amountOf(l) * (l.vatRate === '' ? 13 : Number(l.vatRate))) / 100;
 const money = (n: number) => formatMoney(n.toFixed(2), 'en');
@@ -36,6 +60,54 @@ export function PurchaseReturnForm({ open, onClose }: { open: boolean; onClose: 
   const [day, setDay] = useState(today());
   const [reason, setReason] = useState('');
   const [lines, setLines] = useState<Line[]>([emptyLine()]);
+  const [tried, setTried] = useState(false);
+
+  // The supplier's bills in stock: pick one and its lines are filled in.
+  const bills = useQuery({
+    queryKey: ['purchaseBills', 'for-return', supplierId],
+    queryFn: () =>
+      request<{ items: Bill[] }>('GET', '/admin/purchase-bills', {
+        query: { supplierId, status: 'POSTED', limit: 100 },
+      }),
+    enabled: Boolean(supplierId),
+  });
+  const picked = bills.data?.items.find((b) => b.supplierBillNumber === billNumber);
+
+  const chooseSupplier = (id: string) => {
+    setSupplierId(id);
+    // Another supplier's bills and lines do not carry over.
+    setBillNumber('');
+    setLines([emptyLine()]);
+  };
+  const chooseBill = (number: string) => {
+    setBillNumber(number);
+    const bill = bills.data?.items.find((b) => b.supplierBillNumber === number);
+    setLines(bill ? fromBill(bill) : [emptyLine()]);
+  };
+
+  const lineProblem = (l: Line, i: number): string | null => {
+    if (!l.variantId) return null;
+    const n = i + 1;
+    const q = Number(l.quantity);
+    if (!(q > 0) || !/^\d+(\.\d{1,3})?$/.test(l.quantity.trim())) return t('retQuantity', { n });
+    if (q > MAX_QUANTITY) return t('retQuantity', { n });
+    if (l.bought !== undefined && q > l.bought) return t('retMoreThanBought', { n, max: l.bought });
+    if (!(Number(l.unitCost) > 0) || !/^\d+(\.\d{1,2})?$/.test(l.unitCost.trim()))
+      return t('retRate', { n });
+    if (Number(l.unitCost) > MAX_MONEY) return t('retRate', { n });
+    return null;
+  };
+  const filled = lines.filter((l) => l.variantId);
+  const problem = !supplierId
+    ? tf('stillNeeded', { fields: t('supplier') })
+    : filled.length === 0
+      ? t('retNoLines')
+      : (lines.map(lineProblem).find(Boolean) ??
+        (day > today()
+          ? t('retDayFuture')
+          : picked && day < picked.billDay
+            ? t('retDayBeforeBill')
+            : null));
 
   const change = (index: number, patch: Partial<Line>) =>
     setLines((current) => current.map((l, i) => (i === index ? { ...l, ...patch } : l)));
@@ -89,14 +161,22 @@ export function PurchaseReturnForm({ open, onClose }: { open: boolean; onClose: 
               vat: money(vat),
               total: money(subtotal + vat),
             })}
-            {supplierId ? null : (
-              <div className="text-destructive">{tf('stillNeeded', { fields: t('supplier') })}</div>
-            )}
+            {problem ? <div className="text-destructive">{problem}</div> : null}
           </div>
           <Button variant="secondary" onClick={onClose}>
             {tf('cancel')}
           </Button>
-          <Button disabled={save.isPending || !supplierId} onClick={() => save.mutate()}>
+          <Button
+            disabled={save.isPending}
+            onClick={() => {
+              if (problem) {
+                setTried(true);
+                toast.error(problem);
+                return;
+              }
+              save.mutate();
+            }}
+          >
             {save.isPending ? tf('saving') : t('saveReturn')}
           </Button>
         </>
@@ -110,19 +190,31 @@ export function PurchaseReturnForm({ open, onClose }: { open: boolean; onClose: 
               source={choices.suppliers}
               required
               value={supplierId}
-              onChange={(value) => setSupplierId(String(value))}
+              onChange={(value) => chooseSupplier(String(value))}
             />
           </Field>
-          <Field label={t('returnBillNumber')} htmlFor="ret-bill">
-            <Input
+          <Field label={t('returnBillNumber')} htmlFor="ret-bill" hint={t('returnBillHint')}>
+            <SearchSelect
               id="ret-bill"
+              disabled={!supplierId}
+              placeholder={supplierId ? t('returnPickBill') : '—'}
+              options={(bills.data?.items ?? []).map((b) => ({
+                value: b.supplierBillNumber,
+                label: b.supplierBillNumber,
+                detail: `${b.billDay} · ${money(Number(b.total))}`,
+              }))}
               value={billNumber}
-              maxLength={60}
-              onChange={(e) => setBillNumber(e.target.value)}
+              onChange={(value) => chooseBill(String(value))}
             />
           </Field>
           <Field label={t('returnDay')} htmlFor="ret-day">
-            <BsDatePicker id="ret-day" value={day} onChange={setDay} />
+            <BsDatePicker
+              id="ret-day"
+              value={day}
+              min={picked?.billDay}
+              max={today()}
+              onChange={setDay}
+            />
           </Field>
         </div>
 
@@ -156,6 +248,7 @@ export function PurchaseReturnForm({ open, onClose }: { open: boolean; onClose: 
                       aria-label={t('pack')}
                       source={choices.packs}
                       required
+                      disabled={line.bought !== undefined}
                       value={line.variantId}
                       onChange={(value) => change(index, { variantId: String(value) })}
                     />
@@ -165,9 +258,15 @@ export function PurchaseReturnForm({ open, onClose }: { open: boolean; onClose: 
                       aria-label={t('quantity')}
                       inputMode="decimal"
                       className="text-right"
+                      aria-invalid={tried && lineProblem(line, index) ? true : undefined}
                       value={line.quantity}
                       onChange={(e) => change(index, { quantity: e.target.value })}
                     />
+                    {line.bought !== undefined ? (
+                      <div className="mt-0.5 text-right text-[0.7rem] text-muted-foreground">
+                        {t('boughtOnBill', { n: line.bought })}
+                      </div>
+                    ) : null}
                   </td>
                   <td className="border-r border-border p-1.5">
                     <Input

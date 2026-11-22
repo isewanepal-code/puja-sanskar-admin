@@ -8,7 +8,7 @@ import { sessionApi } from '@/lib/api/server';
 // The language the panel opens in for staff who have not picked one; English if it cannot be read.
 export const getAdminLanguage = cache(async (): Promise<'en' | 'ne'> => {
   try {
-    const { language } = await unwrap((await sessionApi()).GET('/api/v1/admin/settings/language'));
+    const { language } = await unwrap((await sessionApi()).GET('/api/v1/settings/language'));
     return language;
   } catch {
     return 'en';

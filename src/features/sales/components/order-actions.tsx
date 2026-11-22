@@ -8,10 +8,13 @@ import { useState } from 'react';
 import { ActionModal, useResourceText } from '@/components/resource';
 import { useToast } from '@/components/overlays';
 import { Badge } from '@/components/ui/badge';
-import { Button, IconButton } from '@/components/ui/button';
+import { Button, buttonVariants, IconButton } from '@/components/ui/button';
+import { Icon } from '@/components/icons';
+import { Link } from '@/i18n/navigation';
 import { Modal } from '@/components/ui/modal';
 import { request, type Schema } from '@/lib/api';
 import { formatDateTime, formatMoney } from '@/lib/format';
+import { routes } from '@/lib/routes';
 
 import {
   deliveryFeeResource,
@@ -89,6 +92,15 @@ export function OrderActions({ order }: { order: Order }) {
         <Button variant="ghost" icon="book" onClick={() => setOpen({ what: 'bill' })}>
           {t('bill')}
         </Button>
+        {order.status !== 'PENDING' && order.status !== 'CANCELLED' ? (
+          <Link
+            href={routes.newCustomerReturn(order.id)}
+            className={buttonVariants({ variant: 'ghost' })}
+          >
+            <Icon name="archive" size={16} />
+            {t('returnGoods')}
+          </Link>
+        ) : null}
         {settlement && Number(settlement.refundDue) > 0 ? (
           <Button variant="ghost" icon="refresh" onClick={() => setOpen({ what: 'refund' })}>
             {t('refund')}

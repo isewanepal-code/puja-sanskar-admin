@@ -64,6 +64,7 @@ export function NewKitPage() {
   const [pujaId, setPujaId] = useState('');
   const [nameNe, setNameNe] = useState('');
   const [nameEn, setNameEn] = useState('');
+  const [nameRomanized, setNameRomanized] = useState('');
   const [aliases, setAliases] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState('[]');
@@ -100,6 +101,7 @@ export function NewKitPage() {
           code: codeOf(nameEn),
           nameEn: nameEn.trim(),
           nameNe: nameNe.trim(),
+          ...(nameRomanized.trim() && { nameRomanized: nameRomanized.trim() }),
           aliases: aliases
             .split(',')
             .map((name) => name.trim())
@@ -142,6 +144,7 @@ export function NewKitPage() {
         nameNe.trim() !== '' ||
         nameEn.trim() !== '' ||
         aliases !== '' ||
+        nameRomanized !== '' ||
         description.trim() !== ''),
   );
 
@@ -186,6 +189,15 @@ export function NewKitPage() {
             />
           </Field>
         </div>
+        <Field label={t('nameRomanized')} htmlFor="kit-roman" help={t('nameRomanizedHelp')}>
+          <Input
+            id="kit-roman"
+            value={nameRomanized}
+            maxLength={160}
+            placeholder="Chhath Puja Kit"
+            onChange={(e) => setNameRomanized(e.target.value)}
+          />
+        </Field>
         <Field label={t('aliases')} htmlFor="kit-aliases" help={t('aliasesHelp')}>
           <ChipInput id="kit-aliases" value={aliases} onChange={setAliases} />
         </Field>

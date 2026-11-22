@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { Icon } from '@/components/icons';
 import type { NavGroup, NavSection } from '@/config/navigation';
@@ -25,6 +25,17 @@ const currentHref = (pathname: string, groups: NavGroup[]) =>
 
 const initial = siteConfig.name.slice(0, 1);
 
+const OPEN_KEY = 'ps-sidebar-open';
+
+// Which groups are opened is kept for this browser; a blocked store just means the default.
+function readOpen(): Record<string, boolean> {
+  try {
+    return JSON.parse(localStorage.getItem(OPEN_KEY) ?? '{}') as Record<string, boolean>;
+  } catch {
+    return {};
+  }
+}
+
 // Only some sections have a hint; t.has() checks it, so the key is typed as one that exists.
 const hintKey = (key: NavSection['key']) => `sectionHint.${key}` as 'sectionHint.addItem';
 
@@ -41,6 +52,33 @@ export function Sidebar({
   const pathname = usePathname();
   const { collapsed, open, close, toggle } = usePanel();
   const current = currentHref(pathname, groups);
+  const currentGroup = groups.find((g) => g.sections.some((x) => x.href === current))?.key;
+  // Every group starts shut but the overview and the one you are in; opening one is remembered.
+  const [open_, setOpen_] = useState<Record<string, boolean>>({});
+  // Read after the first paint, so the server and browser agree on what they first draw.
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setOpen_(readOpen()));
+    return () => cancelAnimationFrame(frame);
+  }, []);
+  const isOpen = (key: string) => key === currentGroup || key === 'overview' || open_[key] === true;
+  const setAll = (value: boolean) => {
+    const next = Object.fromEntries(groups.map((g) => [g.key, value]));
+    setOpen_(next);
+    try {
+      localStorage.setItem(OPEN_KEY, JSON.stringify(next));
+    } catch {
+      // Nothing to keep it in; it still works this time.
+    }
+  };
+  const toggleGroup = (key: string) => {
+    const next = { ...open_, [key]: !isOpen(key) };
+    setOpen_(next);
+    try {
+      localStorage.setItem(OPEN_KEY, JSON.stringify(next));
+    } catch {
+      // As above.
+    }
+  };
 
   return (
     <>
@@ -89,61 +127,100 @@ export function Sidebar({
           className={cn('flex-1 overflow-y-auto px-3 py-4', collapsed && 'md:px-2')}
         >
           {extras ? <div className="mb-4 grid gap-2 md:hidden">{extras}</div> : null}
-          {groups.map((group) => (
-            <div key={group.key} className="mb-5 last:mb-0">
-              <p
-                className={cn(
-                  'px-2 pb-2 text-[0.68rem] font-semibold tracking-wider whitespace-nowrap text-muted-foreground uppercase',
-                  collapsed && 'md:hidden',
-                )}
-              >
-                {t(`groups.${group.key}`)}
-              </p>
+          <div className={cn('mb-3 flex justify-end gap-3 px-1 text-xs', collapsed && 'md:hidden')}>
+            <button
+              type="button"
+              onClick={() => setAll(true)}
+              className="text-muted-foreground hover:text-primary hover:underline"
+            >
+              {t('expandAll')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setAll(false)}
+              className="text-muted-foreground hover:text-primary hover:underline"
+            >
+              {t('collapseAll')}
+            </button>
+          </div>
+          {groups.map((group, groupIndex) => {
+            const shown = collapsed || isOpen(group.key);
+            return (
               <div
+                key={group.key}
                 className={cn(
-                  'ml-3 grid gap-0.5 border-l border-border pl-2',
-                  collapsed && 'md:ml-0 md:border-l-0 md:pl-0',
+                  'mb-3 last:mb-0',
+                  groupIndex > 0 && 'border-t border-border pt-3',
+                  collapsed && 'md:mb-2 md:pt-2',
                 )}
               >
-                {group.sections.map((section) => {
-                  const active = section.href === current;
-                  const label = t(`sections.${section.key}`);
-                  // What the screen is for, shown on hover.
-                  const help = t(`sectionHelp.${section.key}`);
-                  return (
-                    <Link
-                      key={section.key}
-                      href={section.href}
-                      title={collapsed ? `${label}: ${help}` : help}
-                      // A link followed on a phone closes the drawer.
-                      onClick={close}
-                      aria-current={active ? 'page' : undefined}
-                      className={cn(
-                        'relative flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
-                        active &&
-                          'bg-primary/8 font-medium text-primary hover:bg-primary/10 hover:text-primary',
-                        active &&
-                          !collapsed &&
-                          'before:absolute before:top-1.5 before:bottom-1.5 before:-left-[9px] before:w-0.5 before:rounded-full before:bg-primary',
-                        collapsed && 'md:justify-center md:px-0',
-                      )}
-                    >
-                      <Icon name={section.icon} size={18} className="shrink-0" />
-                      <span className={cn('grid leading-tight', collapsed && 'md:sr-only')}>
-                        {label}
-                        {/* A few plain words under the main pages, so anyone can tell them apart. */}
-                        {t.has(hintKey(section.key)) ? (
-                          <span className="text-[0.7rem] font-normal text-muted-foreground">
-                            {t(hintKey(section.key))}
-                          </span>
-                        ) : null}
-                      </span>
-                    </Link>
-                  );
-                })}
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(group.key)}
+                  aria-expanded={shown}
+                  aria-controls={`nav-${group.key}`}
+                  className={cn(
+                    'flex w-full items-center justify-between rounded-md px-2 py-1.5 text-[0.76rem] font-bold tracking-wider whitespace-nowrap text-foreground uppercase hover:bg-muted',
+                    // Returns stand out: they are easy to lose between selling and buying.
+                    group.key === 'returns' && 'text-primary',
+                    collapsed && 'md:hidden',
+                  )}
+                >
+                  <span>{t(`groups.${group.key}`)}</span>
+                  <Icon
+                    name={shown ? 'down' : 'right'}
+                    size={14}
+                    className="text-muted-foreground"
+                  />
+                </button>
+                <div
+                  id={`nav-${group.key}`}
+                  hidden={!shown}
+                  className={cn(
+                    'mt-1 ml-3 grid gap-0.5 border-l border-border pl-2',
+                    collapsed && 'md:ml-0 md:border-l-0 md:pl-0',
+                  )}
+                >
+                  {group.sections.map((section) => {
+                    const active = section.href === current;
+                    const label = t(`sections.${section.key}`);
+                    // What the screen is for, shown on hover.
+                    const help = t(`sectionHelp.${section.key}`);
+                    return (
+                      <Link
+                        key={section.key}
+                        href={section.href}
+                        title={collapsed ? `${label}: ${help}` : help}
+                        // A link followed on a phone closes the drawer.
+                        onClick={close}
+                        aria-current={active ? 'page' : undefined}
+                        className={cn(
+                          'relative flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+                          active &&
+                            'bg-primary/8 font-medium text-primary hover:bg-primary/10 hover:text-primary',
+                          active &&
+                            !collapsed &&
+                            'before:absolute before:top-1.5 before:bottom-1.5 before:-left-[9px] before:w-0.5 before:rounded-full before:bg-primary',
+                          collapsed && 'md:justify-center md:px-0',
+                        )}
+                      >
+                        <Icon name={section.icon} size={18} className="shrink-0" />
+                        <span className={cn('grid leading-tight', collapsed && 'md:sr-only')}>
+                          {label}
+                          {/* A few plain words under the main pages, so anyone can tell them apart. */}
+                          {t.has(hintKey(section.key)) ? (
+                            <span className="text-[0.7rem] font-normal text-muted-foreground">
+                              {t(hintKey(section.key))}
+                            </span>
+                          ) : null}
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
         <div className="hidden shrink-0 border-t border-border p-2 md:block">
           <button
