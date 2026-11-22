@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import type { ReactNode } from 'react';
 
 import { Icon } from '@/components/icons';
 import type { NavGroup, NavSection } from '@/config/navigation';
@@ -28,7 +29,14 @@ const initial = siteConfig.name.slice(0, 1);
 const hintKey = (key: NavSection['key']) => `sectionHint.${key}` as 'sectionHint.addItem';
 
 // The sections staff may open, grouped; each section has its own tabs inside.
-export function Sidebar({ groups }: { groups: NavGroup[] }) {
+export function Sidebar({
+  groups,
+  extras,
+}: {
+  groups: NavGroup[];
+  // What the header has no room for on a phone (the branch and the mode), shown at the top of the drawer.
+  extras?: ReactNode;
+}) {
   const t = useTranslations('panel');
   const pathname = usePathname();
   const { collapsed, open, close, toggle } = usePanel();
@@ -80,6 +88,7 @@ export function Sidebar({ groups }: { groups: NavGroup[] }) {
           aria-label={t('menu')}
           className={cn('flex-1 overflow-y-auto px-3 py-4', collapsed && 'md:px-2')}
         >
+          {extras ? <div className="mb-4 grid gap-2 md:hidden">{extras}</div> : null}
           {groups.map((group) => (
             <div key={group.key} className="mb-5 last:mb-0">
               <p

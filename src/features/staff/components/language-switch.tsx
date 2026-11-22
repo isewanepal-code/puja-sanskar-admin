@@ -1,7 +1,6 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { cn } from '@/lib/utils';
@@ -15,7 +14,6 @@ const LANGUAGES = [
 export function LanguageSwitch({ defaultLanguage = 'en' }: { defaultLanguage?: 'en' | 'ne' }) {
   const t = useTranslations('panel');
   const locale = useLocale();
-  const router = useRouter();
 
   // Someone who never picked a language gets the shop's default, once.
   useEffect(() => {
@@ -27,16 +25,20 @@ export function LanguageSwitch({ defaultLanguage = 'en' }: { defaultLanguage?: '
     }
     if (!picked && defaultLanguage !== locale) {
       document.cookie = `NEXT_LOCALE=${defaultLanguage}; path=/; max-age=31536000; samesite=lax`;
-      router.refresh();
+      // A full reload: the language is another part of the address, so the page starts over cleanly
+      // and keeps the dark or light theme, instead of flashing white while it is rebuilt.
+      window.location.reload();
     }
-  }, [defaultLanguage, locale, router]);
+  }, [defaultLanguage, locale]);
 
   function choose(code: string) {
     if (code === locale) return;
     // A browser cookie is not React state, so the compiler's immutability rule does not apply.
     // eslint-disable-next-line react-hooks/immutability
     document.cookie = `NEXT_LOCALE=${code}; path=/; max-age=31536000; samesite=lax`;
-    router.refresh();
+    // A full reload: the language is another part of the address, so the page starts over cleanly
+    // and keeps the dark or light theme, instead of flashing white while it is rebuilt.
+    window.location.reload();
   }
 
   return (

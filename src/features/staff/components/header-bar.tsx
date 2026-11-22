@@ -66,19 +66,23 @@ export function HeaderBar({
           onClick={panel.toggle}
           aria-label={panel.collapsed ? t('showMenu') : t('hideMenu')}
           title={panel.collapsed ? t('showMenu') : t('hideMenu')}
-          className="grid size-9 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          className="grid size-9 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <Icon name="sidebar" size={18} />
         </button>
-        <div className="mr-auto ml-3">
+        <div className="mr-auto ml-3 min-w-0">
           <GlobalSearch permissions={staff.permissions} />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 md:gap-3">
           <LanguageSwitch defaultLanguage={defaultLanguage} />
-          <TestModeSwitch initialOn={testMode} />
+          <div className="hidden md:block">
+            <TestModeSwitch initialOn={testMode} />
+          </div>
           {canEditWebsite ? <EditWebsiteButton /> : null}
           <NotesButton />
-          <BranchSwitcher current={branch} />
+          <div className="hidden md:block">
+            <BranchSwitcher current={branch} />
+          </div>
           <Menu.Root>
             <Menu.Trigger className="flex items-center gap-2.5 rounded-md py-1 pr-2 pl-1 text-sm hover:bg-muted">
               <span className="grid size-8 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">

@@ -34,14 +34,14 @@ export function PricesPage() {
     queryKey: ['products', 'prices'],
     // Every page of items, not just the first: a shop has hundreds, and each one needs its price.
     queryFn: async () => {
-      const items: Product[] = [];
-      for (let page = 1; ; page += 1) {
-        const got = await request<Page>('GET', '/admin/products', {
-          query: { limit: 100, page, sort: 'NEWEST' },
-        });
-        items.push(...got.items);
-        if (got.meta.page >= got.meta.totalPages) return { items };
-      }
+      const get = (page: number) =>
+        request<Page>('GET', '/admin/products', { query: { limit: 100, page, sort: 'NEWEST' } });
+      const first = await get(1);
+      // The rest of the pages together, not one after another.
+      const rest = await Promise.all(
+        Array.from({ length: Math.max(0, first.meta.totalPages - 1) }, (_, i) => get(i + 2)),
+      );
+      return { items: [first, ...rest].flatMap((page) => page.items) };
     },
   });
 
