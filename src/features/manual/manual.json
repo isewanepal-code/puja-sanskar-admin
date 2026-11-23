@@ -272,15 +272,26 @@
       "intro": "Same layout as your master list. Each sheet is a category. The first sheet (गृहपृष्ठ) has the rules.",
       "columns": [
         ["क्र.सं.", "Row number."],
-        ["सामग्री (Nepali Item Name) *", "Nepali name. Each size/quality is its own row (Rule B)."],
+        [
+          "समूह (Group - नेपाली) / Group (Romanized) / Group (English)",
+          "The group inside the sheet's category (टीका, चन्दन र रङ). Same words = same group; a new group is made on upload and shows as a subcategory."
+        ],
+        [
+          "सामग्री (Nepali Item Name) *",
+          "Nepali name. Each size/quality is its own row (Rule B). Must be different from every other item."
+        ],
         [
           "English Name *",
-          "Must be different from every other item; add Small/Medium/Large, Regular/Special."
+          "English name. Two items may share an English name; the Nepali name tells them apart."
         ],
-        ["Romanized Form", "Name in English letters."],
+        ["Romanized Form", "Name in English letters; also makes the item's code."],
+        [
+          "अन्य नामहरु (Alternate Names)",
+          "Other names people search by, comma between (up to 20): रातो अबिर, कुमकुम, Rato Abir."
+        ],
         [
           "मूल सामग्री (Search Group)",
-          "Search group: अबिर, कलश, धूप. Same word = same group. A new word makes a new group."
+          "Samagri: अबिर, कलश, धूप. Same word in the same group = same samagri. A new word makes a new one."
         ],
         ["Variant प्रकार (Type)", "Only for reading; how it sells is found from the sizes."],
         [
@@ -288,21 +299,33 @@
           "The sizes, comma between: 50 gm, 100 gm, 1 kg — or 1 पिस, 5 पिस — or सानो प्याक, ठूलो बक्स. Empty = 1 piece."
         ],
         [
+          "नपाइएमा वैकल्पिक सामग्री (pale yellow)",
+          "What to take if this is not found. Up to 200 letters."
+        ],
+        [
+          "प्रयोजन (Purpose) (pale yellow)",
+          "What it is for: दैनिक पूजा, टीका र शुभकार्य. Up to 200 letters."
+        ],
+        [
+          "छोटो विवरण (Short Description) (pale yellow)",
+          "One line under the name in lists. Up to 200 letters."
+        ],
+        [
+          "विस्तृत विवरण (Description) (pale yellow)",
+          "The full text on the item page. Up to 4000 letters."
+        ],
+        [
           "बेच्ने मूल्य Rs (pale yellow)",
           "One price per size in the same order: 35, 65, 580. A blank place keeps that size as it is. A price puts that size on sale."
         ],
         ["मुख्य सप्लायर (pale yellow)", "Pick from the list: who you usually buy it from."],
-        [
-          "नपाइएमा वैकल्पिक / प्रयोजन",
-          "What to use if it is not found, or what it is for; shown as website text."
-        ],
         ["Code (नछुनुहोस्)", "Made by the shop; do not touch. Leave empty for new rows."]
       ],
       "steps": [
-        "Download Excel. Grey rows are in the shop (locked); only their yellow price and supplier can change.",
-        "Write new items in the white rows below. A new sheet = a new category (sheet name = category name).",
-        "Upload Excel → Choose the .xlsx → Check the file. Mistakes are listed by sheet, row and column; nothing is saved until all are fixed.",
-        "Press Import. Uploading the same file again adds only the new rows."
+        "Download Excel. Grey rows are in the shop (locked); only the yellow cells (other names, purpose, descriptions, price, supplier) can change.",
+        "Write new items in the white rows below. A new sheet = a new category (sheet name = category name); a new group name makes a new subcategory.",
+        "Upload Excel → Choose the .xlsx → Check the file. Mistakes are listed by sheet, row and column; nothing is saved until all are fixed. Your master list (Ver 5) loads as it is; the guide sheet's English names become the categories' English names.",
+        "Press Import. Uploading the same file again adds only the new rows and changes only what you edited in the yellow cells."
       ]
     },
     {

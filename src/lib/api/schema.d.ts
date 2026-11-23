@@ -8934,6 +8934,9 @@ export interface components {
        */
       aliases: string[];
       description: string | null;
+      shortDescription: string | null;
+      purpose: string | null;
+      alternative: string | null;
       material: components['schemas']['MaterialSummary'];
       images: components['schemas']['ProductImageResponse'][];
       /**
@@ -9046,6 +9049,9 @@ export interface components {
        */
       aliases: string[];
       description: string | null;
+      shortDescription: string | null;
+      purpose: string | null;
+      alternative: string | null;
       material: components['schemas']['MaterialSummary'];
       images: components['schemas']['ProductImageResponse'][];
       /**
@@ -9182,6 +9188,9 @@ export interface components {
        */
       aliases: string[];
       description: string | null;
+      shortDescription: string | null;
+      purpose: string | null;
+      alternative: string | null;
       material: components['schemas']['MaterialSummary'];
       images: components['schemas']['ProductImageResponse'][];
       /**
@@ -9281,6 +9290,12 @@ export interface components {
       aliases?: string[];
       /** @example Pure camphor tablets for aarti */
       description?: string | null;
+      /** @example Camphor for aarti and havan */
+      shortDescription?: string | null;
+      /** @example For daily puja and tika */
+      purpose?: string | null;
+      /** @example Ghee lamp wicks */
+      alternative?: string | null;
       /**
        * Format: uuid
        * @description A sellable, active material; cannot be changed later
@@ -9343,6 +9358,12 @@ export interface components {
       aliases?: string[];
       /** @example Pure camphor tablets for aarti */
       description?: string | null;
+      /** @example Camphor for aarti and havan */
+      shortDescription?: string | null;
+      /** @example For daily puja and tika */
+      purpose?: string | null;
+      /** @example Ghee lamp wicks */
+      alternative?: string | null;
       images?: components['schemas']['ProductImageDto'][];
       /**
        * @description How it is sold: one by one, by weight, by volume, by length, or by size (length x breadth)
@@ -16073,6 +16094,12 @@ export interface components {
       tags?: string[];
       /** @example Pure loban from Bhaktapur */
       description?: string | null;
+      /** @example Pure loban for daily puja */
+      shortDescription?: string | null;
+      /** @example For daily puja and havan */
+      purpose?: string | null;
+      /** @example Guggul */
+      alternative?: string | null;
       /**
        * @description Shown and sold on the website
        * @default true

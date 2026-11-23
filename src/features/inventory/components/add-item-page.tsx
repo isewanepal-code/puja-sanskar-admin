@@ -40,6 +40,9 @@ const empty = {
   categoryId: '',
   nameRomanized: '',
   description: '',
+  shortDescription: '',
+  purpose: '',
+  alternative: '',
   aliases: '',
   brand: '',
   supplierId: '',
@@ -82,6 +85,9 @@ export function AddItemPage() {
           categoryId: form.categoryId,
           ...(form.nameRomanized.trim() && { nameRomanized: form.nameRomanized.trim() }),
           ...(form.description.trim() && { description: form.description.trim() }),
+          ...(form.shortDescription.trim() && { shortDescription: form.shortDescription.trim() }),
+          ...(form.purpose.trim() && { purpose: form.purpose.trim() }),
+          ...(form.alternative.trim() && { alternative: form.alternative.trim() }),
           ...(form.aliases.trim() && {
             aliases: form.aliases
               .split(',')
@@ -226,6 +232,32 @@ export function AddItemPage() {
               />
             </Field>
           </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label={t('purpose')} htmlFor="add-purpose" hint={t('purposeHint')}>
+              <Input
+                id="add-purpose"
+                value={form.purpose}
+                maxLength={200}
+                onChange={(e) => change({ purpose: e.target.value })}
+              />
+            </Field>
+            <Field label={t('alternative')} htmlFor="add-alt" hint={t('alternativeHint')}>
+              <Input
+                id="add-alt"
+                value={form.alternative}
+                maxLength={200}
+                onChange={(e) => change({ alternative: e.target.value })}
+              />
+            </Field>
+          </div>
+          <Field label={t('shortDescription')} htmlFor="add-short" hint={t('shortDescriptionHint')}>
+            <Input
+              id="add-short"
+              value={form.shortDescription}
+              maxLength={200}
+              onChange={(e) => change({ shortDescription: e.target.value })}
+            />
+          </Field>
           <Field label={t('description')} htmlFor="add-desc" hint={t('descriptionHint')}>
             <textarea
               id="add-desc"

@@ -1102,7 +1102,10 @@
         "sellBy": "How it is sold",
         "brand": "Brand",
         "defaultSupplierId": "Usual supplier",
-        "aliases": "Other names"
+        "aliases": "Other names",
+        "purpose": "Used for (purpose)",
+        "shortDescription": "Short description",
+        "alternative": "If not found, take instead"
       },
       "hints": {
         "code": "Capital letters, digits or _, such as PRD001. It cannot change later.",
@@ -2891,7 +2894,7 @@
     "newKitPage": "New puja kit",
     "openKit": "Open",
     "uploadItemList": "Add items from the Excel list",
-    "uploadItemListNote": "Download the list first (Download the layout). Each sheet is a category. Grey rows are already in the shop: their names and variants are locked, but the pale-yellow Selling price and Usual supplier can be changed. Prices go in the order of the variants, VAT included: variants \"50 gm, 100 gm, 1 kg\" → prices \"35, 65, 580\". Write new items in the empty rows: Nepali name, English name, search group, variants, and price and supplier if you know them. Rule A: weights and counts of one thing are its variants. Rule B: a different size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own row. A new sheet makes a new category."
+    "uploadItemListNote": "Download the list first (Download the layout). Each sheet is a category and the Group columns are subcategories inside it. Grey rows are already in the shop: their names, group and variants are locked, but the pale-yellow cells (other names, alternative, purpose, short and full description, selling price, usual supplier) can be changed. Prices go in the order of the variants, VAT included: variants \"50 gm, 100 gm, 1 kg\" → prices \"35, 65, 580\". Write new items in the empty rows: Nepali name, English name, search group, variants, and the rest if you know it. Rule A: weights and counts of one thing are its variants. Rule B: a different size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own row. A new sheet makes a new category."
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -4548,7 +4551,13 @@
       "groupsNone": "No group",
       "setQuantityPrice": "Set quantity and price",
       "newBrand": "New brand",
-      "brandAdded": "{name} added and chosen."
+      "brandAdded": "{name} added and chosen.",
+      "purpose": "Used for (purpose)",
+      "purposeHint": "What it is for, in a few words: \"for daily puja and tika\".",
+      "alternative": "If not found, take instead",
+      "alternativeHint": "What a shopper can take when this is out: another item or a word like \"red cloth\".",
+      "shortDescription": "Short line",
+      "shortDescriptionHint": "One line under the name in lists and cards."
     },
     "buy": {
       "title": "Buy",
