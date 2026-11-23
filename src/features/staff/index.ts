@@ -1,4 +1,4 @@
-export { getAdminLanguage, getMe } from './api/server';
+export { getAdminLanguage, getHiddenMenus, getMe } from './api/server';
 export { BranchSwitcher } from './components/branch-switcher';
 export { HeaderBar } from './components/header-bar';
 export { TestModeSwitch } from './components/test-mode-switch';

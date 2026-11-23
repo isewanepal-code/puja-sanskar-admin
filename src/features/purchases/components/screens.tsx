@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useMemo, useRef, useState } from 'react';
 
@@ -81,8 +82,39 @@ export function PurchaseBillsScreen() {
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });
 
+  // Coming from the Buy page right after saving: say what is done and what comes next.
+  const router = useRouter();
+  const justSaved = useSearchParams().get('saved') === '1';
+
   return (
     <>
+      {justSaved ? (
+        <div
+          role="status"
+          className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-success/40 bg-success/5 p-4 text-sm"
+        >
+          <Icon name="check" size={18} className="text-success" />
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold">{tp('savedTitle')}</p>
+            <p className="text-muted-foreground">{tp('savedNext')}</p>
+          </div>
+          <Link
+            href={routes.quantityPrice()}
+            className={buttonVariants({ variant: 'primary', size: 'sm' })}
+          >
+            {tp('savedPrice')}
+          </Link>
+          <Link
+            href={routes.stock()}
+            className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+          >
+            {tp('savedStock')}
+          </Link>
+          <Button variant="ghost" size="sm" onClick={() => router.replace(routes.purchaseBills())}>
+            {tp('savedClose')}
+          </Button>
+        </div>
+      ) : null}
       <ResourceScreen
         resource={resource}
         toolbar={

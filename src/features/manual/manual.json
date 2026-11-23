@@ -14,7 +14,8 @@
         "Main branch (top right) is the shop whose stock you see and change.",
         "A red * next to a box means it must be filled.",
         "Leaving a page with typed work asks first: Discard or Keep editing.",
-        "An (i) next to a column name explains that column; hover or tap it."
+        "An (i) next to a column name explains that column; hover or tap it.",
+        "Settings → Sidebar menus lets the owner hide menu entries for each role (e.g. Samagri). It only tidies the menu; Staff permissions still decide access."
       ],
       "terms": [
         [
@@ -208,7 +209,8 @@
         "Search: type any name, Nepali or English.",
         "Every group: show only the items of one item group.",
         "Download Excel: the whole list, one sheet per category, in your Excel layout.",
-        "Upload Excel: add new items and change prices and suppliers (chapter 2.4)."
+        "Upload Excel: add new items and change prices and suppliers (chapter 2.4).",
+        "Columns Quantities and Selling price show up to 4; press either to see all quantities and prices of the item in a popup."
       ]
     },
     {
@@ -327,7 +329,10 @@
         "Choose the item (or arrive from Add item). You see every pack with its price.",
         "No pack for the size you sell (say 100 g)? Press Add sizes: enter amount, unit and price for as many sizes as you like, even before buying. A new item with no pack opens this by itself.",
         "Buy it (button on the page) so stock exists. Bought a big pack? Cut it with the \"Cut … into small packs\" button under \"What did you buy?\"",
-        "Type the price of each pack and press Save; the tick puts it on sale."
+        "Type the price of each pack and press Save; the tick puts it on sale.",
+        "Everything is one table like Excel: the quantities the item already has are filled in. Change a price, tick or untick On sale and Show on website (website is ticked by default), press Save.",
+        "\"+ Add another quantity\" adds a row; \"Remove\" deletes a quantity when you save (one with stock or bills cannot be deleted: untick On sale instead).",
+        "There is no buying on this page: buy on the Buy page."
       ],
       "tips": [
         "Prices that came from the Excel are already there; change them only if needed.",
@@ -440,7 +445,9 @@
       "steps": [
         "View (eye icon): the bill as entered: supplier with phone and PAN, every line, VAT, discount and total, with links to the supplier statement, paying the supplier and sending goods back.",
         "To record a new purchase press Buy (new purchase): it opens the Buy page. Many bills from Excel: Upload Excel.",
-        "A draft left from before can still be posted (✓), edited or deleted."
+        "A draft left from before can still be posted (✓), edited or deleted.",
+        "After saving on the Buy page you land here with a banner and the next step. Status \"In stock\" means the goods are counted. A saved bill is not edited: if it was wrong, View → Send goods back, then Buy again.",
+        "Column \"Supplier / Bill no.\" shows the supplier and the number on their bill; \"No. of items\" is how many items are on it; VAT and discount are inside View."
       ]
     },
     {

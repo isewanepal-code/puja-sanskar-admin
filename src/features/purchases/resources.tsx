@@ -109,12 +109,6 @@ export function purchaseBillsResource(name: Name): Resource<PurchaseBill> {
         align: 'right',
       },
       {
-        key: 'vatTotal',
-        cell: (row) => money(row.vatTotal),
-        sortValue: (row) => Number(row.vatTotal),
-        align: 'right',
-      },
-      {
         key: 'total',
         cell: (row) => <span className="font-semibold">{money(row.total)}</span>,
         sortValue: (row) => Number(row.total),

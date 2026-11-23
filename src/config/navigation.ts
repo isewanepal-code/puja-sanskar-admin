@@ -72,6 +72,7 @@ export type NavSection = {
     | 'shopSettings'
     | 'businessProfile'
     | 'branches'
+    | 'sidebarMenus'
     | 'dataTools'
     | 'activity';
   href: string;
@@ -311,6 +312,12 @@ export const navigation: NavGroup[] = [
         permission: 'settings:manage',
       },
       { key: 'branches', href: routes.branches(), icon: 'store', permission: 'settings:manage' },
+      {
+        key: 'sidebarMenus',
+        href: routes.sidebarMenus(),
+        icon: 'list',
+        permission: 'settings:manage',
+      },
       { key: 'dataTools', href: routes.dataTools(), icon: 'box', permission: 'settings:manage' },
       { key: 'staff', href: routes.staff(), icon: 'users', permission: 'users:read' },
       { key: 'activity', href: routes.activity(), icon: 'clock', permission: 'users:read' },
@@ -320,11 +327,22 @@ export const navigation: NavGroup[] = [
 ];
 
 // The groups with only the sections these permissions open; empty groups drop out.
-export function navigationFor(granted: readonly string[]): NavGroup[] {
+// Entries nobody can hide: the way back to the dashboard and the manual, and the page that hides entries.
+export const ALWAYS_SHOWN: readonly NavSection['key'][] = ['dashboard', 'manual', 'sidebarMenus'];
+
+// Hiding only tidies the menu; the permission still decides who may open the page.
+export function navigationFor(
+  granted: readonly string[],
+  hidden: readonly string[] = [],
+): NavGroup[] {
   return navigation
     .map((group) => ({
       ...group,
-      sections: group.sections.filter((section) => can(granted, section.permission)),
+      sections: group.sections.filter(
+        (section) =>
+          can(granted, section.permission) &&
+          (ALWAYS_SHOWN.includes(section.key) || !hidden.includes(section.key)),
+      ),
     }))
     .filter((group) => group.sections.length > 0);
 }

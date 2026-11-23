@@ -737,6 +737,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/settings/menus': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Sidebar entries hidden from the signed-in staff member */
+    get: operations['AdminMenusController_get'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/site-texts': {
     parameters: {
       query?: never;
@@ -7062,6 +7079,16 @@ export interface components {
        * @enum {string}
        */
       adminLanguage: 'en' | 'ne';
+      /**
+       * @example {
+       *       "ACCOUNTANT": [
+       *         "materials"
+       *       ]
+       *     }
+       */
+      hiddenMenus: {
+        [key: string]: string[];
+      };
       /** Format: uuid */
       updatedById: string | null;
       /** Format: date-time */
@@ -7120,6 +7147,10 @@ export interface components {
        * @enum {string}
        */
       adminLanguage?: 'en' | 'ne';
+      /** @description Sidebar entries to hide for each role, as { ROLE: [entry keys] }. Replaces the whole list. */
+      hiddenMenus?: {
+        [key: string]: string[];
+      };
     };
     AdminLanguageResponse: {
       /**
@@ -7127,6 +7158,14 @@ export interface components {
        * @enum {string}
        */
       language: 'en' | 'ne';
+    };
+    AdminMenusResponse: {
+      /**
+       * @example [
+       *       "materials"
+       *     ]
+       */
+      hidden: string[];
     };
     SiteTextsResponse: {
       /** @description Changed texts by message key, English */
@@ -9110,6 +9149,8 @@ export interface components {
       /** @description Can be sold now: more on hand than held for orders */
       inStock: boolean;
       isActive: boolean;
+      /** @description Shown to shoppers on the website */
+      showOnWebsite: boolean;
       sortOrder: number;
       /**
        * @description What a pack costs the shop (moving average of the stock held); null before any purchase
@@ -9361,6 +9402,11 @@ export interface components {
       pricesIncludeTax?: boolean;
       /** @default true */
       isActive: boolean;
+      /**
+       * @description Shown to shoppers on the website; off, the pack is still sold at the counter
+       * @default true
+       */
+      showOnWebsite: boolean;
     };
     GeneratedVariantsResponse: {
       created: components['schemas']['AdminVariantResponse'][];
@@ -9415,6 +9461,11 @@ export interface components {
       pricesIncludeTax?: boolean;
       /** @default true */
       isActive: boolean;
+      /**
+       * @description Shown to shoppers on the website; off, the pack is still sold at the counter
+       * @default true
+       */
+      showOnWebsite: boolean;
       /** @description true makes this the product's default variant; it cannot be unset directly */
       isDefault?: boolean;
       sortOrder?: number;
@@ -19000,6 +19051,49 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['AdminLanguageResponse'];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminMenusController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminMenusResponse'];
           };
         };
       };

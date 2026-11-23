@@ -15,5 +15,15 @@ export const getAdminLanguage = cache(async (): Promise<'en' | 'ne'> => {
   }
 });
 
+// Sidebar entries the shop hid for this staff member's roles; none if it cannot be read.
+export const getHiddenMenus = cache(async (): Promise<string[]> => {
+  try {
+    const { hidden } = await unwrap((await sessionApi()).GET('/api/v1/settings/menus'));
+    return hidden;
+  } catch {
+    return [];
+  }
+});
+
 // The signed-in staff member with their roles and permissions; one call per request.
 export const getMe = cache(async () => unwrap((await sessionApi()).GET('/api/v1/auth/me')));

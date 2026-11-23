@@ -1,3 +1,4 @@
+export { MenuAccessScreen } from './components/menu-access-screen';
 export { BusinessProfileScreen, ShopSettingsScreen } from './components/record-screens';
 export { DeliverySlotsScreen, DeliveryZonesScreen, TaxClassesScreen } from './components/screens';
 export {

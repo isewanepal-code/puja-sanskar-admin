@@ -55,7 +55,6 @@ export const productsResource: Resource<Product> = {
       sortValue: (row) => Number(row.fromPrice ?? -1),
       align: 'right',
     },
-    activeColumn(),
   ],
   fields: [
     { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },

@@ -482,7 +482,8 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
           queryClient.invalidateQueries({ queryKey: [key] }),
         ),
       );
-      router.push(unpriced > 0 ? routes.itemPrices() : routes.stock());
+      // The bill is in the Purchase bills history, which says what to do next.
+      router.push(`${routes.purchaseBills()}?saved=1`);
     },
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });

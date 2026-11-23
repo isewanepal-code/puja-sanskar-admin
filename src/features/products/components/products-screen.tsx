@@ -13,6 +13,7 @@ import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 import { routes } from '@/lib/routes';
 
 import { productsResource } from '../resources';
+import { ItemSizes } from './item-sizes';
 import type { Product } from './use-product';
 
 export function ProductsScreen() {
@@ -37,41 +38,16 @@ export function ProductsScreen() {
       listQuery: { ...productsResource.listQuery, ...(groupId && { groupId }) },
       // An item is changed on its own page.
       canEdit: false,
+      // The quantities and their prices, side by side; pressing either opens all of them.
       columns: productsResource.columns.map((column) =>
         column.key === 'variants'
-          ? {
-              ...column,
-              cell: (row: Product) => (
-                <button
-                  type="button"
-                  title={t('packsOf', { name: row.nameNe })}
-                  onClick={() => router.push(routes.item(row.id) + '#prices')}
-                  className="flex max-w-[16rem] flex-wrap justify-end gap-1 text-right"
-                >
-                  {row.variants.slice(0, 4).map((v) => (
-                    <span
-                      key={v.id}
-                      className={
-                        v.isActive
-                          ? 'rounded border border-border bg-card px-1.5 py-0.5 text-xs'
-                          : 'rounded border border-dashed border-border px-1.5 py-0.5 text-xs text-muted-foreground'
-                      }
-                    >
-                      {v.label}
-                    </span>
-                  ))}
-                  {row.variants.length > 4 ? (
-                    <span className="px-1 py-0.5 text-xs text-muted-foreground">
-                      +{row.variants.length - 4}
-                    </span>
-                  ) : null}
-                </button>
-              ),
-            }
-          : column,
+          ? { ...column, cell: (row: Product) => <ItemSizes product={row} show="quantity" /> }
+          : column.key === 'fromPrice'
+            ? { ...column, cell: (row: Product) => <ItemSizes product={row} show="price" /> }
+            : column,
       ),
     }),
-    [t, router, groupId],
+    [groupId],
   );
 
   return (

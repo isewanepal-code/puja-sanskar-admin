@@ -6,6 +6,7 @@ import { can } from '@/config/permissions';
 import {
   BranchSwitcher,
   getAdminLanguage,
+  getHiddenMenus,
   getMe,
   HeaderBar,
   PanelShell,
@@ -23,13 +24,15 @@ export default async function PanelLayout({ children, params }: LayoutProps<'/[l
   await resolveLocale(params);
 
   // The language is asked for together with who is signed in, not after it.
-  const [me, defaultLanguage] = await Promise.all([getMe(), getAdminLanguage()]).catch(
-    (error: unknown) => {
-      // A session the API no longer accepts goes back to sign-in.
-      if (isApiError(error) && error.status === 401) redirect(routes.login());
-      throw error;
-    },
-  );
+  const [me, defaultLanguage, hiddenMenus] = await Promise.all([
+    getMe(),
+    getAdminLanguage(),
+    getHiddenMenus(),
+  ]).catch((error: unknown) => {
+    // A session the API no longer accepts goes back to sign-in.
+    if (isApiError(error) && error.status === 401) redirect(routes.login());
+    throw error;
+  });
 
   const jar = await cookies();
   const collapsed = jar.get(SIDEBAR_COOKIE)?.value === 'collapsed';
@@ -39,7 +42,7 @@ export default async function PanelLayout({ children, params }: LayoutProps<'/[l
   return (
     <PanelShell initialCollapsed={collapsed}>
       <Sidebar
-        groups={navigationFor(me.permissions)}
+        groups={navigationFor(me.permissions, hiddenMenus)}
         extras={
           <>
             <BranchSwitcher current={branch} />

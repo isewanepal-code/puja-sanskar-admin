@@ -76,6 +76,7 @@ export const routes = {
   shopSettings: () => '/settings/shop',
   businessProfile: () => '/settings/business',
   branches: () => '/settings/branches',
+  sidebarMenus: () => '/settings/menus',
 
   moneyAccounts: () => '/money',
   purchaseBills: () => '/purchases',

@@ -168,7 +168,8 @@
       "branches": "Branches",
       "dataTools": "Data tools",
       "activity": "Activity log",
-      "customerReturns": "Customer returns"
+      "customerReturns": "Customer returns",
+      "sidebarMenus": "Sidebar menus"
     },
     "changePassword": "Change password",
     "groups": {
@@ -264,7 +265,8 @@
       "branches": "Shops and branches, each with its own stock and orders.",
       "dataTools": "Master Excel import and search index.",
       "activity": "Who did what, and when.",
-      "customerReturns": "Goods customers brought back from an order: back on the shelf or written off, and the money paid back."
+      "customerReturns": "Goods customers brought back from an order: back on the shelf or written off, and the money paid back.",
+      "sidebarMenus": "Choose which menu entries each role sees. It only tidies the menu; what a role may do is set in Staff."
     },
     "sectionHint": {
       "dashboard": "Today's summary",
@@ -1090,8 +1092,8 @@
         "description": "Description",
         "slug": "Web address",
         "isActive": "Shown on the website",
-        "variants": "Sold as",
-        "fromPrice": "Sells for",
+        "variants": "Quantities",
+        "fromPrice": "Selling price",
         "metaTitle": "Search title",
         "metaDescription": "Search description",
         "hsCode": "HS code",
@@ -1124,8 +1126,8 @@
       "aboutForm": "You are changing the details of an item. Prices and packs are changed from the row icons below.",
       "columnHelp": {
         "item": "Nepali name on top, English name below. Press to open the item page.",
-        "variants": "The sizes this item is sold in (1 set, 50 g, 1 kg…). Many show as \"+3\"; press for stock and price. Dotted = not on sale yet (price still to be set).",
-        "fromPrice": "The selling price. With many colours or sizes, the lowest price shows.",
+        "variants": "The different quantities this item is sold in. Grey and struck through = not on sale. Press to see all of them with their prices.",
+        "fromPrice": "The selling price of each quantity, in the same order. Press to see all of them.",
         "isActive": "On = shown on the website and can be sold. Off = hidden."
       }
     },
@@ -2226,18 +2228,24 @@
       "add": "Enter a bill",
       "empty": "No bills yet.",
       "statuses": {
-        "DRAFT": "Draft",
-        "POSTED": "Posted"
+        "DRAFT": "Not in stock yet (draft)",
+        "POSTED": "In stock"
       },
       "fields": {
         "billDay": "Date",
-        "supplierId": "Supplier",
-        "lines": "Lines",
-        "vatTotal": "VAT",
-        "total": "Total",
+        "supplierId": "Supplier / Bill no.",
+        "lines": "No. of items",
+        "total": "Bill total (with VAT)",
         "status": "Status"
       },
-      "about": "The history of what you bought, with the supplier on each bill. A new purchase is made on the Buy page; here you look, check and follow up."
+      "about": "The history of what you bought, one row per supplier bill. New purchases are made on the Buy page (the bill is saved and the stock added together), so nothing is half done here.\nA saved bill is not edited, because your stock and cost come from it. If a bill was wrong: use View, then Send goods back, and Buy again correctly.",
+      "columnHelp": {
+        "billDay": "The date on the supplier's bill.",
+        "supplierId": "The supplier, and the number printed on their bill.",
+        "lines": "How many different items are on the bill.",
+        "total": "What the whole bill came to, VAT included. VAT and discount are in the bill when you press View.",
+        "status": "In stock: the goods are counted in your stock. Not in stock yet: an old draft that was never finished; post it to add the goods, or delete it."
+      }
     },
     "supplierPayments": {
       "title": "Payments",
@@ -3352,7 +3360,12 @@
     "expiresOn": "Expires on",
     "statementLink": "Supplier statement",
     "paymentsLink": "Pay this supplier",
-    "returnLink": "Send goods back"
+    "returnLink": "Send goods back",
+    "savedTitle": "Bill saved and the stock added.",
+    "savedNext": "Next: give each new item its selling price.",
+    "savedPrice": "Set quantity and price",
+    "savedStock": "See the stock",
+    "savedClose": "Close"
   },
   "expensesSection": {
     "title": "Expenses",
@@ -4533,7 +4546,9 @@
       "groupsTitle": "Item groups",
       "groupsNote": "Put the item in groups it belongs to (Tihar, Daily puja…). Optional.",
       "groupsNone": "No group",
-      "setQuantityPrice": "Set quantity and price"
+      "setQuantityPrice": "Set quantity and price",
+      "newBrand": "New brand",
+      "brandAdded": "{name} added and chosen."
     },
     "buy": {
       "title": "Buy",
@@ -4782,37 +4797,54 @@
     "itemSearch": "Search by name, English name or code",
     "loading": "Loading…",
     "notFound": "This item was not found.",
-    "notBought": "Nothing of this item is in stock yet. Buy it first: the stock then shows here.",
-    "buy": "Buy it",
-    "colPack": "Pack, size or colour",
-    "colStock": "In stock",
-    "colCost": "Cost of 1",
-    "colPrice": "Sell 1 for",
+    "colPrice": "Selling price",
     "colSale": "On sale",
-    "addSize": "Add another size or colour",
-    "allWaiting": "All packs waiting for a price",
-    "guideTitle": "What did you buy?",
-    "guideSmall": "Small packets that you sell as they are: just type the price above and press Save.",
-    "guideBig": "A long roll, a big sack or a box that you sell in small pieces: cut it into the sizes you sell, then type the price of each new size above.",
-    "cutPack": "Cut {name} into small packs",
-    "buyFirstToCut": "Buy the item first. Then you can cut it into small packs here.",
-    "needsPrice": "Set a price",
-    "helpLine": "Type the selling price for each pack, then press Save.",
-    "save": "Save prices",
-    "saved": "Prices saved.",
-    "needPrice": "Type a price for every pack that is on sale.",
+    "helpLine": "Press Save to keep your changes.",
+    "save": "Save",
+    "saved": "Saved.",
     "nothingChanged": "Nothing changed yet.",
     "costOf": "cost {amount}",
-    "buyMore": "Buy more",
-    "makeSmaller": "Cut a big pack into smaller packs",
-    "addSizes": "Add sizes (200 g, 500 g, 1 kg …)",
-    "sizesTitle": "The sizes you sell",
-    "sizesNote": "Set the sizes and their prices now, even before buying. Stock comes when you buy; a big pack is cut into these with \"Make smaller packs\".",
-    "sizesAnother": "Another size",
-    "sizesRemove": "Remove",
-    "sizesSave": "Save the sizes",
-    "sizesNone": "Fill at least one size.",
-    "sizesFix": "Each size needs an amount, a unit and a price above 0.",
-    "sizesAdded": "{n} sizes added and on sale"
+    "colQuantity": "Quantity",
+    "colWeb": "Show on website",
+    "amount": "Amount",
+    "unit": "Unit",
+    "colour": "Colour or size (optional)",
+    "priceOf": "Selling price of {name}",
+    "remove": "Remove",
+    "undo": "Undo",
+    "addRow": "+ Add another quantity",
+    "removeNote": "The removed quantities are deleted when you save. One that already has stock or bills cannot be deleted: untick On sale instead.",
+    "fixRows": "Each quantity needs a price above 0; a new one also needs an amount and a unit."
+  },
+  "menuAccess": {
+    "entry": "Menu entry",
+    "group": "Whole group",
+    "fixed": "Always shown",
+    "save": "Save menu",
+    "saving": "Saving…",
+    "saved": "Menu saved. Staff see it the next time a page opens.",
+    "reset": "Undo changes",
+    "hint": "Ticked means the role sees that entry. Entries a role has no permission for never show, ticked or not.",
+    "loadFailed": "Could not load the menu settings.",
+    "roles": {
+      "SUPER_ADMIN": "Super admin",
+      "ADMIN": "Admin",
+      "CONTENT_MANAGER": "Content",
+      "INVENTORY_MANAGER": "Inventory",
+      "ORDER_MANAGER": "Orders",
+      "ACCOUNTANT": "Accounts",
+      "STORE_STAFF": "Counter"
+    }
+  },
+  "itemSizes": {
+    "open": "All quantities and prices of {name}",
+    "more": "+{count} more",
+    "quantity": "Quantity",
+    "price": "Selling price",
+    "status": "Where it sells",
+    "off": "Not on sale",
+    "onWeb": "Website and counter",
+    "counterOnly": "Counter only",
+    "change": "Change quantities and prices"
   }
 }
