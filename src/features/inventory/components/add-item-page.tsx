@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { ChipInput, SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
@@ -12,7 +12,9 @@ import { useToast } from '@/components/overlays';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { categoryChoices } from '@/features/catalogue';
+import { priceGroups } from '@/features/marketing';
 import { codeFrom, SimilarItems } from '@/features/products';
+import { uploadMedia } from '@/components/media-library/media-picker';
 import { fieldErrors, isApiError, request } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { routes } from '@/lib/routes';
@@ -51,8 +53,9 @@ export function AddItemPage() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [form, setForm] = useState(empty);
-  const [more, setMore] = useState(false);
-  const [sameNameOk, setSameNameOk] = useState(false);
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [groupIds, setGroupIds] = useState<string[]>([]);
+  const fileInput = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saved, setSaved] = useState<{ id: string; name: string } | null>(null);
   const change = (patch: Partial<typeof empty>) => setForm((f) => ({ ...f, ...patch }));
@@ -60,7 +63,9 @@ export function AddItemPage() {
   const dirty = (Object.keys(empty) as Array<keyof typeof empty>).some(
     (key) => String(form[key]).trim() !== String(empty[key]),
   );
-  const guard = useUnsavedGuard(saved === null && dirty);
+  const guard = useUnsavedGuard(
+    saved === null && (dirty || photos.length > 0 || groupIds.length > 0),
+  );
 
   const save = useMutation({
     mutationFn: () => {
@@ -83,11 +88,26 @@ export function AddItemPage() {
           }),
           ...(form.brand.trim() && { brand: form.brand.trim() }),
           ...(form.supplierId && { defaultSupplierId: form.supplierId }),
-          ...(sameNameOk && { allowDuplicateName: true }),
         },
       });
     },
     onSuccess: async (item) => {
+      // Photos and groups go on the item once it exists; one failing does not undo the item.
+      try {
+        if (photos.length > 0) {
+          const images = [];
+          for (const file of photos) {
+            const { url } = await uploadMedia(file);
+            images.push({ url, altText: null, optionValueId: null });
+          }
+          await request('PATCH', `/admin/products/${item.id}`, { body: { images } });
+        }
+        if (groupIds.length > 0) {
+          await request('PUT', `/admin/price-groups/of/product/${item.id}`, { body: { groupIds } });
+        }
+      } catch (error) {
+        toast.error(isApiError(error) ? error.message : tf('failed'));
+      }
       setSaved({ id: item.id, name: item.nameEn });
       setErrors({});
       await queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -113,9 +133,12 @@ export function AddItemPage() {
         </p>
         <p className="text-sm text-muted-foreground">{t('savedNext')}</p>
         <div className="flex flex-wrap gap-2">
-          <Link href={routes.buy(saved.id)} className={buttonVariants({ variant: 'primary' })}>
-            <Icon name="truck" size={16} />
-            {t('buyNow')}
+          <Link
+            href={routes.quantityPrice(saved.id)}
+            className={buttonVariants({ variant: 'primary' })}
+          >
+            <Icon name="tag" size={16} />
+            {t('setQuantityPrice')}
           </Link>
           <Button
             variant="secondary"
@@ -123,8 +146,8 @@ export function AddItemPage() {
               setSaved(null);
               // The next item is most often the same kind: keep how it is sold and its category.
               setForm({ ...empty, sellBy: form.sellBy, categoryId: form.categoryId });
-              setSameNameOk(false);
-              setMore(false);
+              setPhotos([]);
+              setGroupIds([]);
             }}
           >
             <Icon name="plus" size={16} />
@@ -182,15 +205,103 @@ export function AddItemPage() {
             />
           </Field>
         </div>
-        <label className="flex items-start gap-2 text-xs text-muted-foreground">
-          <input
-            type="checkbox"
-            className="mt-0.5 size-4"
-            checked={sameNameOk}
-            onChange={(e) => setSameNameOk(e.target.checked)}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={t('nameRomanized')} htmlFor="add-roman" hint={t('nameRomanizedHint')}>
+            <Input
+              id="add-roman"
+              value={form.nameRomanized}
+              maxLength={160}
+              placeholder="kapada"
+              onChange={(e) => change({ nameRomanized: e.target.value })}
+            />
+          </Field>
+          <Field label={t('aliases')} htmlFor="add-aliases" hint={t('aliasesHint')}>
+            <ChipInput
+              id="add-aliases"
+              value={form.aliases}
+              onChange={(value) => change({ aliases: value })}
+            />
+          </Field>
+        </div>
+        <Field label={t('description')} htmlFor="add-desc" hint={t('descriptionHint')}>
+          <textarea
+            id="add-desc"
+            value={form.description}
+            maxLength={4000}
+            rows={3}
+            onChange={(e) => change({ description: e.target.value })}
+            className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary"
           />
-          {t('sameNameOk')}
-        </label>
+        </Field>
+        <div className="grid gap-2">
+          <div>
+            <p className="text-sm font-medium">{t('photosTitle')}</p>
+            <p className="text-xs text-muted-foreground">{t('photosNote')}</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {photos.map((file, index) => (
+              <div key={`${file.name}-${index}`} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={file.name}
+                  className="size-20 rounded-md border border-border object-cover"
+                />
+                {index === 0 ? (
+                  <span className="absolute bottom-1 left-1 rounded bg-primary px-1 text-[0.65rem] text-primary-foreground">
+                    {t('mainPhoto')}
+                  </span>
+                ) : null}
+                <button
+                  type="button"
+                  aria-label={t('removePhoto')}
+                  onClick={() => setPhotos((all) => all.filter((_, i) => i !== index))}
+                  className="absolute -top-1.5 -right-1.5 grid size-5 place-items-center rounded-full bg-card text-destructive shadow ring-1 ring-border"
+                >
+                  <Icon name="x" size={12} />
+                </button>
+              </div>
+            ))}
+            {photos.length < 12 ? (
+              <Button type="button" variant="secondary" onClick={() => fileInput.current?.click()}>
+                <Icon name="plus" size={16} />
+                {t('addPhotos')}
+              </Button>
+            ) : null}
+            <input
+              ref={fileInput}
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+              onChange={(e) => {
+                const picked = Array.from(e.target.files ?? []).filter((f) =>
+                  f.type.startsWith('image/'),
+                );
+                setPhotos((all) => [...all, ...picked].slice(0, 12));
+                e.target.value = '';
+              }}
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label={t('brand')} htmlFor="add-brand">
+            <SearchSelect
+              id="add-brand"
+              source={choices.brands}
+              value={form.brand}
+              onChange={(value) => change({ brand: String(value) })}
+            />
+          </Field>
+          <Field label={t('supplier')} htmlFor="add-supplier" hint={t('supplierHint')}>
+            <SearchSelect
+              id="add-supplier"
+              source={choices.suppliers}
+              value={form.supplierId}
+              onChange={(value) => change({ supplierId: String(value) })}
+            />
+          </Field>
+        </div>
       </section>
 
       <section className="grid gap-4 rounded-xl border border-border bg-card p-5">
@@ -239,66 +350,19 @@ export function AddItemPage() {
         </Field>
       </section>
 
-      <section className="rounded-xl border border-border bg-card">
-        <button
-          type="button"
-          onClick={() => setMore((m) => !m)}
-          aria-expanded={more}
-          className="flex w-full items-center justify-between px-5 py-3 text-left text-sm font-medium"
-        >
-          {t('moreTitle')}
-          <Icon
-            name="down"
-            size={16}
-            className={cn('transition-transform', more && 'rotate-180')}
-          />
-        </button>
-        {more ? (
-          <div className="grid gap-4 border-t border-border p-5 sm:grid-cols-2">
-            <Field label={t('description')} htmlFor="add-desc" hint={t('descriptionHint')}>
-              <textarea
-                id="add-desc"
-                value={form.description}
-                maxLength={4000}
-                rows={3}
-                onChange={(e) => change({ description: e.target.value })}
-                className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:border-primary"
-              />
-            </Field>
-            <Field label={t('nameRomanized')} htmlFor="add-roman" hint={t('nameRomanizedHint')}>
-              <Input
-                id="add-roman"
-                value={form.nameRomanized}
-                maxLength={160}
-                placeholder="kapada"
-                onChange={(e) => change({ nameRomanized: e.target.value })}
-              />
-            </Field>
-            <Field label={t('aliases')} htmlFor="add-aliases" hint={t('aliasesHint')}>
-              <ChipInput
-                id="add-aliases"
-                value={form.aliases}
-                onChange={(value) => change({ aliases: value })}
-              />
-            </Field>
-            <Field label={t('brand')} htmlFor="add-brand">
-              <SearchSelect
-                id="add-brand"
-                source={choices.brands}
-                value={form.brand}
-                onChange={(value) => change({ brand: String(value) })}
-              />
-            </Field>
-            <Field label={t('supplier')} htmlFor="add-supplier" hint={t('supplierHint')}>
-              <SearchSelect
-                id="add-supplier"
-                source={choices.suppliers}
-                value={form.supplierId}
-                onChange={(value) => change({ supplierId: String(value) })}
-              />
-            </Field>
-          </div>
-        ) : null}
+      <section className="grid gap-3 rounded-xl border border-border bg-card p-5">
+        <div>
+          <h2 className="font-heading text-base font-semibold">{t('groupsTitle')}</h2>
+          <p className="text-xs text-muted-foreground">{t('groupsNote')}</p>
+        </div>
+        <SearchSelect
+          multiple
+          source={priceGroups}
+          value={groupIds}
+          placeholder={t('groupsNone')}
+          aria-label={t('groupsTitle')}
+          onChange={(value) => setGroupIds(value as string[])}
+        />
       </section>
 
       <div className="flex flex-wrap items-center justify-between gap-3">

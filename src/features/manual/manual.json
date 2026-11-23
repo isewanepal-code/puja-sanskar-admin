@@ -1,14 +1,14 @@
 {
   "title": "Puja Sanskar Admin — Full Manual",
   "subtitle": "From setting up the shop to selling: every page, every box and every column, in plain words.",
-  "updated": "2026-11-24",
+  "updated": "2026-11-23",
   "chapters": [
     {
       "id": "start",
       "title": "0 · Before you start",
       "nepali": "सुरु गर्नु अघि यो पढ्नुहोस्।",
       "where": "Every page",
-      "intro": "The sidebar on the left goes in the order the work is done: 1 Setup, 2 Items, 3 Buy, 4 Stock, 5 Kits and pujas, 6 Sell, 7 Money. Do them in that order the first time. Every page is a sidebar entry; there are no tabs to look for. Switch language with EN | नेपाली at the top.",
+      "intro": "The sidebar on the left goes in the order the work is done: 1 Setup, 2 Items, 3 Buy, 4 Stock, 5 Kits and pujas, 6 Sell, 7 Returns, 8 Money, 9 Reports, then Offers, Website and Settings. Do them in that order the first time. Every page is a sidebar entry; there are no tabs to look for. Click a group's name to open or close it (the one you are in stays open; \"Expand all\" opens everything). Switch language with EN | नेपाली at the top.",
       "steps": [
         "Look at the top bar: Staging (yellow strip) is for practice; anything can be deleted. Production is real work: things already bought or sold cannot be deleted.",
         "Main branch (top right) is the shop whose stock you see and change.",
@@ -75,6 +75,19 @@
       "tips": ["Do not delete a category that has items; move the items first."]
     },
     {
+      "id": "item-groups",
+      "title": "1.1b · Item groups",
+      "nepali": "सामानका समूह (तिहारका सामान जस्ता)।",
+      "where": "Sidebar → 1 Setup → Item groups (under Categories)",
+      "intro": "A list you make yourself (Tihar items, Copper vessels): put items and kits in it to give them an offer at once, or to show them as a filter on the website. A group can sit inside another group.",
+      "steps": [
+        "Open Item groups and press the add button; give it a name.",
+        "Add items, kits or a whole category to it. Tick \"Show on the website\" to make it a customer filter.",
+        "You can also pick groups for an item while adding it (Add item → Item groups) or on its page."
+      ],
+      "tips": ["Many groups at once: Pujas, kits and groups Excel (chapter 5.3)."]
+    },
+    {
       "id": "units",
       "title": "1.2 · Units",
       "nepali": "नाप: g, kg, ml, L, m, pcs, set, मुठा…",
@@ -136,41 +149,39 @@
       "title": "2.1 · Add item",
       "nepali": "सामानको नाम मात्र। रङ/साइज, कति र मोल पछि Buy मा।",
       "where": "Sidebar → 2 Items → Add item",
-      "intro": "Say what the item is, nothing more. Rule B: each size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own item — add each one separately.",
+      "intro": "Say what the item is, nothing more. Rule B: each size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own item — add each one separately. The page has three sections only: 1 What is the item?, 2 How do you sell it?, 3 Item groups.",
       "fields": [
         [
           "Name (English) *",
           "Copper Worship Plate Small",
-          "Without colour (red cloth is just \"Cloth\"; colour comes when buying). Must not be the same as another item."
+          "Without colour (red cloth is just \"Cloth\"; colour comes when buying). Another item with the same name is refused."
         ],
         ["Name (Nepali) *", "तामाको पूजा थाली सानो", "Shown on the website and the bill."],
+        ["Name in Roman", "Tamako Puja Thali Sano", "Helps people find it typing English letters."],
+        ["Other names", "thal, plate", "More search words; Enter after each."],
+        [
+          "About this item (description)",
+          "Pure copper plate for puja",
+          "A line or two on what it is. The website shows it as a tooltip beside the name, in kit lists too."
+        ],
+        [
+          "Photos",
+          "pick files",
+          "The first photo is the main one; they are uploaded when you save. You can change them later on the item page."
+        ],
+        ["Brand", "Patanjali", "Optional; chosen from the Brands list."],
+        ["Usually bought from", "Patan Dhatu Kala Udhyog", "Chosen first on the Buy page."],
         [
           "How do you sell it? *",
           "By piece / By weight / By length / By litre / By size",
           "Decides the units offered when buying: By weight → g, kg; By length → m."
         ],
         ["Category *", "भाँडाकुँडा र घरमै हुने", "Where it is filed in the shop and website."],
-        [
-          "Name in Roman (More details)",
-          "Tamako Puja Thali Sano",
-          "Helps people find it typing English letters."
-        ],
-        ["Other names (More details)", "thal, plate", "More search words; Enter after each."],
-        ["Brand (More details)", "Patanjali", "Optional."],
-        [
-          "Usually bought from (More details)",
-          "Patan Dhatu Kala Udhyog",
-          "Chosen first on the Buy page."
-        ],
-        [
-          "\"Save it anyway\" tick",
-          "—",
-          "Only when a warning says a similar name exists but this really is a different item."
-        ]
+        ["Item groups", "Tihar items", "Optional: groups to put the item in (Setup → Item groups)."]
       ],
       "steps": [
         "Fill the boxes and press Save item.",
-        "Then choose: Buy it now (go to Buy with this item), Add another item, or Open the item.",
+        "Then choose: Set quantity and price (the next step), Add another item, or Open the item.",
         "Add another item keeps the Category and \"How do you sell it?\" you just used, because the next item is usually the same kind."
       ],
       "tips": ["Many items at once? Use All items → Upload Excel (chapter 2.4)."]
@@ -293,13 +304,35 @@
       ]
     },
     {
-      "id": "prices-groups",
-      "title": "2.5 · Selling price and Item groups",
-      "nepali": "मोल एक ठाउँमा; समूह बनाउने।",
-      "where": "Sidebar → 2 Items → Selling price / Item groups",
+      "id": "quantity-price",
+      "title": "2.5 · Set quantity and price",
+      "nepali": "किनेपछि: साना प्याक बनाउने र मोल राख्ने।",
+      "where": "Sidebar → 2 Items → Set quantity and price (or the button after Add item)",
+      "intro": "One page for any item of any category. An item is sold in packs (sizes): 200 g, 500 g, 1 kg, 1 set… Each pack has its own price and its own stock. Packs come from your item list Excel (the Variants column) or from Add sizes here; stock comes when you buy.",
+      "terms": [
+        [
+          "Pack (size)",
+          "One way the item is sold: 200 g, 500 g, 1 kg. Own price, own stock. This is a size of weight or amount; colours and clothing sizes (S, M, L) are \"Colour or size\" options."
+        ],
+        [
+          "Bulk size",
+          "What you buy in: a 25 kg sack is kept as 25 × \"1 kg\". It can be sold as 1 kg, or cut into smaller packs."
+        ],
+        [
+          "Make smaller packs",
+          "Opens some of a bulk pack into smaller ones (10 kg → 25 × 200 g + 10 × 500 g). Needs stock; the cost is shared over the new packs and any wastage is shown."
+        ]
+      ],
       "steps": [
-        "Selling price: every size of every item with its price, to change many at once. \"All packs\" lists every item, not only the first few.",
-        "Item groups: make a group (Tihar Items), put it inside another (Festival Items → Tihar Items → Laxmi Puja Items), tick \"Show on website\" to make it a website filter, and add items or kits to it. Many groups at once: Pujas, kits and groups Excel (chapter 5.3)."
+        "Choose the item (or arrive from Add item). You see every pack with its price.",
+        "No pack for the size you sell (say 100 g)? Press Add sizes: enter amount, unit and price for as many sizes as you like, even before buying. A new item with no pack opens this by itself.",
+        "Buy it (button on the page) so stock exists. Bought a big pack? Cut it with the \"Cut … into small packs\" button under \"What did you buy?\"",
+        "Type the price of each pack and press Save; the tick puts it on sale."
+      ],
+      "tips": [
+        "Prices that came from the Excel are already there; change them only if needed.",
+        "Ready-made packets (the supplier gave 200 g packets): buy them with the detailed buy page, no cutting needed.",
+        "Items groups moved: Setup → Item groups."
       ]
     },
     {
@@ -313,7 +346,11 @@
           "Birgunj Kirana Thok Bikreta",
           "Who sold it. Not in the list? \"+ New supplier\" opens the full supplier form; once saved, that supplier is chosen for this bill."
         ],
-        ["Bill number", "BKT-7781", "The number on the paper bill. Empty = one is made."],
+        [
+          "Supplier's bill number *",
+          "BKT-7781",
+          "The number printed on the bill the supplier gave you. Required: it ties the purchase to their bill and a supplier return can name it later."
+        ],
         ["Date", "2026-11-21", "The bill's date."],
         [
           "Item *",
@@ -352,7 +389,7 @@
         ]
       ],
       "steps": [
-        "Fill the top (supplier, bill no., date), then one line per thing bought. \"Add another item\" adds a line.",
+        "Fill the top (supplier, the supplier's bill number, date), then one line per thing bought. \"Add another item\" adds a line.",
         "If the supplier gave a discount on the whole bill, type it in Discount under the totals.",
         "Press Save: the bill is saved and everything goes into stock at once; Selling price opens next so you can price what you bought.",
         "Missing something? The box turns red and a message says what."
@@ -389,7 +426,7 @@
       "id": "bills",
       "title": "3.3 · Purchase bills",
       "nepali": "किनेका बिलहरू।",
-      "where": "Sidebar → 3 Buy → Purchase bills (Purchase returns and Supplier payments are the next two entries)",
+      "where": "Sidebar → 3 Buy → Purchase bills (Purchase returns and Supplier payments are separate entries; returns are under 7 Returns)",
       "columns": [
         ["Date", "The bill's date."],
         ["Supplier", "Who sold it."],
@@ -398,7 +435,13 @@
         ["Discount", "What the supplier took off the whole bill, if any."],
         ["Status", "Draft = saved, not in stock yet (✓ posts it). Posted = in stock."]
       ],
-      "tips": ["In Staging a posted bill can be deleted; its stock goes back out."]
+      "tips": ["In Staging a posted bill can be deleted; its stock goes back out."],
+      "intro": "The history of everything bought, with the supplier on each bill. A purchase is made on the Buy page only, so no bill is half filled in; here you look, check and follow up.",
+      "steps": [
+        "View (eye icon): the bill as entered: supplier with phone and PAN, every line, VAT, discount and total, with links to the supplier statement, paying the supplier and sending goods back.",
+        "To record a new purchase press Buy (new purchase): it opens the Buy page. Many bills from Excel: Upload Excel.",
+        "A draft left from before can still be posted (✓), edited or deleted."
+      ]
     },
     {
       "id": "stock",

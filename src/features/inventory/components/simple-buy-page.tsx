@@ -78,13 +78,6 @@ const vatOf = (l: { vat: string; itemVat: string }) =>
 // The unit most shops count each way of selling in, picked first: kg, metre, litre.
 const USUAL = ['pc', 'pcs', 'kg', 'm', 'l', 'ltr'];
 
-// A bill number for staff who have no paper bill: the day and time it was typed in.
-const autoBillNo = () => {
-  const now = new Date();
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `NB-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-};
-
 // One thing bought, as one row of the sheet: the item, its colour or size, how much, what one cost and
 // (if known) what one sells for.
 function LineRow({
@@ -422,7 +415,10 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
   const discountBad = discountProblem !== null;
   const billProblem =
     billTotal > MAX_MONEY ? t('billTooBig') : day > today() ? t('billDateFuture') : null;
-  const ready = Boolean(supplierId) && !firstProblem && !discountBad && !billProblem;
+  // The supplier's own bill number is always needed: it ties this purchase to their paper bill.
+  const billNoProblem = billNo.trim() === '' ? t('needBillNo') : null;
+  const ready =
+    Boolean(supplierId) && !billNoProblem && !firstProblem && !discountBad && !billProblem;
   const tryToSave = () => {
     if (ready) {
       save.mutate();
@@ -432,16 +428,17 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
     toast.error(
       !supplierId
         ? t('needSupplier')
-        : (firstProblem ?? discountProblem ?? billProblem ?? t('needSupplier')),
+        : (billNoProblem ?? firstProblem ?? discountProblem ?? billProblem ?? t('needSupplier')),
     );
     if (!supplierId) document.getElementById('buy-supplier')?.focus();
+    else if (billNoProblem) document.getElementById('buy-bill')?.focus();
   };
 
   const save = useMutation({
     mutationFn: async () => {
       const body = {
         supplierId,
-        supplierBillNumber: billNo.trim() || autoBillNo(),
+        supplierBillNumber: billNo.trim(),
         billDay: day,
         note: note.trim() || null,
         ...(discountAmount > 0 && { discount: discountAmount.toFixed(2) }),
@@ -548,9 +545,15 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
             {t('newSupplier')}
           </button>
         </Field>
-        <Field label={t('billNo')} htmlFor="buy-bill" hint={t('billNoHint')}>
+        <Field
+          label={`${t('billNo')} *`}
+          htmlFor="buy-bill"
+          hint={t('billNoHint')}
+          error={showErrors && billNoProblem ? billNoProblem : undefined}
+        >
           <Input
             id="buy-bill"
+            aria-invalid={showErrors && billNoProblem ? true : undefined}
             value={billNo}
             maxLength={60}
             placeholder={t('billNoPlaceholder')}
@@ -675,7 +678,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         <p className={cn('text-sm', ready ? 'text-muted-foreground' : 'text-destructive')}>
           {!supplierId
             ? t('needSupplier')
-            : (firstProblem ?? discountProblem ?? billProblem ?? t('ready'))}
+            : (billNoProblem ?? firstProblem ?? discountProblem ?? billProblem ?? t('ready'))}
         </p>
         {/* Never greyed out: pressing it with something missing shows what, in red. */}
         <Button disabled={save.isPending} onClick={tryToSave}>

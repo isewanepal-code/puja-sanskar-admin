@@ -6,31 +6,22 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState, type ReactNode } from 'react';
 
-import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
 import { Icon } from '@/components/icons';
 import { ConfirmDialog, useToast } from '@/components/overlays';
-import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ItemGroups } from '@/features/marketing';
-import { PhotosPanel, unitsFor } from '@/features/products';
+import { PhotosPanel } from '@/features/products';
 import { useTestModeOn } from '@/hooks/use-test-mode';
+import { AddSize, VariantRow } from './pack-rows';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 import { isApiError, request, type Schema } from '@/lib/api';
-import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
 type Product = Schema<'AdminProductResponse'>;
-type Variant = Schema<'AdminVariantResponse'>;
 type Level = Schema<'StockLevelResponse'>;
-
-const money = (amount: string | null | undefined) => (amount ? formatMoney(amount, 'en') : '—');
-
-// What one way of selling the item is called: its colours and sizes, else its amount (1 set, 50 g).
-const nameOf = (v: Variant) =>
-  v.options.length ? v.options.map((o) => o.valueEn).join(' · ') : v.label;
 
 // A plain section: a heading, a line saying what it is for, and its content.
 function Section({
@@ -52,181 +43,6 @@ function Section({
       </div>
       {children}
     </section>
-  );
-}
-
-// One way the item is sold: how much is in stock, and its selling price, changed right here.
-function VariantRow({
-  product,
-  variant,
-  stock,
-}: {
-  product: Product;
-  variant: Variant;
-  stock: number;
-}) {
-  const t = useTranslations('inventory.itemPage');
-  const tf = useTranslations('forms');
-  const toast = useToast();
-  const queryClient = useQueryClient();
-  const [price, setPrice] = useState(String(Number(variant.price)));
-  const changed = Number(price) !== Number(variant.price) || !variant.isActive;
-  const save = useMutation({
-    mutationFn: (onSale: boolean) =>
-      request('PATCH', `/admin/products/${product.id}/variants/${variant.id}`, {
-        body: { price: String(Number(price)), pricesIncludeTax: true, isActive: onSale },
-      }),
-    onSuccess: async (_d, onSale) => {
-      toast.success(onSale ? t('priceSaved') : t('offSale'));
-      await queryClient.invalidateQueries({ queryKey: ['products'] });
-    },
-    onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
-  });
-  const unit = variant.label || variant.pack?.unit.symbol || '';
-
-  return (
-    <tr className="border-t border-border">
-      <td className="px-3 py-2.5">
-        <span className="inline-flex items-center gap-2 font-medium">
-          {variant.options.map((o) =>
-            o.colorHex ? (
-              <span
-                key={o.valueId}
-                className="inline-block size-3 rounded-full border border-border"
-                style={{ background: o.colorHex }}
-              />
-            ) : null,
-          )}
-          {nameOf(variant)}
-        </span>
-      </td>
-      <td className="px-3 py-2.5 text-right tabular-nums">
-        {stock > 0 ? (
-          <span className="font-semibold">{t('stockCount', { n: stock, unit })}</span>
-        ) : (
-          <Link href={routes.buy(product.id)} className="text-destructive underline">
-            {t('noStockBuy')}
-          </Link>
-        )}
-      </td>
-      <td className="px-3 py-2.5 text-right text-muted-foreground tabular-nums">
-        {money(variant.cost)}
-      </td>
-      <td className="px-3 py-2.5">
-        <div className="flex items-center justify-end gap-2">
-          <span className="text-xs text-muted-foreground">Rs</span>
-          <Input
-            aria-label={t('sellPriceOf', { name: nameOf(variant) })}
-            inputMode="decimal"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-28 text-right"
-          />
-          <Button
-            size="sm"
-            disabled={!changed || !(Number(price) > 0) || save.isPending}
-            onClick={() => save.mutate(true)}
-          >
-            {variant.isActive ? tf('save') : t('putOnSale')}
-          </Button>
-        </div>
-      </td>
-      <td className="px-3 py-2.5 text-center">
-        {variant.isActive ? (
-          <button
-            type="button"
-            title={t('takeOffSale')}
-            onClick={() => save.mutate(false)}
-            disabled={save.isPending}
-          >
-            <Badge tone="success">{t('onSale')}</Badge>
-          </button>
-        ) : (
-          <Badge tone="warning">{t('notOnSale')}</Badge>
-        )}
-      </td>
-    </tr>
-  );
-}
-
-// Another way to sell the same item (a 2 kg bag next to 1 kg): how much, which unit, and its price.
-function AddSize({ product, onDone }: { product: Product; onDone: () => void }) {
-  const t = useTranslations('inventory.itemPage');
-  const tf = useTranslations('forms');
-  const toast = useToast();
-  const queryClient = useQueryClient();
-  const [amount, setAmount] = useState('');
-  const [unitId, setUnitId] = useState('');
-  const [price, setPrice] = useState('');
-  const units = useQuery({
-    queryKey: ['units-for', product.sellBy],
-    queryFn: () => unitsFor(product.sellBy).load(),
-  });
-  const symbol = (units.data ?? []).find((u) => u.value === unitId)?.detail ?? '';
-  const label = `${Number(amount)} ${symbol}`.trim();
-  const add = useMutation({
-    mutationFn: () =>
-      request('POST', `/admin/products/${product.id}/variants`, {
-        body: {
-          sku: `${product.code.replace(/_/g, '-')}-${Number(amount)}${symbol}`
-            .toUpperCase()
-            .replace(/[^A-Z0-9-]/g, '')
-            .slice(0, 40),
-          label,
-          packQuantity: Number(amount),
-          packUnitId: unitId,
-          price: String(Number(price)),
-          pricesIncludeTax: true,
-          isActive: true,
-        },
-      }),
-    onSuccess: async () => {
-      toast.success(t('sizeAdded', { label }));
-      await queryClient.invalidateQueries({ queryKey: ['products'] });
-      onDone();
-    },
-    onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
-  });
-  const ready = Number(amount) > 0 && unitId && Number(price) > 0;
-
-  return (
-    <div className="grid gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-[8rem_10rem_10rem_auto] sm:items-end">
-      <Field label={t('sizeAmount')} htmlFor="size-amount">
-        <Input
-          id="size-amount"
-          inputMode="decimal"
-          value={amount}
-          placeholder="2"
-          autoFocus
-          onChange={(e) => setAmount(e.target.value)}
-        />
-      </Field>
-      <Field label={t('sizeUnit')} htmlFor="size-unit">
-        <SearchSelect
-          id="size-unit"
-          source={unitsFor(product.sellBy)}
-          value={unitId}
-          onChange={(value) => setUnitId(String(value))}
-        />
-      </Field>
-      <Field label={t('sizePrice')} htmlFor="size-price">
-        <Input
-          id="size-price"
-          inputMode="decimal"
-          value={price}
-          placeholder="250"
-          onChange={(e) => setPrice(e.target.value)}
-        />
-      </Field>
-      <div className="flex gap-2">
-        <Button variant="secondary" onClick={onDone}>
-          {tf('cancel')}
-        </Button>
-        <Button disabled={!ready || add.isPending} onClick={() => add.mutate()}>
-          {add.isPending ? tf('saving') : t('sizeSave')}
-        </Button>
-      </div>
-    </div>
   );
 }
 

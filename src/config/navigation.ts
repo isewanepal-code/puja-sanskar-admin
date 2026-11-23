@@ -113,6 +113,12 @@ export const navigation: NavGroup[] = [
     key: 'setup',
     sections: [
       { key: 'catalogue', href: routes.categories(), icon: 'list', permission: 'catalogue:read' },
+      {
+        key: 'priceGroups',
+        href: routes.priceGroups(),
+        icon: 'archive',
+        permission: 'promotions:manage',
+      },
       { key: 'units', href: routes.units(), icon: 'grain', permission: 'catalogue:read' },
       { key: 'brands', href: routes.brands(), icon: 'tag', permission: 'catalogue:read' },
       { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
@@ -126,14 +132,13 @@ export const navigation: NavGroup[] = [
     key: 'items',
     sections: [
       { key: 'addItem', href: routes.addItem(), icon: 'plus', permission: 'catalogue:write' },
-      { key: 'items', href: routes.products(), icon: 'leaf', permission: 'catalogue:read' },
-      { key: 'sellPrice', href: routes.itemPrices(), icon: 'tag', permission: 'catalogue:write' },
       {
-        key: 'priceGroups',
-        href: routes.priceGroups(),
-        icon: 'archive',
-        permission: 'promotions:manage',
+        key: 'sellPrice',
+        href: routes.quantityPrice(),
+        icon: 'tag',
+        permission: 'catalogue:write',
       },
+      { key: 'items', href: routes.products(), icon: 'leaf', permission: 'catalogue:read' },
     ],
   },
   {

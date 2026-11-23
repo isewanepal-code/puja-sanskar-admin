@@ -12,7 +12,10 @@ import {
   useResourceText,
   WorkbookUploadButton,
 } from '@/components/resource';
-import { Button, IconButton } from '@/components/ui/button';
+import { Icon } from '@/components/icons';
+import { Button, buttonVariants, IconButton } from '@/components/ui/button';
+import { Link } from '@/i18n/navigation';
+import { routes } from '@/lib/routes';
 import { useTestModeOn } from '@/hooks/use-test-mode';
 import { isApiError, request } from '@/lib/api';
 
@@ -27,6 +30,7 @@ import {
 } from '../resources';
 
 import { PurchaseBillForm } from './purchase-bill-form';
+import { PurchaseBillView } from './purchase-bill-view';
 import { PurchaseReturnForm } from './purchase-return-form';
 
 export function SuppliersScreen() {
@@ -42,7 +46,9 @@ export function PurchaseBillsScreen() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const resource = useMemo(() => purchaseBillsResource(t), [t]);
-  const [editing, setEditing] = useState<PurchaseBill | 'new' | null>(null);
+  // A draft left over from before is still edited here; a bill that is posted is only looked at.
+  const [editing, setEditing] = useState<PurchaseBill | null>(null);
+  const [viewing, setViewing] = useState<PurchaseBill | null>(null);
   const [removing, setRemoving] = useState<PurchaseBill | null>(null);
   // Staging: a posted bill can be deleted too, and the stock it brought in goes with it.
   const testMode = useTestModeOn();
@@ -88,9 +94,11 @@ export function PurchaseBillsScreen() {
               description={tb('manyNote')}
               refresh={['purchaseBills', 'stock', 'products', 'suppliers']}
             />
-            <Button icon="plus" onClick={() => setEditing('new')}>
+            {/* New purchases are made in one place, the Buy page, so no bill is half filled in. */}
+            <Link href={routes.buy()} className={buttonVariants({ variant: 'primary' })}>
+              <Icon name="plus" size={16} />
               {tp('newBill')}
-            </Button>
+            </Link>
           </>
         }
         rowActions={(row) =>
@@ -107,7 +115,7 @@ export function PurchaseBillsScreen() {
             </>
           ) : (
             <>
-              <IconButton icon="eye" label={tp('view')} onClick={() => setEditing(row)} />
+              <IconButton icon="eye" label={tp('view')} onClick={() => setViewing(row)} />
               {testMode ? (
                 <IconButton
                   icon="trash"
@@ -121,13 +129,9 @@ export function PurchaseBillsScreen() {
         }
       />
       {editing ? (
-        <PurchaseBillForm
-          key={editing === 'new' ? 'new' : editing.id}
-          bill={editing === 'new' ? undefined : editing}
-          open
-          onClose={() => setEditing(null)}
-        />
+        <PurchaseBillForm key={editing.id} bill={editing} open onClose={() => setEditing(null)} />
       ) : null}
+      {viewing ? <PurchaseBillView bill={viewing} onClose={() => setViewing(null)} /> : null}
       <ConfirmDelete
         name={removing ? removing.supplierBillNumber : null}
         pending={remove.isPending}

@@ -32,6 +32,7 @@ export const routes = {
   flowItem: () => '/start/item',
   newPurchase: () => '/start/buy',
   itemPrices: () => '/start/prices',
+  quantityPrice: (itemId?: string) => withQuery('/inventory/quantity-price', { item: itemId }),
   stockWork: () => '/start/work',
   kit: (id: string) => `/kits/${id}`,
 
