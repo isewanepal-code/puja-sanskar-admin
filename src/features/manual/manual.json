@@ -274,7 +274,7 @@
         ["क्र.सं.", "Row number."],
         [
           "समूह (Group - नेपाली) / Group (Romanized) / Group (English)",
-          "The group inside the sheet's category (टीका, चन्दन र रङ). Same words = same group; a new group is made on upload and shows as a subcategory."
+          "The Item group the item belongs to (टीका, चन्दन र रङ). Same words = same group; a new group is made on upload. Groups are not categories."
         ],
         [
           "सामग्री (Nepali Item Name) *",
@@ -323,7 +323,7 @@
       ],
       "steps": [
         "Download Excel. Grey rows are in the shop (locked); only the yellow cells (other names, purpose, descriptions, price, supplier) can change.",
-        "Write new items in the white rows below. A new sheet = a new category (sheet name = category name); a new group name makes a new subcategory.",
+        "Write new items in the white rows below. A new sheet = a new category (sheet name = category name); a new group name makes a new Item group.",
         "Upload Excel → Choose the .xlsx → Check the file. Mistakes are listed by sheet, row and column; nothing is saved until all are fixed. Your master list (Ver 5) loads as it is; the guide sheet's English names become the categories' English names.",
         "Press Import. Uploading the same file again adds only the new rows and changes only what you edited in the yellow cells."
       ]

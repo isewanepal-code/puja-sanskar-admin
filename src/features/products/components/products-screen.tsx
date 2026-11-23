@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { SearchSelect } from '@/components/controls';
 import { priceGroups } from '@/features/marketing';
 import { ResourceScreen, WorkbookUploadButton } from '@/components/resource';
+import { Icon } from '@/components/icons';
 import { IconButton, buttonVariants } from '@/components/ui/button';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 import { routes } from '@/lib/routes';
@@ -36,8 +37,6 @@ export function ProductsScreen() {
       // Download Excel gives the item list as the shop keeps it: a sheet per category.
       exportPath: '/admin/items/sheet',
       listQuery: { ...productsResource.listQuery, ...(groupId && { groupId }) },
-      // An item is changed on its own page.
-      canEdit: false,
       // The quantities and their prices, side by side; pressing either opens all of them.
       columns: productsResource.columns.map((column) =>
         column.key === 'variants'
@@ -78,13 +77,18 @@ export function ProductsScreen() {
             </Link>
           </>
         }
+        // The pen changes the item's details; the tag opens its quantities and prices.
+        editLabel={t('editItem')}
+        editOnRowClick={false}
         rowActions={(row) => (
           <>
             <Link
-              href={routes.item(row.id)}
-              className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+              href={routes.quantityPrice(row.id)}
+              aria-label={t('changeSizes')}
+              title={t('changeSizes')}
+              className={buttonVariants({ variant: 'ghost', size: 'icon' })}
             >
-              {t('openItem')}
+              <Icon name="tag" size={16} aria-hidden="true" />
             </Link>
             <IconButton
               icon="archive"

@@ -43,6 +43,10 @@ type ResourceScreenProps<T> = {
   rowActions?: (row: T) => ReactNode;
   // Above the table, beside the search (a bulk-entry button…).
   toolbar?: ReactNode;
+  // The tooltip of the edit pen when "Edit" is too short to say what is changed.
+  editLabel?: string;
+  // Pressing a row opens its edit form; off, only the pen does.
+  editOnRowClick?: boolean;
   // After a new record is saved: open what comes next for it (a kit's items…).
   onCreated?: (row: T) => void;
   // Under the form of a saved record: what belongs to it (an item's packs and prices…).
@@ -55,6 +59,8 @@ type ResourceScreenProps<T> = {
 export function ResourceScreen<T>({
   resource,
   rowActions,
+  editLabel,
+  editOnRowClick = true,
   toolbar,
   onCreated,
   editFooter,
@@ -343,7 +349,7 @@ export function ResourceScreen<T>({
             },
           }
         }
-        onRowClick={canEdit ? (row) => setEditing(row) : undefined}
+        onRowClick={canEdit && editOnRowClick ? (row) => setEditing(row) : undefined}
         onTextSearch={
           resource.list === 'paged' && resource.searchable !== false
             ? (texts) => {
@@ -358,7 +364,11 @@ export function ResourceScreen<T>({
                 <div className="inline-flex items-center gap-0.5">
                   {rowActions?.(row)}
                   {canEdit ? (
-                    <IconButton icon="edit" label={tf('edit')} onClick={() => setEditing(row)} />
+                    <IconButton
+                      icon="edit"
+                      label={editLabel ?? tf('edit')}
+                      onClick={() => setEditing(row)}
+                    />
                   ) : null}
                   {resource.canDelete !== false ? (
                     <IconButton
