@@ -3175,8 +3175,8 @@
       "empty": "अहिलेसम्म समूह छैन।",
       "fields": {
         "code": "कोड",
-        "nameNe": "नेपालीमा नाम",
-        "name": "समूहको नाम",
+        "nameNe": "समूह (नेपाली)",
+        "name": "समूह (English)",
         "memberCount": "यो समूहमा",
         "isActive": "चालु गरिएको",
         "categoryIds": "पूरै वर्ग थप्नुहोस्",
@@ -3188,7 +3188,8 @@
         "children": "भित्रका समूह",
         "parents": "भित्र",
         "totalCount": "भित्र समूहसहित",
-        "onSaleCount": "अहिले बिक्रीमा"
+        "onSaleCount": "अहिले बिक्रीमा",
+        "nameRomanized": "समूह (Romanized)"
       },
       "hints": {
         "name": "जस्तै: तीज सामग्री।",

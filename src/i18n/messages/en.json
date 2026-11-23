@@ -2530,20 +2530,21 @@
       "none": "—",
       "fields": {
         "code": "Code",
-        "name": "Name of the group",
+        "name": "Group (English)",
         "memberCount": "In this group",
         "isActive": "Switched on",
         "categoryIds": "Add a whole category",
         "productIds": "Add items",
         "kitIds": "Add kits",
         "codes": "Or paste item codes",
-        "nameNe": "Name in Nepali",
+        "nameNe": "Group (Nepali)",
         "childGroupIds": "Groups inside this group",
         "showOnWebsite": "Show on the website",
         "children": "Groups inside",
         "parents": "Inside",
         "totalCount": "With groups inside",
-        "onSaleCount": "On sale now"
+        "onSaleCount": "On sale now",
+        "nameRomanized": "Group (Romanized)"
       },
       "hints": {
         "name": "For example: Teej samagri.",

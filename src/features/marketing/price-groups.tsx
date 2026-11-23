@@ -42,16 +42,20 @@ export function priceGroupsResource(): Resource<PriceGroup> {
         cell: (row) => <span className="font-semibold">{row.code}</span>,
         sortValue: (row) => row.code,
       },
+      // The group as the shop's list writes it: Nepali, Romanized and English.
+      {
+        key: 'nameNe',
+        cell: (row) => row.nameNe ?? '—',
+        sortValue: (row) => row.nameNe ?? '',
+      },
+      {
+        key: 'nameRomanized',
+        cell: (row) => row.nameRomanized ?? '—',
+        sortValue: (row) => row.nameRomanized ?? '',
+      },
       {
         key: 'name',
-        cell: (row) => (
-          <>
-            {row.name}
-            {row.nameNe ? (
-              <span className="ml-2 text-xs text-muted-foreground">{row.nameNe}</span>
-            ) : null}
-          </>
-        ),
+        cell: (row) => row.name,
         sortValue: (row) => row.name,
       },
       // The groups inside this one, and the groups this one is inside.
@@ -124,6 +128,7 @@ export function priceGroupsResource(): Resource<PriceGroup> {
     fields: [
       { name: 'name', kind: 'text', required: true, max: 160 },
       { name: 'nameNe', kind: 'text', max: 160 },
+      { name: 'nameRomanized', kind: 'text', max: 160 },
       // Groups put inside this one: an offer or filter on this group reaches everything in them too.
       {
         name: 'childGroupIds',

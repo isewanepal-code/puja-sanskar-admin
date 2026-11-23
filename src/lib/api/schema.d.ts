@@ -10026,6 +10026,7 @@ export interface components {
       code: string;
       name: string;
       nameNe: string | null;
+      nameRomanized: string | null;
       /**
        * @description Web address
        * @example teej-samagri
@@ -10070,6 +10071,7 @@ export interface components {
       code: string;
       name: string;
       nameNe: string | null;
+      nameRomanized: string | null;
       /**
        * @description Web address
        * @example teej-samagri
@@ -10113,6 +10115,11 @@ export interface components {
        */
       nameNe?: string | null;
       /**
+       * @description The name in English letters, as people type it when they search
+       * @example Teej samagri
+       */
+      nameRomanized?: string | null;
+      /**
        * @description Offered to shoppers on the website as a way to narrow items: only this group (and the groups inside it)
        * @default false
        */
@@ -10137,6 +10144,11 @@ export interface components {
        * @example तीज सामग्री
        */
       nameNe?: string | null;
+      /**
+       * @description The name in English letters, as people type it when they search
+       * @example Teej samagri
+       */
+      nameRomanized?: string | null;
       /**
        * @description Offered to shoppers on the website as a way to narrow items: only this group (and the groups inside it)
        * @default false
