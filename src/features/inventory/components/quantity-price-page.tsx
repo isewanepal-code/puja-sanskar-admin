@@ -126,12 +126,28 @@ function Editor({ product }: { product: Product }) {
 
   const live = rows.filter((r) => !r.removed);
   const badPrice = (r: Row) => !(Number(r.price) > 0) || Number(r.price) > 100_000_000;
+  // The same amount and unit twice (with no colour to tell them apart) would clash on its code.
+  const sameSize = (r: Row, o: Row, packOf: (x: Row) => string) =>
+    r.key !== o.key && !r.optionIds.length && !o.optionIds.length && packOf(r) === packOf(o);
+  const packOfRow = (x: Row) => {
+    const v = variantOf(x.id);
+    return v?.pack
+      ? `${Number(v.pack.quantity)}|${v.pack.unit.id}`
+      : `${Number(x.amount)}|${x.unitId}`;
+  };
+  const isDuplicate = (r: Row): boolean =>
+    !r.id &&
+    touched(r) &&
+    Number(r.amount) > 0 &&
+    Boolean(r.unitId) &&
+    live.some((o) => sameSize(r, o, packOfRow) && (o.id || live.indexOf(o) < live.indexOf(r)));
   const rowBad = (r: Row): boolean => {
     if (r.id) return r.onSale && badPrice(r);
     if (!touched(r)) return false;
-    return !(Number(r.amount) > 0) || !r.unitId || badPrice(r);
+    return !(Number(r.amount) > 0) || !r.unitId || badPrice(r) || isDuplicate(r);
   };
   const problem = live.some(rowBad);
+  const hasDuplicate = live.some(isDuplicate);
 
   const changedExisting = rows.filter((r) => {
     const v = variantOf(r.id);
@@ -148,7 +164,18 @@ function Editor({ product }: { product: Product }) {
 
   const save = useMutation({
     mutationFn: async () => {
-      for (const r of removing) {
+      // The default pack cannot be deleted while another sells: hand the default over first,
+      // and delete the default last so the others go without a fuss.
+      const staying = rows.find((r) => r.id && !r.removed && r.onSale && variantOf(r.id)?.isActive);
+      const leaving = [...removing].sort(
+        (a, b) => Number(variantOf(a.id)?.isDefault) - Number(variantOf(b.id)?.isDefault),
+      );
+      for (const r of leaving) {
+        if (variantOf(r.id)?.isDefault && staying?.id) {
+          await request('PATCH', `/admin/products/${product.id}/variants/${staying.id}`, {
+            body: { isDefault: true },
+          });
+        }
         await request('DELETE', `/admin/products/${product.id}/variants/${r.id}`);
       }
       for (const r of changedExisting) {
@@ -161,14 +188,25 @@ function Editor({ product }: { product: Product }) {
           },
         });
       }
+      const usedSkus = new Set(
+        product.variants.filter((v) => !removing.some((r) => r.id === v.id)).map((v) => v.sku),
+      );
       for (const r of adding) {
         const symbol = symbolOf(r.unitId);
+        const base = `${product.code.replace(/_/g, '-')}-${Number(r.amount)}${symbol}`
+          .toUpperCase()
+          .replace(/[^A-Z0-9-]/g, '');
+        // Same pack in another colour: a number keeps its code apart.
+        let n = 1;
+        let sku = base.slice(0, 40);
+        while (usedSkus.has(sku)) {
+          n += 1;
+          sku = `${base.slice(0, 40 - String(n).length - 1)}-${n}`;
+        }
+        usedSkus.add(sku);
         await request('POST', `/admin/products/${product.id}/variants`, {
           body: {
-            sku: `${product.code.replace(/_/g, '-')}-${Number(r.amount)}${symbol}`
-              .toUpperCase()
-              .replace(/[^A-Z0-9-]/g, '')
-              .slice(0, 40),
+            sku,
             label: `${Number(r.amount)} ${symbol}`.trim(),
             packQuantity: Number(r.amount),
             packUnitId: r.unitId,
@@ -363,7 +401,13 @@ function Editor({ product }: { product: Product }) {
             tried && problem ? 'text-sm text-destructive' : 'text-sm text-muted-foreground'
           }
         >
-          {tried && problem ? t('fixRows') : count === 0 ? t('nothingChanged') : t('helpLine')}
+          {tried && problem
+            ? hasDuplicate
+              ? t('duplicateRow')
+              : t('fixRows')
+            : count === 0
+              ? t('nothingChanged')
+              : t('helpLine')}
         </p>
         <Button
           disabled={count === 0 || save.isPending}

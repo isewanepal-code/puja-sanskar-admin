@@ -4814,6 +4814,7 @@
     "undo": "Undo",
     "addRow": "+ Add another quantity",
     "removeNote": "The removed quantities are deleted when you save. One that already has stock or bills cannot be deleted: untick On sale instead.",
+    "duplicateRow": "You already have this quantity in the table. Change its price there instead.",
     "fixRows": "Each quantity needs a price above 0; a new one also needs an amount and a unit."
   },
   "menuAccess": {
