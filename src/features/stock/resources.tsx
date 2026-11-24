@@ -1,17 +1,15 @@
 import { branchChoices } from '@/features/branches';
 import type { Resource } from '@/components/resource';
 import { request } from '@/lib/api';
-import { Badge } from '@/components/ui/badge';
 import type { Schema } from '@/lib/api';
 import { formatDateTime, formatMoney } from '@/lib/format';
+
+import { StockStatus } from './components/stock-status';
 
 type Level = Schema<'StockLevelResponse'>;
 type Product = Schema<'AdminProductResponse'>;
 type Movement = Schema<'StockMovementResponse'>;
 type Name = (key: string) => string;
-
-// Buying is not here: a purchase bill (Buy page) adds stock with its supplier and cost.
-const MOVEMENT_KINDS = ['RETURN', 'DAMAGE', 'ADJUSTMENT'] as const;
 
 // Stock that leaves the shelf can be no more than what is free to use here.
 const withinAvailable = (level: Level, quantity: unknown) =>
@@ -26,18 +24,21 @@ const withinAvailable = (level: Level, quantity: unknown) =>
     : null;
 
 // One product's packs, each with its stock: a new pack has no stock row until its first change.
-export type StockShow = 'all' | 'low' | 'out';
+// In stock is where the list opens: what was bought and is on the shelf. Sizes nobody has bought yet are
+// under All sizes, not mixed in.
+export type StockShow = 'in' | 'low' | 'out' | 'all';
 
-export const STOCK_SHOWS: readonly StockShow[] = ['all', 'low', 'out'];
+export const STOCK_SHOWS: readonly StockShow[] = ['in', 'low', 'out', 'all'];
 
 export const parseStockShow = (value: string | undefined): StockShow =>
-  STOCK_SHOWS.find((show) => show === value) ?? 'all';
+  STOCK_SHOWS.find((show) => show === value) ?? 'in';
 
 async function packsOf(productId: string, show: StockShow): Promise<Level[]> {
   const product = await request<Product>('GET', `/admin/products/${productId}`);
   const levels = await Promise.all(
     product.variants.map((variant) => request<Level>('GET', `/admin/stock-levels/${variant.id}`)),
   );
+  if (show === 'in') return levels.filter((level) => level.onHand > 0);
   if (show === 'low') return levels.filter((level) => level.isLowStock);
   if (show === 'out') return levels.filter((level) => level.available <= 0);
   return levels;
@@ -59,29 +60,13 @@ export function stockResource(
 ): Resource<Level> {
   return {
     key: 'stock',
-    // What is on the shelf is counted right in the list: the difference is recorded as a shelf count.
-    inline: {
-      onHand: {
-        type: 'quantity',
-        allowZero: true,
-        value: (row) => row.onHand,
-        save: (row, value) =>
-          request('POST', `/admin/stock-levels/${row.variant.id}/movements`, {
-            body: {
-              type: 'ADJUSTMENT',
-              quantity: Number(value) - row.onHand,
-              reference: 'Shelf count',
-              note: `Counted ${value}, system had ${row.onHand}`,
-            },
-          }),
-      },
-    },
     path: '/admin/stock-levels',
     exportPath: '/admin/stock-levels/export',
     list: productId ? 'all' : 'paged',
     loadAll: productId ? () => packsOf(productId, show) : undefined,
     // Part of the list's cache key too, so each filter keeps its own list.
     listQuery: {
+      ...(show === 'in' && { inStock: 'true' }),
       ...(show === 'low' && { lowStock: 'true' }),
       ...(show === 'out' && { outOfStock: 'true' }),
       ...(productId && { productId }),
@@ -95,50 +80,44 @@ export function stockResource(
     rowId: (row) => row.variant.id,
     rowLabel: (row) => `${row.product.nameNe} · ${row.variant.label}`,
     initialSort: { key: 'available', direction: 'asc' },
+    groupBy: {
+      of: (row) => `${row.product.nameNe} · ${row.product.nameEn}`,
+      label: (key) => key,
+      order: [],
+    },
     modalSize: 'xs',
     columns: [
+      // The item is the heading above its sizes, so the first column is the size itself.
       {
-        key: 'product',
-        cell: (row) => (
-          <div className="max-w-[11rem] min-w-0">
-            <div className="truncate font-medium">{row.product.nameNe}</div>
-            {/* The code (SKU) stays findable: hover the English name. */}
-            <div className="truncate text-xs text-muted-foreground" title={row.variant.sku}>
-              {row.product.nameEn}
-            </div>
-          </div>
-        ),
-        sortValue: (row) => row.product.nameEn,
+        key: 'label',
+        cell: (row) => <span className="font-medium">{row.variant.label}</span>,
+        sortValue: (row) => row.variant.label,
       },
-      { key: 'label', cell: (row) => row.variant.label, sortValue: (row) => row.variant.label },
-      { key: 'onHand', cell: (row) => row.onHand, sortValue: (row) => row.onHand, align: 'right' },
       {
-        // Plain words for what can be sold: OK, Low or None; what is held for orders only when there is some.
+        key: 'onHand',
+        cell: (row) => <span className="font-semibold tabular-nums">{row.onHand}</span>,
+        sortValue: (row) => row.onHand,
+        align: 'right',
+      },
+      {
+        // Plain words: OK, Low, Sold out, or Not bought yet; what is held for orders only when there is some.
         key: 'available',
-        cell: (row) => (
-          <div className="grid justify-items-end gap-0.5">
-            <Badge tone={row.available <= 0 ? 'danger' : row.isLowStock ? 'warning' : 'success'}>
-              {row.available <= 0 ? 'None' : row.isLowStock ? 'Low' : 'OK'}
-            </Badge>
-            {row.reserved > 0 ? (
-              <span className="text-[0.7rem] text-muted-foreground">
-                {row.reserved} kept for orders
-              </span>
-            ) : null}
-          </div>
-        ),
+        cell: (row) => <StockStatus level={row} />,
         sortValue: (row) => row.available,
         align: 'right',
       },
       {
-        key: 'reorderLevel',
-        cell: (row) => row.reorderLevel ?? '—',
-        sortValue: (row) => row.reorderLevel,
-        align: 'right',
-      },
-      {
         key: 'value',
-        cell: (row) => formatMoney(row.value, 'en'),
+        cell: (row) => (
+          <div className="grid justify-items-end gap-0.5">
+            <span className="tabular-nums">{formatMoney(row.value, 'en')}</span>
+            {row.onHand > 0 && Number(row.avgCost) > 0 ? (
+              <span className="text-[0.7rem] text-muted-foreground tabular-nums">
+                {formatMoney(row.avgCost, 'en')} each
+              </span>
+            ) : null}
+          </div>
+        ),
         sortValue: (row) => Number(row.value),
         align: 'right',
       },
@@ -151,42 +130,6 @@ export function stockResource(
       },
       { name: 'shelfLocation', kind: 'text', max: 60 },
     ],
-  };
-}
-
-// One stock change for a pack: what came in, went back, broke or was counted.
-export function movementResource(level: Level, name: Name): Resource<never> {
-  return {
-    key: 'movements',
-    scope: 'stock',
-    path: `/admin/stock-levels/${level.variant.id}/movements`,
-    list: 'all',
-    rowId: () => '',
-    rowLabel: () => level.variant.sku,
-    columns: [],
-    fields: [
-      {
-        name: 'type',
-        kind: 'select',
-        required: true,
-        options: MOVEMENT_KINDS.map((kind) => ({ value: kind, label: name(`kinds.${kind}`) })),
-      },
-      {
-        name: 'quantity',
-        kind: 'number',
-        required: true,
-        pattern: { regex: /^-?\d{1,6}(\.\d{1,3})?$/, message: 'A quantity such as 12 or 1.5' },
-      },
-      { name: 'reference', kind: 'text', max: 100 },
-      { name: 'note', kind: 'textarea', max: 500 },
-    ],
-    // Damage takes stock out; so does a negative adjustment.
-    check: ({ type, quantity }) =>
-      type === 'DAMAGE'
-        ? withinAvailable(level, quantity)
-        : type === 'ADJUSTMENT' && Number(quantity) < 0
-          ? withinAvailable(level, -Number(quantity))
-          : null,
   };
 }
 

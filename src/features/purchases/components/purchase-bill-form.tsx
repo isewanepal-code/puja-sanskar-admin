@@ -1,8 +1,8 @@
 'use client';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
@@ -16,11 +16,27 @@ import { isApiError, request } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 
+import { packInfo } from '../pack-info';
 import type { PurchaseBill } from '../resources';
 
-type Line = { variantId: string; quantity: string; unitCost: string; vatRate: string };
+type Line = {
+  variantId: string;
+  quantity: string;
+  unitCost: string;
+  vatRate: string;
+  // How much one sack / box / roll holds (said once, kept on the pack), and in which unit.
+  holds: string;
+  holdsUnit: string;
+};
 
-const emptyLine = (): Line => ({ variantId: '', quantity: '1', unitCost: '', vatRate: '' });
+const emptyLine = (): Line => ({
+  variantId: '',
+  quantity: '1',
+  unitCost: '',
+  vatRate: '',
+  holds: '',
+  holdsUnit: '',
+});
 const today = () => new Date().toISOString().slice(0, 10);
 const amountOf = (l: Line) => (Number(l.quantity) || 0) * (Number(l.unitCost) || 0);
 const vatOf = (l: Line) => (amountOf(l) * (l.vatRate === '' ? 13 : Number(l.vatRate))) / 100;
@@ -52,6 +68,8 @@ export function PurchaseBillForm({ bill, packs, open, onClose, onSaved }: Purcha
       quantity: String(l.quantity),
       unitCost: l.unitCost,
       vatRate: String(Number(l.vatRate)),
+      holds: '',
+      holdsUnit: '',
     })) ??
       (packs?.length
         ? packs.map((pack) => ({ ...emptyLine(), variantId: pack.value, quantity: '' }))
@@ -74,6 +92,32 @@ export function PurchaseBillForm({ bill, packs, open, onClose, onSaved }: Purcha
 
   const save = useMutation<boolean, unknown, boolean>({
     mutationFn: async (andPost: boolean) => {
+      // A sack, box or roll that says how much it holds: kept on the pack, which is then named by it.
+      const sized = lines.filter((l) => l.variantId && Number(l.holds) > 0);
+      if (sized.length > 0) {
+        const units = (
+          await request<{ items: Array<{ id: string; symbol: string }> }>('GET', '/admin/units', {
+            query: { limit: 100 },
+          })
+        ).items;
+        for (const l of sized) {
+          const info = await queryClient.fetchQuery({
+            queryKey: ['packInfo', l.variantId],
+            queryFn: () => packInfo(l.variantId),
+            staleTime: 60_000,
+          });
+          const unitId = l.holdsUnit || info?.defaultUnitId;
+          const symbol = units.find((u) => u.id === unitId)?.symbol;
+          if (!info?.container || !unitId || !symbol) continue;
+          await request('PATCH', `/admin/products/${info.productId}/variants/${l.variantId}`, {
+            body: {
+              packQuantity: Number(l.holds),
+              packUnitId: unitId,
+              label: `${Number(l.holds)} ${symbol} ${info.containerName}`,
+            },
+          });
+        }
+      }
       const body = {
         supplierId,
         supplierBillNumber: number.trim(),
@@ -189,63 +233,71 @@ export function PurchaseBillForm({ bill, packs, open, onClose, onSaved }: Purcha
             </thead>
             <tbody>
               {lines.map((line, index) => (
-                <tr key={index} className="border-t border-border">
-                  <td className="border-r border-border p-1.5">
-                    <SearchSelect
-                      aria-label={t('pack')}
-                      source={choices.packs}
-                      known={packNames}
-                      required
-                      value={line.variantId}
-                      onChange={(value) => change(index, { variantId: String(value) })}
-                    />
-                  </td>
-                  <td className="border-r border-border p-1.5">
-                    <Input
-                      aria-label={t('quantity')}
-                      inputMode="decimal"
-                      className="text-right"
-                      value={line.quantity}
-                      onChange={(e) => change(index, { quantity: e.target.value })}
-                    />
-                  </td>
-                  <td className="border-r border-border p-1.5">
-                    <Input
-                      aria-label={t('unitCost')}
-                      inputMode="decimal"
-                      className="text-right"
-                      value={line.unitCost}
-                      onChange={(e) => change(index, { unitCost: e.target.value })}
-                    />
-                  </td>
-                  <td className="border-r border-border p-1.5">
-                    <SearchSelect
-                      aria-label={t('vat')}
-                      value={line.vatRate || 'AUTO'}
-                      required
-                      options={[
-                        { value: 'AUTO', label: t('vatAuto') },
-                        { value: '13', label: '13%' },
-                        { value: '0', label: t('vatNone') },
-                      ]}
-                      onChange={(value) =>
-                        change(index, { vatRate: value === 'AUTO' ? '' : String(value) })
-                      }
-                    />
-                  </td>
-                  <td className="border-r border-border px-2 text-right">
-                    {money(amountOf(line) + vatOf(line))}
-                  </td>
-                  <td className="px-1 text-center">
-                    <IconButton
-                      icon="trash"
-                      variant="danger"
-                      label={t('removeLine')}
-                      disabled={lines.length === 1}
-                      onClick={() => setLines((current) => current.filter((_, i) => i !== index))}
-                    />
-                  </td>
-                </tr>
+                <Fragment key={index}>
+                  <tr className="border-t border-border">
+                    <td className="border-r border-border p-1.5">
+                      <SearchSelect
+                        aria-label={t('pack')}
+                        source={choices.packs}
+                        known={packNames}
+                        required
+                        value={line.variantId}
+                        onChange={(value) => change(index, { variantId: String(value) })}
+                      />
+                    </td>
+                    <td className="border-r border-border p-1.5">
+                      <Input
+                        aria-label={t('quantity')}
+                        inputMode="decimal"
+                        className="text-right"
+                        value={line.quantity}
+                        onChange={(e) => change(index, { quantity: e.target.value })}
+                      />
+                    </td>
+                    <td className="border-r border-border p-1.5">
+                      <Input
+                        aria-label={t('unitCost')}
+                        inputMode="decimal"
+                        className="text-right"
+                        value={line.unitCost}
+                        onChange={(e) => change(index, { unitCost: e.target.value })}
+                      />
+                    </td>
+                    <td className="border-r border-border p-1.5">
+                      <SearchSelect
+                        aria-label={t('vat')}
+                        value={line.vatRate || 'AUTO'}
+                        required
+                        options={[
+                          { value: 'AUTO', label: t('vatAuto') },
+                          { value: '13', label: '13%' },
+                          { value: '0', label: t('vatNone') },
+                        ]}
+                        onChange={(value) =>
+                          change(index, { vatRate: value === 'AUTO' ? '' : String(value) })
+                        }
+                      />
+                    </td>
+                    <td className="border-r border-border px-2 text-right">
+                      {money(amountOf(line) + vatOf(line))}
+                    </td>
+                    <td className="px-1 text-center">
+                      <IconButton
+                        icon="trash"
+                        variant="danger"
+                        label={t('removeLine')}
+                        disabled={lines.length === 1}
+                        onClick={() => setLines((current) => current.filter((_, i) => i !== index))}
+                      />
+                    </td>
+                  </tr>
+                  <HoldsRow
+                    variantId={line.variantId}
+                    holds={line.holds}
+                    unitId={line.holdsUnit}
+                    onChange={(patch) => change(index, patch)}
+                  />
+                </Fragment>
               ))}
             </tbody>
           </table>
@@ -270,5 +322,68 @@ export function PurchaseBillForm({ bill, packs, open, onClose, onSaved }: Purcha
         </Field>
       </div>
     </Modal>
+  );
+}
+
+// Under a line that is a sack, box or roll of something weighed: how much one holds, written once.
+function HoldsRow({
+  variantId,
+  holds,
+  unitId,
+  onChange,
+}: {
+  variantId: string;
+  holds: string;
+  unitId: string;
+  onChange: (patch: Partial<Line>) => void;
+}) {
+  const t = useTranslations('purchases');
+  const info = useQuery({
+    queryKey: ['packInfo', variantId],
+    queryFn: () => packInfo(variantId),
+    enabled: Boolean(variantId),
+    staleTime: 60_000,
+  });
+  const units = useQuery({
+    queryKey: ['units', 'all'],
+    queryFn: () =>
+      request<{ items: Array<{ id: string; symbol: string; nameNe: string; dimension: string }> }>(
+        'GET',
+        '/admin/units',
+        { query: { limit: 100 } },
+      ),
+    enabled: Boolean(info.data?.container),
+    staleTime: 600_000,
+  });
+  if (!info.data?.container) return null;
+  const options = (units.data?.items ?? [])
+    .filter((u) => u.dimension === info.data!.sellBy)
+    .map((u) => ({ value: u.id, label: `${u.nameNe} (${u.symbol})` }));
+  return (
+    <tr className="bg-primary/5">
+      <td colSpan={6} className="px-3 py-2">
+        <div className="grid gap-1">
+          <p className="text-sm font-medium">
+            {t('holdsTitle', { container: info.data.containerName })}
+          </p>
+          <div className="grid max-w-md grid-cols-[7rem_1fr] gap-2">
+            <Input
+              aria-label={t('holdsTitle', { container: info.data.containerName })}
+              inputMode="decimal"
+              placeholder="25"
+              value={holds}
+              onChange={(e) => onChange({ holds: e.target.value })}
+            />
+            <SearchSelect
+              aria-label={t('holdsUnit')}
+              options={options}
+              value={unitId || info.data.defaultUnitId}
+              onChange={(value) => onChange({ holdsUnit: String(value) })}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">{t('holdsHint')}</p>
+        </div>
+      </td>
+    </tr>
   );
 }

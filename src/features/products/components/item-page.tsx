@@ -8,22 +8,21 @@ import { useId, type ReactNode } from 'react';
 
 import { ResourceForm, ResourceScreen } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { InfoTip } from '@/components/ui/info-tip';
-import { ItemGroups, ProductOffersPanel } from '@/features/marketing';
+import { ProductOffersPanel } from '@/features/marketing';
 import { request } from '@/lib/api';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
 import { gradesResource, pairingsResource, variantsResource } from '../resources';
-import { BuyingPanel } from './buying-panel';
 import { ItemEditPanel } from './item-edit-modal';
 import { OptionsPanel } from './options-panel';
 import { PhotosPanel } from './photos-panel';
-import { PriceGrid } from './price-grid';
 import { useProduct, type Product } from './use-product';
 
-export const STEPS = ['basics', 'packs', 'prices', 'photos', 'buying', 'offers', 'more'] as const;
+// Prices and buying have pages of their own (Set quantity and price, Buy); this page keeps the rest.
+export const STEPS = ['basics', 'packs', 'photos', 'offers', 'more'] as const;
 export type Step = (typeof STEPS)[number];
 
 // What each step still needs, so the bar can say where the item stands.
@@ -33,12 +32,8 @@ function done(step: Step, product: Product): boolean {
       return true;
     case 'packs':
       return product.variants.length > 0;
-    case 'prices':
-      return product.variants.length > 0 && product.variants.every((v) => Number(v.price) > 0);
     case 'photos':
       return product.images.length > 0;
-    case 'buying':
-      return product.variants.some((v) => v.inStock || v.lastBought);
     default:
       return false;
   }
@@ -147,7 +142,6 @@ function Card({ title, help, children }: { title: string; help: string; children
 // goes there; Back and Next walk through them; nothing is far down a long page.
 export function ItemPage({ id }: { id: string }) {
   const t = useTranslations('itemPage');
-  const tg = useTranslations('itemGroups');
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -166,7 +160,6 @@ export function ItemPage({ id }: { id: string }) {
     );
   }
 
-  const index = STEPS.indexOf(step);
   return (
     <div className="grid max-w-5xl gap-6">
       <div>
@@ -180,12 +173,18 @@ export function ItemPage({ id }: { id: string }) {
           {product.nameNe}
           <span className="text-base font-normal text-muted-foreground">{product.nameEn}</span>
           <Badge>{product.code}</Badge>
-          {product.isActive ? (
-            <Badge tone="success">{t('live')}</Badge>
-          ) : (
-            <Badge tone="warning">{t('hidden')}</Badge>
-          )}
         </h1>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link
+            href={routes.quantityPrice(product.id)}
+            className={buttonVariants({ variant: 'primary' })}
+          >
+            {t('sizesPrice')}
+          </Link>
+          <Link href={routes.buy(product.id)} className={buttonVariants({ variant: 'secondary' })}>
+            {t('buyIt')}
+          </Link>
+        </div>
       </div>
 
       <StepBar current={step} onGo={go} product={product} />
@@ -209,9 +208,7 @@ export function ItemPage({ id }: { id: string }) {
           </div>
         ) : null}
 
-        {step === 'prices' ? <PriceGrid key={product.id} product={product} /> : null}
         {step === 'photos' ? <PhotosPanel product={product} /> : null}
-        {step === 'buying' ? <BuyingPanel product={product} /> : null}
 
         {step === 'offers' ? (
           <ProductOffersPanel
@@ -226,10 +223,6 @@ export function ItemPage({ id }: { id: string }) {
         {step === 'more' ? (
           <div className="grid gap-8">
             <div className="grid gap-2">
-              <h3 className="text-sm font-semibold">{tg('title')}</h3>
-              <ItemGroups kind="product" id={product.id} />
-            </div>
-            <div className="grid gap-2">
               <h3 className="text-sm font-semibold">{t('quality')}</h3>
               <p className="text-sm text-muted-foreground">{t('qualityNote')}</p>
               <ResourceScreen resource={gradesResource(product)} />
@@ -242,24 +235,6 @@ export function ItemPage({ id }: { id: string }) {
           </div>
         ) : null}
       </Card>
-
-      <div className="flex items-center justify-between">
-        <Button variant="secondary" disabled={index === 0} onClick={() => go(STEPS[index - 1]!)}>
-          ← {t('prev')}
-        </Button>
-        {index < STEPS.length - 1 ? (
-          <Button onClick={() => go(STEPS[index + 1]!)}>
-            {t('next', { step: t(`step.${STEPS[index + 1]!}`) })} →
-          </Button>
-        ) : (
-          <Link
-            href={routes.products()}
-            className="inline-flex h-9 items-center rounded-md bg-primary px-3.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-          >
-            {t('finish')}
-          </Link>
-        )}
-      </div>
     </div>
   );
 }

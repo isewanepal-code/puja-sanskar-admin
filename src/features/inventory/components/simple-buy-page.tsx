@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
@@ -20,6 +20,7 @@ import { optionValueResource, unitsFor, type OptionType } from '@/features/produ
 import { isApiError, request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
+import { measureOf } from '@/lib/unit-measure';
 import { routes } from '@/lib/routes';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 import { cn } from '@/lib/utils';
@@ -47,6 +48,14 @@ type Line = {
   itemVat: string;
   // How the item is sold (piece, weight…), learnt when it loads: a piece item cannot be bought by halves.
   sellBy: string;
+  // The unit bought in is a sack, box or roll of something weighed or measured: how much one holds
+  // (25 of kg), asked here once so the stock can show the total and open it.
+  container: boolean;
+  holds: string;
+  holdsUnitId: string;
+  // The names the pack is called by: the unit bought in (बोरा) and the unit it holds (kg).
+  unitLabel: string;
+  holdsSymbol: string;
 };
 
 const emptyLine = (productId = ''): Line => ({
@@ -62,6 +71,11 @@ const emptyLine = (productId = ''): Line => ({
   expiresOn: '',
   itemVat: '0',
   sellBy: '',
+  container: false,
+  holds: '',
+  holdsUnitId: '',
+  unitLabel: '',
+  holdsSymbol: '',
 });
 const cell = 'border-r border-b border-border p-0 align-middle';
 const th = 'border-r border-b border-border px-2 py-2 font-medium';
@@ -148,6 +162,40 @@ function LineRow({
   }, [line.productId, item.data, line.itemBrand, itemBrand, onChange]);
 
   const unitSymbol = unitList.find((u) => u.value === line.unitId)?.detail ?? '';
+  const boughtIn = unitList.find((u) => u.value === line.unitId);
+  // Kilos, grams, litres, metres...: what a sack may be said to hold.
+  const measures = unitList.filter((u) => measureOf(1, u.detail ?? '') !== null);
+  const container =
+    ['WEIGHT', 'VOLUME', 'LENGTH'].includes(sellBy ?? '') &&
+    Boolean(boughtIn) &&
+    measureOf(1, unitSymbol) === null &&
+    measures.length > 0;
+  const bigMeasure =
+    measures.find((u) => ['kg', 'l', 'm'].includes((u.detail ?? '').toLowerCase())) ?? measures[0];
+  const holdsUnitKnown = measures.some((u) => u.value === line.holdsUnitId);
+  const holdsSymbol = measures.find((u) => u.value === line.holdsUnitId)?.detail ?? '';
+  const unitLabel = boughtIn?.label ?? '';
+  useEffect(() => {
+    if (
+      line.container !== container ||
+      line.unitLabel !== unitLabel ||
+      line.holdsSymbol !== holdsSymbol
+    ) {
+      onChange({ container, unitLabel, holdsSymbol });
+    } else if (container && !holdsUnitKnown && bigMeasure) {
+      onChange({ holdsUnitId: bigMeasure.value });
+    }
+  }, [
+    container,
+    unitLabel,
+    holdsSymbol,
+    line.container,
+    line.unitLabel,
+    line.holdsSymbol,
+    holdsUnitKnown,
+    bigMeasure,
+    onChange,
+  ]);
   // Colours and sizes this item already comes in, as a reminder.
   const known = [
     ...new Set(
@@ -160,163 +208,208 @@ function LineRow({
   const label = (name: string) => `${name} ${index + 1}`;
 
   return (
-    <tr>
-      <td className="border-r border-b border-border px-1 text-center text-xs text-muted-foreground">
-        {index + 1}
-      </td>
-      <td className={cn(cell, bad(!line.productId))}>
-        <SearchSelect
-          bare
-          invalid={showErrors && !line.productId}
-          aria-label={label(t('item'))}
-          source={choices.buyItems}
-          placeholder={t('itemSearch')}
-          wrapValue
-          value={line.productId}
-          onChange={(value) =>
-            onChange({
-              productId: String(value),
-              unitId: '',
-              optionValueIds: [],
-              brand: '',
-              itemBrand: '',
-            })
-          }
-        />
-      </td>
-      <td className={cell}>
-        <div className="flex items-center">
-          <div className="min-w-0 flex-1">
-            <SearchSelect
-              bare
-              aria-label={label(t('brand'))}
-              disabled={!line.productId}
-              placeholder="—"
-              source={choices.brands}
-              value={line.brand}
-              onChange={(value) => onChange({ brand: String(value) })}
-            />
-          </div>
-          <IconButton
-            icon="plus"
-            label={t('newBrand')}
-            disabled={!line.productId}
-            onClick={onNewBrand}
+    <Fragment>
+      <tr>
+        <td className="border-r border-b border-border px-1 text-center text-xs text-muted-foreground">
+          {index + 1}
+        </td>
+        <td className={cn(cell, bad(!line.productId))}>
+          <SearchSelect
+            bare
+            invalid={showErrors && !line.productId}
+            aria-label={label(t('item'))}
+            source={choices.buyItems}
+            placeholder={t('itemSearch')}
+            wrapValue
+            value={line.productId}
+            onChange={(value) =>
+              onChange({
+                productId: String(value),
+                unitId: '',
+                optionValueIds: [],
+                brand: '',
+                itemBrand: '',
+                holds: '',
+                holdsUnitId: '',
+              })
+            }
           />
-        </div>
-      </td>
-      <td
-        className={cell}
-        title={known.length ? t('colourKnown', { list: known.join(', ') }) : t('colourHint')}
-      >
-        <div className="flex items-center">
-          <div className="min-w-0 flex-1">
-            <SearchSelect
-              bare
-              multiple
-              aria-label={label(t('colour'))}
-              disabled={!line.productId}
-              placeholder={t('colourNone')}
-              source={choices.optionValues}
-              value={line.optionValueIds}
-              onChange={(value) => onChange({ optionValueIds: value as string[] })}
-            />
-          </div>
-          {onNewColour ? (
+        </td>
+        <td className={cell}>
+          <div className="flex items-center">
+            <div className="min-w-0 flex-1">
+              <SearchSelect
+                bare
+                aria-label={label(t('brand'))}
+                disabled={!line.productId}
+                placeholder="—"
+                source={choices.brands}
+                value={line.brand}
+                onChange={(value) => onChange({ brand: String(value) })}
+              />
+            </div>
             <IconButton
               icon="plus"
-              label={t('newColour')}
+              label={t('newBrand')}
               disabled={!line.productId}
-              onClick={onNewColour}
+              onClick={onNewBrand}
             />
-          ) : null}
-        </div>
-      </td>
-      <td className={cn(cell, bad(!(num(line.quantity) > 0)))}>
-        <input
-          aria-label={label(t('quantity'))}
-          inputMode="decimal"
-          value={line.quantity}
-          placeholder="0"
-          onChange={(e) => onChange({ quantity: e.target.value })}
-          className={`${box} text-right`}
-        />
-      </td>
-      <td className={cell}>
-        <SearchSelect
-          bare
-          required
-          aria-label={label(t('unit'))}
-          disabled={unitList.length === 0}
-          placeholder={line.productId ? '…' : '—'}
-          options={unitList}
-          value={unitKnown ? line.unitId : ''}
-          onChange={(value) => onChange({ unitId: String(value) })}
-        />
-      </td>
-      <td className={cell}>
-        <input
-          aria-label={label(t('remarks'))}
-          value={line.remarks}
-          maxLength={200}
-          onChange={(e) => onChange({ remarks: e.target.value })}
-          className={box}
-        />
-      </td>
-      <td className={cn(cell, bad(!(num(line.rate) > 0)))}>
-        <input
-          aria-label={label(t('rate', { unit: unitSymbol || t('one') }))}
-          inputMode="decimal"
-          value={line.rate}
-          placeholder="0"
-          onChange={(e) => onChange({ rate: e.target.value })}
-          className={`${box} text-right`}
-        />
-      </td>
-      <td className={cell}>
-        <SearchSelect
-          bare
-          required
-          aria-label={label(t('vat'))}
-          value={line.vat}
-          options={[
-            { value: '0', label: t('vatNone') },
-            { value: '13', label: '13%' },
-            { value: 'AUTO', label: t('vatAuto') },
-          ]}
-          onChange={(value) => onChange({ vat: String(value) })}
-        />
-      </td>
-      <td className={cell}>
-        <BsDatePicker
-          bare
-          aria-label={label(t('expires'))}
-          value={line.expiresOn}
-          min={new Date().toISOString().slice(0, 10)}
-          onChange={(expiresOn) => onChange({ expiresOn })}
-        />
-      </td>
-      <td className="border-r border-b border-border px-2 text-right text-sm whitespace-nowrap tabular-nums">
-        <div className="font-medium">{total.toFixed(2)}</div>
-        {vatPercent > 0 && total > 0 ? (
-          <div className="text-[0.7rem] text-muted-foreground">
-            {t('withVat', {
-              percent: vatPercent,
-              amount: (total * (1 + vatPercent / 100)).toFixed(2),
-            })}
           </div>
-        ) : null}
-      </td>
-      <td className="border-b border-border px-1 text-center">
-        <IconButton
-          icon="trash"
-          variant="danger"
-          label={t('removeLine')}
-          disabled={!removable}
-          onClick={onRemove}
-        />
-      </td>
-    </tr>
+        </td>
+        <td
+          className={cell}
+          title={known.length ? t('colourKnown', { list: known.join(', ') }) : t('colourHint')}
+        >
+          <div className="flex items-center">
+            <div className="min-w-0 flex-1">
+              <SearchSelect
+                bare
+                multiple
+                aria-label={label(t('colour'))}
+                disabled={!line.productId}
+                placeholder={t('colourNone')}
+                source={choices.optionValues}
+                value={line.optionValueIds}
+                onChange={(value) => onChange({ optionValueIds: value as string[] })}
+              />
+            </div>
+            {onNewColour ? (
+              <IconButton
+                icon="plus"
+                label={t('newColour')}
+                disabled={!line.productId}
+                onClick={onNewColour}
+              />
+            ) : null}
+          </div>
+        </td>
+        <td className={cn(cell, bad(!(num(line.quantity) > 0)))}>
+          <input
+            aria-label={label(t('quantity'))}
+            inputMode="decimal"
+            value={line.quantity}
+            placeholder="0"
+            onChange={(e) => onChange({ quantity: e.target.value })}
+            className={`${box} text-right`}
+          />
+        </td>
+        <td className={cell}>
+          <SearchSelect
+            bare
+            required
+            aria-label={label(t('unit'))}
+            disabled={unitList.length === 0}
+            placeholder={line.productId ? '…' : '—'}
+            options={unitList}
+            value={unitKnown ? line.unitId : ''}
+            onChange={(value) => onChange({ unitId: String(value) })}
+          />
+        </td>
+        <td className={cell}>
+          <input
+            aria-label={label(t('remarks'))}
+            value={line.remarks}
+            maxLength={200}
+            onChange={(e) => onChange({ remarks: e.target.value })}
+            className={box}
+          />
+        </td>
+        <td className={cn(cell, bad(!(num(line.rate) > 0)))}>
+          <input
+            aria-label={label(t('rate', { unit: unitSymbol || t('one') }))}
+            inputMode="decimal"
+            value={line.rate}
+            placeholder="0"
+            onChange={(e) => onChange({ rate: e.target.value })}
+            className={`${box} text-right`}
+          />
+        </td>
+        <td className={cell}>
+          <SearchSelect
+            bare
+            required
+            aria-label={label(t('vat'))}
+            value={line.vat}
+            options={[
+              { value: '0', label: t('vatNone') },
+              { value: '13', label: '13%' },
+              { value: 'AUTO', label: t('vatAuto') },
+            ]}
+            onChange={(value) => onChange({ vat: String(value) })}
+          />
+        </td>
+        <td className={cell}>
+          <BsDatePicker
+            bare
+            aria-label={label(t('expires'))}
+            value={line.expiresOn}
+            min={new Date().toISOString().slice(0, 10)}
+            onChange={(expiresOn) => onChange({ expiresOn })}
+          />
+        </td>
+        <td className="border-r border-b border-border px-2 text-right text-sm whitespace-nowrap tabular-nums">
+          <div className="font-medium">{total.toFixed(2)}</div>
+          {vatPercent > 0 && total > 0 ? (
+            <div className="text-[0.7rem] text-muted-foreground">
+              {t('withVat', {
+                percent: vatPercent,
+                amount: (total * (1 + vatPercent / 100)).toFixed(2),
+              })}
+            </div>
+          ) : null}
+        </td>
+        <td className="border-b border-border px-1 text-center">
+          <IconButton
+            icon="trash"
+            variant="danger"
+            label={t('removeLine')}
+            disabled={!removable}
+            onClick={onRemove}
+          />
+        </td>
+      </tr>
+      {container ? (
+        <tr className="bg-primary/5">
+          <td className="border-b border-border" />
+          <td colSpan={11} className="border-b border-border px-3 py-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="text-sm font-medium">
+                {t('holdsTitle', { unit: boughtIn?.label ?? '' })}
+              </span>
+              <input
+                aria-label={label(t('holdsTitle', { unit: boughtIn?.label ?? '' }))}
+                inputMode="decimal"
+                value={line.holds}
+                placeholder="25"
+                onChange={(e) => onChange({ holds: e.target.value })}
+                className={cn(
+                  'h-8 w-24 rounded-md border border-border bg-card px-2 text-right text-sm outline-none focus:border-primary',
+                  showErrors && !(num(line.holds) > 0) && 'border-destructive',
+                )}
+              />
+              <div className="w-40">
+                <SearchSelect
+                  aria-label={label(t('unit'))}
+                  options={measures}
+                  required
+                  value={holdsUnitKnown ? line.holdsUnitId : ''}
+                  onChange={(value) => onChange({ holdsUnitId: String(value) })}
+                />
+              </div>
+              {num(line.holds) > 0 && num(line.quantity) > 0 ? (
+                <span className="text-sm text-muted-foreground">
+                  {t('holdsTotal', {
+                    count: num(line.quantity),
+                    amount: `${num(line.holds)} ${holdsSymbol}`,
+                    total: `${Math.round(num(line.quantity) * num(line.holds) * 1000) / 1000} ${holdsSymbol}`,
+                  })}
+                </span>
+              ) : null}
+            </div>
+          </td>
+        </tr>
+      ) : null}
+    </Fragment>
   );
 }
 
@@ -388,9 +481,12 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
     if (num(l.quantity) > MAX_QUANTITY) return t('quantityTooBig', { n });
     if (l.sellBy === 'PIECE' && !Number.isInteger(num(l.quantity)))
       return t('quantityWhole', { n });
+    if (l.container && !(num(l.holds) > 0)) return t('needHolds', { n });
     if (!(num(l.rate) > 0)) return t('needRate', { n });
     if (!/^\d+(\.\d{1,2})?$/.test(l.rate.trim().replace(/,/g, ''))) return t('rateDecimals', { n });
     if (num(l.rate) > MAX_MONEY) return t('rateTooBig', { n });
+    if (l.container && !/^\d+(\.\d{1,3})?$/.test(l.holds.trim()))
+      return t('quantityDecimals', { n });
     if (l.expiresOn && l.expiresOn < day) return t('expiryBeforeBill', { n });
     return null;
   };
@@ -443,12 +539,21 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         note: note.trim() || null,
         ...(discountAmount > 0 && { discount: discountAmount.toFixed(2) }),
         lines: lines.map((l) => ({
-          newPack: {
-            productId: l.productId,
-            packQuantity: 1,
-            packUnitId: l.unitId,
-            ...(l.optionValueIds.length ? { optionValueIds: l.optionValueIds } : {}),
-          },
+          newPack: l.container
+            ? {
+                // A sack of 25 kg: the pack is the sack, named by what it holds.
+                productId: l.productId,
+                packQuantity: num(l.holds),
+                packUnitId: l.holdsUnitId,
+                label: `${num(l.holds)} ${l.holdsSymbol} ${l.unitLabel}`.slice(0, 80),
+                ...(l.optionValueIds.length ? { optionValueIds: l.optionValueIds } : {}),
+              }
+            : {
+                productId: l.productId,
+                packQuantity: 1,
+                packUnitId: l.unitId,
+                ...(l.optionValueIds.length ? { optionValueIds: l.optionValueIds } : {}),
+              },
           quantity: num(l.quantity),
           unitCost: String(num(l.rate)),
           ...(l.vat !== 'AUTO' && { vatRate: l.vat }),
@@ -725,7 +830,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
 
       <p className="text-xs text-muted-foreground">
         {t('packetsNote')}{' '}
-        <Link href={routes.newPurchase()} className="text-primary underline">
+        <Link href={routes.stock()} className="text-primary underline">
           {t('packetsLink')}
         </Link>
       </p>

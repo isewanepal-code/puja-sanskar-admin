@@ -30,8 +30,6 @@ export type ItemValues = {
   nameNe: string;
   sellBy: SellBy;
   categoryId: string;
-  // Changing an item: the samagri it is in (and so its category).
-  materialId: string;
   nameRomanized: string;
   aliases: string;
   purpose: string;
@@ -50,7 +48,6 @@ export const emptyItem: ItemValues = {
   nameNe: '',
   sellBy: 'PIECE',
   categoryId: '',
-  materialId: '',
   nameRomanized: '',
   aliases: '',
   purpose: '',
@@ -144,8 +141,6 @@ type ItemFormProps = {
   // Groups already chosen, so their names show before the list loads.
   knownGroups?: Array<{ value: string; label: string; detail?: string }>;
   errors?: Record<string, string>;
-  // Edit: the samagri the item is in now, so its name shows before the list loads.
-  samagri?: { value: string; label: string };
   // Add: a warning about items with the same name, above the names.
   above?: ReactNode;
   onAddBrand: () => void;
@@ -163,7 +158,6 @@ export function ItemForm({
   onGroups,
   knownGroups,
   errors = {},
-  samagri,
   above,
   onAddBrand,
 }: ItemFormProps) {
@@ -388,31 +382,19 @@ export function ItemForm({
             );
           })}
         </div>
-        {mode === 'edit' ? (
-          <Field label={t('samagri')} htmlFor={id('samagri')} hint={t('samagriHint')}>
-            <SearchSelect
-              id={id('samagri')}
-              source={choices.sellableMaterials}
-              value={values.materialId}
-              known={samagri ? [samagri] : undefined}
-              onChange={(value) => onChange({ materialId: String(value) })}
-            />
-          </Field>
-        ) : (
-          <Field
-            label={`${t('category')} *`}
-            htmlFor={id('category')}
-            hint={t('categoryHint')}
-            error={errors.categoryId}
-          >
-            <SearchSelect
-              id={id('category')}
-              source={categoryChoices}
-              value={values.categoryId}
-              onChange={(value) => onChange({ categoryId: String(value) })}
-            />
-          </Field>
-        )}
+        <Field
+          label={`${t('category')} *`}
+          htmlFor={id('category')}
+          hint={t('categoryHint')}
+          error={errors.categoryId}
+        >
+          <SearchSelect
+            id={id('category')}
+            source={categoryChoices}
+            value={values.categoryId}
+            onChange={(value) => onChange({ categoryId: String(value) })}
+          />
+        </Field>
       </section>
 
       <section className="grid gap-3 rounded-xl border border-border bg-card p-5">

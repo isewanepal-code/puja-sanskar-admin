@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { priceGroups } from '@/features/marketing';
@@ -27,11 +27,9 @@ export function ProductsScreen() {
   const [groupId, setGroupId] = useState('');
   const tg = useTranslations('itemGroups');
 
-  // A link from the global search (?open=<id>) goes to that item's page.
+  // A link from the global search (?open=<id>) opens that item's edit form.
   const openId = useSearchParams().get('open');
-  useEffect(() => {
-    if (openId) router.replace(routes.item(openId));
-  }, [openId, router]);
+  const editingId = editing ?? openId;
 
   const resource = useMemo(
     () => ({
@@ -102,7 +100,13 @@ export function ProductsScreen() {
         )}
       />
 
-      <ItemEditModal id={editing} onClose={() => setEditing(null)} />
+      <ItemEditModal
+        id={editingId}
+        onClose={() => {
+          setEditing(null);
+          if (openId) router.replace(routes.products());
+        }}
+      />
       <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
     </>
   );

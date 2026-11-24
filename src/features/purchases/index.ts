@@ -12,4 +12,3 @@ export {
   voidSupplierPaymentResource,
 } from './resources';
 export { PurchaseBillForm } from './components/purchase-bill-form';
-export { BuyPage } from './components/buy-page';

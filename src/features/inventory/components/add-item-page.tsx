@@ -126,8 +126,9 @@ export function AddItemPage() {
             <Icon name="plus" size={16} />
             {t('addAnother')}
           </Button>
-          <Link href={routes.item(saved.id)} className={buttonVariants({ variant: 'ghost' })}>
-            {t('openItem')}
+          <Link href={routes.buy(saved.id)} className={buttonVariants({ variant: 'secondary' })}>
+            <Icon name="truck" size={16} />
+            {t('buyIt')}
           </Link>
         </div>
       </section>

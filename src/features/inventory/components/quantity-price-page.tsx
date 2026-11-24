@@ -54,7 +54,9 @@ const rowOf = (v: Variant): Row => ({
   amount: '',
   unitId: '',
   optionIds: [],
-  price: Number(v.price) > 0 ? String(Number(v.price)) : '',
+  // A size from the Excel list waits at Rs 1 (the system needs a price): shown empty until one is typed.
+  price:
+    Number(v.price) > 0 && !(!v.isActive && Number(v.price) === 1) ? String(Number(v.price)) : '',
   onSale: v.isActive,
   onWeb: v.showOnWebsite,
   removed: false,
@@ -330,7 +332,15 @@ function Editor({ product }: { product: Product }) {
                         aria-label={t('priceOf', { name: v ? nameOf(v) : String(i + 1) })}
                         aria-invalid={invalid && badPrice(r) ? true : undefined}
                         value={r.price}
-                        onChange={(e) => change(r.key, { price: e.target.value })}
+                        onChange={(e) =>
+                          change(r.key, {
+                            price: e.target.value,
+                            // The first price typed on a size means it is meant to be sold.
+                            ...(r.price.trim() === '' && Number(e.target.value) > 0 && !r.onSale
+                              ? { onSale: true, onWeb: true }
+                              : {}),
+                          })
+                        }
                         className="w-28 text-right"
                       />
                     </span>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
@@ -11,7 +12,7 @@ import {
   WorkbookUploadButton,
 } from '@/components/resource';
 import { ConfirmDialog, useToast } from '@/components/overlays';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { useTestModeOn } from '@/hooks/use-test-mode';
 import { RowMenu } from '@/components/ui/row-menu';
 import { SearchSelect } from '@/components/controls';
@@ -19,13 +20,13 @@ import { Modal } from '@/components/ui/modal';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
 import { choices } from '@/lib/choices';
+import { routes } from '@/lib/routes';
 
 import { cn } from '@/lib/utils';
 
 import { RepackForm } from './repack-form';
 import {
   historyResource,
-  movementResource,
   STOCK_SHOWS,
   stockCountResource,
   stockLossResource,
@@ -37,11 +38,27 @@ import {
 type Level = Schema<'StockLevelResponse'>;
 type Summary = Schema<'StockSummaryResponse'>;
 type Open = {
-  what: 'record' | 'history' | 'transfer' | 'repack' | 'wipe' | 'loss' | 'count';
+  what: 'history' | 'transfer' | 'repack' | 'wipe' | 'loss' | 'count';
   level: Level;
 } | null;
 
-export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }) {
+// "Make packets" is on every line that has stock, so it is always where it is looked for. What cannot be
+// opened (made by opening) or has no size to make is explained in the form instead of hiding the button.
+function OpenIntoPackets({ level, onOpen }: { level: Level; onOpen: () => void }) {
+  const tk = useTranslations('stockWork');
+  return (
+    <Button
+      variant={level.boughtIn ? 'primary' : 'secondary'}
+      size="sm"
+      title={tk('taskNote.repack')}
+      onClick={onOpen}
+    >
+      {tk('rowRepack')}
+    </Button>
+  );
+}
+
+export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow }) {
   const t = useTranslations('actions');
   const tm = useResourceText('movements');
   const [show, setShow] = useState<StockShow>(initialShow);
@@ -111,6 +128,8 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
       ) : null}
       <ResourceScreen
         resource={resource}
+        editLabel={tk('editWarn')}
+        editOnRowClick={false}
         // A link with ?q= (from the manual) opens the list already searched.
         deepLink
         toolbar={
@@ -177,6 +196,9 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
                 </button>
               ))}
             </div>
+            <Link href={routes.buy()} className={buttonVariants({ variant: 'primary' })}>
+              {t('buyStock')}
+            </Link>
             <WorkbookUploadButton
               path="/admin/stock-levels/import"
               templatePath="/admin/stock-levels/import/template"
@@ -189,6 +211,11 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
         rowActions={(row) => (
           <>
             {/* The everyday jobs right on the row: no pack to pick on another page. */}
+            {/* What was bought in (a sack, a roll, loose pieces) can be opened into the sizes on sale; what was made by
+                opening is the end of the line. */}
+            {row.available > 0 ? (
+              <OpenIntoPackets level={row} onOpen={() => setOpen({ what: 'repack', level: row })} />
+            ) : null}
             <Button
               variant="secondary"
               size="sm"
@@ -196,22 +223,6 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
               onClick={() => setOpen({ what: 'loss', level: row })}
             >
               {tk('rowLoss')}
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              title={tk('taskNote.count')}
-              onClick={() => setOpen({ what: 'count', level: row })}
-            >
-              {tk('rowCount')}
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              title={tk('taskNote.repack')}
-              onClick={() => setOpen({ what: 'repack', level: row })}
-            >
-              {tk('rowRepack')}
             </Button>
             <RowMenu
               compact
@@ -223,9 +234,9 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
                   onSelect: () => setOpen({ what: 'history', level: row }),
                 },
                 {
-                  icon: 'plus',
-                  label: t('stockUpdate'),
-                  onSelect: () => setOpen({ what: 'record', level: row }),
+                  icon: 'edit',
+                  label: tk('menuCount'),
+                  onSelect: () => setOpen({ what: 'count', level: row }),
                 },
                 {
                   icon: 'truck',
@@ -263,14 +274,6 @@ export function StockScreen({ initialShow = 'all' }: { initialShow?: StockShow }
         description={tk('countNote', { count: open?.level.onHand ?? 0 })}
         submitLabel={tk('record')}
         doneMessage={tk('recorded')}
-        onClose={() => setOpen(null)}
-      />
-      <ActionModal
-        resource={open?.what === 'record' ? movementResource(open.level, tm) : null}
-        title={t('recordMovementFor', { name })}
-        description={t('recordMovementNote')}
-        submitLabel={t('record')}
-        doneMessage={t('recorded')}
         onClose={() => setOpen(null)}
       />
       <ActionModal

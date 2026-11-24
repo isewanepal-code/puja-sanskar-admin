@@ -46,7 +46,6 @@ import {
   gradesResource,
   pairingsResource,
   productsResource,
-  quickItemResource,
   variantsResource,
   type Product,
 } from '@/features/products';
@@ -71,7 +70,7 @@ import {
 } from '@/features/sales';
 import { usersResource } from '@/features/staff-accounts';
 import { activityResource } from '@/features/system';
-import { historyResource, movementResource, stockResource } from '@/features/stock';
+import { historyResource, stockResource } from '@/features/stock';
 
 import { branchesResource, staffBranchesResource } from '@/features/branches';
 import {
@@ -123,12 +122,10 @@ const RESOURCES: Resource<never>[] = [
   deliverySlotsResource,
   usersResource((key) => key),
   productsResource,
-  quickItemResource,
   variantsResource(PRODUCT),
   gradesResource(PRODUCT),
   pairingsResource(PRODUCT),
   stockResource('all'),
-  movementResource(LEVEL, (key) => key),
   historyResource(LEVEL, (key) => key),
   kitsResource((key) => key),
   kitFromPujaResource((key) => key),

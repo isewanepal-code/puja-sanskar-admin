@@ -203,7 +203,7 @@
       "title": "2.1 · Add item",
       "nepali": "सामानको नाम मात्र। रङ/साइज, कति र मोल पछि Buy मा।",
       "where": "Sidebar → 2 Items → Add item",
-      "intro": "Say what the item is, nothing more. Rule B: each size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own item — add each one separately. The page has three sections only: 1 What is the item?, 2 How do you sell it?, 3 Item groups.",
+      "intro": "Say what the item is. Nepali name first, then English. Rule B: each size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own item: add each one separately. The page has four sections: 1 What is the item? (names, purpose, descriptions, photos with their alt text, brand), 2 How do you sell it? (and its category), 3 Item groups, 4 Search engines (web address, search title and description).",
       "fields": [
         [
           "Name (English) *",
@@ -234,8 +234,8 @@
         ["Item groups", "Tihar items", "Optional: groups to put the item in (Setup → Item groups)."]
       ],
       "steps": [
-        "Fill the boxes and press Save item.",
-        "Then choose: Set quantity and price (the next step), Add another item, or Open the item.",
+        "Fill the boxes and press Save item. What you type is kept as a draft in this browser: if you leave by mistake, it comes back.",
+        "Then choose: Set quantity and price (the next step), Buy it (bring stock in), or Add another item.",
         "Add another item keeps the Category and \"How do you sell it?\" you just used, because the next item is usually the same kind."
       ],
       "tips": ["Many items at once? Use All items → Upload Excel (chapter 2.4)."]
@@ -262,16 +262,17 @@
         "Search: type any name, Nepali or English.",
         "Every group: show only the items of one item group.",
         "Download Excel: the whole list, one sheet per category, in your Excel layout.",
-        "Upload Excel: add new items and change prices and suppliers (chapter 2.4).",
+        "Upload Excel: add new items and change words, prices and suppliers (chapter 2.4).",
+        "Row icons: the tag sets quantities and prices; the pen changes the item's details (the same form as Add item); then archive and delete.",
         "Columns Quantities and Selling price show up to 4; press either to see all quantities and prices of the item in a popup."
       ]
     },
     {
       "id": "item-page",
-      "title": "2.3 · The item page",
+      "title": "2.3 · More settings of an item",
       "nepali": "एउटा सामानका सबै कुरा एउटै पेजमा, ट्याब बिना।",
-      "where": "All items → Open (or click the item anywhere)",
-      "intro": "One page, top to bottom.",
+      "where": "All items → the pen → More settings (link at the bottom of the form)",
+      "intro": "Everything the pen form does not hold: Colours and sizes (make a size for every colour), Photos for one colour or size, Offers, and More (quality grades, goes with). The page has its own buttons for Set quantity and price and Buy this item. The details are the same form as the pen.",
       "columns": [
         [
           "What is left to do",
@@ -314,7 +315,8 @@
         ]
       ],
       "tips": [
-        "Expert settings (link at the bottom): tax, HS code, offers, quality grades, \"goes with\". Rarely needed."
+        "Quantities, prices and On sale / Show on website are set on Set quantity and price, not here.",
+        "Stock comes from Buy; the Stock page shows it and opens a bought-in big pack into packets."
       ]
     },
     {
@@ -550,9 +552,12 @@
         ["Worth", "In stock × cost."]
       ],
       "steps": [
-        "Filters: category, item group, supplier, brand, item; All / Running low / No stock.",
-        "Row buttons: Damaged / lost (broken, expired, missing: stock goes down as a loss), Count (type what you counted), Make packets (chapter 4.2).",
-        "⋯ menu: History (every in and out), Update, Send to another branch; in Staging also Delete this stock."
+        "The list opens on In stock: only what was bought and is on the shelf. Running low and No stock are the other tabs; All sizes also lists every size ever stocked, and picking an item shows all its sizes, even the ones nobody has bought yet.",
+        "Nothing here? Stock comes from Buy: Buy → save, and the sizes appear under In stock. The Buy button is at the top of this page.",
+        "Filters: category, item group, supplier, brand, item.",
+        "Row buttons: Damaged / lost (broken, expired, missing: stock goes down as a loss) and Make packets (only on a bought-in big pack such as a sack; chapter 4.2).",
+        "⋯ menu: History (every in and out), Correct the count (type what you counted if the shelf shows a different number), Send to another branch; in Staging also Delete this stock.",
+        "The pencil sets the warning level (below it shows Low) and the shelf."
       ]
     },
     {
@@ -562,21 +567,26 @@
       "where": "Stock → Make packets on the bulk size's row",
       "fields": [
         [
-          "How many of the bulk pack are opened",
-          "70 (of a 100 m roll stored as 1 m)",
-          "Taken out of the bulk size."
+          "How much is in one sack",
+          "50 kg",
+          "Asked once, only when the big pack's size is not known (a \"1 Sack\"). It is saved on that size, so the system can work out how many packets it makes."
         ],
+        ["How many of the big pack do you open", "1", "Taken off the shelf."],
         [
-          "Smaller packs that come out → Pack + How many",
-          "1.5 m × 20, 2 m × 20",
-          "Added to stock. \"+ A new pack\" makes a size that does not exist yet."
+          "Packets you made",
+          "200 g x 50, 500 g x 40, 2 kg x 10",
+          "Write how many of each size; leave the rest empty. The round arrow fills a size with all that is left. A size that is not listed: \"A size that is not listed\"."
         ]
       ],
       "steps": [
-        "Example cloth: 100 m bought → open 70 → 20 × 1.5 m (30 m) + 20 × 2 m (40 m); 30 m stays on the roll.",
-        "Example rice: 25 kg bag → open 10 → 10 × 500 g + 25 × 200 g; 15 kg stays in the bag.",
-        "The screen shows what was opened, what the packs make, and any wastage; the cost is shared over the new packs."
-      ]
+        "Stock → the row of what you bought (the sack, the 1 pcs) → Make packets. The button shows only when the item has another size on sale. Packets you made are never opened again.",
+        "First time only, for a bought-in \"Sack\": write how much one sack holds (50 kg).",
+        "Write how many you open, then how many packets of each size you made. The line under the sizes shows what was opened, what the packets make, and what is left over (wastage).",
+        "Open and add the packets: what you opened goes down, the packets go up, and the cost is shared over the packets by size (200 g and 1 kg are weighed together correctly).",
+        "Example, weight: 1 sack of 50 kg → 50 x 200 g (10 kg) + 40 x 500 g (20 kg) + 10 x 2 kg (20 kg) = 50 kg, nothing left over.",
+        "Example, pieces: 20 loose flowers at Rs 20 → open 11 pieces, make 1 packet of 11 pcs. 9 loose pieces stay; the cost goes with them (Rs 220 and Rs 180)."
+      ],
+      "intro": "You bought something in a big or loose form (a sack, a roll, 20 loose flowers) and sell it in the sizes you set under Set quantity and price. Open what you bought here and count the packets you made. Only sizes on sale are listed, and prices are not set here."
     },
     {
       "id": "expiring",

@@ -1,6 +1,5 @@
 export { ItemPage } from './components/item-page';
-export { PricesPage } from './components/prices-page';
-export { BareItemPage, NewItemPage, SimilarItems } from './components/new-item-page';
+export { SimilarItems } from './components/similar-items';
 export { ProductsScreen } from './components/products-screen';
 export {
   emptyItem,
@@ -13,12 +12,10 @@ export {
 } from './components/item-form';
 export { ItemEditModal, ItemEditPanel } from './components/item-edit-modal';
 export {
-  bareItemResource,
   codeFrom,
   gradesResource,
   pairingsResource,
   productsResource,
-  quickItemResource,
   variantsResource,
   type Product,
 } from './resources';

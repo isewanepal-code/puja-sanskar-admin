@@ -237,7 +237,7 @@
       "flowWork": "Stock that expires (when \"Expires on\" was given at purchase). Repack, damaged and count are on the Stock page rows.",
       "addItem": "Add a new item by name only: what it is and how it is sold (by piece, kg, metre). Colour and size are chosen when you buy.",
       "buy": "Goods brought from the market: which supplier, which item, which colour or size, how many and at what cost. It adds to stock.",
-      "sellPrice": "After buying: open big packs into small ones, set each pack's price and put it on sale. For any item.",
+      "sellPrice": "Decide what you sell: each size of the item, its price, and tick On sale. A big pack you bought is opened into these sizes in Stock → Make packets.",
       "manual": "How to use every page, box and column, step by step. Print it or save it as PDF to share.",
       "units": "The words sizes are counted in: g, kg, ml, L, m, pcs, set, मुठा. Add one only for a new kind of size.",
       "materials": "What a puja needs, for example camphor, kept once. Adding an item makes its samagri; pujas list their samagri from here.",
@@ -1202,12 +1202,12 @@
     "stock": {
       "title": "Stock",
       "add": "—",
-      "empty": "No packs to show.",
+      "empty": "Nothing to show here. Stock comes from Buy: buy something, and it appears under In stock.",
       "none": "—",
       "fields": {
         "product": "Item",
         "sku": "SKU",
-        "label": "Sold as",
+        "label": "Size",
         "onHand": "In stock",
         "reserved": "In carts",
         "available": "Status",
@@ -1223,8 +1223,8 @@
       "about": "Stock of every pack. Packs running low show below.",
       "columnHelp": {
         "label": "How the customer buys this item: 1 set, 1 L, 50 g, 1.5 m. Stock is counted in this size.",
-        "onHand": "How much the shop has now, in the size shown (5 = 5 sets, 0.2 = 0.2 L). Press the number to count and correct it.",
-        "available": "OK = can be sold, Low = below \"Warn when below\", None = finished. If some is kept for customer orders, \"kept for orders\" shows.",
+        "onHand": "How much the shop has now, in the size shown (5 = 5 sets, 0.2 = 0.2 L). It goes up with Buy and down with sales and damage; a mistake is corrected with the ⋯ menu → Correct the count.",
+        "available": "OK = can be sold, Low = below \"Warn when below\", Sold out = finished, Not bought yet = never bought. If some is kept for customer orders, \"kept for orders\" shows.",
         "reorderLevel": "Below this number the pack shows as \"Low\" and in \"Running low\". Set it with ✏️.",
         "value": "What the stock is worth: the quantity in the shop × the buying price (with VAT if you are not VAT registered)."
       }
@@ -2846,9 +2846,10 @@
     "packs": "Packs",
     "showStock": "Show",
     "show": {
-      "all": "All",
+      "all": "All sizes",
       "low": "Running low",
-      "out": "No stock"
+      "out": "No stock",
+      "in": "In stock"
     },
     "packsOf": "Packs of {name}",
     "packsAndPrices": "Packs and prices",
@@ -2959,7 +2960,8 @@
     "editItem": "Change this item's details",
     "changeSizes": "Change this item's quantities and prices",
     "uploadBrandList": "Add brands and companies from Excel",
-    "uploadBrandListNote": "Download the list first (Download Excel): one sheet of brands and one of companies, in the layout of your file. Write new brands in the empty rows: brand name (Nepali and English in brackets), name in Roman, parent company, where it is made (country, then the place in brackets), what it makes, features, and the website. A company named in a brand row is made if it is new. A brand already in the shop is matched by its name; only what you write changes, a blank cell keeps what is saved. Your own sheets with a title row above the headings load as they are."
+    "uploadBrandListNote": "Download the list first (Download Excel): one sheet of brands and one of companies, in the layout of your file. Write new brands in the empty rows: brand name (Nepali and English in brackets), name in Roman, parent company, where it is made (country, then the place in brackets), what it makes, features, and the website. A company named in a brand row is made if it is new. A brand already in the shop is matched by its name; only what you write changes, a blank cell keeps what is saved. Your own sheets with a title row above the headings load as they are.",
+    "buyStock": "Buy (bring stock in)"
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -3433,7 +3435,10 @@
     "savedNext": "Next: give each new item its selling price.",
     "savedPrice": "Set quantity and price",
     "savedStock": "See the stock",
-    "savedClose": "Close"
+    "savedClose": "Close",
+    "holdsTitle": "How much is in one {container}?",
+    "holdsUnit": "Unit",
+    "holdsHint": "Write it once: the pack is then named by it (25 kg Sack), Stock shows the total, and packets can be made from it. Leave it empty to fill it in later."
   },
   "expensesSection": {
     "title": "Expenses",
@@ -3457,7 +3462,7 @@
     },
     "stock": {
       "title": "Stock",
-      "intro": "How much is left. One line = one size of an item (1 set, 1 L, 50 g). In stock: how much there is; Status: OK / Low / None. On a line: Damaged / lost, Count, Make packets."
+      "intro": "What is on the shelf. One line = one size of an item (1 set, 1 L, 50 g). Stock comes from Buy; here you see it, open a big pack into packets (Make packets), or record damage. The ⋯ menu has History, Correct the count and Send to another branch."
     },
     "kits": {
       "title": "Kits",
@@ -4304,28 +4309,72 @@
     "similarNoPacks": "no pack yet",
     "similarBuy": "Buy more of it",
     "similarOpen": "Open",
-    "similarSameWarn": "This name already exists. If it is the item below, go to Buy and add stock."
+    "similarSameWarn": "This name already exists. If it is the item below, go to Buy and add stock.",
+    "sizesPrice": "Set quantity and price",
+    "buyIt": "Buy this item"
   },
   "repack": {
-    "title": "Open {name} into smaller packs",
-    "note": "Take some of a bulk pack off the shelf and add the smaller packs it makes. What the bulk pack cost is shared over the new packs by their size.",
-    "opened": "How many of the bulk pack are opened",
+    "title": "Make packets from {name}",
+    "note": "Open some of what you bought (a sack, a roll, loose pieces) and count the packets you made. What you open comes off the shelf, the packets go in, and its cost is shared over the packets by size. Packets that were made by opening are the end of the line: they are not opened again.",
+    "opened": "How many {label} do you open?",
     "into": "Smaller packs that come out",
     "pack": "Pack",
     "howMany": "How many",
     "remove": "Remove",
     "addPack": "Add a pack",
     "noteLabel": "Note (optional)",
-    "submit": "Open and add the packs",
+    "submit": "Open and add the packets",
     "done": "Done: the bulk pack is off the shelf and the smaller packs are in stock",
-    "onHand": "{count} of the bulk pack on hand",
+    "onHand": "{count} on the shelf",
     "choosePack": "Choose a pack...",
-    "balance": "Opened {opened} {unit}, packs make {made} {unit}. Wastage {wasted} {unit} ({percent}%). Wastage is shared into the cost of the packs.",
+    "balance": "Opened {opened} {unit}. The packets make {made} {unit}. Left over (wastage): {wasted} {unit} ({percent}%); it is shared into the cost of the packets.",
     "tooMuch": "The packs add up to {made} {unit}, more than the {opened} {unit} opened. Check the numbers.",
     "newPack": "+ A new pack (amount and unit)",
     "newAmount": "How much in one new pack",
     "newUnit": "Unit",
-    "moreThanOnHand": "Only {count} available to open here"
+    "moreThanOnHand": "Only {count} available to open here",
+    "sackTitle": "How much is in one {label}?",
+    "sackNote": "The system needs this once, to know how many packets it makes. It is saved on that size.",
+    "sackAmount": "How much is in one",
+    "madeTitle": "Packets you made",
+    "madeNote": "Write how many packets of each size you made.",
+    "fill": "Fill with what is left",
+    "addSize": "A size that is not listed",
+    "step1": "What you open: {label}",
+    "step2": "How many {label} do you open?",
+    "bulkKnown": "{label} = {size}.",
+    "noSizes": "No size of this item is on sale yet. The sizes you sell (200 g, 500 g …) and their prices are set first, in Set quantity and price. Then come back here to fill them.",
+    "setSizes": "Set the sizes and prices",
+    "noSizesShort": "sizes on sale",
+    "boughtAt": "bought at about {cost} each",
+    "madeExample": "Example: you made 1 packet of {size} → write 1 beside {size}.",
+    "colSize": "Size",
+    "colSells": "Sells at",
+    "colCost": "Costs about",
+    "colMade": "Made",
+    "countPlaceholder": "How many?",
+    "belowCost": "This size sells for less than it costs",
+    "missingSize": "A size you want is not listed?",
+    "usesTitle": "What this uses",
+    "usesAuto": "Takes {count} out of {label}",
+    "change": "Change",
+    "usesWaiting": "Fill in the packets above: this is worked out for you.",
+    "openedPlaceholder": "e.g. 11",
+    "workItOut": "Work it out for me",
+    "shelfAfter": "{opened} of {label} come off the shelf; {left} are left.",
+    "noCompare": "These sizes cannot be set against each other, so no wastage is shown.",
+    "usesPart": "Uses {count} of {label} ({amount})",
+    "staysOnShelf": "Stays on the shelf: {count} {label} ({amount}). What is left of the opened one is used first next time.",
+    "lostLabel": "Spilled, damaged or spoilt while opening (optional)",
+    "lostHint": "Write only what was really lost. Leave it empty if nothing was: the rest stays in stock.",
+    "madeByOpening": "{label} was made by opening something bigger, so it is not opened again. To make packets, open what was bought (the sack, the roll, the loose pieces). Wrong count? Use Correct the count in the row menu.",
+    "notMade": "Not made into packets: {left} {unit}. A whole pack is opened here, so this leaves the shelf with it.",
+    "allMade": "All of what is opened is made into packets.",
+    "sacksLabel": "How many {label} will you open? (optional)",
+    "sacksPlaceholder": "e.g. 3",
+    "sacksHint": "Optional. Fill it and the ↻ buttons fill each size up to that much (3 sacks of 20 kg = 60 kg). Leave it empty and just write the packets you made: how many are opened is worked out from them.",
+    "sacksOver": "The packets are more than {count} {label} holds",
+    "sacksLeft": "Made {made} of {total}; {left} not made yet (it stays in the opened pack)"
   },
   "kitPage": {
     "back": "All kits",
@@ -4521,7 +4570,9 @@
     },
     "rowLoss": "Damaged / lost",
     "rowCount": "Count",
-    "rowRepack": "Make packets"
+    "rowRepack": "Make packets",
+    "menuCount": "Correct the count",
+    "editWarn": "Set the warning level and the shelf"
   },
   "itemGroups": {
     "title": "Groups",
@@ -4640,7 +4691,9 @@
       "metaTitleHint": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
       "metaDescription": "Search description (optional)",
       "metaDescriptionHint": "Shown under the title in search results; up to 160 characters.",
-      "samagriHint": "The samagri it belongs to. Changing it also changes where the item is filed (its category) on the website."
+      "samagriHint": "The samagri it belongs to. Changing it also changes where the item is filed (its category) on the website.",
+      "buyIt": "Buy it",
+      "moreSettings": "More settings: colours and sizes, quality, goes with, offers →"
     },
     "buy": {
       "title": "Buy",
@@ -4692,8 +4745,8 @@
       "save": "Save and add to stock",
       "saved": "Saved. It is in stock and on sale.",
       "savedNeedPrice": "Saved and in stock. {n, plural, one {# line needs} other {# lines need}} a selling price.",
-      "packetsNote": "Buying ready-made packets (250 g, 1 kg bags) or opening a big bag into small ones?",
-      "packetsLink": "Use the detailed buy page.",
+      "packetsNote": "Bought a big bag or sack? Save it here: it appears in Stock, where Make packets opens it into the sizes you sell.",
+      "packetsLink": "Go to Stock.",
       "colourNone": "None",
       "rateCol": "Rate",
       "sellCol": "Sell 1 for",
@@ -4727,7 +4780,10 @@
       "billDateFuture": "The bill date cannot be in the future.",
       "newColour": "New colour",
       "colourAdded": "{name} added and chosen.",
-      "needBillNo": "Enter the supplier's bill number."
+      "needBillNo": "Enter the supplier's bill number.",
+      "holdsTitle": "How much is in one {unit}?",
+      "holdsTotal": "{count} × {amount} = {total}",
+      "needHolds": "Line {n}: write how much one sack, box or roll holds (for example 25 kg)"
     },
     "itemPage": {
       "back": "All items",
@@ -4945,5 +5001,12 @@
     "everyCompany": "Every company",
     "country": "Country",
     "everyCountry": "Every country"
+  },
+  "stockStatus": {
+    "ok": "OK",
+    "low": "Low",
+    "out": "Sold out",
+    "never": "Not bought yet",
+    "kept": "{count} kept for orders"
   }
 }

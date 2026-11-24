@@ -6377,6 +6377,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/items/{id}/category': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * File an item under another category
+     * @description The samagri moves with it when it is the item's own; an item that shares a samagri gets one of its own in the new category.
+     */
+    put: operations['AdminItemController_moveToCategory'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/items/similar': {
     parameters: {
       query?: never;
@@ -10537,6 +10557,8 @@ export interface components {
       value: string;
       /** @description onHand is at or below reorderLevel */
       isLowStock: boolean;
+      /** @description Some of it was bought in; a pack that only came from opening a bigger one is not opened again */
+      boughtIn: boolean;
       /** Format: date-time */
       updatedAt: string | null;
     };
@@ -16168,6 +16190,13 @@ export interface components {
       note?: string | null;
       /** @example https://media.pujasanskar.com/receipts/nea.jpg */
       receiptUrl?: string | null;
+    };
+    MoveItemDto: {
+      /**
+       * Format: uuid
+       * @description The category the item is filed under
+       */
+      categoryId: string;
     };
     SimilarItemResponse: {
       /** Format: uuid */
@@ -29356,6 +29385,8 @@ export interface operations {
         brand?: string;
         /** @description SKU, barcode, item name or code */
         q?: string;
+        /** @description Only SKUs with something on hand */
+        inStock?: boolean;
         /** @description Only SKUs with nothing on hand */
         outOfStock?: boolean;
       };
@@ -29497,6 +29528,8 @@ export interface operations {
         brand?: string;
         /** @description SKU, barcode, item name or code */
         q?: string;
+        /** @description Only SKUs with something on hand */
+        inStock?: boolean;
         /** @description Only SKUs with nothing on hand */
         outOfStock?: boolean;
       };
@@ -45891,6 +45924,73 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminItemController_moveToCategory: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MoveItemDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['AdminProductResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };

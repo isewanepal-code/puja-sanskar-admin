@@ -149,7 +149,13 @@ export function DataTable<T>({
     const ordered = by ? [...filtered].sort((a, b) => sign * compare(by(a), by(b))) : filtered;
     if (!groupBy) return ordered;
     // The headings in their own order; the order above is kept inside each (the sort is stable).
+    const firstSeen = new Map<string, number>();
+    ordered.forEach((row, index) => {
+      if (!firstSeen.has(groupBy.of(row))) firstSeen.set(groupBy.of(row), index);
+    });
     const rank = (row: T) => {
+      // No fixed order given: a heading stands where its first row is in the sorted list.
+      if (groupBy.order.length === 0) return firstSeen.get(groupBy.of(row)) ?? 0;
       const at = groupBy.order.indexOf(groupBy.of(row));
       return at === -1 ? groupBy.order.length : at;
     };
@@ -288,7 +294,20 @@ export function DataTable<T>({
                   </tr>
                 ) : null}
                 <tr
-                  onClick={onRowClick ? () => onRowClick(row) : undefined}
+                  onClick={
+                    onRowClick
+                      ? (event) => {
+                          // A link or button inside the row does its own job; it does not also open the row.
+                          if (
+                            (event.target as HTMLElement).closest(
+                              'a, button, input, select, textarea, label',
+                            )
+                          )
+                            return;
+                          onRowClick(row);
+                        }
+                      : undefined
+                  }
                   className={cn('data-row group/row', onRowClick && 'cursor-pointer')}
                 >
                   {columns.map((column, index) => (
