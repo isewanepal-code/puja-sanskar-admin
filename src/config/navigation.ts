@@ -36,6 +36,7 @@ export type NavSection = {
     | 'materials'
     | 'sources'
     | 'brands'
+    | 'companies'
     | 'dataReset'
     | 'catalogue'
     | 'settings'
@@ -122,6 +123,7 @@ export const navigation: NavGroup[] = [
       },
       { key: 'units', href: routes.units(), icon: 'grain', permission: 'catalogue:read' },
       { key: 'brands', href: routes.brands(), icon: 'tag', permission: 'catalogue:read' },
+      { key: 'companies', href: routes.companies(), icon: 'store', permission: 'catalogue:read' },
       { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
       { key: 'suppliers', href: routes.suppliers(), icon: 'users', permission: 'purchases:read' },
       // Puja knowledge, not daily work: last of the setup.

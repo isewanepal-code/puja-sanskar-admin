@@ -46,6 +46,7 @@ export const routes = {
   units: () => '/catalogue/units',
   sources: () => '/catalogue/sources',
   brands: () => '/catalogue/brands',
+  companies: () => '/catalogue/companies',
   optionTypes: () => '/options',
   dataReset: () => '/data-reset',
 

@@ -39,6 +39,7 @@ describe('can', () => {
       'catalogue',
       'units',
       'brands',
+      'companies',
       'options',
       'materials',
       'sources',

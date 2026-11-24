@@ -93,7 +93,6 @@ export const productsResource: Resource<Product> = {
     { name: 'slug', kind: 'slug', max: 160, section: 'seo', wide: true },
     { name: 'metaTitle', kind: 'text', max: 70, wide: true },
     { name: 'metaDescription', kind: 'textarea', max: 160 },
-    { name: 'isActive', kind: 'switch' },
   ],
 };
 
@@ -208,7 +207,6 @@ export const quickItemResource: Resource<never> = {
     { name: 'hsCode', kind: 'text', max: 8, pattern: HS_CODE },
     { name: 'tags', kind: 'tags' },
     { name: 'description', kind: 'textarea', max: 4000, wide: true },
-    { name: 'showOnWebsite', kind: 'switch' },
     { name: 'code', kind: 'code', max: 32 },
     { name: 'sku', kind: 'code', max: 40, pattern: SKU, wide: true },
   ],

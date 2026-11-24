@@ -2,6 +2,7 @@ import { activeColumn, codeColumn, recordColumn, type Resource } from '@/compone
 import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
 import { choices, wholeSource } from '@/lib/choices';
+import { countryChoices, countryLabel } from '@/lib/countries';
 
 type Category = Schema<'AdminCategoryResponse'>;
 type CategoryNode = Category & { children: CategoryNode[] };
@@ -9,6 +10,7 @@ type Material = Schema<'AdminMaterialResponse'>;
 type Unit = Schema<'UnitResponse'>;
 type Source = Schema<'SourceResponse'>;
 type Brand = Schema<'BrandResponse'>;
+type Company = Schema<'CompanyResponse'>;
 
 const flatten = (nodes: CategoryNode[]): CategoryNode[] =>
   nodes.flatMap((node) => [node, ...flatten(node.children)]);
@@ -263,30 +265,124 @@ export const sourcesResource: Resource<Source> = {
   ],
 };
 
+// The companies behind the brands (the parent company), set up once and picked on a brand.
+export const companiesResource: Resource<Company> = {
+  key: 'companies',
+  path: '/admin/companies',
+  list: 'paged',
+  rowId: (row) => row.id,
+  rowLabel: (row) => row.nameNe ?? row.name,
+  usagePath: undefined,
+  initialSort: { key: 'nameNe', direction: 'asc' },
+  modalSize: 'lg',
+  exportPath: '/admin/brands/sheet',
+  bulk: ['nameNe', 'nameRomanized', 'name', 'country', 'place', 'website'],
+  columns: [
+    {
+      key: 'nameNe',
+      cell: (row) => <span className="font-semibold">{row.nameNe ?? '—'}</span>,
+      sortValue: (row) => row.nameNe ?? '',
+      filterValue: (row) => `${row.nameNe ?? ''} ${row.name}`,
+    },
+    {
+      key: 'nameRomanized',
+      cell: (row) => row.nameRomanized ?? '—',
+      sortValue: (row) => row.nameRomanized ?? '',
+    },
+    { key: 'name', cell: (row) => row.name, sortValue: (row) => row.name },
+    {
+      key: 'country',
+      cell: (row) => countryLabel(row.country) || '—',
+      sortValue: (row) => row.country ?? '',
+      filterValue: (row) => countryLabel(row.country),
+    },
+    { key: 'place', cell: (row) => row.place ?? '—', sortValue: (row) => row.place ?? '' },
+    {
+      key: 'brandCount',
+      cell: (row) => <Badge>{row.brandCount}</Badge>,
+      sortValue: (row) => row.brandCount,
+      align: 'right',
+    },
+    activeColumn<Company>(),
+  ],
+  fields: [
+    { name: 'nameNe', kind: 'text', max: 160 },
+    { name: 'nameRomanized', kind: 'text', max: 160 },
+    { name: 'name', kind: 'text', required: true, max: 160 },
+    { name: 'country', kind: 'select', optionsFrom: countryChoices },
+    { name: 'place', kind: 'text', max: 160 },
+    { name: 'website', kind: 'url', max: 300, wide: true },
+    { name: 'notes', kind: 'textarea', max: 500, wide: true },
+    { name: 'isActive', kind: 'switch' },
+  ],
+};
+
+const link = (url: string) => (
+  <a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-primary underline-offset-2 hover:underline"
+  >
+    {url.replace(/^https?:\/\/(www\.)?/i, '').replace(/\/$/, '')}
+  </a>
+);
+
 // The shop's brands, set up first and picked on an item (a new name typed on an item also lands here).
 export const brandsResource: Resource<Brand> = {
   key: 'brands',
   path: '/admin/brands',
   list: 'paged',
   rowId: (row) => row.id,
-  rowLabel: (row) => row.name,
+  rowLabel: (row) => row.nameNe ?? row.name,
   usagePath: undefined,
   initialSort: { key: 'name', direction: 'asc' },
-  modalSize: 'sm',
-  bulk: ['name', 'nameNe'],
+  modalSize: 'lg',
+  exportPath: '/admin/brands/sheet',
+  bulk: [
+    'nameNe',
+    'nameRomanized',
+    'name',
+    'companyId',
+    'country',
+    'place',
+    'productTypes',
+    'website',
+  ],
   columns: [
     {
-      key: 'name',
-      cell: (row) => (
-        <>
-          <span className="font-semibold">{row.name}</span>
-          {row.nameNe ? (
-            <span className="ml-2 text-xs text-muted-foreground">{row.nameNe}</span>
-          ) : null}
-        </>
-      ),
-      sortValue: (row) => row.name,
-      filterValue: (row) => `${row.name} ${row.nameNe ?? ''}`,
+      key: 'nameNe',
+      cell: (row) => <span className="font-semibold">{row.nameNe ?? row.name}</span>,
+      sortValue: (row) => row.nameNe ?? row.name,
+      filterValue: (row) => `${row.nameNe ?? ''} ${row.name}`,
+    },
+    {
+      key: 'nameRomanized',
+      cell: (row) => row.nameRomanized ?? '—',
+      sortValue: (row) => row.nameRomanized ?? '',
+    },
+    { key: 'name', cell: (row) => row.name, sortValue: (row) => row.name },
+    {
+      key: 'companyId',
+      cell: (row) => (row.company ? (row.company.nameNe ?? row.company.name) : '—'),
+      sortValue: (row) => row.company?.name ?? '',
+      filterValue: (row) => `${row.company?.name ?? ''} ${row.company?.nameNe ?? ''}`,
+    },
+    {
+      key: 'country',
+      cell: (row) => countryLabel(row.country) || '—',
+      sortValue: (row) => row.country ?? '',
+      filterValue: (row) => countryLabel(row.country),
+    },
+    {
+      key: 'productTypes',
+      cell: (row) => <span className="line-clamp-2 max-w-xs">{row.productTypes ?? '—'}</span>,
+      sortValue: (row) => row.productTypes ?? '',
+    },
+    {
+      key: 'website',
+      cell: (row) => (row.website ? link(row.website) : (row.source ?? '—')),
+      sortValue: (row) => row.website ?? row.source ?? '',
     },
     {
       key: 'itemCount',
@@ -297,8 +393,16 @@ export const brandsResource: Resource<Brand> = {
     activeColumn<Brand>(),
   ],
   fields: [
-    { name: 'name', kind: 'text', required: true, max: 80 },
     { name: 'nameNe', kind: 'text', max: 80 },
+    { name: 'nameRomanized', kind: 'text', max: 80 },
+    { name: 'name', kind: 'text', required: true, max: 80 },
+    { name: 'companyId', kind: 'select', optionsFrom: choices.companies },
+    { name: 'country', kind: 'select', optionsFrom: countryChoices },
+    { name: 'place', kind: 'text', max: 160 },
+    { name: 'productTypes', kind: 'text', max: 300, wide: true },
+    { name: 'details', kind: 'textarea', max: 1000, wide: true },
+    { name: 'website', kind: 'url', max: 300, wide: true },
+    { name: 'source', kind: 'text', max: 200, wide: true },
     { name: 'isActive', kind: 'switch' },
   ],
 };

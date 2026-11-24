@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import type { Resource } from '@/components/resource';
 import {
+  brandsResource,
   categoriesResource,
+  companiesResource,
   materialsResource,
   sourcesResource,
   unitsResource,
@@ -111,6 +113,8 @@ const RESOURCES: Resource<never>[] = [
   materialsResource,
   unitsResource,
   sourcesResource,
+  brandsResource,
+  companiesResource,
   faqsResource((key) => key),
   storiesResource((key) => key),
   panditsResource,

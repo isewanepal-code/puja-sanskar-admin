@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { useId, useState, type ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 
 import { ResourceForm, ResourceScreen } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
@@ -15,8 +15,9 @@ import { request } from '@/lib/api';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
-import { gradesResource, pairingsResource, productsResource, variantsResource } from '../resources';
+import { gradesResource, pairingsResource, variantsResource } from '../resources';
 import { BuyingPanel } from './buying-panel';
+import { ItemEditPanel } from './item-edit-modal';
 import { OptionsPanel } from './options-panel';
 import { PhotosPanel } from './photos-panel';
 import { PriceGrid } from './price-grid';
@@ -147,12 +148,9 @@ function Card({ title, help, children }: { title: string; help: string; children
 export function ItemPage({ id }: { id: string }) {
   const t = useTranslations('itemPage');
   const tg = useTranslations('itemGroups');
-  const tf = useTranslations('forms');
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const formId = useId();
-  const [saving, setSaving] = useState(false);
   const { data: product, isPending, isError } = useProduct(id);
 
   const asked = params.get('step') as Step | null;
@@ -169,12 +167,6 @@ export function ItemPage({ id }: { id: string }) {
   }
 
   const index = STEPS.indexOf(step);
-  const details = {
-    ...productsResource,
-    // Photos have their own step, so saving the details never touches them.
-    fields: productsResource.fields.filter((field) => field.name !== 'images'),
-  };
-
   return (
     <div className="grid max-w-5xl gap-6">
       <div>
@@ -201,19 +193,7 @@ export function ItemPage({ id }: { id: string }) {
       <Card title={t(`step.${step}`)} help={t(`help.${step}`)}>
         {step === 'basics' ? (
           <>
-            <ResourceForm
-              key={`details-${product.id}`}
-              resource={details}
-              row={product}
-              formId={formId}
-              onPendingChange={setSaving}
-              onDone={() => undefined}
-            />
-            <div className="mt-4 flex justify-end">
-              <Button type="submit" form={formId} disabled={saving}>
-                {saving ? tf('saving') : tf('save')}
-              </Button>
-            </div>
+            <ItemEditPanel id={product.id} />
           </>
         ) : null}
 

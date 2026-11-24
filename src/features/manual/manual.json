@@ -146,6 +146,59 @@
       ]
     },
     {
+      "id": "brands",
+      "title": "1.5 · Brands and companies",
+      "nepali": "ब्रान्ड र उत्पादक कम्पनी: एक पटक थपेर सामानमा छान्ने।",
+      "where": "Sidebar → 1 Setup → Brands / Companies",
+      "intro": "A brand is added once and picked on an item. The company that makes it (the parent company) is added once under Companies and picked on the brand. The country comes from the shop's own short list of 12; everything else is plain text.",
+      "fields": [
+        [
+          "Brand (English) *",
+          "Mangaldeep",
+          "The name chosen on items. Keep the spelling in one place."
+        ],
+        [
+          "Name in Roman",
+          "mangaldip",
+          "The Nepali name in English letters, as people type it; searched with the name. Filled from the English name when empty."
+        ],
+        ["Brand (Nepali)", "मङ्गलदीप", "Optional."],
+        [
+          "Parent company",
+          "Surya Nepal Pvt. Ltd.",
+          "Picked from Companies. Add the company there first if it is new."
+        ],
+        [
+          "Country",
+          "Nepal",
+          "Where it is made, from the list. A new country is one more line in the admin."
+        ],
+        ["Place made", "Kathmandu / Lalitpur", "City or region, as written."],
+        ["What it makes", "Agarbatti, dhoop", "Kinds of items, in your own words."],
+        [
+          "Features and details",
+          "Sandal, rose, jasmine variants",
+          "What stands it out: variants, pack sizes, reach."
+        ],
+        [
+          "Website",
+          "https://www.snpl.com.np/",
+          "Starts with https://. If you only know a source (\"Nepali wholesale market\"), write it in Source."
+        ]
+      ],
+      "steps": [
+        "Companies → Add a company: English name, Nepali name, country, place, website. Many at once: Add many, or Excel.",
+        "Brands → Add a brand: the name, then pick its parent company and country, and write the rest.",
+        "Brands → Download Excel gives one sheet of brands and one of companies in the layout of your own file. Fill the empty rows, then Upload Excel → Check the file → Import.",
+        "In the file, write a brand as \"नेपाली (English)\" and the country as \"भारत (मैसूर, कर्नाटक)\": the country, then the place in brackets. A company written in a brand row is made if it is new.",
+        "A brand already in the shop is matched by its name: only what you write changes, a blank cell keeps what is saved. A company with brands cannot be deleted."
+      ],
+      "tips": [
+        "Filter the Brands list by company or country at the top.",
+        "On Add item, the + beside Brand adds a brand without leaving the page."
+      ]
+    },
+    {
       "id": "add-item",
       "title": "2.1 · Add item",
       "nepali": "सामानको नाम मात्र। रङ/साइज, कति र मोल पछि Buy मा।",

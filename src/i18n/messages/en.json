@@ -18,7 +18,19 @@
     "leaveTitle": "Leave this page?",
     "leaveBody": "What you typed on this page is not saved. If you leave now it is lost.",
     "leave": "Leave",
-    "stay": "Stay here"
+    "stay": "Stay here",
+    "leaveDraftBody": "What you typed is not saved yet. Save it as a draft to continue later, or leave and lose it.",
+    "leaveDiscard": "Leave without saving",
+    "leaveSaveDraft": "Save draft and leave",
+    "saveDraft": "Save draft",
+    "draftSaved": "Draft saved: you can continue it later.",
+    "draftFound": "You have an unsaved draft from {time}.",
+    "draftContinue": "Continue the draft",
+    "draftDiscard": "Discard it",
+    "draftAutosaved": "Draft kept automatically",
+    "maximize": "Make bigger",
+    "restoreSize": "Back to normal size",
+    "resizeHint": "Drag the edges to change the size"
   },
   "error": {
     "title": "Something went wrong",
@@ -169,7 +181,8 @@
       "dataTools": "Data tools",
       "activity": "Activity log",
       "customerReturns": "Customer returns",
-      "sidebarMenus": "Sidebar menus"
+      "sidebarMenus": "Sidebar menus",
+      "companies": "Companies"
     },
     "changePassword": "Change password",
     "groups": {
@@ -266,7 +279,8 @@
       "dataTools": "Master Excel import and search index.",
       "activity": "Who did what, and when.",
       "customerReturns": "Goods customers brought back from an order: back on the shelf or written off, and the money paid back.",
-      "sidebarMenus": "Choose which menu entries each role sees. It only tidies the menu; what a role may do is set in Staff."
+      "sidebarMenus": "Choose which menu entries each role sees. It only tidies the menu; what a role may do is set in Staff.",
+      "companies": "The parent companies behind the brands. Add one once, then pick it on a brand."
     },
     "sectionHint": {
       "dashboard": "Today's summary",
@@ -2666,18 +2680,34 @@
       "empty": "No brands yet.",
       "none": "—",
       "fields": {
-        "name": "Brand",
-        "nameNe": "Name in Nepali",
+        "name": "Brand (English)",
+        "nameNe": "Brand (Nepali)",
+        "companyId": "Parent company",
+        "country": "Country",
+        "place": "Place made",
+        "productTypes": "What it makes",
+        "details": "Features and other details",
+        "website": "Website",
+        "source": "Source (if not a website)",
         "itemCount": "Items",
-        "isActive": "In use"
+        "isActive": "In use",
+        "nameRomanized": "Name in Roman"
       },
       "hints": {
-        "name": "For example Patanjali, Tata. This exact name is chosen on items; keep the spelling in one place.",
-        "nameNe": "Optional."
+        "name": "The name chosen on items, like Patanjali. Keep the spelling in one place.",
+        "nameNe": "Optional.",
+        "companyId": "The company that makes the brand. Add it under Companies if it is not listed.",
+        "country": "Where it is made, from the shop's own short list.",
+        "place": "City or region, like Mysuru, Karnataka.",
+        "productTypes": "The kinds of items, like agarbatti, dhoop, camphor.",
+        "details": "Variants, pack sizes, reach: what stands it out.",
+        "website": "Starts with https://",
+        "source": "Where the facts came from, like \"Nepali wholesale market\".",
+        "nameRomanized": "The Nepali name in English letters, as people type it (mangaldip). It is searched together with the name."
       },
       "sections": {},
-      "about": "Add each brand once here, then pick it from the list on an item (no typing). Renaming a brand renames it on all its items; a brand not used by any item can be deleted.",
-      "aboutForm": "Enter the brand name. You will pick it from this list when you make an item."
+      "about": "Add each brand once here, then pick it on an item. Its parent company, country, website and the rest are kept with it. Many at once: Excel (the brand list, same layout as your file). Renaming a brand renames it on all its items; a brand no item uses can be deleted.",
+      "aboutForm": "Enter the brand and the company behind it. You will pick the brand from this list when you make an item."
     },
     "salesReturns": {
       "title": "Customer returns",
@@ -2708,6 +2738,34 @@
         "RESTOCK": "Back on the shelf",
         "WRITE_OFF": "Write off (loss)"
       }
+    },
+    "companies": {
+      "title": "Companies",
+      "add": "Add a company",
+      "empty": "No companies yet.",
+      "none": "—",
+      "fields": {
+        "name": "Company (English)",
+        "nameNe": "Company (Nepali)",
+        "country": "Country",
+        "place": "City or region",
+        "website": "Website",
+        "notes": "Notes",
+        "brandCount": "Brands",
+        "isActive": "In use",
+        "nameRomanized": "Name in Roman"
+      },
+      "hints": {
+        "name": "For example Surya Nepal Pvt. Ltd.",
+        "nameNe": "Optional.",
+        "country": "From the shop's own short list.",
+        "website": "Starts with https://",
+        "notes": "Anything the shop wants to remember.",
+        "nameRomanized": "The Nepali name in English letters, as people type it. Filled from the English name when left empty."
+      },
+      "sections": {},
+      "about": "The parent companies that make the brands. Add a company once, then pick it on each of its brands. A company with brands cannot be deleted. Many at once: Excel (the same workbook as Brands).",
+      "aboutForm": "Enter the company. You will pick it on its brands."
     }
   },
   "catalogue": {
@@ -2719,14 +2777,16 @@
       "sources": "Sources",
       "products": "Products",
       "stock": "Stock",
-      "brands": "Brands"
+      "brands": "Brands",
+      "companies": "Companies"
     },
     "intro": {
       "categories": "The shelves of the shop and the website. Every item sits in one category, and a category can have sub-categories. Make these first.",
       "units": "The words sizes are counted in: g, kg, m, pcs. They are listed under what they measure, smallest first. Add a unit only for a new kind of size.",
       "brands": "The brands of your items. Add a brand here once, then pick it on an item. Renaming a brand renames it on all of its items.",
       "materials": "What a puja needs, for example camphor, kept once. Adding an item makes its samagri; pujas list their samagri from here.",
-      "sources": "Where the facts about a samagri came from: a book, a website, a pandit. It is only a record and changes nothing in the shop."
+      "sources": "Where the facts about a samagri came from: a book, a website, a pandit. It is only a record and changes nothing in the shop.",
+      "companies": "The parent companies that make your brands (Surya Nepal, Patanjali …). Add a company once, then pick it on its brands."
     }
   },
   "contentSection": {
@@ -2897,7 +2957,9 @@
     "uploadItemList": "Add items from the Excel list",
     "uploadItemListNote": "Download the list first (Download the layout). Each sheet is a category (5 in all); the Group columns put the item in an Item group (the website filter), not in a category. Grey rows are already in the shop: their names, group and variants are locked, but the pale-yellow cells (other names, alternative, purpose, short and full description, selling price, usual supplier) can be changed. Prices go in the order of the variants, VAT included: variants \"50 gm, 100 gm, 1 kg\" → prices \"35, 65, 580\". Write new items in the empty rows: Nepali name, English name, search group, variants, and the rest if you know it. Rule A: weights and counts of one thing are its variants. Rule B: a different size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own row. A new sheet makes a new category.",
     "editItem": "Change this item's details",
-    "changeSizes": "Change this item's quantities and prices"
+    "changeSizes": "Change this item's quantities and prices",
+    "uploadBrandList": "Add brands and companies from Excel",
+    "uploadBrandListNote": "Download the list first (Download Excel): one sheet of brands and one of companies, in the layout of your file. Write new brands in the empty rows: brand name (Nepali and English in brackets), name in Roman, parent company, where it is made (country, then the place in brackets), what it makes, features, and the website. A company named in a brand row is made if it is new. A brand already in the shop is matched by its name; only what you write changes, a blank cell keeps what is saved. Your own sheets with a title row above the headings load as they are."
   },
   "media": {
     "pickTitle": "Choose an image",
@@ -4560,7 +4622,25 @@
       "alternative": "If not found, take instead",
       "alternativeHint": "What a shopper can take when this is out: another item or a word like \"red cloth\".",
       "shortDescription": "Short line",
-      "shortDescriptionHint": "One line under the name in lists and cards."
+      "shortDescriptionHint": "One line under the name in lists and cards.",
+      "editTitle": "Change this item's details",
+      "editSave": "Save changes",
+      "editSaved": "The item is updated",
+      "editNote": "Its quantities and prices are changed with the tag icon in the list.",
+      "notLoaded": "The item could not be opened.",
+      "photoAlt": "Photo description (alt text)",
+      "photoAltPlaceholder": "What the photo shows",
+      "photoAltNote": "The description is read aloud to people who cannot see the photo, shows when it does not load, and helps search engines find it.",
+      "samagri": "Samagri",
+      "seoTitle": "Search engines",
+      "seoNote": "How this item appears on Google and other search engines. All optional.",
+      "slug": "Web address (optional)",
+      "slugHint": "Made from the English name when left empty. A changed address keeps the old one working.",
+      "metaTitle": "Search title (optional)",
+      "metaTitleHint": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
+      "metaDescription": "Search description (optional)",
+      "metaDescriptionHint": "Shown under the title in search results; up to 160 characters.",
+      "samagriHint": "The samagri it belongs to. Changing it also changes where the item is filed (its category) on the website."
     },
     "buy": {
       "title": "Buy",
@@ -4859,5 +4939,11 @@
     "onWeb": "Website and counter",
     "counterOnly": "Counter only",
     "change": "Change quantities and prices"
+  },
+  "brandFilters": {
+    "company": "Company",
+    "everyCompany": "Every company",
+    "country": "Country",
+    "everyCountry": "Every country"
   }
 }

@@ -2587,6 +2587,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/brands/sheet': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Brands and their companies as Excel
+     * @description A sheet of brands (name, parent company, where made, what it makes, features, link) and a sheet of companies, in the layout the shop keeps. Upload it again to add brands and change what is written.
+     */
+    get: operations['AdminBrandController_sheet'];
+    put?: never;
+    /**
+     * Add brands and companies from the brand workbook
+     * @description Any sheet with the brand name and parent company columns is read as brands, one with Company (English) as companies. A company named in a brand row is made when it is new. A brand already in the shop (same name) has its blank cells kept and its written cells changed. Every row is checked first; nothing is saved if any is wrong.
+     */
+    post: operations['AdminBrandController_addFromSheet'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/brands': {
     parameters: {
       query?: never;
@@ -2628,6 +2652,46 @@ export interface paths {
      * @description A new name is saved on every item that carries the brand.
      */
     patch: operations['AdminBrandController_update'];
+    trace?: never;
+  };
+  '/api/v1/admin/companies': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** List the companies behind the brands */
+    get: operations['AdminCompanyController_list'];
+    put?: never;
+    /** Add a company */
+    post: operations['AdminCompanyController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/companies/{id}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Get a company */
+    get: operations['AdminCompanyController_get'];
+    put?: never;
+    post?: never;
+    /**
+     * Delete a company
+     * @description Refused while it has brands: move or delete those first.
+     */
+    delete: operations['AdminCompanyController_delete'];
+    options?: never;
+    head?: never;
+    /** Change or switch off a company */
+    patch: operations['AdminCompanyController_update'];
     trace?: never;
   };
   '/api/v1/admin/stock-levels': {
@@ -9393,6 +9457,11 @@ export interface components {
       metaDescription?: string | null;
       /** @description true makes this the material's default product; it cannot be unset directly */
       isDefault?: boolean;
+      /**
+       * Format: uuid
+       * @description Moves the item to another sellable samagri (and so another category); its packs and stock go with it
+       */
+      materialId?: string;
     };
     CreateVariantDto: {
       /** @example KAP-050 */
@@ -10235,6 +10304,38 @@ export interface components {
       canDelete: boolean;
       lines: components['schemas']['UsageLineResponse'][];
     };
+    RowIssueResponse: {
+      /** @example Unit_Master */
+      sheet: string;
+      /** @example 20 */
+      row: number;
+      /** @example symbol */
+      field?: string;
+      /** @example as_offered is a quantity type, not a unit */
+      message: string;
+    };
+    SheetReportResponse: {
+      /** @example Category_Master */
+      sheet: string;
+      /** @example 18 */
+      created: number;
+      /** @example 0 */
+      updated: number;
+      /** @example 0 */
+      unchanged: number;
+      skipped: components['schemas']['RowIssueResponse'][];
+    };
+    ImportReportResponse: {
+      dryRun: boolean;
+      sheets: components['schemas']['SheetReportResponse'][];
+    };
+    BrandCompanyResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Surya Nepal Pvt. Ltd. */
+      name: string;
+      nameNe: string | null;
+    };
     BrandResponse: {
       /** Format: uuid */
       id: string;
@@ -10242,7 +10343,17 @@ export interface components {
       name: string;
       /** @example पतञ्जलि */
       nameNe: string | null;
+      /** @example patanjali */
+      nameRomanized: string | null;
       isActive: boolean;
+      company: components['schemas']['BrandCompanyResponse'] | null;
+      /** @example NP */
+      country: string | null;
+      place: string | null;
+      productTypes: string | null;
+      details: string | null;
+      website: string | null;
+      source: string | null;
       /**
        * @description Items carrying this brand
        * @example 12
@@ -10258,14 +10369,117 @@ export interface components {
       name: string;
       /** @example पतञ्जलि */
       nameNe?: string | null;
+      /** @example patanjali */
+      nameRomanized?: string | null;
       /** @default true */
       isActive: boolean;
+      /**
+       * Format: uuid
+       * @description The parent company that makes it
+       */
+      companyId?: string | null;
+      /**
+       * @description Where it is made: a two-letter country code
+       * @example NP
+       */
+      country?: string | null;
+      /** @example Mysuru, Karnataka */
+      place?: string | null;
+      /** @example Agarbatti, dhoop, camphor */
+      productTypes?: string | null;
+      /** @example Sandal, rose and jasmine variants; strong dealer network */
+      details?: string | null;
+      /** @example https://www.snpl.com.np/ */
+      website?: string | null;
+      /** @example Nepali wholesale market */
+      source?: string | null;
     };
     UpdateBrandDto: {
       /** @example Patanjali */
       name?: string;
       /** @example पतञ्जलि */
       nameNe?: string | null;
+      /** @example patanjali */
+      nameRomanized?: string | null;
+      /** @default true */
+      isActive: boolean;
+      /**
+       * Format: uuid
+       * @description The parent company that makes it
+       */
+      companyId?: string | null;
+      /**
+       * @description Where it is made: a two-letter country code
+       * @example NP
+       */
+      country?: string | null;
+      /** @example Mysuru, Karnataka */
+      place?: string | null;
+      /** @example Agarbatti, dhoop, camphor */
+      productTypes?: string | null;
+      /** @example Sandal, rose and jasmine variants; strong dealer network */
+      details?: string | null;
+      /** @example https://www.snpl.com.np/ */
+      website?: string | null;
+      /** @example Nepali wholesale market */
+      source?: string | null;
+    };
+    CompanyResponse: {
+      /** Format: uuid */
+      id: string;
+      /** @example Surya Nepal Pvt. Ltd. */
+      name: string;
+      nameNe: string | null;
+      nameRomanized: string | null;
+      /** @example NP */
+      country: string | null;
+      place: string | null;
+      website: string | null;
+      notes: string | null;
+      isActive: boolean;
+      /**
+       * @description Brands this company makes
+       * @example 3
+       */
+      brandCount: number;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateCompanyDto: {
+      /** @example Surya Nepal Pvt. Ltd. */
+      name: string;
+      /** @example सूर्य नेपाल प्रा. लि. */
+      nameNe?: string | null;
+      /** @example surya nepal */
+      nameRomanized?: string | null;
+      /** @example NP */
+      country?: string | null;
+      /** @example Kathmandu */
+      place?: string | null;
+      /** @example https://www.snpl.com.np/ */
+      website?: string | null;
+      /** @example Makes Mangaldeep */
+      notes?: string | null;
+      /** @default true */
+      isActive: boolean;
+    };
+    UpdateCompanyDto: {
+      /** @example Surya Nepal Pvt. Ltd. */
+      name?: string;
+      /** @example सूर्य नेपाल प्रा. लि. */
+      nameNe?: string | null;
+      /** @example surya nepal */
+      nameRomanized?: string | null;
+      /** @example NP */
+      country?: string | null;
+      /** @example Kathmandu */
+      place?: string | null;
+      /** @example https://www.snpl.com.np/ */
+      website?: string | null;
+      /** @example Makes Mangaldeep */
+      notes?: string | null;
       /** @default true */
       isActive: boolean;
     };
@@ -15601,31 +15815,6 @@ export interface components {
       /** @default 0 */
       sortOrder: number;
     };
-    RowIssueResponse: {
-      /** @example Unit_Master */
-      sheet: string;
-      /** @example 20 */
-      row: number;
-      /** @example symbol */
-      field?: string;
-      /** @example as_offered is a quantity type, not a unit */
-      message: string;
-    };
-    SheetReportResponse: {
-      /** @example Category_Master */
-      sheet: string;
-      /** @example 18 */
-      created: number;
-      /** @example 0 */
-      updated: number;
-      /** @example 0 */
-      unchanged: number;
-      skipped: components['schemas']['RowIssueResponse'][];
-    };
-    ImportReportResponse: {
-      dryRun: boolean;
-      sheets: components['schemas']['SheetReportResponse'][];
-    };
     SupplierResponse: {
       /** Format: uuid */
       id: string;
@@ -16112,6 +16301,12 @@ export interface components {
       purpose?: string | null;
       /** @example Guggul */
       alternative?: string | null;
+      /** @description Generated from nameEn when omitted */
+      slug?: string;
+      /** @example Loban for puja */
+      metaTitle?: string | null;
+      /** @example Pure loban for daily puja. */
+      metaDescription?: string | null;
       /**
        * @description Shown and sold on the website
        * @default true
@@ -28364,6 +28559,121 @@ export interface operations {
       };
     };
   };
+  AdminBrandController_sheet: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminBrandController_addFromSheet: {
+    parameters: {
+      query?: {
+        /** @description Validate and report without writing anything */
+        dryRun?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /** Format: binary */
+          file: string;
+        };
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['ImportReportResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description PAYLOAD_TOO_LARGE */
+      413: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminBrandController_list: {
     parameters: {
       query?: {
@@ -28372,6 +28682,10 @@ export interface operations {
         /** @description Matches code or names */
         q?: string;
         isActive?: boolean;
+        /** @description Only this company */
+        companyId?: string;
+        /** @description Only brands made here */
+        country?: string;
       };
       header?: never;
       path?: never;
@@ -28643,6 +28957,336 @@ export interface operations {
             /** @example Request successful */
             message: string;
             data: components['schemas']['BrandResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminCompanyController_list: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        /** @description Matches code or names */
+        q?: string;
+        isActive?: boolean;
+        country?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['CompanyResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminCompanyController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreateCompanyDto'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['CompanyResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminCompanyController_get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['CompanyResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminCompanyController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description CONFLICT */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminCompanyController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['UpdateCompanyDto'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['CompanyResponse'];
           };
         };
       };

@@ -17,6 +17,9 @@ type ConfirmDialogProps = {
   // Removing something is red; anything else is the plain primary action.
   danger?: boolean;
   onConfirm: () => void;
+  // A third way out, between the two ("Save draft and leave").
+  extraLabel?: string;
+  onExtra?: () => void;
 };
 
 // Asks before anything is removed; "keep it" has the focus.
@@ -29,6 +32,8 @@ export function ConfirmDialog({
   keepLabel,
   danger = true,
   onConfirm,
+  extraLabel,
+  onExtra,
 }: ConfirmDialogProps) {
   const t = useTranslations('common');
   return (
@@ -48,9 +53,23 @@ export function ConfirmDialog({
               <AlertDialog.Close className="btn btn-outline">
                 {keepLabel ?? t('keep')}
               </AlertDialog.Close>
+              {extraLabel && onExtra ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    onExtra();
+                    onOpenChange(false);
+                  }}
+                >
+                  {extraLabel}
+                </button>
+              ) : null}
               <button
                 type="button"
-                className={danger ? 'btn btn-danger' : 'btn btn-primary'}
+                className={
+                  danger ? 'btn btn-danger' : extraLabel ? 'btn btn-outline' : 'btn btn-primary'
+                }
                 onClick={() => {
                   onConfirm();
                   onOpenChange(false);

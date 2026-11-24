@@ -10,9 +10,11 @@ import { ChipInput, SearchSelect } from '@/components/controls';
 import { Field as FieldShell } from '@/components/forms';
 import { useToast } from '@/components/overlays';
 import { BsDatePicker } from '@/components/ui/bs-date-picker';
-import { useModalDirty } from '@/components/ui/modal';
+import { Button } from '@/components/ui/button';
+import { useModalDirty, useModalDraft } from '@/components/ui/modal';
 import { Input, Switch, Textarea } from '@/components/ui/input';
 import { fieldErrors, isApiError, request } from '@/lib/api';
+import { useDraft } from '@/lib/use-draft';
 
 import { isAutoField, withAutoCodes } from './auto-fields';
 import { schemaFor, toBody, toFormValues, type FormValues } from './form-values';
@@ -204,6 +206,7 @@ export function ResourceForm<T>({
 }: ResourceFormProps<T>) {
   const t = useResourceText(resource.key);
   const tf = useTranslations('forms');
+  const tc = useTranslations('common');
   const toast = useToast();
   const queryClient = useQueryClient();
   const idBase = useId();
@@ -259,6 +262,29 @@ export function ResourceForm<T>({
   // A modal around this form keeps what was typed until Cancel, a confirmed discard, or a save.
   useModalDirty(form.formState.isDirty);
 
+  // A new record's unsent work is kept as a draft in this browser: closing the modal, or the page, by
+  // mistake loses nothing. A password is never kept, and an edit has no draft (the saved record is
+  // its starting point).
+  const draftFields = fields
+    .filter((field) => field.kind !== 'password')
+    .map((field) => field.name);
+  const typedNow = form.watch() as Record<string, unknown>;
+  const draftValue: Record<string, unknown> = {};
+  for (const name of draftFields) {
+    const value = typedNow[name];
+    if (value !== undefined && !(value instanceof Blob)) draftValue[name] = value;
+  }
+  const draft = useDraft<Record<string, unknown>>(
+    mode === 'create' && !resource.singleton ? `resource:${resource.key}` : null,
+    draftValue,
+    form.formState.isDirty,
+  );
+  useModalDraft(
+    mode === 'create' && form.formState.isDirty
+      ? { save: draft.saveNow, discard: draft.clear }
+      : null,
+  );
+
   // A choice that depends on another field is emptied when that field changes.
   useEffect(() => {
     const subscription = form.watch((_values, { name, type }) => {
@@ -292,6 +318,7 @@ export function ResourceForm<T>({
     onMutate: () => onPendingChange?.(true),
     onSettled: () => onPendingChange?.(false),
     onSuccess: async (saved) => {
+      draft.clear();
       toast.success(successMessage ?? tf(row ? 'saved' : 'created'));
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: [resource.scope ?? resource.key] }),
@@ -347,6 +374,30 @@ export function ResourceForm<T>({
       )}
       className="grid gap-x-4 gap-y-4 sm:grid-cols-2"
     >
+      {draft.found && !form.formState.isDirty ? (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3 sm:col-span-2">
+          <p className="text-sm">
+            {tc('draftFound', { time: new Date(draft.found.savedAt).toLocaleString() })}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => {
+                for (const [name, value] of Object.entries(draft.found!.value)) {
+                  form.setValue(name as never, value as never, { shouldDirty: true });
+                }
+                draft.dismiss();
+              }}
+            >
+              {tc('draftContinue')}
+            </Button>
+            <Button type="button" size="sm" variant="secondary" onClick={draft.clear}>
+              {tc('draftDiscard')}
+            </Button>
+          </div>
+        </div>
+      ) : null}
       {shown.map((field) => {
         const id = `${idBase}-${field.name}`;
         const message = errors[field.name]?.message;

@@ -14,6 +14,7 @@ import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 import { routes } from '@/lib/routes';
 
 import { productsResource } from '../resources';
+import { ItemEditModal } from './item-edit-modal';
 import { ItemSizes } from './item-sizes';
 import type { Product } from './use-product';
 
@@ -21,6 +22,7 @@ export function ProductsScreen() {
   const t = useTranslations('actions');
   const router = useRouter();
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
+  const [editing, setEditing] = useState<string | null>(null);
   // Only the items in this group, and in the groups inside it.
   const [groupId, setGroupId] = useState('');
   const tg = useTranslations('itemGroups');
@@ -37,6 +39,8 @@ export function ProductsScreen() {
       // Download Excel gives the item list as the shop keeps it: a sheet per category.
       exportPath: '/admin/items/sheet',
       listQuery: { ...productsResource.listQuery, ...(groupId && { groupId }) },
+      // The pen opens the same form as adding an item, filled.
+      canEdit: false,
       // The quantities and their prices, side by side; pressing either opens all of them.
       columns: productsResource.columns.map((column) =>
         column.key === 'variants'
@@ -78,8 +82,6 @@ export function ProductsScreen() {
           </>
         }
         // The pen changes the item's details; the tag opens its quantities and prices.
-        editLabel={t('editItem')}
-        editOnRowClick={false}
         rowActions={(row) => (
           <>
             <Link
@@ -90,6 +92,7 @@ export function ProductsScreen() {
             >
               <Icon name="tag" size={16} aria-hidden="true" />
             </Link>
+            <IconButton icon="edit" label={t('editItem')} onClick={() => setEditing(row.id)} />
             <IconButton
               icon="archive"
               label={t('archive')}
@@ -99,6 +102,7 @@ export function ProductsScreen() {
         )}
       />
 
+      <ItemEditModal id={editing} onClose={() => setEditing(null)} />
       <ArchiveModal target={archiving} onClose={() => setArchiving(null)} />
     </>
   );

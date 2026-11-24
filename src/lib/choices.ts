@@ -185,6 +185,14 @@ export const choices = {
     toChoices: (s) => (s.isActive ? [{ value: s.id, label: s.name, detail: s.code }] : []),
     find: (id) => `/admin/suppliers/${id}`,
   }),
+  // The company behind a brand.
+  companies: pagedSource<{ id: string; name: string; nameNe: string | null }>('companies', {
+    path: '/admin/companies',
+    toChoices: (c) => [
+      { value: c.id, label: c.nameNe ?? c.name, detail: c.nameNe ? c.name : undefined },
+    ],
+    find: (id) => `/admin/companies/${id}`,
+  }),
   // A brand is picked by its name: an item keeps the name, in the spelling set up under Brands.
   brands: wholeSource('brands', async () =>
     (
