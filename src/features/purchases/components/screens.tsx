@@ -84,7 +84,9 @@ export function PurchaseBillsScreen() {
 
   // Coming from the Buy page right after saving: say what is done and what comes next.
   const router = useRouter();
-  const justSaved = useSearchParams().get('saved') === '1';
+  const params = useSearchParams();
+  const justSaved = params.get('saved') === '1';
+  const savedItems = (params.get('items') ?? '').split(',').filter(Boolean);
 
   return (
     <>
@@ -99,7 +101,7 @@ export function PurchaseBillsScreen() {
             <p className="text-muted-foreground">{tp('savedNext')}</p>
           </div>
           <Link
-            href={routes.quantityPrice()}
+            href={routes.quantityPrice(savedItems[0], savedItems.slice(1), routes.purchaseBills())}
             className={buttonVariants({ variant: 'primary', size: 'sm' })}
           >
             {tp('savedPrice')}

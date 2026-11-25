@@ -1,18 +1,20 @@
 'use client';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { useToast } from '@/components/overlays';
 import { Button } from '@/components/ui/button';
 import { request, type Schema } from '@/lib/api';
+import { formatDate } from '@/lib/format';
 
 type Batch = Schema<'StockBatchResponse'>;
 
 // Dated stock, soonest first. Anything past its date can be written off in one click.
 export function ExpiryList() {
   const t = useTranslations('stockWork.expiry');
+  const locale = useLocale() as 'en' | 'ne';
   const toast = useToast();
   const queryClient = useQueryClient();
   const [days, setDays] = useState('30');
@@ -66,7 +68,7 @@ export function ExpiryList() {
                   <td className="px-3 py-2 whitespace-nowrap">{b.productNameNe}</td>
                   <td className="px-3 py-2 whitespace-nowrap">{b.packName}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{b.quantity}</td>
-                  <td className="px-3 py-2 whitespace-nowrap">{b.expiresOn}</td>
+                  <td className="px-3 py-2 whitespace-nowrap">{formatDate(b.expiresOn, locale)}</td>
                   <td
                     className={`px-3 py-2 text-right whitespace-nowrap tabular-nums ${b.daysLeft < 0 ? 'text-destructive' : ''}`}
                   >

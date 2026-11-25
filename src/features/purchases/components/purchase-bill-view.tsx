@@ -1,12 +1,12 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { Modal } from '@/components/ui/modal';
 import { Link } from '@/i18n/navigation';
 import { request, type Schema } from '@/lib/api';
-import { formatBsDate, formatMoney } from '@/lib/format';
+import { formatBsDate, formatDate, formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
 
 type Bill = Schema<'PurchaseBillResponse'>;
@@ -18,6 +18,7 @@ const money = (amount: string) => formatMoney(amount, 'en');
 // edited; goods that go back are a return, and a new purchase is made on the Buy page.
 export function PurchaseBillView({ bill, onClose }: { bill: Bill; onClose: () => void }) {
   const t = useTranslations('purchases');
+  const locale = useLocale() as 'en' | 'ne';
   const supplier = useQuery({
     queryKey: ['suppliers', bill.supplierId],
     queryFn: () => request<Supplier>('GET', `/admin/suppliers/${bill.supplierId}`),
@@ -86,7 +87,9 @@ export function PurchaseBillView({ bill, onClose }: { bill: Bill; onClose: () =>
                   <td className="px-2 py-2 text-right tabular-nums">{l.quantity}</td>
                   <td className="px-2 py-2 text-right tabular-nums">{money(l.unitCost)}</td>
                   <td className="px-2 py-2 text-right tabular-nums">{Number(l.vatRate)}%</td>
-                  <td className="px-2 py-2">{l.expiresOn ?? '—'}</td>
+                  <td className="px-2 py-2">
+                    {l.expiresOn ? formatDate(l.expiresOn, locale) : '—'}
+                  </td>
                   <td className="px-2 py-2 text-right tabular-nums">{money(l.amount)}</td>
                 </tr>
               ))}

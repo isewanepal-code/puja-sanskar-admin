@@ -182,7 +182,8 @@
       "activity": "Activity log",
       "customerReturns": "Customer returns",
       "sidebarMenus": "Sidebar menus",
-      "companies": "Companies"
+      "companies": "Companies",
+      "losses": "Damaged and lost"
     },
     "changePassword": "Change password",
     "groups": {
@@ -280,7 +281,8 @@
       "activity": "Who did what, and when.",
       "customerReturns": "Goods customers brought back from an order: back on the shelf or written off, and the money paid back.",
       "sidebarMenus": "Choose which menu entries each role sees. It only tidies the menu; what a role may do is set in Staff.",
-      "companies": "The parent companies behind the brands. Add one once, then pick it on a brand."
+      "companies": "The parent companies behind the brands. Add one once, then pick it on a brand.",
+      "losses": "Everything written off: damaged, expired, lost or spilled stock, with its cost."
     },
     "sectionHint": {
       "dashboard": "Today's summary",
@@ -310,7 +312,8 @@
       "sources": "Where facts came from",
       "brands": "Brand list",
       "purchaseReturns": "Sent back",
-      "supplierPayments": "Paid out"
+      "supplierPayments": "Paid out",
+      "losses": "Damaged and lost"
     },
     "language": "Language",
     "expandAll": "Expand all",
@@ -1215,7 +1218,8 @@
         "updatedAt": "Updated",
         "shelfLocation": "Shelf",
         "value": "Worth",
-        "brand": "Brand"
+        "brand": "Brand",
+        "sellPrice": "Sells at"
       },
       "hints": {
         "reorderLevel": "The pack shows as low once what is available falls to this."
@@ -1226,7 +1230,8 @@
         "onHand": "How much the shop has now, in the size shown (5 = 5 sets, 0.2 = 0.2 L). It goes up with Buy and down with sales and damage; a mistake is corrected with the ⋯ menu → Correct the count.",
         "available": "OK = can be sold, Low = below \"Warn when below\", Sold out = finished, Not bought yet = never bought. If some is kept for customer orders, \"kept for orders\" shows.",
         "reorderLevel": "Below this number the pack shows as \"Low\" and in \"Running low\". Set it with ✏️.",
-        "value": "What the stock is worth: the quantity in the shop × the buying price (with VAT if you are not VAT registered)."
+        "value": "What the stock is worth: the quantity in the shop × the buying price (with VAT if you are not VAT registered).",
+        "sellPrice": "What one sells for (set under Set quantity and price)."
       }
     },
     "movements": {
@@ -2753,7 +2758,10 @@
         "notes": "Notes",
         "brandCount": "Brands",
         "isActive": "In use",
-        "nameRomanized": "Name in Roman"
+        "nameRomanized": "Name in Roman",
+        "phone": "Phone",
+        "email": "Email",
+        "contactPerson": "Contact person"
       },
       "hints": {
         "name": "For example Surya Nepal Pvt. Ltd.",
@@ -2761,7 +2769,10 @@
         "country": "From the shop's own short list.",
         "website": "Starts with https://",
         "notes": "Anything the shop wants to remember.",
-        "nameRomanized": "The Nepali name in English letters, as people type it. Filled from the English name when left empty."
+        "nameRomanized": "The Nepali name in English letters, as people type it. Filled from the English name when left empty.",
+        "phone": "The company's own number (dealership, complaints). Optional.",
+        "email": "Optional.",
+        "contactPerson": "Whom to ask for. Optional."
       },
       "sections": {},
       "about": "The parent companies that make the brands. Add a company once, then pick it on each of its brands. A company with brands cannot be deleted. Many at once: Excel (the same workbook as Brands).",
@@ -4963,7 +4974,9 @@
     "addRow": "+ Add another quantity",
     "removeNote": "The removed quantities are deleted when you save. One that already has stock or bills cannot be deleted: untick On sale instead.",
     "duplicateRow": "You already have this quantity in the table. Change its price there instead.",
-    "fixRows": "Each quantity needs a price above 0; a new one also needs an amount and a unit."
+    "fixRows": "Each quantity needs a price above 0; a new one also needs an amount and a unit.",
+    "colCost": "Costs you",
+    "costGuess": "Worked out from the size you bought, to help you set a price"
   },
   "menuAccess": {
     "entry": "Menu entry",
@@ -5008,5 +5021,32 @@
     "out": "Sold out",
     "never": "Not bought yet",
     "kept": "{count} kept for orders"
+  },
+  "repackHistory": {
+    "menu": "Packets made / undo",
+    "title": "Packets made: {name}",
+    "note": "Made a wrong count? Undo it: what was opened comes back to the shelf and the packets made leave. Then make the packets again with the right count. A packet that was already sold cannot be undone.",
+    "none": "No packets were made with this size yet.",
+    "undo": "Undo",
+    "wasUndone": "Undone",
+    "done": "Put back.",
+    "failed": "Could not undo this.",
+    "opened": "Opened {count} × {label}",
+    "made": "Made:"
+  },
+  "losses": {
+    "title": "Damaged and lost",
+    "intro": "Everything written off at this branch: damaged, expired, lost or spilled, with what it cost. Write one off from the Stock page row.",
+    "none": "Nothing has been written off yet.",
+    "count": "{count} written off",
+    "pageValue": "worth {amount} on this page",
+    "date": "Date",
+    "item": "Item",
+    "size": "Size",
+    "qty": "Quantity",
+    "value": "Cost",
+    "why": "Reason",
+    "previous": "Previous",
+    "next": "Next"
   }
 }

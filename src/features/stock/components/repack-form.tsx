@@ -55,7 +55,6 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
   // Spilled, damaged or spoilt while opening: the only thing that counts as wastage.
   const [lost, setLost] = useState('');
   // Optional: how many of the bought pack will be opened, so the fill buttons know how much to fill.
-  const [sacks, setSacks] = useState('');
   const product = useQuery({
     queryKey: ['products', 'repack', level?.product.id],
     queryFn: () => request<Product>('GET', `/admin/products/${level!.product.id}`),
@@ -145,7 +144,8 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
   const lostBase = fractional
     ? (measureOf(Number(lost) || 0, source?.pack?.unit.symbol ?? symbolOf(unitChosen))?.amount ?? 0)
     : 0;
-  const target = fractional && bulk && Number(sacks) > 0 ? Number(sacks) * bulk.amount : 0;
+  // The "how many sacks do you open" box is hidden for now (it confused); a size fills one sack at a time.
+  const target = 0;
   const worked =
     canWork && bulk && madeAmount > 0
       ? fractional
@@ -416,35 +416,6 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
                   })}
                 </p>
               ) : null}
-              <div className="grid gap-1">
-                <label htmlFor="repack-sacks" className="text-sm font-medium">
-                  {t('sacksLabel', { label })}
-                </label>
-                <Input
-                  id="repack-sacks"
-                  inputMode="decimal"
-                  placeholder={t('sacksPlaceholder')}
-                  className="max-w-28"
-                  value={sacks}
-                  onChange={(e) => setSacks(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">{t('sacksHint')}</p>
-                {target > 0 && madeAmount > 0 ? (
-                  <p
-                    className={`text-sm ${madeAmount + lostBase > target + 0.0005 ? 'text-destructive' : 'text-muted-foreground'}`}
-                  >
-                    {madeAmount + lostBase > target + 0.0005
-                      ? t('sacksOver', { count: sacks, label })
-                      : target - madeAmount - lostBase < 0.0005
-                        ? t('allMade')
-                        : t('sacksLeft', {
-                            left: `${readable(Math.max(target - madeAmount - lostBase, 0), bulk.kind, sourceSymbol).value} ${readable(Math.max(target - madeAmount - lostBase, 0), bulk.kind, sourceSymbol).symbol}`,
-                            made: `${readable(madeAmount, bulk.kind, sourceSymbol).value} ${readable(madeAmount, bulk.kind, sourceSymbol).symbol}`,
-                            total: `${readable(target, bulk.kind, sourceSymbol).value} ${readable(target, bulk.kind, sourceSymbol).symbol}`,
-                          })}
-                  </p>
-                ) : null}
-              </div>
               <div className="grid gap-1">
                 <label htmlFor="repack-lost" className="text-sm font-medium">
                   {t('lostLabel')}

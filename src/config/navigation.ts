@@ -18,6 +18,7 @@ export type NavSection = {
     | 'buy'
     | 'sellPrice'
     | 'flowWork'
+    | 'losses'
     | 'buying'
     | 'purchaseReturns'
     | 'supplierPayments'
@@ -162,6 +163,7 @@ export const navigation: NavGroup[] = [
     sections: [
       { key: 'stock', href: routes.stock(), icon: 'box', permission: 'inventory:read' },
       { key: 'flowWork', href: routes.expiring(), icon: 'clock', permission: 'inventory:read' },
+      { key: 'losses', href: routes.losses(), icon: 'archive', permission: 'inventory:read' },
       { key: 'archive', href: routes.archive(), icon: 'archive', permission: 'catalogue:read' },
     ],
   },

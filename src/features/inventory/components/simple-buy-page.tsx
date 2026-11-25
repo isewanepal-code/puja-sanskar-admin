@@ -578,9 +578,9 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
       for (const [productId, brand] of rebranded) {
         await request('PATCH', `/admin/products/${productId}`, { body: { brand: brand || null } });
       }
-      return { unpriced: lines.length };
+      return { unpriced: lines.length, items: [...new Set(lines.map((l) => l.productId))] };
     },
-    onSuccess: async ({ unpriced }) => {
+    onSuccess: async ({ unpriced, items }) => {
       toast.success(unpriced > 0 ? t('savedNeedPrice', { n: unpriced }) : t('saved'));
       await Promise.all(
         ['purchaseBills', 'products', 'stock', 'suppliers'].map((key) =>
@@ -588,7 +588,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         ),
       );
       // The bill is in the Purchase bills history, which says what to do next.
-      router.push(`${routes.purchaseBills()}?saved=1`);
+      router.push(routes.purchaseBills({ saved: items }));
     },
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });

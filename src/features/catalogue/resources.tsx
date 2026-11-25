@@ -298,6 +298,12 @@ export const companiesResource: Resource<Company> = {
     },
     { key: 'place', cell: (row) => row.place ?? '—', sortValue: (row) => row.place ?? '' },
     {
+      key: 'phone',
+      cell: (row) => row.phone ?? '—',
+      sortValue: (row) => row.phone ?? '',
+      filterValue: (row) => `${row.phone ?? ''} ${row.email ?? ''} ${row.contactPerson ?? ''}`,
+    },
+    {
       key: 'brandCount',
       cell: (row) => <Badge>{row.brandCount}</Badge>,
       sortValue: (row) => row.brandCount,
@@ -312,6 +318,9 @@ export const companiesResource: Resource<Company> = {
     { name: 'country', kind: 'select', optionsFrom: countryChoices },
     { name: 'place', kind: 'text', max: 160 },
     { name: 'website', kind: 'url', max: 300, wide: true },
+    { name: 'phone', kind: 'text', max: 20 },
+    { name: 'email', kind: 'text', max: 160 },
+    { name: 'contactPerson', kind: 'text', max: 120 },
     { name: 'notes', kind: 'textarea', max: 500, wide: true },
     { name: 'isActive', kind: 'switch' },
   ],

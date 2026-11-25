@@ -79,7 +79,7 @@ export function stockResource(
     canDelete: false,
     rowId: (row) => row.variant.id,
     rowLabel: (row) => `${row.product.nameNe} · ${row.variant.label}`,
-    initialSort: { key: 'available', direction: 'asc' },
+    initialSort: { key: 'onHand', direction: 'desc' },
     groupBy: {
       of: (row) => `${row.product.nameNe} · ${row.product.nameEn}`,
       label: (key) => key,
@@ -107,18 +107,25 @@ export function stockResource(
         align: 'right',
       },
       {
+        // What it costs, and what it sells for: the two prices side by side.
         key: 'value',
         cell: (row) => (
           <div className="grid justify-items-end gap-0.5">
             <span className="tabular-nums">{formatMoney(row.value, 'en')}</span>
             {row.onHand > 0 && Number(row.avgCost) > 0 ? (
               <span className="text-[0.7rem] text-muted-foreground tabular-nums">
-                {formatMoney(row.avgCost, 'en')} each
+                {formatMoney(row.avgCost, 'en')} cost each
               </span>
             ) : null}
           </div>
         ),
         sortValue: (row) => Number(row.value),
+        align: 'right',
+      },
+      {
+        key: 'sellPrice',
+        cell: (row) => <span className="tabular-nums">{formatMoney(row.sellPrice, 'en')}</span>,
+        sortValue: (row) => Number(row.sellPrice),
         align: 'right',
       },
     ],

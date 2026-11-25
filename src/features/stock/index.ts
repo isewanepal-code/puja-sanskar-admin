@@ -9,3 +9,4 @@ export {
   transferStockResource,
 } from './resources';
 export { ExpiryList } from './components/expiry-list';
+export { LossList } from './components/loss-list';

@@ -15,6 +15,7 @@ import { isApiError, request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
+import { measureOf } from '@/lib/unit-measure';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 
 import { nameOf } from './pack-rows';
@@ -67,7 +68,10 @@ const touched = (r: Row) => !r.id && Boolean(r.amount.trim() || r.price.trim() |
 export function QuantityPricePage() {
   const router = useRouter();
   const t = useTranslations('quantityPrice');
-  const itemId = useSearchParams().get('item') ?? '';
+  const params = useSearchParams();
+  const itemId = params.get('item') ?? '';
+  const more = (params.get('more') ?? '').split(',').filter(Boolean);
+  const from = params.get('from') ?? '';
 
   const item = useQuery({
     queryKey: ['products', 'simple', itemId],
@@ -101,13 +105,16 @@ export function QuantityPricePage() {
         <Editor
           key={`${product.id}:${product.variants.map((v) => `${v.id}:${v.price}:${v.isActive}:${v.showOnWebsite}`).join('|')}`}
           product={product}
+          more={more}
+          from={from}
         />
       ) : null}
     </div>
   );
 }
 
-function Editor({ product }: { product: Product }) {
+function Editor({ product, more, from }: { product: Product; more: string[]; from: string }) {
+  const router = useRouter();
   const t = useTranslations('quantityPrice');
   const tf = useTranslations('forms');
   const toast = useToast();
@@ -122,6 +129,27 @@ function Editor({ product }: { product: Product }) {
   });
   const symbolOf = (id: string) => (units.data ?? []).find((u) => u.value === id)?.detail ?? '';
   const variantOf = (id?: string) => product.variants.find((v) => v.id === id);
+
+  // What a size costs: the real figure when stock was bought in it, else worked out from the size it
+  // was bought in (a 200 g pack from a 1 kg one, a 5 m piece from a 25 m roll).
+  const reference = (() => {
+    for (const v of product.variants) {
+      const m = measureOf(Number(v.pack?.quantity), v.pack?.unit.symbol);
+      if (m && Number(v.cost) > 0) return { kind: m.kind, perBase: Number(v.cost) / m.amount };
+    }
+    return null;
+  })();
+  const estimate = (quantity: number, symbol: string): number | null => {
+    const m = measureOf(quantity, symbol);
+    return m && reference && m.kind === reference.kind ? m.amount * reference.perBase : null;
+  };
+  const costCell = (v: Variant | undefined, r: Row) => {
+    if (v && Number(v.cost) > 0) return { text: formatMoney(v.cost ?? '0', 'en'), guess: false };
+    const guess = v
+      ? estimate(Number(v.pack?.quantity), v.pack?.unit.symbol ?? '')
+      : estimate(Number(r.amount), symbolOf(r.unitId));
+    return guess === null ? null : { text: formatMoney(guess.toFixed(2), 'en'), guess: true };
+  };
 
   const change = (key: string, patch: Partial<Row>) =>
     setRows((all) => all.map((r) => (r.key === key ? { ...r, ...patch } : r)));
@@ -224,6 +252,9 @@ function Editor({ product }: { product: Product }) {
     onSuccess: async () => {
       toast.success(t('saved'));
       await queryClient.invalidateQueries({ queryKey: ['products'] });
+      // Work done: on to the next item of the bill, or back to where this was opened from.
+      if (more.length > 0) router.replace(routes.quantityPrice(more[0], more.slice(1), from));
+      else if (from.startsWith('/')) router.push(from);
     },
     onError: async (error) => {
       // What was saved before the failing line shows now; the message says what stopped.
@@ -261,6 +292,7 @@ function Editor({ product }: { product: Product }) {
           <thead className="bg-muted/60 text-xs text-muted-foreground uppercase">
             <tr>
               <th className="px-3 py-2 text-left font-semibold">{t('colQuantity')}</th>
+              <th className="w-32 px-3 py-2 text-right font-semibold">{t('colCost')}</th>
               <th className="w-40 px-3 py-2 text-right font-semibold">{t('colPrice')}</th>
               <th className="px-3 py-2 text-center font-semibold">{t('colSale')}</th>
               <th className="px-3 py-2 text-center font-semibold">{t('colWeb')}</th>
@@ -288,11 +320,6 @@ function Editor({ product }: { product: Product }) {
                           )}
                           {nameOf(v)}
                         </span>
-                        {v.cost ? (
-                          <span className="ml-2 text-xs text-muted-foreground">
-                            {t('costOf', { amount: formatMoney(v.cost, 'en') })}
-                          </span>
-                        ) : null}
                       </div>
                     ) : (
                       <div className="grid gap-2 sm:grid-cols-[6rem_9rem_11rem]">
@@ -322,6 +349,22 @@ function Editor({ product }: { product: Product }) {
                         />
                       </div>
                     )}
+                  </td>
+                  <td className="border-t border-border px-3 py-2.5 text-right align-middle tabular-nums">
+                    {(() => {
+                      const c = costCell(v, r);
+                      return c ? (
+                        <span
+                          className={c.guess ? 'text-muted-foreground' : undefined}
+                          title={c.guess ? t('costGuess') : undefined}
+                        >
+                          {c.guess ? '≈ ' : ''}
+                          {c.text}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      );
+                    })()}
                   </td>
                   <td className="border-t border-border px-3 py-2.5 align-middle">
                     <span className="flex items-center justify-end gap-2">

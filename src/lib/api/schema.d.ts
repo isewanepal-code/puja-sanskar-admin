@@ -10455,6 +10455,10 @@ export interface components {
       country: string | null;
       place: string | null;
       website: string | null;
+      /** @example 9801234567 */
+      phone: string | null;
+      email: string | null;
+      contactPerson: string | null;
       notes: string | null;
       isActive: boolean;
       /**
@@ -10557,6 +10561,11 @@ export interface components {
       value: string;
       /** @description onHand is at or below reorderLevel */
       isLowStock: boolean;
+      /**
+       * @description What one of this pack sells for
+       * @example 95.00
+       */
+      sellPrice: string;
       /** @description Some of it was bought in; a pack that only came from opening a bigger one is not opened again */
       boughtIn: boolean;
       /** Format: date-time */

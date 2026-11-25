@@ -25,6 +25,7 @@ import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
 import { RepackForm } from './repack-form';
+import { RepackHistory } from './repack-history';
 import {
   historyResource,
   STOCK_SHOWS,
@@ -38,7 +39,7 @@ import {
 type Level = Schema<'StockLevelResponse'>;
 type Summary = Schema<'StockSummaryResponse'>;
 type Open = {
-  what: 'history' | 'transfer' | 'repack' | 'wipe' | 'loss' | 'count';
+  what: 'history' | 'transfer' | 'repack' | 'made' | 'wipe' | 'loss' | 'count';
   level: Level;
 } | null;
 
@@ -74,6 +75,7 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
   const [open, setOpen] = useState<Open>(null);
   const tw = useTranslations('stockWipe');
   const tk = useTranslations('stockWork');
+  const tr = useTranslations('repackHistory');
   const toast = useToast();
   const queryClient = useQueryClient();
   // Staging only: a pack's stock at a branch can be wiped, history and all.
@@ -213,7 +215,7 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
             {/* The everyday jobs right on the row: no pack to pick on another page. */}
             {/* What was bought in (a sack, a roll, loose pieces) can be opened into the sizes on sale; what was made by
                 opening is the end of the line. */}
-            {row.available > 0 ? (
+            {row.available > 0 && row.boughtIn ? (
               <OpenIntoPackets level={row} onOpen={() => setOpen({ what: 'repack', level: row })} />
             ) : null}
             <Button
@@ -232,6 +234,11 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
                   icon: 'clock',
                   label: t('stockHistory'),
                   onSelect: () => setOpen({ what: 'history', level: row }),
+                },
+                {
+                  icon: 'clock',
+                  label: tr('menu'),
+                  onSelect: () => setOpen({ what: 'made', level: row }),
                 },
                 {
                   icon: 'edit',
@@ -294,6 +301,9 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
       />
       {open?.what === 'repack' ? (
         <RepackForm level={open.level} onClose={() => setOpen(null)} />
+      ) : null}
+      {open?.what === 'made' ? (
+        <RepackHistory level={open.level} onClose={() => setOpen(null)} />
       ) : null}
       <Modal
         open={open?.what === 'history'}
