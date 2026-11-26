@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { useMemo, useRef, useState, type ReactNode } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { useToast } from '@/components/overlays';
@@ -22,25 +22,26 @@ type Pack = Product['variants'][number];
 const whole = (text: string) => Number(text) > 0;
 const round = (n: number) => Math.round(n * 1000) / 1000;
 
-// One numbered step of the form: what to do, in the order it is done.
-function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
-  return (
-    <section className="grid gap-2">
-      <h3 className="flex items-center gap-2 text-sm font-semibold">
-        <span className="grid size-6 place-items-center rounded-full bg-primary text-xs text-primary-foreground">
-          {n}
-        </span>
-        {title}
-      </h3>
-      <div className="grid gap-2 pl-8">{children}</div>
-    </section>
-  );
-}
-
 // Opens some of what was bought (a sack, a roll, loose pieces) into the sizes that are sold. Write how
 // many packets of each size were made; how many of the bought pack that uses is worked out, and each
 // size shows what it sells at and about what it costs, so a price that loses money is seen at once.
-export function RepackForm({ level, onClose }: { level: Level | null; onClose: () => void }) {
+export type RepackPrefill = {
+  counts: Record<string, string>;
+  note: string;
+  // Editing packets already made: those are put back first (this much of the opened pack returns).
+  undo?: { reference: string; sourceQuantity: number; date: string };
+};
+
+export function RepackForm({
+  level,
+  onClose,
+  prefill,
+}: {
+  level: Level | null;
+  onClose: () => void;
+  // The numbers of packet-making being edited, to change and save again.
+  prefill?: RepackPrefill;
+}) {
   const t = useTranslations('repack');
   const tf = useTranslations('forms');
   const toast = useToast();
@@ -48,10 +49,10 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
   const key = useRef(crypto.randomUUID());
   // null: worked out from the packets made; a number typed: what the shopkeeper says is opened.
   const [manualOpened, setManualOpened] = useState<string | null>(null);
-  const [counts, setCounts] = useState<Record<string, string>>({});
+  const [counts, setCounts] = useState<Record<string, string>>(prefill?.counts ?? {});
   const [sackAmount, setSackAmount] = useState('');
   const [sackUnit, setSackUnit] = useState('');
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState(prefill?.note ?? '');
   // Spilled, damaged or spoilt while opening: the only thing that counts as wastage.
   const [lost, setLost] = useState('');
   // Optional: how many of the bought pack will be opened, so the fill buttons know how much to fill.
@@ -126,7 +127,14 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
 
   const sourceMeasure = source ? measureOfPack(source) : null;
   // A bought "Sack" that does not say what it weighs, while the sizes made are weighed: ask once.
-  const needsSize = Boolean(source) && !(source && knownMeasure(source)) && units.length > 0;
+  // Loose pieces ("1 pcs") are one piece each: nothing to ask.
+  const looseCount =
+    source && !source.pack
+      ? Number(/^(\d+(?:\.\d+)?)\s*(?:pcs?|pieces?|nos?|गोटा|थान)\b/i.exec(source.label)?.[1])
+      : NaN;
+  const loose = looseCount > 0;
+  const needsSize =
+    Boolean(source) && !(source && knownMeasure(source)) && units.length > 0 && !loose;
   const largest = others.filter((pack) => measureOfPack(pack)).at(-1);
   const bigUnit = units.find((u) => ['kg', 'l', 'm'].includes(u.symbol.toLowerCase()));
   const unitChosen = sackUnit || bigUnit?.id || largest?.pack?.unit.id || units[0]?.id || '';
@@ -136,7 +144,10 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
         ? { kind: `UNIT:${unitChosen}`, amount: Number(sackAmount) }
         : null))
     : null;
-  const bulk = needsSize ? sackMeasure : sourceMeasure;
+  const looseUnit = others.find((pack) => pack.pack && !knownMeasure(pack))?.pack?.unit.id;
+  const looseMeasure =
+    loose && looseUnit ? { kind: `UNIT:${looseUnit}`, amount: looseCount } : null;
+  const bulk = needsSize ? sackMeasure : (sourceMeasure ?? looseMeasure);
 
   const contribution = (pack: Pack) => {
     const m = measureOfPack(pack);
@@ -159,8 +170,6 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
   const lostBase = fractional
     ? (measureOf(Number(lost) || 0, source?.pack?.unit.symbol ?? symbolOf(unitChosen))?.amount ?? 0)
     : 0;
-  // The "how many sacks do you open" box is hidden for now (it confused); a size fills one sack at a time.
-  const target = 0;
   const worked =
     canWork && bulk && madeAmount > 0
       ? fractional
@@ -171,7 +180,9 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
   const openedAmount = bulk ? bulk.amount * openedNumber : 0;
   const left = openedAmount - madeAmount;
   const tooMuch = !fractional && canWork && openedAmount > 0 && left < -0.0005;
-  const tooMany = level ? openedNumber > level.available + 1e-9 : false;
+  // What can be opened: what is in stock, and what editing puts back.
+  const canOpen = (level?.available ?? 0) + (prefill?.undo?.sourceQuantity ?? 0);
+  const tooMany = level ? openedNumber > canOpen + 1e-9 : false;
 
   const kind = bulk?.kind;
   const sourceSymbol = needsSize ? (symbolOf(unitChosen) ?? '') : (source?.pack?.unit.symbol ?? '');
@@ -201,6 +212,14 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
 
   const save = useMutation({
     mutationFn: async () => {
+      if (prefill?.undo) {
+        // The old packets go back first; then these are made.
+        await request(
+          'POST',
+          `/admin/stock-repacks/${encodeURIComponent(prefill.undo.reference)}/undo`,
+          { headers: { 'X-Branch': level!.branch.code } },
+        );
+      }
       if (needsSize && source && product.data) {
         // The bought pack now states its size, so the packets can be set against it (and the cost shared).
         await request('PATCH', `/admin/products/${product.data.id}/variants/${source.id}`, {
@@ -208,7 +227,7 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
         });
       }
       return request('POST', '/admin/stock-repacks', {
-        headers: { 'Idempotency-Key': key.current },
+        headers: { 'Idempotency-Key': key.current, 'X-Branch': level!.branch.code },
         body: {
           sourceVariantId: level!.variant.id,
           sourceQuantity: openedNumber,
@@ -241,49 +260,48 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
   const fill = (pack: Pack) => {
     const m = measureOfPack(pack);
     if (!m || !bulk) return;
-    const others = madeAmount - contribution(pack);
+    const rest = madeAmount - contribution(pack);
     // Weighed goods: as many as fill the sack being opened (as many sacks as the others already need).
     const total = fractional
-      ? target > 0
-        ? target
-        : Math.max(1, Math.ceil((others + m.amount) / bulk.amount - 1e-9)) * bulk.amount
+      ? Math.max(1, Math.ceil((rest + m.amount) / bulk.amount - 1e-9)) * bulk.amount
       : (openedNumber || 1) * bulk.amount;
-    const rest = total - (madeAmount - contribution(pack));
-    setCount(pack.id, String(Math.max(Math.floor(rest / m.amount + 1e-9), 0)));
+    setCount(pack.id, String(Math.max(Math.floor((total - rest) / m.amount + 1e-9), 0)));
   };
-  const example = others[0]?.label;
+  const stockNow = round(canOpen);
+  const stockAfter = round(canOpen - openedNumber);
+  const opensText =
+    fractional && bulk
+      ? `${worked} ${label} (${readable(openedAmount, bulk.kind, sourceSymbol).value} ${readable(openedAmount, bulk.kind, sourceSymbol).symbol})`
+      : `${openedNumber} ${label}`;
 
   return (
     <Modal
       open
       onOpenChange={(next) => (next ? undefined : onClose())}
       size="lg"
-      title={t('title', { name: `${level.product.nameNe} · ${label}` })}
-      description={t('note')}
+      title={
+        prefill?.undo
+          ? t('editTitle', { name: label })
+          : t('title', { name: `${level.product.nameNe} · ${label}` })
+      }
       footer={
         <>
-          <div className="mr-auto text-sm text-muted-foreground">
-            {tooMany ? (
-              <div className="text-destructive">
-                {t('moreThanOnHand', { count: level.available })}
-              </div>
-            ) : null}
-            {missing.length > 0 ? (
-              <div className="text-destructive">
-                {tf('stillNeeded', { fields: missing.join(', ') })}
-              </div>
-            ) : null}
+          <div className="mr-auto text-sm text-destructive">
+            {tooMany ? t('moreThanOnHand', { count: canOpen }) : null}
+            {!tooMany && missing.length > 0 && madeCount + (needsSize ? 1 : 0) > 0
+              ? tf('stillNeeded', { fields: missing.join(', ') })
+              : null}
           </div>
           <Button variant="secondary" onClick={onClose}>
             {tf('cancel')}
           </Button>
           <Button disabled={!ready || save.isPending} onClick={() => save.mutate()}>
-            {save.isPending ? tf('saving') : t('submit')}
+            {save.isPending ? tf('saving') : prefill?.undo ? t('saveEdit') : t('submit')}
           </Button>
         </>
       }
     >
-      <div className="grid gap-5">
+      <div className="grid gap-4">
         {madeByOpening ? (
           <div
             role="alert"
@@ -292,251 +310,204 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
             {t('madeByOpening', { label })}
           </div>
         ) : null}
-        <Step n={1} title={t('step1', { label })}>
-          <p className="text-sm text-muted-foreground">
-            {t('onHand', { count: level.available })}
-            {costOfOne > 0
-              ? ` · ${t('boughtAt', { cost: formatMoney(String(costOfOne), 'en') })}`
-              : ''}
-            {source && knownMeasure(source) && sourceMeasure
-              ? ` · ${t('bulkKnown', {
-                  label,
-                  size: `${readable(sourceMeasure.amount, sourceMeasure.kind).value} ${readable(sourceMeasure.amount, sourceMeasure.kind).symbol}`,
-                })}`
-              : ''}
-          </p>
-          {needsSize ? (
-            <div className="grid gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
-              <p className="text-sm font-medium">{t('sackTitle', { label })}</p>
-              <p className="text-xs text-muted-foreground">{t('sackNote')}</p>
-              <div className="grid max-w-sm grid-cols-[7rem_1fr] gap-2">
-                <Input
-                  aria-label={t('sackAmount')}
-                  inputMode="decimal"
-                  placeholder="50"
-                  value={sackAmount}
-                  onChange={(e) => setSackAmount(e.target.value)}
-                />
-                <SearchSelect
-                  aria-label={t('newUnit')}
-                  options={units.map((u) => ({ value: u.id, label: u.label }))}
-                  value={unitChosen}
-                  onChange={(value) => setSackUnit(String(value))}
-                />
-              </div>
-            </div>
-          ) : null}
-        </Step>
+        {prefill?.undo ? (
+          <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-sm">
+            {t('editBanner', { date: prefill.undo.date })}
+          </div>
+        ) : null}
 
-        <Step n={2} title={t('madeTitle')}>
-          <p className="text-xs text-muted-foreground">
-            {t('madeNote')}
-            {example ? ` ${t('madeExample', { size: example })}` : ''}
-          </p>
-          {product.isPending ? <p className="text-sm text-muted-foreground">…</p> : null}
-          {!product.isPending && others.length === 0 ? (
-            <div
-              role="alert"
-              className="grid gap-2 rounded-lg border border-warning/50 bg-warning/10 p-3 text-sm"
+        <p className="text-sm text-muted-foreground">
+          {t('stockLine', { count: stockNow, label })}
+          {costOfOne > 0
+            ? ` · ${t('boughtAt', { cost: formatMoney(String(costOfOne), 'en') })}`
+            : ''}
+        </p>
+
+        {needsSize ? (
+          <div className="grid gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
+            <p className="text-sm font-medium">{t('sackTitle', { label })}</p>
+            <div className="grid max-w-sm grid-cols-[7rem_1fr] gap-2">
+              <Input
+                aria-label={t('sackAmount')}
+                inputMode="decimal"
+                placeholder="50"
+                value={sackAmount}
+                onChange={(e) => setSackAmount(e.target.value)}
+              />
+              <SearchSelect
+                aria-label={t('newUnit')}
+                options={units.map((u) => ({ value: u.id, label: u.label }))}
+                value={unitChosen}
+                onChange={(value) => setSackUnit(String(value))}
+              />
+            </div>
+          </div>
+        ) : null}
+
+        {product.isPending ? <p className="text-sm text-muted-foreground">…</p> : null}
+        {!product.isPending && others.length === 0 ? (
+          <div
+            role="alert"
+            className="grid gap-2 rounded-lg border border-warning/50 bg-warning/10 p-3 text-sm"
+          >
+            <p>{t('noSizes')}</p>
+            <Link
+              href={routes.quantityPrice(level.product.id)}
+              className={buttonVariants({ variant: 'secondary', size: 'sm' })}
             >
-              <p>{t('noSizes')}</p>
-              <Link
-                href={routes.quantityPrice(level.product.id)}
-                className={buttonVariants({ variant: 'secondary', size: 'sm' })}
-              >
-                {t('setSizes')}
-              </Link>
-            </div>
-          ) : null}
-          {others.length > 0 ? (
-            <div className="grid gap-1.5">
-              <div className="grid grid-cols-[minmax(0,1fr)_6.5rem_6.5rem_6.5rem_2.25rem] gap-2 px-3 text-[0.7rem] font-semibold tracking-wide text-muted-foreground uppercase">
-                <span>{t('colSize')}</span>
-                <span className="text-right">{t('colSells')}</span>
-                <span className="text-right">{t('colCost')}</span>
-                <span className="text-right">{t('colMade')}</span>
-                <span />
-              </div>
-              {others.map((pack) => {
-                const cost = costOf(pack);
-                const sells = Number(pack.price);
-                const losing = cost !== null && sells > 0 && sells < cost - 0.005;
-                return (
-                  <div
-                    key={pack.id}
-                    className="grid grid-cols-[minmax(0,1fr)_6.5rem_6.5rem_6.5rem_2.25rem] items-center gap-2 rounded-md border border-border px-3 py-1.5"
-                  >
-                    <span className="text-sm font-medium">{pack.label}</span>
-                    <span className="text-right text-sm tabular-nums">
-                      {sells > 0 ? formatMoney(String(sells), 'en') : '—'}
-                    </span>
-                    <span
-                      className={`text-right text-sm tabular-nums ${losing ? 'text-destructive' : 'text-muted-foreground'}`}
-                      title={losing ? t('belowCost') : undefined}
-                    >
-                      {cost !== null ? `≈ ${formatMoney(String(round(cost)), 'en')}` : '—'}
-                    </span>
-                    <Input
-                      aria-label={`${pack.label}: ${t('howMany')}`}
-                      inputMode="decimal"
-                      placeholder={t('countPlaceholder')}
-                      className="h-8 text-right"
-                      value={counts[pack.id] ?? ''}
-                      onChange={(e) => setCount(pack.id, e.target.value)}
-                    />
-                    <IconButton
-                      icon="refresh"
-                      label={t('fill')}
-                      disabled={!bulk || !measureOfPack(pack)}
-                      onClick={() => fill(pack)}
-                    />
-                  </div>
-                );
-              })}
-              <p className="text-xs text-muted-foreground">
-                {t('missingSize')}{' '}
-                <Link
-                  href={routes.quantityPrice(level.product.id)}
-                  className="text-primary underline"
-                >
-                  {t('setSizes')}
-                </Link>
-              </p>
-            </div>
-          ) : null}
-        </Step>
+              {t('setSizes')}
+            </Link>
+          </div>
+        ) : null}
 
-        <Step n={3} title={t('usesTitle')}>
-          {fractional && bulk ? (
-            <div className="grid gap-2">
-              {worked > 0 ? (
-                <p className="text-sm">
-                  <strong>
-                    {t('usesPart', {
-                      count: worked,
-                      label,
-                      amount: `${readable(openedAmount, bulk.kind, sourceSymbol).value} ${readable(openedAmount, bulk.kind, sourceSymbol).symbol}`,
-                    })}
-                  </strong>
-                </p>
-              ) : (
-                <p className="text-sm text-muted-foreground">{t('usesWaiting')}</p>
-              )}
-              {worked > 0 ? (
-                <p className={`text-sm ${tooMany ? 'text-destructive' : 'text-muted-foreground'}`}>
-                  {t('staysOnShelf', {
-                    count: round(level.available - worked),
-                    label,
-                    amount: `${readable(Math.max(level.available - worked, 0) * bulk.amount, bulk.kind, sourceSymbol).value} ${readable(Math.max(level.available - worked, 0) * bulk.amount, bulk.kind, sourceSymbol).symbol}`,
-                  })}
-                </p>
-              ) : null}
-              <div className="grid gap-1">
-                <label htmlFor="repack-lost" className="text-sm font-medium">
-                  {t('lostLabel')}
-                </label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="repack-lost"
-                    inputMode="decimal"
-                    placeholder="0"
-                    className="max-w-28"
-                    value={lost}
-                    onChange={(e) => setLost(e.target.value)}
-                  />
-                  <span className="text-sm text-muted-foreground">
-                    {source?.pack?.unit.symbol ?? symbolOf(unitChosen)}
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground">{t('lostHint')}</p>
-              </div>
-            </div>
-          ) : (
-            <>
-              {canWork && manualOpened === null ? (
-                <p className="text-sm">
-                  {worked > 0 ? (
-                    <>
-                      <strong>{t('usesAuto', { count: worked, label })}</strong>{' '}
-                      <button
-                        type="button"
-                        className="text-primary underline"
-                        onClick={() => setManualOpened(String(worked))}
+        {others.length > 0 ? (
+          <div className="overflow-hidden rounded-md border border-border">
+            <table className="w-full border-collapse text-sm">
+              <thead className="bg-muted/60 text-xs text-muted-foreground uppercase">
+                <tr>
+                  <th className="px-3 py-2 text-left font-semibold">{t('colSize')}</th>
+                  <th className="px-3 py-2 text-right font-semibold">{t('colSells')}</th>
+                  <th className="px-3 py-2 text-right font-semibold">{t('colCost')}</th>
+                  <th className="w-32 px-3 py-2 text-right font-semibold">{t('colMade')}</th>
+                  <th className="w-10" />
+                </tr>
+              </thead>
+              <tbody>
+                {others.map((pack) => {
+                  const cost = costOf(pack);
+                  const sells = Number(pack.price);
+                  const losing = cost !== null && sells > 0 && sells < cost - 0.005;
+                  return (
+                    <tr key={pack.id} className="border-t border-border">
+                      <td className="px-3 py-1.5 font-medium">{pack.label}</td>
+                      <td className="px-3 py-1.5 text-right tabular-nums">
+                        {sells > 0 ? formatMoney(String(sells), 'en') : '—'}
+                      </td>
+                      <td
+                        className={`px-3 py-1.5 text-right tabular-nums ${losing ? 'text-destructive' : 'text-muted-foreground'}`}
+                        title={losing ? t('belowCost') : undefined}
                       >
-                        {t('change')}
-                      </button>
-                    </>
-                  ) : (
-                    <span className="text-muted-foreground">{t('usesWaiting')}</span>
-                  )}
-                </p>
-              ) : (
-                <div className="grid gap-1">
-                  <Input
-                    id="repack-opened"
-                    aria-label={t('opened', { label })}
-                    inputMode="decimal"
-                    placeholder={t('openedPlaceholder')}
-                    className="max-w-32"
-                    value={manualOpened ?? ''}
-                    onChange={(e) => setManualOpened(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    {t('opened', { label })}{' '}
-                    {canWork ? (
-                      <button
-                        type="button"
-                        className="text-primary underline"
-                        onClick={() => setManualOpened(null)}
-                      >
-                        {t('workItOut')}
-                      </button>
-                    ) : null}
-                  </p>
-                </div>
-              )}
-              {openedNumber > 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  {t('shelfAfter', {
-                    opened: openedNumber,
-                    label,
-                    left: round(level.available - openedNumber),
-                  })}
-                </p>
-              ) : null}
-              {bulk && openedAmount > 0 && madeAmount > 0 ? (
-                <div
-                  role="status"
-                  className={`rounded-md border px-3 py-2 text-sm ${tooMuch ? 'border-destructive text-destructive' : 'border-border'}`}
-                >
-                  {tooMuch
-                    ? t('tooMuch', {
-                        made: inShown(madeAmount),
-                        opened: inShown(openedAmount),
-                        unit: unitSymbol,
-                      })
-                    : left > 0.0005
-                      ? t('notMade', { left: inShown(left), unit: unitSymbol })
-                      : t('allMade')}
-                </div>
-              ) : madeCount > 0 && openedNumber > 0 && !bulk ? (
-                <p className="text-xs text-muted-foreground">{t('noCompare')}</p>
-              ) : null}
-            </>
-          )}
-        </Step>
+                        {cost !== null ? `≈ ${formatMoney(String(round(cost)), 'en')}` : '—'}
+                      </td>
+                      <td className="px-2 py-1">
+                        <Input
+                          aria-label={`${pack.label}: ${t('howMany')}`}
+                          inputMode="decimal"
+                          placeholder="0"
+                          className="h-8 text-right"
+                          value={counts[pack.id] ?? ''}
+                          onChange={(e) => setCount(pack.id, e.target.value)}
+                        />
+                      </td>
+                      <td className="px-1 text-center">
+                        <IconButton
+                          icon="refresh"
+                          label={t('fill')}
+                          disabled={!bulk || !measureOfPack(pack)}
+                          onClick={() => fill(pack)}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
 
-        <div className="grid gap-1">
-          <label htmlFor="repack-note" className="text-sm font-medium">
-            {t('noteLabel')}
-          </label>
-          <Input
-            id="repack-note"
-            value={note}
-            maxLength={500}
-            onChange={(e) => setNote(e.target.value)}
-          />
-        </div>
+        {/* A small sum that updates as the numbers are typed: what is made, what it takes, what is left. */}
+        {openedNumber > 0 ? (
+          <div
+            role="status"
+            className={`grid gap-1 rounded-md border px-3 py-2 text-sm ${tooMuch || tooMany ? 'border-destructive' : 'border-border'}`}
+          >
+            <div className="flex justify-between gap-3">
+              <span className="text-muted-foreground">{t('sumMake')}</span>
+              <span className="font-medium tabular-nums">
+                {others
+                  .filter((pack) => whole(counts[pack.id] ?? ''))
+                  .map((pack) => `${counts[pack.id]} × ${pack.label}`)
+                  .join(' + ')}
+              </span>
+            </div>
+            <div className="flex justify-between gap-3">
+              <span className="text-muted-foreground">{t('sumUse')}</span>
+              <span className="font-medium tabular-nums">{opensText}</span>
+            </div>
+            <div
+              className={`flex justify-between gap-3 border-t border-border pt-1 ${tooMany ? 'font-semibold text-destructive' : ''}`}
+            >
+              <span className="text-muted-foreground">{t('sumAfter')}</span>
+              <span className="tabular-nums">
+                {stockNow} − {openedNumber} = {stockAfter} × {label}
+              </span>
+            </div>
+            {tooMany ? (
+              <span className="text-destructive">{t('sumShort', { count: stockNow, label })}</span>
+            ) : null}
+            {tooMuch ? (
+              <span className="text-destructive">
+                {t('tooMuch', {
+                  made: inShown(madeAmount),
+                  opened: inShown(openedAmount),
+                  unit: unitSymbol,
+                })}
+              </span>
+            ) : bulk && left > 0.0005 ? (
+              <span className="text-muted-foreground">
+                {t('sumLeft', { left: inShown(left), unit: unitSymbol })}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
+
+        {fractional ? (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <label htmlFor="repack-lost" className="font-medium">
+              {t('lostLabel')}
+            </label>
+            <Input
+              id="repack-lost"
+              inputMode="decimal"
+              placeholder="0"
+              className="h-8 max-w-24"
+              value={lost}
+              onChange={(e) => setLost(e.target.value)}
+            />
+            <span className="text-muted-foreground">
+              {source?.pack?.unit.symbol ?? symbolOf(unitChosen)}
+            </span>
+          </div>
+        ) : !fractional && canWork && manualOpened !== null ? (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <label htmlFor="repack-opened" className="font-medium">
+              {t('opened', { label })}
+            </label>
+            <Input
+              id="repack-opened"
+              inputMode="decimal"
+              className="h-8 max-w-24"
+              value={manualOpened ?? ''}
+              onChange={(e) => setManualOpened(e.target.value)}
+            />
+            <button
+              type="button"
+              className="text-primary underline"
+              onClick={() => setManualOpened(null)}
+            >
+              {t('workItOut')}
+            </button>
+          </div>
+        ) : null}
+
+        <Input
+          id="repack-note"
+          aria-label={t('noteLabel')}
+          placeholder={t('noteLabel')}
+          value={note}
+          maxLength={500}
+          onChange={(e) => setNote(e.target.value)}
+        />
       </div>
     </Modal>
   );

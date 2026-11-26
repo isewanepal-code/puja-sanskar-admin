@@ -1,29 +1,22 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import { ActionModal, ResourceScreen, useResourceText } from '@/components/resource';
-import { IconButton } from '@/components/ui/button';
-import { Modal } from '@/components/ui/modal';
+import { ResourceScreen, useResourceText } from '@/components/resource';
+import { buttonVariants } from '@/components/ui/button';
 import { groupChoices } from '@/features/puja-groups';
-import type { Schema } from '@/lib/api';
 import { routes } from '@/lib/routes';
 
-import { requirementsResource, verifyResource } from '../requirements';
 import { pujasResource } from '../resource';
-import type { Puja } from '../types';
 
-type Requirement = Schema<'AdminRequirementResponse'>;
-
+// The pujas as a list; adding one and opening one are pages of their own, as for items.
 export function PujasScreen() {
   const t = useResourceText('pujas');
-  const tr = useResourceText('requirements');
   const ta = useTranslations('actions');
-  const [listOf, setListOf] = useState<Puja | null>(null);
-  const [verifying, setVerifying] = useState<Requirement | null>(null);
+  const tt = useTranslations('pujas.tabs');
   const groups = useQuery({
     queryKey: ['options', groupChoices.key],
     queryFn: groupChoices.load,
@@ -39,46 +32,23 @@ export function PujasScreen() {
   }, [groups.data, t]);
 
   return (
-    <>
-      <ResourceScreen
-        resource={resource}
-        deepLink
-        rowActions={(row) => (
-          <>
-            <IconButton icon="list" label={ta('samagriList')} onClick={() => setListOf(row)} />
-            <Link
-              href={routes.newKit(row.id)}
-              className="inline-flex h-8 items-center rounded-md border border-border bg-card px-3 text-sm font-medium hover:bg-muted"
-            >
-              {ta('makeKitOfPuja')}
-            </Link>
-          </>
-        )}
-      />
-      <Modal
-        open={listOf !== null}
-        onOpenChange={(next) => (next ? undefined : setListOf(null))}
-        size="xl"
-        title={ta('samagriListOf', { name: listOf ? `${listOf.code} · ${listOf.nameNe}` : '' })}
-        description={ta('samagriListNote')}
-      >
-        {listOf ? (
-          <ResourceScreen
-            resource={requirementsResource(listOf.id, tr)}
-            rowActions={(row) => (
-              <IconButton icon="shield" label={ta('verify')} onClick={() => setVerifying(row)} />
-            )}
-          />
-        ) : null}
-      </Modal>
-      <ActionModal
-        resource={listOf && verifying ? verifyResource(listOf.id, verifying, tr) : null}
-        title={ta('verifyFor', { name: verifying?.material.nameNe ?? '' })}
-        description={ta('verifyNote')}
-        submitLabel={ta('verify')}
-        doneMessage={ta('verified')}
-        onClose={() => setVerifying(null)}
-      />
-    </>
+    <ResourceScreen
+      resource={resource}
+      deepLink
+      pages={{ create: routes.newPujaPage(), edit: (row) => routes.puja(row.id) }}
+      toolbar={
+        <Link href={routes.pujaGroups()} className={buttonVariants({ variant: 'secondary' })}>
+          {tt('groups')}
+        </Link>
+      }
+      rowActions={(row) => (
+        <Link
+          href={routes.newKit(row.id)}
+          className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+        >
+          {ta('makeKitOfPuja')}
+        </Link>
+      )}
+    />
   );
 }

@@ -5,19 +5,16 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
-import { ItemGroups, priceGroups } from '@/features/marketing';
-import { ActionModal, CountButton, ResourceScreen, useResourceText } from '@/components/resource';
+import { priceGroups } from '@/features/marketing';
+import { ActionModal, ResourceScreen, useResourceText } from '@/components/resource';
 import { Button } from '@/components/ui/button';
 import { RowMenu } from '@/components/ui/row-menu';
-import { Modal } from '@/components/ui/modal';
 import { routes } from '@/lib/routes';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
 
-import { KitPriceSummary } from './kit-price-summary';
 import {
   kitFromPujaResource,
   kitPackResource,
-  kitItemsResource,
   kitSetDefaults,
   kitSetEditResource,
   kitSetResource,
@@ -33,7 +30,6 @@ export function KitsScreen() {
   const [fromPuja, setFromPuja] = useState(false);
   // A new set, or the set a kit belongs to.
   const [setOf, setSetOf] = useState<Kit | 'new' | null>(null);
-  const [itemsOf, setItemsOf] = useState<Kit | null>(null);
   const [sending, setSending] = useState<Kit | null>(null);
   const [packing, setPacking] = useState<{ kit: Kit; mode: 'pack' | 'unpack' } | null>(null);
   const [archiving, setArchiving] = useState<ArchiveTarget | null>(null);
@@ -44,18 +40,20 @@ export function KitsScreen() {
     const base = kitsResource(tk);
     return {
       ...base,
+      canCreate: false,
       listQuery: { ...base.listQuery, ...(groupId && { groupId }) },
       columns: base.columns.map((column) =>
         column.key === 'items'
           ? {
               ...column,
               cell: (row: Kit) => (
-                <CountButton
-                  label={t('itemsOf', { name: `${row.code} · ${row.nameNe}` })}
-                  onClick={() => setItemsOf(row)}
+                <Link
+                  href={`${routes.kit(row.id)}?step=items`}
+                  aria-label={t('itemsOf', { name: `${row.code} · ${row.nameNe}` })}
+                  className="inline-flex min-w-8 justify-center rounded-md bg-muted px-2 py-0.5 text-sm font-medium hover:bg-primary/10"
                 >
                   {row.items.length}
-                </CountButton>
+                </Link>
               ),
             }
           : column,
@@ -68,6 +66,7 @@ export function KitsScreen() {
       <ResourceScreen
         resource={resource}
         deepLink
+        pages={{ create: routes.newKit(), edit: (row) => routes.kit(row.id) }}
         toolbar={
           <>
             <SearchSelect
@@ -78,9 +77,7 @@ export function KitsScreen() {
               aria-label={tg('filter')}
               className="w-44"
             />
-            <Button variant="secondary" icon="temple" onClick={() => setFromPuja(true)}>
-              {t('kitFromPuja')}
-            </Button>
+            {/* Hidden for now: "Kit from a puja" and the plain add button; the New puja kit page does both. */}
             <Link
               href={routes.newKit()}
               className="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
@@ -89,13 +86,6 @@ export function KitsScreen() {
             </Link>
           </>
         }
-        onCreated={setItemsOf}
-        editFooter={(row) => (
-          <div className="mt-5 grid gap-2 border-t border-border pt-4">
-            <h3 className="text-sm font-semibold">{tg('title')}</h3>
-            <ItemGroups kind="kit" id={row.id} />
-          </div>
-        )}
         rowActions={(row) => (
           <>
             {/* The everyday job on the row; the rest is under the menu, as on the Stock page. */}
@@ -109,12 +99,6 @@ export function KitsScreen() {
                 {t('packKits')}
               </Button>
             ) : null}
-            <Link
-              href={routes.kit(row.id)}
-              className="inline-flex h-8 items-center rounded-md border border-border bg-card px-3 text-sm font-medium hover:bg-muted"
-            >
-              {t('openKit')}
-            </Link>
             <RowMenu
               compact
               label={t('moreActions')}
@@ -201,20 +185,6 @@ export function KitsScreen() {
         doneMessage={t('kitMade')}
         onClose={() => setFromPuja(false)}
       />
-      <Modal
-        open={itemsOf !== null}
-        onOpenChange={(next) => (next ? undefined : setItemsOf(null))}
-        size="xl"
-        title={t('itemsOf', { name: itemsOf ? `${itemsOf.code} · ${itemsOf.nameNe}` : '' })}
-        description={t('itemsNote')}
-      >
-        {itemsOf ? (
-          <>
-            <KitPriceSummary kitId={itemsOf.id} />
-            <ResourceScreen resource={kitItemsResource(itemsOf.id)} />
-          </>
-        ) : null}
-      </Modal>
     </>
   );
 }

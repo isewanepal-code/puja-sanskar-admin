@@ -139,7 +139,16 @@ export type Resource<T> = {
   // Where a row is used (groups, offers, kits ...): asked before a delete, and a row in use is not deleted.
   usagePath?: (row: T) => string;
   // Rows kept together under a heading each: units by what they measure. `order` fixes the headings.
-  groupBy?: { of: (row: T) => string; label: (key: string) => string; order: readonly string[] };
+  groupBy?: {
+    of: (row: T) => string;
+    label: (key: string) => string;
+    order: readonly string[];
+    // Each heading opens and closes its rows (closed to begin with); `summary` is said on the closed line.
+    collapsible?: boolean;
+    summary?: (rows: T[]) => ReactNode;
+    openWhen?: readonly string[];
+    actions?: (rows: T[]) => ReactNode;
+  };
   // Columns whose number is changed right in the list: click, type, Enter. The column's key is the field.
   inline?: Record<string, InlineEdit<T>>;
 };

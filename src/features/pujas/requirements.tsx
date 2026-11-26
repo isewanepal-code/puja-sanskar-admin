@@ -2,6 +2,7 @@ import type { Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
+import { searchKey } from '@/lib/nepali-fold';
 
 type Requirement = Schema<'AdminRequirementResponse'>;
 type Name = (key: string) => string;
@@ -32,9 +33,7 @@ export function requirementsResource(pujaId: string, name: Name): Resource<Requi
     rowId: (row) => row.id,
     rowLabel: (row) => row.material.nameNe,
     matches: (row, q) =>
-      `${row.material.code} ${row.material.nameNe} ${row.material.nameEn}`
-        .toLowerCase()
-        .includes(q),
+      searchKey(`${row.material.code} ${row.material.nameNe} ${row.material.nameEn}`).includes(q),
     initialSort: { key: 'sortOrder', direction: 'asc' },
     bulk: ['materialId', 'quantityType', 'quantityValue', 'unitId', 'requiredLevel'],
     // The API's rule: a counted amount has a number and a unit; "as offered" has neither.

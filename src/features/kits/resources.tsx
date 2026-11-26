@@ -4,6 +4,7 @@ import { request, type Schema } from '@/lib/api';
 import { branchChoices } from '@/features/branches';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
+import { searchKey } from '@/lib/nepali-fold';
 
 export type Kit = Schema<'AdminKitResponse'>;
 type Line = Schema<'AdminKitLineResponse'>;
@@ -234,7 +235,7 @@ export function kitItemsResource(kitId: string): Resource<Line> {
     rowId: (row) => row.id,
     rowLabel: (row) => `${row.sku.sku} · ${row.product.nameNe}`,
     matches: (row, q) =>
-      `${row.sku.sku} ${row.product.nameNe} ${row.product.nameEn}`.toLowerCase().includes(q),
+      searchKey(`${row.sku.sku} ${row.product.nameNe} ${row.product.nameEn}`).includes(q),
     initialSort: { key: 'sortOrder', direction: 'asc' },
     reorder: true,
     modalSize: 'sm',

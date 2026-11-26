@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 import {
@@ -24,8 +24,8 @@ import { routes } from '@/lib/routes';
 
 import { cn } from '@/lib/utils';
 
-import { RepackForm } from './repack-form';
-import { RepackHistory } from './repack-history';
+import { RepackForm, type RepackPrefill } from './repack-form';
+import { editMade, latestMade, RepackHistory } from './repack-history';
 import {
   historyResource,
   STOCK_SHOWS,
@@ -41,23 +41,8 @@ type Summary = Schema<'StockSummaryResponse'>;
 type Open = {
   what: 'history' | 'transfer' | 'repack' | 'made' | 'wipe' | 'loss' | 'count';
   level: Level;
+  prefill?: RepackPrefill;
 } | null;
-
-// "Make packets" is on every line that has stock, so it is always where it is looked for. What cannot be
-// opened (made by opening) or has no size to make is explained in the form instead of hiding the button.
-function OpenIntoPackets({ level, onOpen }: { level: Level; onOpen: () => void }) {
-  const tk = useTranslations('stockWork');
-  return (
-    <Button
-      variant={level.boughtIn ? 'primary' : 'secondary'}
-      size="sm"
-      title={tk('taskNote.repack')}
-      onClick={onOpen}
-    >
-      {tk('rowRepack')}
-    </Button>
-  );
-}
 
 export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow }) {
   const t = useTranslations('actions');
@@ -73,9 +58,17 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
     queryFn: () => request<Summary>('GET', '/admin/stock-levels/summary'),
   });
   const [open, setOpen] = useState<Open>(null);
+  // Items whose sizes are shown open: the ones just worked on (packets made, edited or put back).
+  const [openHeads, setOpenHeads] = useState<string[]>([]);
+  const headingOf = (level: Level) => `${level.product.nameNe} · ${level.product.nameEn}`;
+  const work = (what: 'repack' | 'made', level: Level, prefill?: RepackPrefill) => {
+    setOpenHeads((was) => [...new Set([...was, headingOf(level)])]);
+    setOpen({ what, level, prefill });
+  };
   const tw = useTranslations('stockWipe');
   const tk = useTranslations('stockWork');
   const tr = useTranslations('repackHistory');
+  const locale = useLocale() as 'en' | 'ne';
   const toast = useToast();
   const queryClient = useQueryClient();
   // Staging only: a pack's stock at a branch can be wiped, history and all.
@@ -94,14 +87,61 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
   });
   const resource = useMemo(
     () =>
-      stockResource(show, {
-        productId: productId || undefined,
-        categoryId: categoryId || undefined,
-        groupId: groupId || undefined,
-        supplierId: supplierId || undefined,
-        brand: brand.trim() || undefined,
-      }),
-    [show, productId, categoryId, groupId, supplierId, brand],
+      stockResource(
+        show,
+        {
+          productId: productId || undefined,
+          categoryId: categoryId || undefined,
+          groupId: groupId || undefined,
+          supplierId: supplierId || undefined,
+          brand: brand.trim() || undefined,
+        },
+        openHeads,
+        // On the heading of an item: its bought-in size is opened into packets, or the packets made are edited.
+        (rows) =>
+          rows
+            .filter((row) => row.boughtIn)
+            .map((row) => (
+              <span key={row.variant.id} className="inline-flex items-center gap-1.5">
+                {rows.filter((r) => r.boughtIn).length > 1 ? (
+                  <span className="text-xs text-muted-foreground">{row.variant.label}</span>
+                ) : null}
+                {row.available > 0 ? (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    title={tk('taskNote.repack')}
+                    onClick={() => work('repack', row)}
+                  >
+                    {tk('rowRepack')}
+                  </Button>
+                ) : null}
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  title={tr('editNote')}
+                  onClick={async () => {
+                    // Straight into the numbers of the last packet-making; nothing made yet says so.
+                    try {
+                      const made = await latestMade(row);
+                      if (!made) {
+                        toast.error(tr('nothingMade'));
+                        return;
+                      }
+                      await editMade(row, made, locale, (source, prefill) =>
+                        work('repack', source, prefill),
+                      );
+                    } catch (error) {
+                      toast.error(isApiError(error) ? error.message : tr('failed'));
+                    }
+                  }}
+                >
+                  {tr('rowEdit')}
+                </Button>
+              </span>
+            )),
+      ),
+    [show, productId, categoryId, groupId, supplierId, brand, openHeads],
   );
   const name = open ? `${open.level.variant.sku} · ${open.level.variant.label}` : '';
 
@@ -212,12 +252,7 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
         }
         rowActions={(row) => (
           <>
-            {/* The everyday jobs right on the row: no pack to pick on another page. */}
-            {/* What was bought in (a sack, a roll, loose pieces) can be opened into the sizes on sale; what was made by
-                opening is the end of the line. */}
-            {row.available > 0 && row.boughtIn ? (
-              <OpenIntoPackets level={row} onOpen={() => setOpen({ what: 'repack', level: row })} />
-            ) : null}
+            {/* Making and editing packets are on the item's heading line; the loss button stays on the row. */}
             <Button
               variant="secondary"
               size="sm"
@@ -238,7 +273,7 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
                 {
                   icon: 'clock',
                   label: tr('menu'),
-                  onSelect: () => setOpen({ what: 'made', level: row }),
+                  onSelect: () => work('made', row),
                 },
                 {
                   icon: 'edit',
@@ -300,10 +335,14 @@ export function StockScreen({ initialShow = 'in' }: { initialShow?: StockShow })
         onConfirm={() => open && wipe.mutate(open.level)}
       />
       {open?.what === 'repack' ? (
-        <RepackForm level={open.level} onClose={() => setOpen(null)} />
+        <RepackForm level={open.level} prefill={open.prefill} onClose={() => setOpen(null)} />
       ) : null}
       {open?.what === 'made' ? (
-        <RepackHistory level={open.level} onClose={() => setOpen(null)} />
+        <RepackHistory
+          level={open.level}
+          onClose={() => setOpen(null)}
+          onEdit={(source, prefill) => work('repack', source, prefill)}
+        />
       ) : null}
       <Modal
         open={open?.what === 'history'}

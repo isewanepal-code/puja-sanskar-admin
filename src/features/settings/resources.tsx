@@ -2,6 +2,7 @@ import { activeColumn, type Resource } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { formatMoney } from '@/lib/format';
 import type { Schema } from '@/lib/api';
+import { searchKey } from '@/lib/nepali-fold';
 
 type TaxClass = Schema<'TaxClassResponse'>;
 type Zone = Schema<'DeliveryZoneResponse'>;
@@ -21,7 +22,7 @@ export function taxClassesResource(name: Name): Resource<TaxClass> {
     list: 'all',
     rowId: (row) => row.id,
     rowLabel: (row) => `${row.code} · ${row.name}`,
-    matches: (row, q) => `${row.code} ${row.name}`.toLowerCase().includes(q),
+    matches: (row, q) => searchKey(`${row.code} ${row.name}`).includes(q),
     initialSort: { key: 'code', direction: 'asc' },
     columns: [
       {
@@ -96,9 +97,7 @@ export const deliveryZonesResource: Resource<Zone> = {
   rowId: (row) => row.id,
   rowLabel: (row) => row.name,
   matches: (row, q) =>
-    `${row.name} ${row.areas.map((a) => `${a.city} ${a.area}`).join(' ')}`
-      .toLowerCase()
-      .includes(q),
+    searchKey(`${row.name} ${row.areas.map((a) => `${a.city} ${a.area}`).join(' ')}`).includes(q),
   initialSort: { key: 'sortOrder', direction: 'asc' },
   reorder: true,
   modalSize: 'lg',
@@ -159,7 +158,7 @@ export const deliverySlotsResource: Resource<Slot> = {
   list: 'all',
   rowId: (row) => row.id,
   rowLabel: (row) => row.nameNe,
-  matches: (row, q) => `${row.nameNe} ${row.nameEn}`.toLowerCase().includes(q),
+  matches: (row, q) => searchKey(`${row.nameNe} ${row.nameEn}`).includes(q),
   initialSort: { key: 'startsAt', direction: 'asc' },
   modalSize: 'sm',
   bulk: ['nameNe', 'nameEn', 'startsAt', 'endsAt'],

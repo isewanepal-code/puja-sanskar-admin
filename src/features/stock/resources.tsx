@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import { branchChoices } from '@/features/branches';
 import type { Resource } from '@/components/resource';
 import { request } from '@/lib/api';
@@ -57,6 +59,8 @@ export type StockFilters = {
 export function stockResource(
   show: StockShow,
   { productId, categoryId, groupId, supplierId, brand }: StockFilters = {},
+  openHeads: string[] = [],
+  headActions?: (rows: Level[]) => ReactNode,
 ): Resource<Level> {
   return {
     key: 'stock',
@@ -84,6 +88,20 @@ export function stockResource(
       of: (row) => `${row.product.nameNe} · ${row.product.nameEn}`,
       label: (key) => key,
       order: [],
+      // One line for the item; its sizes, quantities and prices open under it.
+      collapsible: true,
+      openWhen: openHeads,
+      actions: headActions,
+      summary: (rows) => {
+        const out = rows.filter((r) => r.available <= 0).length;
+        const value = rows.reduce((sum, r) => sum + Number(r.value), 0);
+        return (
+          <span className="flex items-center gap-3">
+            {out > 0 ? <span className="text-destructive">{out} out</span> : null}
+            <span className="tabular-nums">{formatMoney(String(value), 'en')}</span>
+          </span>
+        );
+      },
     },
     modalSize: 'xs',
     columns: [

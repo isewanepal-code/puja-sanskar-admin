@@ -4,6 +4,7 @@ import { request, type Schema } from '@/lib/api';
 import { choices, wholeSource } from '@/lib/choices';
 
 import { unitsLike } from './units';
+import { searchKey } from '@/lib/nepali-fold';
 
 export type OptionType = Schema<'OptionTypeResponse'>;
 export type OptionValue = Schema<'OptionValueResponse'>;
@@ -19,7 +20,7 @@ export function optionTypesResource(name: Name): Resource<OptionType> {
     list: 'all',
     rowId: (row) => row.id,
     rowLabel: (row) => `${row.code} · ${row.nameEn}`,
-    matches: (row, q) => `${row.code} ${row.nameEn} ${row.nameNe}`.toLowerCase().includes(q),
+    matches: (row, q) => searchKey(`${row.code} ${row.nameEn} ${row.nameNe}`).includes(q),
     initialSort: { key: 'sortOrder', direction: 'asc' },
     modalSize: 'md',
     columns: [

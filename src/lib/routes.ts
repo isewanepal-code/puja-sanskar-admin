@@ -18,8 +18,11 @@ export const routes = {
   login: (next?: string) => (next ? `/login?next=${encodeURIComponent(next)}` : '/login'),
 
   // The tree, opened at a group.
-  pujaGroups: (at?: string) => withQuery('/pujas', { at }),
-  pujas: () => '/pujas/list',
+  pujaGroups: (at?: string) => withQuery('/pujas/groups', { at }),
+  pujas: () => '/pujas',
+  // A puja's own page, and the page to add one.
+  newPujaPage: () => '/pujas/new',
+  puja: (id: string) => `/pujas/${id}`,
   ritualTypes: () => '/pujas/ritual-types',
   pujaLevels: () => '/pujas/levels',
   mantras: () => '/pujas/mantras',

@@ -5,6 +5,7 @@ import { choices, pagedSource } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 import { optionValueChoices } from './options';
 import { unitsFor } from './units';
+import { searchKey } from '@/lib/nepali-fold';
 
 export type Product = Schema<'AdminProductResponse'>;
 type Variant = Schema<'AdminVariantResponse'>;
@@ -129,7 +130,7 @@ export function variantsResource(product: Product): Resource<Variant> {
     list: 'all',
     rowId: (row) => row.id,
     rowLabel: (row) => `${row.sku} · ${row.label}`,
-    matches: (row, q) => `${row.sku} ${row.label}`.toLowerCase().includes(q),
+    matches: (row, q) => searchKey(`${row.sku} ${row.label}`).includes(q),
     initialSort: { key: 'price', direction: 'asc' },
     // The price is changed right in the list.
     inline: { price: { type: 'money', value: (row) => row.price } },

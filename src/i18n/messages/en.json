@@ -117,14 +117,14 @@
       "orders": "Orders",
       "customers": "Customers",
       "items": "All items",
-      "kits": "Kits",
+      "kits": "Puja kits",
       "stock": "Stock",
       "buying": "Purchase bills",
       "suppliers": "Suppliers",
       "money": "Cash and bank",
       "expenses": "Expenses",
       "reports": "Item sales",
-      "pujas": "Pujas",
+      "pujas": "Puja groups",
       "content": "FAQs",
       "catalogue": "Categories",
       "settings": "Tax classes",
@@ -183,7 +183,9 @@
       "customerReturns": "Customer returns",
       "sidebarMenus": "Sidebar menus",
       "companies": "Companies",
-      "losses": "Damaged and lost"
+      "losses": "Damaged and lost",
+      "newPuja": "+ New puja",
+      "newKit": "+ New puja kit"
     },
     "changePassword": "Change password",
     "groups": {
@@ -192,14 +194,15 @@
       "items": "2 · Items",
       "buying": "3 · Buy",
       "stock": "4 · Stock",
-      "kits": "5 · Kits and pujas",
-      "sell": "6 · Sell",
-      "money": "8 · Money",
+      "kits": "6 · Kits",
+      "sell": "7 · Sell",
+      "money": "9 · Money",
       "marketing": "Offers",
       "website": "Website",
       "settings": "Settings",
-      "reports": "9 · Reports",
-      "returns": "7 · Returns"
+      "reports": "10 · Reports",
+      "returns": "8 · Returns",
+      "pujaGroup": "5 · Pujas"
     },
     "showMenu": "Show the menu",
     "hideMenu": "Hide the menu",
@@ -282,7 +285,9 @@
       "customerReturns": "Goods customers brought back from an order: back on the shelf or written off, and the money paid back.",
       "sidebarMenus": "Choose which menu entries each role sees. It only tidies the menu; what a role may do is set in Staff.",
       "companies": "The parent companies behind the brands. Add one once, then pick it on a brand.",
-      "losses": "Everything written off: damaged, expired, lost or spilled stock, with its cost."
+      "losses": "Everything written off: damaged, expired, lost or spilled stock, with its cost.",
+      "newPuja": "Add a puja: its name, group and the details shown on the website.",
+      "newKit": "Make a kit for a puja: choose its items, prices and discount."
     },
     "sectionHint": {
       "dashboard": "Today's summary",
@@ -313,7 +318,9 @@
       "brands": "Brand list",
       "purchaseReturns": "Sent back",
       "supplierPayments": "Paid out",
-      "losses": "Damaged and lost"
+      "losses": "Damaged and lost",
+      "newPuja": "Add a puja",
+      "newKit": "Make a puja kit"
     },
     "language": "Language",
     "expandAll": "Expand all",
@@ -4428,7 +4435,7 @@
   },
   "repack": {
     "title": "Make packets from {name}",
-    "note": "Open some of what you bought (a sack, a roll, loose pieces) and count the packets you made. What you open comes off the shelf, the packets go in, and its cost is shared over the packets by size. Packets that were made by opening are the end of the line: they are not opened again.",
+    "note": "Open some of what you bought (a sack, a roll, loose pieces) and count the packets you made. What you open comes out of stock, the packets go in, and its cost is shared over the packets by size. Packets that were made by opening are the end of the line: they are not opened again.",
     "opened": "How many {label} do you open?",
     "into": "Smaller packs that come out",
     "pack": "Pack",
@@ -4437,8 +4444,8 @@
     "addPack": "Add a pack",
     "noteLabel": "Note (optional)",
     "submit": "Open and add the packets",
-    "done": "Done: the bulk pack is off the shelf and the smaller packs are in stock",
-    "onHand": "{count} on the shelf",
+    "done": "Done: the bulk pack is out of stock and the smaller packs are in stock",
+    "onHand": "{count} in stock",
     "choosePack": "Choose a pack...",
     "balance": "Opened {opened} {unit}. The packets make {made} {unit}. Left over (wastage): {wasted} {unit} ({percent}%); it is shared into the cost of the packets.",
     "tooMuch": "The packs add up to {made} {unit}, more than the {opened} {unit} opened. Check the numbers.",
@@ -4474,20 +4481,30 @@
     "usesWaiting": "Fill in the packets above: this is worked out for you.",
     "openedPlaceholder": "e.g. 11",
     "workItOut": "Work it out for me",
-    "shelfAfter": "{opened} of {label} come off the shelf; {left} are left.",
+    "shelfAfter": "{opened} of {label} come out of stock; {left} are left in stock.",
     "noCompare": "These sizes cannot be set against each other, so no wastage is shown.",
     "usesPart": "Uses {count} of {label} ({amount})",
-    "staysOnShelf": "Stays on the shelf: {count} {label} ({amount}). What is left of the opened one is used first next time.",
+    "staysOnShelf": "Stays in stock: {count} {label} ({amount}). What is left of the opened one is used first next time.",
     "lostLabel": "Spilled, damaged or spoilt while opening (optional)",
     "lostHint": "Write only what was really lost. Leave it empty if nothing was: the rest stays in stock.",
     "madeByOpening": "{label} was made by opening something bigger, so it is not opened again. To make packets, open what was bought (the sack, the roll, the loose pieces). Wrong count? Use Correct the count in the row menu.",
-    "notMade": "Not made into packets: {left} {unit}. A whole pack is opened here, so this leaves the shelf with it.",
-    "allMade": "All of what is opened is made into packets.",
+    "notMade": "Not made into packets: {left} {unit}. Of the {opened} {unit} you open, this much is not in any packet, and {label} goes down by all {opened} {unit}.",
+    "allMade": "All {opened} {unit} you open is made into packets: {label} goes down by {opened} {unit}.",
     "sacksLabel": "How many {label} will you open? (optional)",
     "sacksPlaceholder": "e.g. 3",
     "sacksHint": "Optional. Fill it and the ↻ buttons fill each size up to that much (3 sacks of 20 kg = 60 kg). Leave it empty and just write the packets you made: how many are opened is worked out from them.",
     "sacksOver": "The packets are more than {count} {label} holds",
-    "sacksLeft": "Made {made} of {total}; {left} not made yet (it stays in the opened pack)"
+    "sacksLeft": "Made {made} of {total}; {left} not made yet (it stays in the opened pack)",
+    "editTitle": "Edit packets: {name}",
+    "saveEdit": "Save changes",
+    "editBanner": "Editing the packets made on {date}. Saving puts those back and makes these instead.",
+    "sumOpen": "Opens {opens} · in stock {from} → {to}",
+    "sumLeft": "{left} {unit} is not in any packet",
+    "stockLine": "In stock now: {count} × {label}",
+    "sumMake": "You make",
+    "sumUse": "Taken from stock",
+    "sumAfter": "Stock after",
+    "sumShort": "Not enough: only {count} × {label} in stock. Make fewer packets."
   },
   "kitPage": {
     "back": "All kits",
@@ -4513,7 +4530,7 @@
     "off": "This package is not made. Tick it to add items.",
     "items": "Items in this package",
     "itemsNote": "Choose the pack and how many. If \"Optional\" is ticked, it is not added to the kit price; it shows as an add-on.",
-    "pack": "Pack",
+    "pack": "Choose item",
     "quantity": "Qty",
     "optional": "Optional",
     "remove": "Remove",
@@ -4532,7 +4549,26 @@
     "aliasesHelp": "Other names: add one at a time with Enter or a comma. For example: chhath set, chhath samagri. The website search finds it by these names too.",
     "needItem": "an item in {tier}",
     "nameRomanized": "Name in Roman letters",
-    "nameRomanizedHelp": "How people type it in English letters: chhath kit. Helps search."
+    "nameRomanizedHelp": "How people type it in English letters: chhath kit. Helps search.",
+    "itemsTitle": "Items needed for {puja}",
+    "thisPuja": "this puja",
+    "sellPrice": "Sells at",
+    "itemsTotal": "Total of the items above",
+    "optionalTotal": "Optional items, on the side",
+    "oldPrice": "Old price (items total)",
+    "salePrice": "Sale price (after discount)",
+    "optionalTitle": "Optional items",
+    "optionalNote": "Not in the kit price. The customer can add them if they want.",
+    "buyPrice": "Buying price",
+    "lineTotal": "Total",
+    "noneYet": "Nothing added yet.",
+    "sectionTotal": "Total",
+    "addOptional": "Add optional item",
+    "removeTitle": "Remove this item?",
+    "removeNote": "It is taken out of this package. Nothing else changes.",
+    "compulsoryTitle": "Compulsory items",
+    "compulsoryNote": "In the kit price. Every kit has these.",
+    "inStock": "In stock"
   },
   "kitEdit": {
     "back": "All kits",
@@ -5127,7 +5163,7 @@
   "repackHistory": {
     "menu": "Packets made / undo",
     "title": "Packets made: {name}",
-    "note": "Made a wrong count? Undo just that size: its packets leave and its share of what was opened comes back to the shelf. Then make the packets again with the right count. A packet that was already sold cannot be undone.",
+    "note": "Made a wrong count? Undo just that size: its packets leave and its share of what was opened comes back to stock. Or edit the whole thing at once. A packet that was already sold cannot be undone.",
     "none": "No packets were made with this size yet.",
     "undo": "Undo",
     "wasUndone": "Undone",
@@ -5136,7 +5172,11 @@
     "opened": "Opened {count} × {label}",
     "made": "Made:",
     "undoAll": "Undo all sizes",
-    "undoSize": "Undo this size"
+    "undoSize": "Undo this size",
+    "editAll": "Edit all sizes",
+    "editNote": "The packets are put back, then the form opens with these numbers to change.",
+    "rowEdit": "Edit packets",
+    "nothingMade": "No packets were made from this yet, or all were put back."
   },
   "losses": {
     "title": "Damaged and lost",
@@ -5159,5 +5199,17 @@
     "counts": "Needs {needed}, {available} in stock",
     "notOnSale": "This pack is not on sale",
     "buy": "Buy it"
+  },
+  "pujaPage": {
+    "back": "Pujas",
+    "newTitle": "New puja",
+    "newNote": "Add the puja here. When it is saved, its page opens so you can write its samagri list.",
+    "notFound": "This puja was not found.",
+    "sections": "Sections of this puja",
+    "step": {
+      "details": "Details",
+      "samagri": "Samagri list"
+    },
+    "samagriNote": "What this puja needs. Add each samagri once; the kit of this puja is made from this list."
   }
 }

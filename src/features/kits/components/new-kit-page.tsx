@@ -1,6 +1,6 @@
 'use client';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -9,12 +9,13 @@ import { useState } from 'react';
 import { ChipInput, SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
 import { Icon } from '@/components/icons';
-import { useToast } from '@/components/overlays';
+import { ConfirmDialog, useToast } from '@/components/overlays';
 import { ImagesInput } from '@/components/resource/image-inputs';
 import { readImages } from '@/components/resource/form-values';
 import { Button, IconButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { isApiError, request } from '@/lib/api';
+import { isApiError, request, type Schema } from '@/lib/api';
+import { formatMoney } from '@/lib/format';
 import { choices } from '@/lib/choices';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
@@ -77,8 +78,56 @@ export function NewKitPage() {
   const pkg = packages[tier];
   const change = (patch: Partial<Pkg>) =>
     setPackages((all) => ({ ...all, [tier]: { ...all[tier], ...patch } }));
+  // A row waiting for the "really delete?" answer.
+  const [removing, setRemoving] = useState<number | null>(null);
+  const dropRow = (index: number) => {
+    const rest = pkg.rows.filter((_, i) => i !== index);
+    change({ rows: rest.length > 0 ? rest : [emptyRow()] });
+  };
   const changeRow = (index: number, patch: Partial<Row>) =>
     change({ rows: pkg.rows.map((row, i) => (i === index ? { ...row, ...patch } : row)) });
+
+  const pujaName =
+    useQuery({
+      queryKey: ['puja-name', pujaId],
+      enabled: Boolean(pujaId),
+      staleTime: 600_000,
+      queryFn: () => request<{ nameNe: string }>('GET', `/admin/pujas/${pujaId}`),
+    }).data?.nameNe ?? '';
+  // What each chosen pack sells at today, to show the line prices, the total and what a discount leaves.
+  const wanted = [
+    ...new Set(
+      TIERS.flatMap((name) => packages[name].rows.map((row) => row.variantId)).filter(Boolean),
+    ),
+  ];
+  const priced = useQueries({
+    queries: wanted.map((variantId) => ({
+      queryKey: ['kit-pack-price', variantId],
+      staleTime: 60_000,
+      queryFn: async () => {
+        const { items } = await request<{ items: Schema<'AdminProductResponse'>[] }>(
+          'GET',
+          '/admin/products',
+          { query: { variantId, limit: 1 } },
+        );
+        const found = items.flatMap((item) => item.variants).find((v) => v.id === variantId);
+        return { variantId, price: Number(found?.price ?? 0), cost: Number(found?.cost ?? 0) };
+      },
+    })),
+  });
+  const priceOf = (variantId: string) =>
+    priced.find((q) => q.data?.variantId === variantId)?.data?.price ?? 0;
+  const costOf = (variantId: string) =>
+    priced.find((q) => q.data?.variantId === variantId)?.data?.cost ?? 0;
+  const lineTotal = (row: Row) => priceOf(row.variantId) * (Number(row.quantity) || 0);
+  // The kit costs what its included items cost; optional ones are priced on the side.
+  const oldPrice = pkg.rows.filter((r) => !r.optional).reduce((sum, r) => sum + lineTotal(r), 0);
+  const optionalPrice = pkg.rows
+    .filter((r) => r.optional)
+    .reduce((sum, r) => sum + lineTotal(r), 0);
+  const off = Number(pkg.discount) || 0;
+  const taken = pkg.discountKind === 'PERCENT' ? (oldPrice * Math.min(off, 100)) / 100 : off;
+  const salePrice = Math.max(oldPrice - taken, 0);
 
   const chosen = TIERS.filter((name) => packages[name].on);
   // What still keeps Save off, named, so nobody has to guess.
@@ -151,6 +200,17 @@ export function NewKitPage() {
   return (
     <div className="grid max-w-5xl gap-6">
       {guard}
+      <ConfirmDialog
+        open={removing !== null}
+        onOpenChange={(next) => (next ? undefined : setRemoving(null))}
+        title={t('removeTitle')}
+        description={t('removeNote')}
+        confirmLabel={t('remove')}
+        onConfirm={() => {
+          if (removing !== null) dropRow(removing);
+          setRemoving(null);
+        }}
+      />
       <div>
         <Link href={routes.kits()} className="text-sm text-muted-foreground hover:text-foreground">
           ← {t('back')}
@@ -260,90 +320,163 @@ export function NewKitPage() {
 
           {pkg.on ? (
             <>
-              <div className="grid gap-2">
-                <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-sm font-semibold">{t('items')}</h3>
-                  {tier !== 'BASIC' && packages.BASIC.rows.some((r) => r.variantId) ? (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() =>
-                        change({ rows: packages.BASIC.rows.map((row) => ({ ...row })) })
-                      }
-                    >
-                      {t('copyBasic')}
-                    </Button>
-                  ) : null}
-                </div>
-                <p className="text-xs text-muted-foreground">{t('itemsNote')}</p>
-                <div className="overflow-x-auto rounded-md border border-border">
-                  <table className="w-full border-collapse text-sm">
-                    <thead className="bg-muted/60 text-xs text-muted-foreground uppercase">
-                      <tr>
-                        <th className="px-2 py-2 text-left font-semibold">{t('pack')}</th>
-                        <th className="w-24 px-2 py-2 text-right font-semibold">{t('quantity')}</th>
-                        <th className="w-28 px-2 py-2 text-center font-semibold">
-                          {t('optional')}
-                        </th>
-                        <th className="w-10" />
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {pkg.rows.map((row, index) => (
-                        <tr key={index} className="border-t border-border">
-                          <td className="p-1.5">
-                            <SearchSelect
-                              aria-label={t('pack')}
-                              source={choices.packs}
-                              required
-                              value={row.variantId}
-                              onChange={(value) => changeRow(index, { variantId: String(value) })}
-                            />
-                          </td>
-                          <td className="p-1.5">
-                            <Input
-                              aria-label={t('quantity')}
-                              inputMode="decimal"
-                              className="text-right"
-                              value={row.quantity}
-                              onChange={(e) => changeRow(index, { quantity: e.target.value })}
-                            />
-                          </td>
-                          <td className="text-center">
-                            <input
-                              type="checkbox"
-                              aria-label={t('optional')}
-                              checked={row.optional}
-                              onChange={(e) => changeRow(index, { optional: e.target.checked })}
-                              className="size-4"
-                            />
-                          </td>
-                          <td className="px-1 text-center">
-                            <IconButton
-                              icon="trash"
-                              variant="danger"
-                              label={t('remove')}
-                              disabled={pkg.rows.length === 1}
-                              onClick={() =>
-                                change({ rows: pkg.rows.filter((_, i) => i !== index) })
-                              }
-                            />
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+              {tier !== 'BASIC' && packages.BASIC.rows.some((r) => r.variantId) ? (
                 <div>
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => change({ rows: [...pkg.rows, emptyRow()] })}
+                    onClick={() => change({ rows: packages.BASIC.rows.map((row) => ({ ...row })) })}
                   >
-                    <Icon name="plus" size={14} />
-                    {t('addItem')}
+                    {t('copyBasic')}
                   </Button>
                 </div>
+              ) : null}
+              {([false, true] as const).map((optional) => {
+                const list = pkg.rows
+                  .map((row, index) => ({ row, index }))
+                  .filter(({ row }) => row.optional === optional);
+                const sellSum = list.reduce((sum, { row }) => sum + lineTotal(row), 0);
+                const costSum = list.reduce(
+                  (sum, { row }) => sum + costOf(row.variantId) * (Number(row.quantity) || 0),
+                  0,
+                );
+                return (
+                  <div key={String(optional)} className="grid gap-2">
+                    <h3 className="text-sm font-semibold">
+                      {optional
+                        ? t('optionalTitle')
+                        : t('itemsTitle', { puja: pujaName || t('thisPuja') })}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {optional ? t('optionalNote') : t('itemsNote')}
+                    </p>
+                    <div className="overflow-x-auto rounded-md border border-border">
+                      <table className="w-full border-collapse text-sm">
+                        <thead className="bg-muted/60 text-xs text-muted-foreground uppercase">
+                          <tr>
+                            <th className="w-8 px-2 py-2 text-left font-semibold">#</th>
+                            <th className="px-2 py-2 text-left font-semibold">{t('pack')}</th>
+                            <th className="w-20 px-2 py-2 text-right font-semibold">
+                              {t('quantity')}
+                            </th>
+                            <th className="w-24 px-2 py-2 text-right font-semibold">
+                              {t('buyPrice')}
+                            </th>
+                            <th className="w-24 px-2 py-2 text-right font-semibold">
+                              {t('sellPrice')}
+                            </th>
+                            <th className="w-28 px-2 py-2 text-right font-semibold">
+                              {t('lineTotal')}
+                            </th>
+                            <th className="w-10" />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {list.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan={7}
+                                className="px-3 py-4 text-center text-muted-foreground"
+                              >
+                                {t('noneYet')}
+                              </td>
+                            </tr>
+                          ) : null}
+                          {list.map(({ row, index }, at) => (
+                            <tr key={index} className="border-t border-border">
+                              <td className="px-2 text-muted-foreground tabular-nums">{at + 1}</td>
+                              <td className="p-1.5">
+                                <SearchSelect
+                                  aria-label={t('pack')}
+                                  source={choices.packs}
+                                  required
+                                  value={row.variantId}
+                                  onChange={(value) =>
+                                    changeRow(index, { variantId: String(value) })
+                                  }
+                                />
+                              </td>
+                              <td className="p-1.5">
+                                <Input
+                                  aria-label={t('quantity')}
+                                  inputMode="decimal"
+                                  className="text-right"
+                                  value={row.quantity}
+                                  onChange={(e) => changeRow(index, { quantity: e.target.value })}
+                                />
+                              </td>
+                              <td className="px-2 text-right text-muted-foreground tabular-nums">
+                                {row.variantId && costOf(row.variantId) > 0
+                                  ? formatMoney(String(costOf(row.variantId)), 'en')
+                                  : '—'}
+                              </td>
+                              <td className="px-2 text-right tabular-nums">
+                                {row.variantId
+                                  ? formatMoney(String(priceOf(row.variantId)), 'en')
+                                  : '—'}
+                              </td>
+                              <td className="px-2 text-right font-medium tabular-nums">
+                                {row.variantId ? formatMoney(String(lineTotal(row)), 'en') : '—'}
+                              </td>
+                              <td className="px-1 text-center">
+                                <IconButton
+                                  icon="trash"
+                                  variant="danger"
+                                  label={t('remove')}
+                                  onClick={() =>
+                                    row.variantId ? setRemoving(index) : dropRow(index)
+                                  }
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                        {list.length > 0 ? (
+                          <tfoot className="border-t border-border bg-muted/30 text-sm font-semibold">
+                            <tr>
+                              <td colSpan={3} className="px-2 py-2 text-right">
+                                {t('sectionTotal')}
+                              </td>
+                              <td className="px-2 text-right text-muted-foreground tabular-nums">
+                                {costSum > 0 ? formatMoney(String(costSum), 'en') : '—'}
+                              </td>
+                              <td />
+                              <td className="px-2 text-right tabular-nums">
+                                {formatMoney(String(sellSum), 'en')}
+                              </td>
+                              <td />
+                            </tr>
+                          </tfoot>
+                        ) : null}
+                      </table>
+                    </div>
+                    <div>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => change({ rows: [...pkg.rows, { ...emptyRow(), optional }] })}
+                      >
+                        <Icon name="plus" size={14} />
+                        {optional ? t('addOptional') : t('addItem')}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div className="grid gap-1 rounded-md border border-border bg-muted/30 p-3 text-sm">
+                <div className="flex justify-between">
+                  <span>{t('itemsTotal')}</span>
+                  <span className="font-semibold tabular-nums">
+                    {formatMoney(String(oldPrice), 'en')}
+                  </span>
+                </div>
+                {optionalPrice > 0 ? (
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>{t('optionalTotal')}</span>
+                    <span className="tabular-nums">{formatMoney(String(optionalPrice), 'en')}</span>
+                  </div>
+                ) : null}
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -369,7 +502,19 @@ export function NewKitPage() {
                     />
                   </div>
                 </Field>
-                <label className="mt-6 inline-flex items-center gap-2 text-sm">
+                <div className="grid gap-1 rounded-md border border-border p-3 text-sm sm:col-span-2">
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>{t('oldPrice')}</span>
+                    <span className={cn('tabular-nums', taken > 0 && 'line-through')}>
+                      {formatMoney(String(oldPrice), 'en')}
+                    </span>
+                  </div>
+                  <div className="flex justify-between font-semibold">
+                    <span>{t('salePrice')}</span>
+                    <span className="tabular-nums">{formatMoney(String(salePrice), 'en')}</span>
+                  </div>
+                </div>
+                <label className="inline-flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
                     checked={pkg.packed}

@@ -74,7 +74,7 @@ async function find(query: string, granted: readonly string[]): Promise<Result[]
       group: 'kits' as const,
       title: row.nameEn,
       hint: [row.code, row.puja?.nameEn, row.tier?.toLowerCase()].filter(Boolean).join(' · '),
-      href: open(routes.kits(), row.id, row.code),
+      href: routes.kit(row.id),
       icon: ICONS.kits,
     })),
     ...pujas.map((row) => ({
@@ -82,7 +82,7 @@ async function find(query: string, granted: readonly string[]): Promise<Result[]
       group: 'pujas' as const,
       title: row.nameEn,
       hint: row.nameNe,
-      href: open(routes.pujas(), row.id, row.nameEn),
+      href: routes.puja(row.id),
       icon: ICONS.pujas,
     })),
     ...orders.map((row) => ({

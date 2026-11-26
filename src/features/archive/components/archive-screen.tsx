@@ -12,6 +12,7 @@ import { formatDate, formatMoney } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 import { ArchiveModal, RestoreModal, type ArchiveTarget } from './archive-modals';
+import { searchKey } from '@/lib/nepali-fold';
 
 type Summary = Schema<'ArchiveSummaryResponse'>;
 type Item = Schema<'ArchivedItemResponse'>;
@@ -71,9 +72,9 @@ export function ArchiveScreen() {
   });
 
   const s = summary.data;
-  const q = search.trim().toLowerCase();
+  const q = searchKey(search.trim());
   const match = (row: { nameEn: string; nameNe: string; code: string }) =>
-    !q || [row.nameEn, row.nameNe, row.code].some((text) => text.toLowerCase().includes(q));
+    !q || [row.nameEn, row.nameNe, row.code].some((text) => searchKey(text).includes(q));
 
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: 'kits', label: t('tabs.kits'), count: s?.kits.archived },

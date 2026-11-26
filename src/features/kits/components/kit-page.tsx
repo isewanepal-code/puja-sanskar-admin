@@ -6,16 +6,18 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useId, useState } from 'react';
 
-import { ResourceForm, ResourceScreen, useResourceText } from '@/components/resource';
+import { ResourceForm, useResourceText } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { request } from '@/lib/api';
 import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
-import { kitItemsResource, kitPackResource, kitsResource, type Kit } from '../resources';
+import { kitPackResource, kitsResource, type Kit } from '../resources';
+import { KitItemsEditor } from './kit-items-editor';
 import { KitPriceSummary } from './kit-price-summary';
 import { ActionModal } from '@/components/resource';
+import { ItemGroups } from '@/features/marketing';
 
 const STEPS = ['basics', 'items', 'packing'] as const;
 type Step = (typeof STEPS)[number];
@@ -32,6 +34,7 @@ export function KitPage({ id }: { id: string }) {
   const [saving, setSaving] = useState(false);
   const [packing, setPacking] = useState<'pack' | 'unpack' | null>(null);
   const ta = useTranslations('actions');
+  const tg = useTranslations('itemGroups');
   const kit = useQuery({
     queryKey: ['kits', 'page', id],
     queryFn: () => request<Kit>('GET', `/admin/kits/${id}`),
@@ -108,13 +111,17 @@ export function KitPage({ id }: { id: string }) {
                 {saving ? tf('saving') : tf('save')}
               </Button>
             </div>
+            <div className="mt-5 grid gap-2 border-t border-border pt-4">
+              <h3 className="text-sm font-semibold">{tg('title')}</h3>
+              <ItemGroups kind="kit" id={data.id} />
+            </div>
           </>
         ) : null}
         {step === 'items' ? (
           <div className="grid gap-4">
             <p className="text-sm text-muted-foreground">{t('itemsNote')}</p>
             <KitPriceSummary kitId={data.id} />
-            <ResourceScreen resource={kitItemsResource(data.id)} />
+            <KitItemsEditor kitId={data.id} />
           </div>
         ) : null}
         {step === 'packing' ? (

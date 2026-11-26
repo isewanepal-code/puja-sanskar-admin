@@ -9,9 +9,11 @@ import { Modal } from '@/components/ui/modal';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 
+import type { RepackPrefill } from './repack-form';
+
 type Level = Schema<'StockLevelResponse'>;
 type Pack = { variantId: string; label: string; quantity: number; undone?: boolean };
-type Made = {
+export type Made = {
   reference: string;
   createdAt: string;
   note: string | null;
@@ -22,7 +24,16 @@ type Made = {
 
 // Packet-making that touched this size, newest first. A wrong count is put back here (what was opened
 // returns, what was made leaves) and then made again right: that is how it is edited.
-export function RepackHistory({ level, onClose }: { level: Level; onClose: () => void }) {
+export function RepackHistory({
+  level,
+  onClose,
+  onEdit,
+}: {
+  level: Level;
+  onClose: () => void;
+  // After everything of one packet-making is put back: the form to make it again, with its numbers.
+  onEdit: (source: Level, prefill: RepackPrefill) => void;
+}) {
   const t = useTranslations('repackHistory');
   const locale = useLocale() as 'en' | 'ne';
   const toast = useToast();
@@ -72,16 +83,31 @@ export function RepackHistory({ level, onClose }: { level: Level; onClose: () =>
               </span>
               {made.undone ? (
                 <span className="text-xs font-medium text-muted-foreground">{t('wasUndone')}</span>
-              ) : made.outputs.length > 1 ? (
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={undo.isPending}
-                  onClick={() => undo.mutate({ reference: made.reference })}
-                >
-                  {t('undoAll')}
-                </Button>
-              ) : null}
+              ) : (
+                <div className="flex gap-2">
+                  {made.outputs.length > 1 ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={undo.isPending}
+                      onClick={() => undo.mutate({ reference: made.reference })}
+                    >
+                      {t('undoAll')}
+                    </Button>
+                  ) : null}
+                  {made.source ? (
+                    <Button
+                      size="sm"
+                      variant="primary"
+                      title={t('editNote')}
+                      disabled={undo.isPending}
+                      onClick={() => editMade(level, made, locale, onEdit)}
+                    >
+                      {t('editAll')}
+                    </Button>
+                  ) : null}
+                </div>
+              )}
             </div>
             {made.source ? (
               <p>
@@ -121,4 +147,36 @@ export function RepackHistory({ level, onClose }: { level: Level; onClose: () =>
       </div>
     </Modal>
   );
+}
+
+// The form to change packets already made: their numbers are filled in, and saving puts the old ones back
+// and makes the new ones in one go.
+export async function editMade(
+  level: Level,
+  made: Made,
+  locale: 'en' | 'ne',
+  onEdit: (source: Level, prefill: RepackPrefill) => void,
+) {
+  const source = await request<Level>('GET', `/admin/stock-levels/${made.source!.variantId}`, {
+    headers: { 'X-Branch': level.branch.code },
+  });
+  onEdit(source, {
+    counts: Object.fromEntries(
+      made.outputs.filter((o) => !o.undone).map((o) => [o.variantId, String(o.quantity)]),
+    ),
+    note: made.note ?? '',
+    undo: {
+      reference: made.reference,
+      sourceQuantity: made.source!.quantity,
+      date: formatDate(made.createdAt, locale),
+    },
+  });
+}
+
+// The packet-making that can still be edited for this bought-in pack: the newest one not put back.
+export async function latestMade(level: Level): Promise<Made | null> {
+  const list = await request<Made[]>('GET', `/admin/stock-repacks?variantId=${level.variant.id}`, {
+    headers: { 'X-Branch': level.branch.code },
+  });
+  return list.find((made) => !made.undone && made.source?.variantId === level.variant.id) ?? null;
 }

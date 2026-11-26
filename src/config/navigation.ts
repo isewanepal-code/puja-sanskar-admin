@@ -50,6 +50,8 @@ export type NavSection = {
     | 'reminders'
     | 'expenseCategories'
     | 'pujaList'
+    | 'newPuja'
+    | 'newKit'
     | 'ritualTypes'
     | 'mantras'
     | 'pujaLevels'
@@ -94,6 +96,7 @@ export type NavGroup = {
     | 'items'
     | 'buying'
     | 'stock'
+    | 'pujaGroup'
     | 'kits'
     | 'sell'
     | 'returns'
@@ -211,19 +214,27 @@ export const navigation: NavGroup[] = [
       { key: 'archive', href: routes.archive(), icon: 'archive', permission: 'catalogue:read' },
     ],
   },
+  // Pujas come first, then their kits: two groups, each with its own "new" line.
   {
-    key: 'kits',
+    key: 'pujaGroup',
     sections: [
-      { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
-      { key: 'pujas', href: routes.pujaGroups(), icon: 'temple', permission: 'catalogue:read' },
-      // The list is the other tab of Pujas: it keeps its header but has no line of its own.
+      { key: 'newPuja', href: routes.newPujaPage(), icon: 'plus', permission: 'catalogue:read' },
+      { key: 'pujaList', href: routes.pujas(), icon: 'temple', permission: 'catalogue:read' },
+      // The tree of puja groups is reached from the list; it keeps its header but has no sidebar line.
       {
-        key: 'pujaList',
-        href: routes.pujas(),
+        key: 'pujas',
+        href: routes.pujaGroups(),
         icon: 'temple',
         permission: 'catalogue:read',
         hidden: true,
       },
+    ],
+  },
+  {
+    key: 'kits',
+    sections: [
+      { key: 'newKit', href: routes.newKit(), icon: 'plus', permission: 'catalogue:read' },
+      { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
     ],
   },
   {

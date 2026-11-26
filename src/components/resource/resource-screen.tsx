@@ -2,7 +2,7 @@
 
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   useCallback,
   useDeferredValue,
@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 import { Pagination } from '@/components/ui/pagination';
 import { isApiError, request } from '@/lib/api';
+import { searchKey } from '@/lib/nepali-fold';
 
 import { BulkGrid } from './bulk-grid';
 import { ExportButton } from './export-button';
@@ -53,6 +54,8 @@ type ResourceScreenProps<T> = {
   editFooter?: (row: T) => ReactNode;
   // A page of its own: `?q=` fills the search and `?open=<id>` opens that record (the global search links here).
   deepLink?: boolean;
+  // New and edit are pages of their own (as for items), not forms in a window: where each one is.
+  pages?: { create: string; edit: (row: T) => string };
 };
 
 // Any resource's list with search, sorting, paging and its create, edit and delete modals.
@@ -65,7 +68,9 @@ export function ResourceScreen<T>({
   onCreated,
   editFooter,
   deepLink = false,
+  pages,
 }: ResourceScreenProps<T>) {
+  const router = useRouter();
   const t = useResourceText(resource.key);
   const guide = useTranslations('fieldGuide') as unknown as Translate;
   const tf = useTranslations('forms');
@@ -89,7 +94,9 @@ export function ResourceScreen<T>({
   );
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(20);
-  const [chosen, setEditing] = useState<T | 'new' | null>(null);
+  const [chosen, setEditing] = useState<T | 'new' | null>(
+    deepLink && params.get('new') ? 'new' : null,
+  );
   const [removing, setRemoving] = useState<T | null>(null);
   // Deleted rows wait here for ten seconds, out of the list, so Undo can still bring them back.
   const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
@@ -132,14 +139,18 @@ export function ResourceScreen<T>({
   const shownRows = (list.data?.items ?? []).filter((row) => !hidden.has(resource.rowId(row)));
   const rows =
     resource.list === 'all' && query && resource.matches
-      ? shownRows.filter((row) => resource.matches!(row, query.toLowerCase()))
+      ? shownRows.filter((row) => resource.matches!(row, searchKey(query)))
       : shownRows;
 
   const linked =
     openId && !dismissed && resource.canEdit !== false
       ? rows.find((row) => resource.rowId(row) === openId)
       : undefined;
-  const editing = chosen ?? linked ?? null;
+  // An old link that opens a record in a window goes to the record's page when it has one.
+  useEffect(() => {
+    if (pages && linked) router.replace(pages.edit(linked));
+  }, [pages, linked, router]);
+  const editing = pages ? (chosen ?? null) : (chosen ?? linked ?? null);
 
   // Where the row about to be deleted is used: a row in use cannot be deleted.
   const usage = useQuery({
@@ -320,7 +331,10 @@ export function ResourceScreen<T>({
             </Button>
           ) : null}
           {canCreate ? (
-            <Button icon="plus" onClick={() => setEditing('new')}>
+            <Button
+              icon="plus"
+              onClick={() => (pages ? router.push(pages.create) : setEditing('new'))}
+            >
               {t('add')}
             </Button>
           ) : null}
@@ -349,7 +363,11 @@ export function ResourceScreen<T>({
             },
           }
         }
-        onRowClick={canEdit && editOnRowClick ? (row) => setEditing(row) : undefined}
+        onRowClick={
+          canEdit && editOnRowClick
+            ? (row) => (pages ? router.push(pages.edit(row)) : setEditing(row))
+            : undefined
+        }
         onTextSearch={
           resource.list === 'paged' && resource.searchable !== false
             ? (texts) => {
@@ -367,7 +385,7 @@ export function ResourceScreen<T>({
                     <IconButton
                       icon="edit"
                       label={editLabel ?? tf('edit')}
-                      onClick={() => setEditing(row)}
+                      onClick={() => (pages ? router.push(pages.edit(row)) : setEditing(row))}
                     />
                   ) : null}
                   {resource.canDelete !== false ? (

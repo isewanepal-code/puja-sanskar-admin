@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { CatalogueSheetBar } from '@/features/catalogue-sheet';
-import { GroupTree, PujaViewTabs } from '@/features/pujas';
+import { PujasScreen } from '@/features/pujas';
 import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
@@ -10,16 +9,14 @@ export async function generateMetadata({
 }: PageProps<'/[locale]/pujas'>): Promise<Metadata> {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: 'pujas.tabs' });
-  return { title: t('groups') };
+  return { title: t('list') };
 }
 
-export default async function PujaGroupsPage({ params }: PageProps<'/[locale]/pujas'>) {
+export default async function PujasPage({ params }: PageProps<'/[locale]/pujas'>) {
   await resolveLocale(params);
   return (
     <div className="grid grid-cols-1 gap-4">
-      <PujaViewTabs />
-      <CatalogueSheetBar />
-      <GroupTree />
+      <PujasScreen />
     </div>
   );
 }

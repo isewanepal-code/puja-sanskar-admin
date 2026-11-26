@@ -6,6 +6,7 @@ import { Fragment, useCallback, useMemo, useRef, useState, type ReactNode } from
 
 import { Icon } from '@/components/icons';
 import { InfoTip } from '@/components/ui/info-tip';
+import { searchKey } from '@/lib/nepali-fold';
 import { cn } from '@/lib/utils';
 
 export type Column<T> = {
@@ -41,13 +42,25 @@ type DataTableProps<T> = {
   onTextSearch?: (texts: Record<string, string>) => void;
   // Rows kept together under a heading each (units by what they measure). `order` is the order of the
   // headings; the column sort still orders the rows inside each one.
-  groupBy?: { of: (row: T) => string; label: (key: string) => string; order: readonly string[] };
+  // `collapsible`: each heading opens and closes its rows, closed to begin with (open while searching);
+  // `summary` is what the heading says about its rows when closed.
+  groupBy?: {
+    of: (row: T) => string;
+    label: (key: string) => string;
+    order: readonly string[];
+    collapsible?: boolean;
+    summary?: (rows: T[]) => ReactNode;
+    // Headings to open now (after packets were made under an item, say).
+    openWhen?: readonly string[];
+    // Buttons on the heading line, for the rows under it.
+    actions?: (rows: T[]) => ReactNode;
+  };
 };
 
 const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
 
 const normalize = (value: unknown) =>
-  value === null || value === undefined ? '' : String(value).toLowerCase();
+  value === null || value === undefined ? '' : searchKey(String(value));
 
 function filterOf<T>(column: Column<T>): ((row: T) => unknown) | null {
   if (column.filterValue === null) return null;
@@ -81,6 +94,15 @@ export function DataTable<T>({
 }: DataTableProps<T>) {
   const t = useTranslations('table');
   const [sort, setSort] = useState(initialSort);
+  // Headings opened by hand (a collapsible group).
+  const [opened, setOpened] = useState<Set<string>>(new Set());
+  const openWhenKey = (groupBy?.openWhen ?? []).join('\u0001');
+  // New headings to open are taken in while rendering (not in an effect), once per change.
+  const [seenOpenWhen, setSeenOpenWhen] = useState('');
+  if (openWhenKey !== seenOpenWhen) {
+    setSeenOpenWhen(openWhenKey);
+    if (openWhenKey) setOpened((was) => new Set([...was, ...openWhenKey.split('\u0001')]));
+  }
   // Whether rows run under the pinned first column or actions, so they cast a shadow.
   const [under, setUnder] = useState({ left: false, right: false });
   const observer = useRef<ResizeObserver | null>(null);
@@ -139,7 +161,7 @@ export function DataTable<T>({
             const column = columns.find((c) => c.key === key);
             const value = column && filterOf(column)?.(row);
             if (typeof value === 'boolean') return String(value) === wanted;
-            return normalize(value).includes(wanted.trim().toLowerCase());
+            return normalize(value).includes(searchKey(wanted.trim()));
           }),
         )
       : rows;
@@ -278,69 +300,123 @@ export function DataTable<T>({
               </td>
             </tr>
           ) : (
-            sorted.map((row, at) => (
-              <Fragment key={rowKey(row)}>
-                {groupBy && (at === 0 || groupBy.of(sorted[at - 1]!) !== groupBy.of(row)) ? (
-                  <tr className="group-head">
-                    <td
-                      colSpan={columns.length + 1}
-                      className="sticky left-0 border-r border-b border-border bg-muted px-3 py-2 text-xs font-semibold tracking-wide uppercase"
-                    >
-                      {groupBy.label(groupBy.of(row))}
-                      <span className="ml-2 font-normal text-muted-foreground">
-                        {sorted.filter((r) => groupBy.of(r) === groupBy.of(row)).length}
-                      </span>
-                    </td>
-                  </tr>
-                ) : null}
-                <tr
-                  onClick={
-                    onRowClick
-                      ? (event) => {
-                          // A link or button inside the row does its own job; it does not also open the row.
-                          if (
-                            (event.target as HTMLElement).closest(
-                              'a, button, input, select, textarea, label',
-                            )
-                          )
-                            return;
-                          onRowClick(row);
-                        }
-                      : undefined
-                  }
-                  className={cn('data-row group/row', onRowClick && 'cursor-pointer')}
-                >
-                  {columns.map((column, index) => (
-                    <td
-                      key={column.key}
-                      className={cn(
-                        'border-r border-b border-border px-3 py-2.5 align-middle group-last/row:border-b-0',
-                        column.align === 'right' && 'text-right',
-                        pinFirst && index === 0 && 'pin sticky left-0 z-[5] whitespace-nowrap',
-                        pinFirst &&
-                          index === 0 &&
-                          under.left &&
-                          'shadow-[6px_0_8px_-6px_rgb(0_0_0/0.18)]',
-                        column.className,
-                      )}
-                    >
-                      {column.cell(row)}
-                    </td>
-                  ))}
-                  {actions ? (
-                    <td
-                      className={cn(
-                        'pin sticky right-0 z-[5] border-b border-border px-3 py-1.5 text-right whitespace-nowrap group-last/row:border-b-0',
-                        under.right && 'shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.18)]',
-                      )}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {actions(row)}
-                    </td>
+            sorted.map((row, at) => {
+              const heading = groupBy?.of(row);
+              const first = groupBy && (at === 0 || groupBy.of(sorted[at - 1]!) !== heading);
+              const isOpen =
+                !groupBy?.collapsible ||
+                filtering ||
+                (heading !== undefined && opened.has(heading));
+              const members = first ? sorted.filter((r) => groupBy!.of(r) === heading) : [];
+              return (
+                <Fragment key={rowKey(row)}>
+                  {first && groupBy ? (
+                    <tr className="group-head">
+                      <td
+                        colSpan={columns.length + 1}
+                        className="sticky left-0 border-r border-b border-border bg-muted px-3 py-2 text-xs font-semibold tracking-wide uppercase"
+                      >
+                        {groupBy.collapsible ? (
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              aria-expanded={isOpen}
+                              onClick={() =>
+                                setOpened((was) => {
+                                  const next = new Set(was);
+                                  if (next.has(heading!)) next.delete(heading!);
+                                  else next.add(heading!);
+                                  return next;
+                                })
+                              }
+                              className="flex min-w-0 flex-1 items-center gap-2 text-left uppercase"
+                            >
+                              <span
+                                className={cn(
+                                  'inline-block transition-transform',
+                                  isOpen && 'rotate-90',
+                                )}
+                              >
+                                ▸
+                              </span>
+                              <span>{groupBy.label(heading!)}</span>
+                              <span className="font-normal text-muted-foreground">
+                                {members.length}
+                              </span>
+                              {groupBy.summary ? (
+                                <span className="ml-auto font-normal tracking-normal text-muted-foreground normal-case">
+                                  {groupBy.summary(members)}
+                                </span>
+                              ) : null}
+                            </button>
+                            {groupBy.actions ? (
+                              <span className="flex items-center gap-1.5 font-normal tracking-normal normal-case">
+                                {groupBy.actions(members)}
+                              </span>
+                            ) : null}
+                          </div>
+                        ) : (
+                          <>
+                            {groupBy.label(heading!)}
+                            <span className="ml-2 font-normal text-muted-foreground">
+                              {members.length}
+                            </span>
+                          </>
+                        )}
+                      </td>
+                    </tr>
                   ) : null}
-                </tr>
-              </Fragment>
-            ))
+                  {isOpen ? (
+                    <tr
+                      onClick={
+                        onRowClick
+                          ? (event) => {
+                              // A link or button inside the row does its own job; it does not also open the row.
+                              if (
+                                (event.target as HTMLElement).closest(
+                                  'a, button, input, select, textarea, label',
+                                )
+                              )
+                                return;
+                              onRowClick(row);
+                            }
+                          : undefined
+                      }
+                      className={cn('data-row group/row', onRowClick && 'cursor-pointer')}
+                    >
+                      {columns.map((column, index) => (
+                        <td
+                          key={column.key}
+                          className={cn(
+                            'border-r border-b border-border px-3 py-2.5 align-middle group-last/row:border-b-0',
+                            column.align === 'right' && 'text-right',
+                            pinFirst && index === 0 && 'pin sticky left-0 z-[5] whitespace-nowrap',
+                            pinFirst &&
+                              index === 0 &&
+                              under.left &&
+                              'shadow-[6px_0_8px_-6px_rgb(0_0_0/0.18)]',
+                            column.className,
+                          )}
+                        >
+                          {column.cell(row)}
+                        </td>
+                      ))}
+                      {actions ? (
+                        <td
+                          className={cn(
+                            'pin sticky right-0 z-[5] border-b border-border px-3 py-1.5 text-right whitespace-nowrap group-last/row:border-b-0',
+                            under.right && 'shadow-[-6px_0_8px_-6px_rgb(0_0_0/0.18)]',
+                          )}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {actions(row)}
+                        </td>
+                      ) : null}
+                    </tr>
+                  ) : null}
+                </Fragment>
+              );
+            })
           )}
         </tbody>
       </table>

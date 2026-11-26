@@ -8,10 +8,11 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 
 import { Icon } from '@/components/icons';
 import { control } from '@/components/ui/input';
 import type { Choice, ChoiceSource } from '@/lib/choices';
+import { searchKey } from '@/lib/nepali-fold';
 import { cn } from '@/lib/utils';
 
 const matches = (choice: Choice, words: string[]) => {
-  const text = `${choice.label} ${choice.detail ?? ''} ${choice.group ?? ''}`.toLowerCase();
+  const text = searchKey(`${choice.label} ${choice.detail ?? ''} ${choice.group ?? ''}`);
   return words.every((word) => text.includes(word));
 };
 
@@ -99,7 +100,7 @@ export function SearchSelect({
     staleTime: 60 * 1000,
   });
 
-  const needle = text.trim().toLowerCase();
+  const needle = searchKey(text.trim());
   const choices = useMemo(() => {
     if (remote) return results.data?.pages.flatMap((page) => page.choices) ?? [];
     const words = needle.split(/\s+/).filter(Boolean);
