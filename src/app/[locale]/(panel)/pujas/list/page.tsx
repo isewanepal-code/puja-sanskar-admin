@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { PujasScreen } from '@/features/pujas';
+import { PujasScreen, PujaViewTabs } from '@/features/pujas';
 import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
@@ -14,5 +14,10 @@ export async function generateMetadata({
 
 export default async function PujasPage({ params }: PageProps<'/[locale]/pujas/list'>) {
   await resolveLocale(params);
-  return <PujasScreen />;
+  return (
+    <div className="grid grid-cols-1 gap-4">
+      <PujaViewTabs />
+      <PujasScreen />
+    </div>
+  );
 }

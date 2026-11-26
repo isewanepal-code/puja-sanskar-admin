@@ -7,7 +7,8 @@ import { useMemo, useState } from 'react';
 import { SearchSelect } from '@/components/controls';
 import { ItemGroups, priceGroups } from '@/features/marketing';
 import { ActionModal, CountButton, ResourceScreen, useResourceText } from '@/components/resource';
-import { Button, IconButton } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
+import { RowMenu } from '@/components/ui/row-menu';
 import { Modal } from '@/components/ui/modal';
 import { routes } from '@/lib/routes';
 import { ArchiveModal, type ArchiveTarget } from '@/features/archive';
@@ -97,31 +98,16 @@ export function KitsScreen() {
         )}
         rowActions={(row) => (
           <>
+            {/* The everyday job on the row; the rest is under the menu, as on the Stock page. */}
             {row.packed ? (
-              <>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  icon="box"
-                  onClick={() => setPacking({ kit: row, mode: 'pack' })}
-                >
-                  {t('packKits')}
-                </Button>
-                <IconButton
-                  icon="x"
-                  label={t('unpackKits')}
-                  onClick={() => setPacking({ kit: row, mode: 'unpack' })}
-                />
-              </>
-            ) : null}
-            <IconButton icon="truck" label={t('sendKit')} onClick={() => setSending(row)} />
-            <IconButton
-              icon="archive"
-              label={t('archive')}
-              onClick={() => setArchiving({ kind: 'kit', id: row.id, name: row.nameNe })}
-            />
-            {row.puja && row.tier ? (
-              <IconButton icon="grid" label={t('editSet')} onClick={() => setSetOf(row)} />
+              <Button
+                variant="primary"
+                size="sm"
+                icon="box"
+                onClick={() => setPacking({ kit: row, mode: 'pack' })}
+              >
+                {t('packKits')}
+              </Button>
             ) : null}
             <Link
               href={routes.kit(row.id)}
@@ -129,6 +115,40 @@ export function KitsScreen() {
             >
               {t('openKit')}
             </Link>
+            <RowMenu
+              compact
+              label={t('moreActions')}
+              items={[
+                ...(row.packed
+                  ? [
+                      {
+                        icon: 'x' as const,
+                        label: t('unpackKits'),
+                        onSelect: () => setPacking({ kit: row, mode: 'unpack' }),
+                      },
+                    ]
+                  : []),
+                ...(row.puja && row.tier
+                  ? [
+                      {
+                        icon: 'grid' as const,
+                        label: t('editSet'),
+                        onSelect: () => setSetOf(row),
+                      },
+                    ]
+                  : []),
+                {
+                  icon: 'truck',
+                  label: t('sendKit'),
+                  onSelect: () => setSending(row),
+                },
+                {
+                  icon: 'archive',
+                  label: t('archive'),
+                  onSelect: () => setArchiving({ kind: 'kit', id: row.id, name: row.nameNe }),
+                },
+              ]}
+            />
           </>
         )}
       />

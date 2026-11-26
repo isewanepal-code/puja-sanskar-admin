@@ -80,6 +80,42 @@ export function Sidebar({
     }
   };
 
+  const renderSection = (section: NavSection) => {
+    const active = section.href === current;
+    const label = t(`sections.${section.key}`);
+    // What the screen is for, shown on hover.
+    const help = t(`sectionHelp.${section.key}`);
+    return (
+      <Link
+        key={section.key}
+        href={section.href}
+        title={collapsed ? `${label}: ${help}` : help}
+        // A link followed on a phone closes the drawer.
+        onClick={close}
+        aria-current={active ? 'page' : undefined}
+        className={cn(
+          'relative flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
+          active && 'bg-primary/8 font-medium text-primary hover:bg-primary/10 hover:text-primary',
+          active &&
+            !collapsed &&
+            'before:absolute before:top-1.5 before:bottom-1.5 before:-left-[9px] before:w-0.5 before:rounded-full before:bg-primary',
+          collapsed && 'md:justify-center md:px-0',
+        )}
+      >
+        <Icon name={section.icon} size={18} className="shrink-0" />
+        <span className={cn('grid leading-tight', collapsed && 'md:sr-only')}>
+          {label}
+          {/* A few plain words under the main pages, so anyone can tell them apart. */}
+          {t.has(hintKey(section.key)) ? (
+            <span className="text-[0.7rem] font-normal text-muted-foreground">
+              {t(hintKey(section.key))}
+            </span>
+          ) : null}
+        </span>
+      </Link>
+    );
+  };
+
   return (
     <>
       {open ? (
@@ -181,42 +217,47 @@ export function Sidebar({
                     collapsed && 'md:ml-0 md:border-l-0 md:pl-0',
                   )}
                 >
-                  {group.sections.map((section) => {
-                    const active = section.href === current;
-                    const label = t(`sections.${section.key}`);
-                    // What the screen is for, shown on hover.
-                    const help = t(`sectionHelp.${section.key}`);
-                    return (
-                      <Link
-                        key={section.key}
-                        href={section.href}
-                        title={collapsed ? `${label}: ${help}` : help}
-                        // A link followed on a phone closes the drawer.
-                        onClick={close}
-                        aria-current={active ? 'page' : undefined}
-                        className={cn(
-                          'relative flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm whitespace-nowrap text-muted-foreground transition-colors hover:bg-muted hover:text-foreground',
-                          active &&
-                            'bg-primary/8 font-medium text-primary hover:bg-primary/10 hover:text-primary',
-                          active &&
-                            !collapsed &&
-                            'before:absolute before:top-1.5 before:bottom-1.5 before:-left-[9px] before:w-0.5 before:rounded-full before:bg-primary',
-                          collapsed && 'md:justify-center md:px-0',
-                        )}
-                      >
-                        <Icon name={section.icon} size={18} className="shrink-0" />
-                        <span className={cn('grid leading-tight', collapsed && 'md:sr-only')}>
-                          {label}
-                          {/* A few plain words under the main pages, so anyone can tell them apart. */}
-                          {t.has(hintKey(section.key)) ? (
-                            <span className="text-[0.7rem] font-normal text-muted-foreground">
-                              {t(hintKey(section.key))}
-                            </span>
-                          ) : null}
-                        </span>
-                      </Link>
-                    );
-                  })}
+                  {group.sections
+                    .filter((section) => !section.sub)
+                    .map((section) => renderSection(section))}
+                  {[...new Set(group.sections.map((section) => section.sub))]
+                    .filter((sub): sub is NonNullable<NavSection['sub']> => Boolean(sub))
+                    .map((sub) => {
+                      const inside = group.sections.filter((section) => section.sub === sub);
+                      const subKey = `${group.key}.${sub}`;
+                      const subOpen =
+                        collapsed ||
+                        inside.some((section) => section.href === current) ||
+                        open_[subKey] === true;
+                      return (
+                        <div key={sub} className="mt-1">
+                          <button
+                            type="button"
+                            onClick={() => toggleGroup(subKey)}
+                            aria-expanded={subOpen}
+                            aria-controls={`nav-${subKey}`}
+                            className={cn(
+                              'flex w-full items-center justify-between rounded-md px-2.5 py-2 text-sm font-medium whitespace-nowrap text-foreground hover:bg-muted',
+                              collapsed && 'md:hidden',
+                            )}
+                          >
+                            <span>{t(`subgroups.${sub}`)}</span>
+                            <Icon
+                              name={subOpen ? 'down' : 'right'}
+                              size={14}
+                              className="text-muted-foreground"
+                            />
+                          </button>
+                          <div
+                            id={`nav-${subKey}`}
+                            hidden={!subOpen}
+                            className="ml-3 grid gap-0.5 border-l border-border pl-2"
+                          >
+                            {inside.map((section) => renderSection(section))}
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             );

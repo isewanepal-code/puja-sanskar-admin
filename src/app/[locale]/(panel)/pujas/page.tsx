@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import { CatalogueSheetBar } from '@/features/catalogue-sheet';
-import { GroupTree } from '@/features/pujas';
+import { GroupTree, PujaViewTabs } from '@/features/pujas';
 import { resolveLocale } from '@/i18n/server';
 
 export async function generateMetadata({
@@ -17,6 +17,7 @@ export default async function PujaGroupsPage({ params }: PageProps<'/[locale]/pu
   await resolveLocale(params);
   return (
     <div className="grid grid-cols-1 gap-4">
+      <PujaViewTabs />
       <CatalogueSheetBar />
       <GroupTree />
     </div>

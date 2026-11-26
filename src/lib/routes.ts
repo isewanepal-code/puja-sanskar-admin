@@ -24,7 +24,8 @@ export const routes = {
   pujaLevels: () => '/pujas/levels',
   mantras: () => '/pujas/mantras',
   kits: () => '/kits',
-  newKit: () => '/kits/new',
+  // `puja` starts the new kit already on that puja.
+  newKit: (pujaId?: string) => withQuery('/kits/new', { puja: pujaId }),
   // The inventory pages: add an item, then buy it.
   addItem: () => '/inventory/add-item',
   expiring: () => '/inventory/expiring',

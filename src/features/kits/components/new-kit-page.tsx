@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
@@ -61,7 +61,7 @@ export function NewKitPage() {
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const [pujaId, setPujaId] = useState('');
+  const [pujaId, setPujaId] = useState(useSearchParams().get('puja') ?? '');
   const [nameNe, setNameNe] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [nameRomanized, setNameRomanized] = useState('');
@@ -206,6 +206,7 @@ export function NewKitPage() {
             id="kit-desc"
             value={description}
             maxLength={500}
+            placeholder="लक्ष्मी पूजाका लागि चाहिने सबै सामान एकैठाउँमा।"
             onChange={(e) => setDescription(e.target.value)}
           />
         </Field>

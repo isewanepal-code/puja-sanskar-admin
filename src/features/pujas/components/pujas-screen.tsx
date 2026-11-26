@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
@@ -9,6 +10,7 @@ import { IconButton } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { groupChoices } from '@/features/puja-groups';
 import type { Schema } from '@/lib/api';
+import { routes } from '@/lib/routes';
 
 import { requirementsResource, verifyResource } from '../requirements';
 import { pujasResource } from '../resource';
@@ -42,7 +44,15 @@ export function PujasScreen() {
         resource={resource}
         deepLink
         rowActions={(row) => (
-          <IconButton icon="list" label={ta('samagriList')} onClick={() => setListOf(row)} />
+          <>
+            <IconButton icon="list" label={ta('samagriList')} onClick={() => setListOf(row)} />
+            <Link
+              href={routes.newKit(row.id)}
+              className="inline-flex h-8 items-center rounded-md border border-border bg-card px-3 text-sm font-medium hover:bg-muted"
+            >
+              {ta('makeKitOfPuja')}
+            </Link>
+          </>
         )}
       />
       <Modal

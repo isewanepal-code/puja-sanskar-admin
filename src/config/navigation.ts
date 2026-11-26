@@ -81,6 +81,10 @@ export type NavSection = {
   icon: IconName;
   // Shown only to staff who hold it; the API refuses the rest anyway.
   permission?: Permission;
+  // Sits in a folded list of its own inside the group, so a long group stays short.
+  sub?: 'pujaKnowledge';
+  // A page of its own that names itself in the header but has no sidebar line (it is a tab of another).
+  hidden?: boolean;
 };
 
 export type NavGroup = {
@@ -127,9 +131,49 @@ export const navigation: NavGroup[] = [
       { key: 'companies', href: routes.companies(), icon: 'store', permission: 'catalogue:read' },
       { key: 'options', href: routes.optionTypes(), icon: 'palette', permission: 'catalogue:read' },
       { key: 'suppliers', href: routes.suppliers(), icon: 'users', permission: 'purchases:read' },
-      // Puja knowledge, not daily work: last of the setup.
-      { key: 'materials', href: routes.materials(), icon: 'leaf', permission: 'catalogue:read' },
-      { key: 'sources', href: routes.sources(), icon: 'book', permission: 'catalogue:read' },
+      // Puja knowledge, not daily work: folded in a list of its own at the end of the setup.
+      {
+        key: 'materials',
+        href: routes.materials(),
+        icon: 'leaf',
+        permission: 'catalogue:read',
+        sub: 'pujaKnowledge',
+      },
+      {
+        key: 'sources',
+        href: routes.sources(),
+        icon: 'book',
+        permission: 'catalogue:read',
+        sub: 'pujaKnowledge',
+      },
+      {
+        key: 'mantras',
+        href: routes.mantras(),
+        icon: 'book',
+        permission: 'catalogue:read',
+        sub: 'pujaKnowledge',
+      },
+      {
+        key: 'ritualTypes',
+        href: routes.ritualTypes(),
+        icon: 'list',
+        permission: 'catalogue:read',
+        sub: 'pujaKnowledge',
+      },
+      {
+        key: 'pujaLevels',
+        href: routes.pujaLevels(),
+        icon: 'list',
+        permission: 'catalogue:read',
+        sub: 'pujaKnowledge',
+      },
+      {
+        key: 'festivals',
+        href: routes.festivals(),
+        icon: 'calendar',
+        permission: 'catalogue:read',
+        sub: 'pujaKnowledge',
+      },
     ],
   },
   {
@@ -172,20 +216,13 @@ export const navigation: NavGroup[] = [
     sections: [
       { key: 'kits', href: routes.kits(), icon: 'gift', permission: 'catalogue:read' },
       { key: 'pujas', href: routes.pujaGroups(), icon: 'temple', permission: 'catalogue:read' },
-      { key: 'pujaList', href: routes.pujas(), icon: 'temple', permission: 'catalogue:read' },
+      // The list is the other tab of Pujas: it keeps its header but has no line of its own.
       {
-        key: 'ritualTypes',
-        href: routes.ritualTypes(),
-        icon: 'list',
+        key: 'pujaList',
+        href: routes.pujas(),
+        icon: 'temple',
         permission: 'catalogue:read',
-      },
-      { key: 'mantras', href: routes.mantras(), icon: 'book', permission: 'catalogue:read' },
-      { key: 'pujaLevels', href: routes.pujaLevels(), icon: 'list', permission: 'catalogue:read' },
-      {
-        key: 'festivals',
-        href: routes.festivals(),
-        icon: 'calendar',
-        permission: 'catalogue:read',
+        hidden: true,
       },
     ],
   },
@@ -344,6 +381,7 @@ export function navigationFor(
       ...group,
       sections: group.sections.filter(
         (section) =>
+          !section.hidden &&
           can(granted, section.permission) &&
           (ALWAYS_SHOWN.includes(section.key) || !hidden.includes(section.key)),
       ),

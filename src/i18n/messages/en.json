@@ -124,7 +124,7 @@
       "money": "Cash and bank",
       "expenses": "Expenses",
       "reports": "Item sales",
-      "pujas": "Puja groups",
+      "pujas": "Pujas",
       "content": "FAQs",
       "catalogue": "Categories",
       "settings": "Tax classes",
@@ -229,7 +229,7 @@
       "priceGroups": "A set of items and kits, so one offer or filter can cover them all.",
       "discounts": "Coupon codes and order discounts.",
       "pandits": "Pandits and referral codes.",
-      "pujas": "Puja groups, as deep as you need: festival → Dashain → Navaratri.",
+      "pujas": "Puja groups and the list of pujas, with their samagri lists. Switch with the tabs at the top.",
       "content": "Questions customers ask, with the answers.",
       "catalogue": "The big shelves of the shop and the website (one per sheet of the item Excel).",
       "settings": "Kinds of VAT and their rates.",
@@ -317,7 +317,10 @@
     },
     "language": "Language",
     "expandAll": "Expand all",
-    "collapseAll": "Collapse all"
+    "collapseAll": "Collapse all",
+    "subgroups": {
+      "pujaKnowledge": "Puja knowledge"
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -545,7 +548,8 @@
       "ritualTypes": "Ritual types",
       "mantras": "Mantras",
       "levels": "Levels",
-      "kits": "Kits"
+      "kits": "Kits",
+      "view": "Pujas view"
     },
     "tree": {
       "loading": "Loading the tree...",
@@ -674,7 +678,11 @@
       "hints": {
         "code": "Capital letters, such as PUJ. It cannot change later."
       },
-      "about": "Kinds of puja (for example home puja, vrat). Pujas are sorted into them.\nNew: press \"Add\". Change: press a row. Delete: the bin icon."
+      "about": "Kinds of puja (for example home puja, vrat). Pujas are sorted into them.\nNew: press \"Add\". Change: press a row. Delete: the bin icon.",
+      "placeholders": {
+        "nameNe": "पूजा",
+        "nameEn": "Puja"
+      }
     },
     "puja-groups": {
       "title": "Groups",
@@ -707,12 +715,21 @@
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
         "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
-        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once."
+        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once.",
+        "sortOrder": "Order among its siblings; 1 is first."
       },
       "sections": {
         "names": "Names",
         "website": "On the website",
         "seo": "Search engines"
+      },
+      "placeholders": {
+        "nameNe": "तिहार",
+        "nameEn": "Tihar",
+        "nameRomanized": "tihar",
+        "summaryNe": "तिहारका पूजाहरू।",
+        "summaryEn": "The pujas of Tihar.",
+        "slug": "tihar"
       }
     },
     "pujas": {
@@ -749,7 +766,9 @@
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
         "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
-        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once."
+        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once.",
+        "type": "What kind it is. Example: Puja, Vrata or Havan.",
+        "mantraId": "Optional. Example: Gayatri Mantra."
       },
       "sections": {
         "names": "Names",
@@ -766,7 +785,17 @@
         "PATH": "Path",
         "HOMA": "Hom"
       },
-      "about": "The pujas shown on the website and their samagri lists.\nAfter adding a puja, also add its samagri list (requirements) and a kit."
+      "about": "The pujas shown on the website and their samagri lists.\nAfter adding a puja, also add its samagri list (requirements) and a kit.",
+      "placeholders": {
+        "nameNe": "लक्ष्मी पूजा",
+        "nameEn": "Laxmi Puja",
+        "nameRomanized": "laxmi puja",
+        "summaryNe": "तिहारमा धनकी देवी लक्ष्मीको पूजा।",
+        "summaryEn": "Worship of Goddess Laxmi during Tihar.",
+        "slug": "laxmi-puja",
+        "metaTitle": "लक्ष्मी पूजा विधि र सामग्री",
+        "metaDescription": "लक्ष्मी पूजाको विधि र चाहिने सामग्रीको सूची।"
+      }
     },
     "mantras": {
       "title": "Mantras",
@@ -790,7 +819,14 @@
         "audioUrl": "An MP3 the website plays only when asked.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working."
       },
-      "about": "A mantra's audio and text. Once audio is added, the website's music button plays it."
+      "about": "A mantra's audio and text. Once audio is added, the website's music button plays it.",
+      "placeholders": {
+        "nameNe": "गायत्री मन्त्र",
+        "nameEn": "Gayatri Mantra",
+        "text": "ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं…",
+        "romanized": "Om bhur bhuvah svah tat savitur varenyam…",
+        "durationSeconds": "60"
+      }
     },
     "categories": {
       "title": "Categories",
@@ -856,12 +892,21 @@
         "isSellable": "Off for things a puja needs that the shop never sells, such as dakshina.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
-        "metaDescription": "Shown under the title in search results; up to 160 characters."
+        "metaDescription": "Shown under the title in search results; up to 160 characters.",
+        "categoryId": "Where the shop keeps it. Example: Basic samagri.",
+        "defaultUnitId": "How it is usually counted. Example: g."
       },
       "sections": {
         "seo": "Search engines"
       },
-      "about": "Samagri (raw material), for example \"kapur\". A product (the item you sell) is made from its samagri.\nMake the samagri first, then the product under Items."
+      "about": "Samagri (raw material), for example \"kapur\". A product (the item you sell) is made from its samagri.\nMake the samagri first, then the product under Items.",
+      "placeholders": {
+        "nameNe": "अक्षता / चामल",
+        "nameEn": "Unbroken Whole Rice Grains",
+        "nameRomanized": "akshata chamal",
+        "specification": "टुक्रा नभएको चामल",
+        "notes": "पूजामा चढाउने"
+      }
     },
     "units": {
       "title": "Units",
@@ -900,7 +945,13 @@
       "hints": {
         "code": "Capital letters, digits or _. It cannot change later."
       },
-      "about": "Where the facts about a samagri came from, for example local or import."
+      "about": "Where the facts about a samagri came from, for example local or import.",
+      "placeholders": {
+        "name": "पुरोहितको सूची",
+        "topic": "लक्ष्मी पूजाको सामग्री",
+        "url": "https://example.com/laxmi-puja",
+        "note": "स्थानीय पुरोहित श्रीमान् शर्मा"
+      }
     },
     "faqs": {
       "title": "Questions",
@@ -1305,7 +1356,10 @@
         "metaTitle": "Shown as the title in search results; up to 70 characters. The name is used when empty.",
         "metaDescription": "Shown under the title in search results; up to 160 characters.",
         "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit.",
-        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once."
+        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once.",
+        "pujaId": "Which puja this kit is for. Example: Laxmi Puja.",
+        "discountKind": "% or Rs taken off the total of the items.",
+        "packed": "Tick to pack the kits ahead of time and keep their own stock."
       },
       "sections": {
         "website": "On the website",
@@ -1320,7 +1374,14 @@
       "unavailable": "Short",
       "about": "Ready kits: everything one puja needs together, at a lower price.\nAfter making a kit, add its samagri under \"items\". A discount (%) can be set on the kit.",
       "aboutForm": "You are making a ready kit. Enter the name, photo and discount; after saving, add its samagri (items).",
-      "packedReady": "{count} packed"
+      "packedReady": "{count} packed",
+      "placeholders": {
+        "nameNe": "लक्ष्मी पूजा किट",
+        "nameEn": "Laxmi Puja Kit",
+        "nameRomanized": "laxmi puja kit",
+        "description": "लक्ष्मी पूजाका लागि चाहिने सबै सामान एकैठाउँमा।",
+        "discountValue": "5"
+      }
     },
     "kitSet": {
       "title": "Kit set",
@@ -1345,7 +1406,16 @@
         "images": "The same photos show on all three packages.",
         "discountValue": "Percent off the sum of the packs inside (up to 50), or flat rupees off one kit.",
         "packed": "Basic, Standard and Premium each have their own packed count. Pack the three kits separately; optional items are not packed.",
-        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once."
+        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once.",
+        "pujaId": "Which puja this kit is for. Example: Laxmi Puja.",
+        "discountKind": "% or Rs taken off the total of the items."
+      },
+      "placeholders": {
+        "nameNe": "लक्ष्मी पूजा किट",
+        "nameEn": "Laxmi Puja Kit",
+        "nameRomanized": "laxmi puja kit",
+        "description": "लक्ष्मी पूजाका लागि चाहिने सबै सामान एकैठाउँमा।",
+        "discountValue": "5"
       }
     },
     "kitSetEdit": {
@@ -1382,6 +1452,15 @@
         "nameNe": "Name in Nepali",
         "nameEn": "Name in English",
         "description": "Description"
+      },
+      "placeholders": {
+        "nameNe": "लक्ष्मी पूजा किट",
+        "nameEn": "Laxmi Puja Kit",
+        "description": "पूजाको सामग्री सूचीबाट बनेको किट।"
+      },
+      "hints": {
+        "pujaId": "The puja whose samagri list fills the kit. Example: Laxmi Puja.",
+        "tier": "Basic, Standard or Premium."
       }
     },
     "kitItems": {
@@ -1418,7 +1497,13 @@
         "sortOrder": "Order"
       },
       "hints": {
-        "quantityType": "Exact or about this much; as offered and as the ritual asks need no number."
+        "quantityType": "Exact or about this much; as offered and as the ritual asks need no number.",
+        "materialId": "Pick the samagri this puja needs. Example: Akshata.",
+        "unitId": "The unit of the amount. Example: g.",
+        "requiredLevel": "Required = the puja is not done without it; Optional = nice to have.",
+        "sourceId": "Where this requirement comes from. Example: the priest's list.",
+        "verificationStatus": "Tick Checked once a priest or a book confirms it.",
+        "sortOrder": "Order in the list; 1 is first."
       },
       "quantityTypes": {
         "EXACT": "Exactly",
@@ -1440,6 +1525,11 @@
         "amount": "Give how much for an exact or approximate amount",
         "unit": "Pick the unit for this amount",
         "none": "Leave the amount and unit empty when it is as offered or as the ritual asks"
+      },
+      "placeholders": {
+        "quantityValue": "250",
+        "specification": "टुक्रा नभएको, सफा",
+        "notes": "पूजाको बेला थालीमा राख्ने"
       }
     },
     "verify": {
@@ -1482,13 +1572,23 @@
         "descriptionNe": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "descriptionEn": "HTML is kept as written: paragraph (p), line break (br), bold (strong) and list (ul, li) tags.",
         "slug": "Made from the English name when left empty. A changed address keeps the old one working.",
-        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once."
+        "aliases": "Add each other name on its own (press Enter or a comma). For example: chamal, rice, akshata, अक्षता. The website search and Google find the item by these names too. No # needed; one name once.",
+        "dates": "The festival's dates: pick the day it starts and the day it ends (the website counts the days to go).",
+        "pujaIds": "The pujas done on this festival."
       },
       "sections": {
         "website": "On the website",
         "seo": "Search engines"
       },
-      "about": "Festivals and their dates. The website shows the festival that is on, and an offer can be tied to a festival."
+      "about": "Festivals and their dates. The website shows the festival that is on, and an offer can be tied to a festival.",
+      "placeholders": {
+        "nameNe": "तिहार",
+        "nameEn": "Tihar",
+        "nameRomanized": "tihar",
+        "summaryNe": "पाँच दिनको दीपावली।",
+        "summaryEn": "The five-day festival of lights.",
+        "slug": "tihar"
+      }
     },
     "festivalDates": {
       "title": "Dates",
@@ -2972,7 +3072,8 @@
     "changeSizes": "Change this item's quantities and prices",
     "uploadBrandList": "Add brands and companies from Excel",
     "uploadBrandListNote": "Download the list first (Download Excel): one sheet of brands and one of companies, in the layout of your file. Write new brands in the empty rows: brand name (Nepali and English in brackets), name in Roman, parent company, where it is made (country, then the place in brackets), what it makes, features, and the website. A company named in a brand row is made if it is new. A brand already in the shop is matched by its name; only what you write changes, a blank cell keeps what is saved. Your own sheets with a title row above the headings load as they are.",
-    "buyStock": "Buy (bring stock in)"
+    "buyStock": "Buy (bring stock in)",
+    "makeKitOfPuja": "Make a kit"
   },
   "media": {
     "pickTitle": "Choose an image",
