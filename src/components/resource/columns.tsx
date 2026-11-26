@@ -42,7 +42,16 @@ export function recordColumn<T extends Named>(
       />
     ),
     sortValue: (row) => row.nameNe,
+    // Searching also finds a row by its other names (aliases), when it has them.
     filterValue: (row) =>
-      [row.nameNe, row.nameEn, more.code?.(row), more.chip?.(row)].filter(Boolean).join(' '),
+      [
+        row.nameNe,
+        row.nameEn,
+        more.code?.(row),
+        more.chip?.(row),
+        ...((row as { aliases?: string[] }).aliases ?? []),
+      ]
+        .filter(Boolean)
+        .join(' '),
   };
 }

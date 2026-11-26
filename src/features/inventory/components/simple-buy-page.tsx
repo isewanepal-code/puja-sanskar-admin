@@ -417,7 +417,7 @@ function LineRow({
 // much of it, and what it cost. It is kept as "one unit" of that item and colour (1 m of red cloth,
 // 1 kg of rice, 1 diya), so whatever is cut or weighed out of it later is the same red cloth: no
 // packs to think about. Buying the same item and colour again adds to the same stock.
-export function SimpleBuyPage({ itemId }: { itemId?: string }) {
+export function SimpleBuyPage({ itemId, back }: { itemId?: string; back?: string }) {
   const t = useTranslations('inventory.buy');
   const tf = useTranslations('forms');
   const router = useRouter();
@@ -588,7 +588,7 @@ export function SimpleBuyPage({ itemId }: { itemId?: string }) {
         ),
       );
       // The bill is in the Purchase bills history, which says what to do next.
-      router.push(routes.purchaseBills({ saved: items }));
+      router.push(routes.purchaseBills({ saved: items, back }));
     },
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
   });

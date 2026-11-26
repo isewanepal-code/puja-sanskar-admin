@@ -87,6 +87,9 @@ export function PurchaseBillsScreen() {
   const params = useSearchParams();
   const justSaved = params.get('saved') === '1';
   const savedItems = (params.get('items') ?? '').split(',').filter(Boolean);
+  // Bought for a kit that was waiting: the way back to it.
+  const back = params.get('back');
+  const backTo = back?.startsWith('/') ? back : null;
 
   return (
     <>
@@ -101,7 +104,11 @@ export function PurchaseBillsScreen() {
             <p className="text-muted-foreground">{tp('savedNext')}</p>
           </div>
           <Link
-            href={routes.quantityPrice(savedItems[0], savedItems.slice(1), routes.purchaseBills())}
+            href={routes.quantityPrice(
+              savedItems[0],
+              savedItems.slice(1),
+              backTo ?? routes.purchaseBills(),
+            )}
             className={buttonVariants({ variant: 'primary', size: 'sm' })}
           >
             {tp('savedPrice')}
@@ -112,6 +119,11 @@ export function PurchaseBillsScreen() {
           >
             {tp('savedStock')}
           </Link>
+          {backTo ? (
+            <Link href={backTo} className={buttonVariants({ variant: 'secondary', size: 'sm' })}>
+              {tp('savedBack')}
+            </Link>
+          ) : null}
           <Button variant="ghost" size="sm" onClick={() => router.replace(routes.purchaseBills())}>
             {tp('savedClose')}
           </Button>

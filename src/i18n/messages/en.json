@@ -3550,7 +3550,8 @@
     "savedClose": "Close",
     "holdsTitle": "How much is in one {container}?",
     "holdsUnit": "Unit",
-    "holdsHint": "Write it once: the pack is then named by it (25 kg Sack), Stock shows the total, and packets can be made from it. Leave it empty to fill it in later."
+    "holdsHint": "Write it once: the pack is then named by it (25 kg Sack), Stock shows the total, and packets can be made from it. Leave it empty to fill it in later.",
+    "savedBack": "Back to the kit"
   },
   "expensesSection": {
     "title": "Expenses",
@@ -5126,14 +5127,16 @@
   "repackHistory": {
     "menu": "Packets made / undo",
     "title": "Packets made: {name}",
-    "note": "Made a wrong count? Undo it: what was opened comes back to the shelf and the packets made leave. Then make the packets again with the right count. A packet that was already sold cannot be undone.",
+    "note": "Made a wrong count? Undo just that size: its packets leave and its share of what was opened comes back to the shelf. Then make the packets again with the right count. A packet that was already sold cannot be undone.",
     "none": "No packets were made with this size yet.",
     "undo": "Undo",
     "wasUndone": "Undone",
     "done": "Put back.",
     "failed": "Could not undo this.",
     "opened": "Opened {count} × {label}",
-    "made": "Made:"
+    "made": "Made:",
+    "undoAll": "Undo all sizes",
+    "undoSize": "Undo this size"
   },
   "losses": {
     "title": "Damaged and lost",
@@ -5149,5 +5152,12 @@
     "why": "Reason",
     "previous": "Previous",
     "next": "Next"
+  },
+  "kitShortStock": {
+    "title": "This kit cannot go on sale yet",
+    "note": "These compulsory items are not in stock. Buy them, then switch the kit on again.",
+    "counts": "Needs {needed}, {available} in stock",
+    "notOnSale": "This pack is not on sale",
+    "buy": "Buy it"
   }
 }

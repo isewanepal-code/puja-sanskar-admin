@@ -17,11 +17,13 @@ export default async function Buy({ params, searchParams }: PageProps<'/[locale]
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: 'inventory.buy' });
   // Opened from "Buy it now" after adding an item: that item is already on the first line.
-  const item = (await searchParams).item?.toString();
+  const query = await searchParams;
+  const item = query.item?.toString();
+  const back = query.back?.toString();
   return (
     <>
       <PageHeader title={t('title')} intro={t('intro')} />
-      <SimpleBuyPage itemId={item} />
+      <SimpleBuyPage itemId={item} back={back} />
     </>
   );
 }

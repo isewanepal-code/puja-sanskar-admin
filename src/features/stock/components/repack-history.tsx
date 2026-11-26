@@ -10,7 +10,7 @@ import { isApiError, request, type Schema } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 
 type Level = Schema<'StockLevelResponse'>;
-type Pack = { variantId: string; label: string; quantity: number };
+type Pack = { variantId: string; label: string; quantity: number; undone?: boolean };
 type Made = {
   reference: string;
   createdAt: string;
@@ -35,9 +35,10 @@ export function RepackHistory({ level, onClose }: { level: Level; onClose: () =>
       }),
   });
   const undo = useMutation({
-    mutationFn: (reference: string) =>
+    mutationFn: ({ reference, variantId }: { reference: string; variantId?: string }) =>
       request('POST', `/admin/stock-repacks/${encodeURIComponent(reference)}/undo`, {
         headers: { 'X-Branch': level.branch.code },
+        query: variantId ? { variantId } : undefined,
       }),
     onSuccess: async () => {
       toast.success(t('done'));
@@ -71,25 +72,49 @@ export function RepackHistory({ level, onClose }: { level: Level; onClose: () =>
               </span>
               {made.undone ? (
                 <span className="text-xs font-medium text-muted-foreground">{t('wasUndone')}</span>
-              ) : (
+              ) : made.outputs.length > 1 ? (
                 <Button
                   size="sm"
                   variant="secondary"
                   disabled={undo.isPending}
-                  onClick={() => undo.mutate(made.reference)}
+                  onClick={() => undo.mutate({ reference: made.reference })}
                 >
-                  {t('undo')}
+                  {t('undoAll')}
                 </Button>
-              )}
+              ) : null}
             </div>
             {made.source ? (
               <p>
                 {t('opened', { count: amount(made.source.quantity), label: made.source.label })}
               </p>
             ) : null}
-            <p>
-              {t('made')} {made.outputs.map((o) => `${amount(o.quantity)} × ${o.label}`).join(', ')}
-            </p>
+            <p>{t('made')}</p>
+            <ul className="grid gap-1">
+              {made.outputs.map((o) => (
+                <li
+                  key={o.variantId}
+                  className={`flex items-center justify-between gap-2 rounded-md bg-muted/40 px-2 py-1 ${o.undone ? 'opacity-60' : ''}`}
+                >
+                  <span>
+                    {amount(o.quantity)} × {o.label}
+                  </span>
+                  {o.undone ? (
+                    <span className="text-xs text-muted-foreground">{t('wasUndone')}</span>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={undo.isPending}
+                      onClick={() =>
+                        undo.mutate({ reference: made.reference, variantId: o.variantId })
+                      }
+                    >
+                      {t('undoSize')}
+                    </Button>
+                  )}
+                </li>
+              ))}
+            </ul>
             {made.note ? <p className="text-xs text-muted-foreground">{made.note}</p> : null}
           </div>
         ))}

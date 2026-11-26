@@ -30,7 +30,8 @@ export const routes = {
   addItem: () => '/inventory/add-item',
   expiring: () => '/inventory/expiring',
   losses: () => '/inventory/losses',
-  buy: (itemId?: string) => withQuery('/inventory/buy', { item: itemId }),
+  // `back` is where to return to once the stock is bought (a kit waiting for its items).
+  buy: (itemId?: string, back?: string) => withQuery('/inventory/buy', { item: itemId, back }),
   // `more` are other items waiting for their price (a bill with several items); `from` is where to
   // return to when the work is done.
   quantityPrice: (itemId?: string, more?: string[], from?: string) =>
@@ -85,9 +86,9 @@ export const routes = {
 
   moneyAccounts: () => '/money',
   // `saved` is the items of a bill just saved: the page offers to set their quantity and price.
-  purchaseBills: (opts?: { saved?: string[] }) =>
+  purchaseBills: (opts?: { saved?: string[]; back?: string }) =>
     opts?.saved
-      ? withQuery('/purchases', { saved: '1', items: opts.saved.join(',') })
+      ? withQuery('/purchases', { saved: '1', items: opts.saved.join(','), back: opts.back })
       : '/purchases',
   suppliers: () => '/suppliers',
   supplierPayments: () => '/purchases/payments',

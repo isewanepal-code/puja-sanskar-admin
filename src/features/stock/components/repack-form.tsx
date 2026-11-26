@@ -110,6 +110,16 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
         });
       }
     }
+    // Pieces, sets and the like: the unit the small packs are counted in (a box holds 12 pcs).
+    for (const pack of packs) {
+      if (pack.pack && !knownMeasure(pack) && !seen.has(pack.pack.unit.id)) {
+        seen.set(pack.pack.unit.id, {
+          id: pack.pack.unit.id,
+          symbol: pack.pack.unit.symbol,
+          label: `${pack.pack.unit.nameNe} (${pack.pack.unit.symbol})`,
+        });
+      }
+    }
     return [...seen.values()];
   }, [packs, allUnits.data]);
   const symbolOf = (id: string) => units.find((u) => u.id === id)?.symbol;
@@ -120,7 +130,12 @@ export function RepackForm({ level, onClose }: { level: Level | null; onClose: (
   const largest = others.filter((pack) => measureOfPack(pack)).at(-1);
   const bigUnit = units.find((u) => ['kg', 'l', 'm'].includes(u.symbol.toLowerCase()));
   const unitChosen = sackUnit || bigUnit?.id || largest?.pack?.unit.id || units[0]?.id || '';
-  const sackMeasure = needsSize ? measureOf(Number(sackAmount), symbolOf(unitChosen)) : null;
+  const sackMeasure = needsSize
+    ? (measureOf(Number(sackAmount), symbolOf(unitChosen)) ??
+      (Number(sackAmount) > 0 && unitChosen
+        ? { kind: `UNIT:${unitChosen}`, amount: Number(sackAmount) }
+        : null))
+    : null;
   const bulk = needsSize ? sackMeasure : sourceMeasure;
 
   const contribution = (pack: Pack) => {

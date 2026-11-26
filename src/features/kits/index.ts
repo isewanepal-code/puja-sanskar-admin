@@ -11,3 +11,4 @@ export {
   kitsResource,
   type Kit,
 } from './resources';
+export { ShortStockDialog } from './components/short-stock-dialog';
