@@ -1,80 +1,18 @@
 'use client';
 
-import { Popover } from '@base-ui/react/popover';
 import { useTranslations } from 'next-intl';
-import { Fragment, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useCallback, useMemo, useRef, useState } from 'react';
 
 import { Icon } from '@/components/icons';
 import { InfoTip } from '@/components/ui/info-tip';
-import { searchKey } from '@/lib/nepali-fold';
 import { cn } from '@/lib/utils';
 
-export type Column<T> = {
-  key: string;
-  header: string;
-  // A short explanation, opened by the (i) beside the heading.
-  help?: string;
-  cell: (row: T) => ReactNode;
-  // What the column sorts by; leave out for a column that does not sort.
-  sortValue?: (row: T) => string | number | boolean | null | undefined;
-  align?: 'left' | 'right';
-  className?: string;
-  // The text a column search matches; defaults to the sort value. null: no search box.
-  filterValue?: ((row: T) => string | null | undefined) | null;
-};
+import { ColumnSearch } from './column-search';
+import { GroupHeading } from './data-table-group';
+import { filterOf, filterRows, groupRows, sortRows, yesNoColumns } from './data-table-rows';
+import type { DataTableProps } from './data-table-types';
 
-type DataTableProps<T> = {
-  rows: T[];
-  columns: Column<T>[];
-  rowKey: (row: T) => string;
-  // Edit, delete and the like, at the end of each row.
-  actions?: (row: T) => ReactNode;
-  onRowClick?: (row: T) => void;
-  loading?: boolean;
-  empty?: ReactNode;
-  initialSort?: { key: string; direction: 'asc' | 'desc' };
-  // A search box under each heading that narrows the rows shown.
-  columnSearch?: boolean;
-  // Keeps the first column in view while the table scrolls sideways (on by default).
-  pinFirst?: boolean;
-  // For a list that comes a page at a time: text typed under a heading goes here (the API
-  // searches every page) instead of narrowing only the rows on screen.
-  onTextSearch?: (texts: Record<string, string>) => void;
-  // Rows kept together under a heading each (units by what they measure). `order` is the order of the
-  // headings; the column sort still orders the rows inside each one.
-  // `collapsible`: each heading opens and closes its rows, closed to begin with (open while searching);
-  // `summary` is what the heading says about its rows when closed.
-  groupBy?: {
-    of: (row: T) => string;
-    label: (key: string) => string;
-    order: readonly string[];
-    collapsible?: boolean;
-    summary?: (rows: T[]) => ReactNode;
-    // Headings to open now (after packets were made under an item, say).
-    openWhen?: readonly string[];
-    // Buttons on the heading line, for the rows under it.
-    actions?: (rows: T[]) => ReactNode;
-  };
-};
-
-const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
-
-const normalize = (value: unknown) =>
-  value === null || value === undefined ? '' : searchKey(String(value));
-
-function filterOf<T>(column: Column<T>): ((row: T) => unknown) | null {
-  if (column.filterValue === null) return null;
-  return column.filterValue ?? column.sortValue ?? null;
-}
-
-function compare(a: unknown, b: unknown): number {
-  if (a === b) return 0;
-  if (a === null || a === undefined) return 1;
-  if (b === null || b === undefined) return -1;
-  if (typeof a === 'number' && typeof b === 'number') return a - b;
-  if (typeof a === 'boolean' && typeof b === 'boolean') return a ? -1 : 1;
-  return collator.compare(String(a), String(b));
-}
+export type { Column, DataTableProps, GroupBy } from './data-table-types';
 
 // The one table of the admin: ruled columns, sortable headings with a search under each,
 // banded rows, actions at the end.
@@ -91,6 +29,7 @@ export function DataTable<T>({
   pinFirst = true,
   onTextSearch,
   groupBy,
+  expandAll = false,
 }: DataTableProps<T>) {
   const t = useTranslations('table');
   const [sort, setSort] = useState(initialSort);
@@ -124,23 +63,7 @@ export function DataTable<T>({
   const [filters, setFilters] = useState<Record<string, string>>({});
 
   const searchable = columnSearch && columns.some((column) => filterOf(column));
-  // Yes/no columns get a choice instead of a text box.
-  const isYesNo = (column: Column<T>) => {
-    const value = rows[0] ? filterOf(column)?.(rows[0]) : undefined;
-    return typeof value === 'boolean';
-  };
-  const yesNoKeys = useMemo(
-    () =>
-      new Set(
-        columns
-          .filter((column) => {
-            const value = rows[0] ? filterOf(column)?.(rows[0]) : undefined;
-            return typeof value === 'boolean';
-          })
-          .map((column) => column.key),
-      ),
-    [columns, rows],
-  );
+  const yesNoKeys = useMemo(() => yesNoColumns(columns, rows[0]), [columns, rows]);
   const setFilter = (key: string, value: string) => {
     const next = { ...filters, [key]: value };
     setFilters(next);
@@ -155,33 +78,7 @@ export function DataTable<T>({
     const active = Object.entries(filters).filter(
       ([key, value]) => value.trim() !== '' && !(onTextSearch && !yesNoKeys.has(key)),
     );
-    const filtered = active.length
-      ? rows.filter((row) =>
-          active.every(([key, wanted]) => {
-            const column = columns.find((c) => c.key === key);
-            const value = column && filterOf(column)?.(row);
-            if (typeof value === 'boolean') return String(value) === wanted;
-            return normalize(value).includes(searchKey(wanted.trim()));
-          }),
-        )
-      : rows;
-    const column = columns.find((c) => c.key === sort?.key);
-    const by = column?.sortValue;
-    const sign = sort?.direction === 'desc' ? -1 : 1;
-    const ordered = by ? [...filtered].sort((a, b) => sign * compare(by(a), by(b))) : filtered;
-    if (!groupBy) return ordered;
-    // The headings in their own order; the order above is kept inside each (the sort is stable).
-    const firstSeen = new Map<string, number>();
-    ordered.forEach((row, index) => {
-      if (!firstSeen.has(groupBy.of(row))) firstSeen.set(groupBy.of(row), index);
-    });
-    const rank = (row: T) => {
-      // No fixed order given: a heading stands where its first row is in the sorted list.
-      if (groupBy.order.length === 0) return firstSeen.get(groupBy.of(row)) ?? 0;
-      const at = groupBy.order.indexOf(groupBy.of(row));
-      return at === -1 ? groupBy.order.length : at;
-    };
-    return [...ordered].sort((a, b) => rank(a) - rank(b));
+    return groupRows(sortRows(filterRows(rows, columns, active), columns, sort), groupBy);
   }, [rows, columns, sort, filters, onTextSearch, yesNoKeys, groupBy]);
   const filtering = Object.values(filters).some((value) => value.trim() !== '');
 
@@ -260,7 +157,7 @@ export function DataTable<T>({
                       <ColumnSearch
                         label={t('searchColumn', { column: column.header })}
                         value={filters[column.key] ?? ''}
-                        yesNo={isYesNo(column)}
+                        yesNo={yesNoKeys.has(column.key)}
                         onChange={(next) => setFilter(column.key, next)}
                       />
                     ) : null}
@@ -306,65 +203,27 @@ export function DataTable<T>({
               const isOpen =
                 !groupBy?.collapsible ||
                 filtering ||
+                expandAll ||
                 (heading !== undefined && opened.has(heading));
               const members = first ? sorted.filter((r) => groupBy!.of(r) === heading) : [];
               return (
                 <Fragment key={rowKey(row)}>
                   {first && groupBy ? (
-                    <tr className="group-head">
-                      <td
-                        colSpan={columns.length + 1}
-                        className="sticky left-0 border-r border-b border-border bg-muted px-3 py-2 text-xs font-semibold tracking-wide uppercase"
-                      >
-                        {groupBy.collapsible ? (
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              aria-expanded={isOpen}
-                              onClick={() =>
-                                setOpened((was) => {
-                                  const next = new Set(was);
-                                  if (next.has(heading!)) next.delete(heading!);
-                                  else next.add(heading!);
-                                  return next;
-                                })
-                              }
-                              className="flex min-w-0 flex-1 items-center gap-2 text-left uppercase"
-                            >
-                              <span
-                                className={cn(
-                                  'inline-block transition-transform',
-                                  isOpen && 'rotate-90',
-                                )}
-                              >
-                                ▸
-                              </span>
-                              <span>{groupBy.label(heading!)}</span>
-                              <span className="font-normal text-muted-foreground">
-                                {members.length}
-                              </span>
-                              {groupBy.summary ? (
-                                <span className="ml-auto font-normal tracking-normal text-muted-foreground normal-case">
-                                  {groupBy.summary(members)}
-                                </span>
-                              ) : null}
-                            </button>
-                            {groupBy.actions ? (
-                              <span className="flex items-center gap-1.5 font-normal tracking-normal normal-case">
-                                {groupBy.actions(members)}
-                              </span>
-                            ) : null}
-                          </div>
-                        ) : (
-                          <>
-                            {groupBy.label(heading!)}
-                            <span className="ml-2 font-normal text-muted-foreground">
-                              {members.length}
-                            </span>
-                          </>
-                        )}
-                      </td>
-                    </tr>
+                    <GroupHeading
+                      groupBy={groupBy}
+                      heading={heading!}
+                      members={members}
+                      isOpen={isOpen}
+                      colSpan={columns.length + 1}
+                      onToggle={() =>
+                        setOpened((was) => {
+                          const next = new Set(was);
+                          if (next.has(heading!)) next.delete(heading!);
+                          else next.add(heading!);
+                          return next;
+                        })
+                      }
+                    />
                   ) : null}
                   {isOpen ? (
                     <tr
@@ -421,82 +280,5 @@ export function DataTable<T>({
         </tbody>
       </table>
     </div>
-  );
-}
-
-type ColumnSearchProps = {
-  label: string;
-  value: string;
-  yesNo: boolean;
-  onChange: (value: string) => void;
-};
-
-// The funnel beside a heading: a small search for that column, marked while it narrows rows.
-function ColumnSearch({ label, value, yesNo, onChange }: ColumnSearchProps) {
-  const t = useTranslations('table');
-  const active = value.trim() !== '';
-  return (
-    <Popover.Root>
-      <Popover.Trigger
-        aria-label={label}
-        title={label}
-        className={cn(
-          'relative grid size-6 place-items-center rounded-sm transition-colors hover:bg-card hover:text-foreground',
-          active
-            ? 'text-primary'
-            : 'text-muted-foreground/35 group-hover:text-muted-foreground data-[popup-open]:text-foreground',
-        )}
-      >
-        <Icon name="filter" size={12} />
-        {active ? (
-          <span className="absolute top-0.5 right-0.5 size-1.5 rounded-full bg-primary" />
-        ) : null}
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Positioner sideOffset={6} align="start" className="z-50">
-          <Popover.Popup
-            initialFocus={(type) => type === 'keyboard' || undefined}
-            className="w-60 rounded-md bg-card p-2.5 text-left normal-case shadow-lg ring-1 ring-border outline-none"
-          >
-            <p className="mb-1.5 text-xs font-medium text-muted-foreground">{label}</p>
-            {yesNo ? (
-              <div className="grid grid-cols-3 gap-1">
-                {(['', 'true', 'false'] as const).map((choice) => (
-                  <button
-                    key={choice || 'any'}
-                    type="button"
-                    onClick={() => onChange(choice)}
-                    className={cn(
-                      'h-8 rounded-sm border border-border text-sm transition-colors hover:bg-muted',
-                      value === choice && 'border-primary bg-primary/8 text-primary',
-                    )}
-                  >
-                    {choice === '' ? t('any') : choice === 'true' ? t('yes') : t('no')}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <input
-                type="search"
-                autoFocus
-                value={value}
-                onChange={(event) => onChange(event.target.value)}
-                placeholder={t('filter')}
-                className="h-9 w-full rounded-sm border border-border bg-card px-2.5 text-sm focus:border-primary focus:outline-none"
-              />
-            )}
-            {active ? (
-              <button
-                type="button"
-                onClick={() => onChange('')}
-                className="mt-2 text-xs text-muted-foreground hover:text-foreground"
-              >
-                {t('clearFilter')}
-              </button>
-            ) : null}
-          </Popover.Popup>
-        </Popover.Positioner>
-      </Popover.Portal>
-    </Popover.Root>
   );
 }

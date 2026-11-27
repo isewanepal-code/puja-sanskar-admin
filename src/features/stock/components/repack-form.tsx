@@ -7,20 +7,33 @@ import { useMemo, useRef, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
 import { useToast } from '@/components/overlays';
-import { Button, buttonVariants, IconButton } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Modal } from '@/components/ui/modal';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
 import { routes } from '@/lib/routes';
-import { inUnit, measureOf, readable, type Measure } from '@/lib/unit-measure';
+import { inUnit, measureOf, readable } from '@/lib/unit-measure';
+
+import {
+  costOfPack,
+  fillCount,
+  knownMeasure,
+  looseCountOf,
+  measureOfPack,
+  round,
+  sizesToMake,
+  unitChoices,
+  whole,
+  workedPacks,
+  type Pack,
+  type UnitRow,
+} from './repack-math';
+import { RepackSizesTable } from './repack-sizes-table';
+import { RepackSum } from './repack-sum';
 
 type Level = Schema<'StockLevelResponse'>;
 type Product = Schema<'AdminProductResponse'>;
-type Pack = Product['variants'][number];
-
-const whole = (text: string) => Number(text) > 0;
-const round = (n: number) => Math.round(n * 1000) / 1000;
 
 // Opens some of what was bought (a sack, a roll, loose pieces) into the sizes that are sold. Write how
 // many packets of each size were made; how many of the bought pack that uses is worked out, and each
@@ -55,7 +68,6 @@ export function RepackForm({
   const [note, setNote] = useState(prefill?.note ?? '');
   // Spilled, damaged or spoilt while opening: the only thing that counts as wastage.
   const [lost, setLost] = useState('');
-  // Optional: how many of the bought pack will be opened, so the fill buttons know how much to fill.
   const product = useQuery({
     queryKey: ['products', 'repack', level?.product.id],
     queryFn: () => request<Product>('GET', `/admin/products/${level!.product.id}`),
@@ -64,74 +76,24 @@ export function RepackForm({
 
   const packs = useMemo(() => product.data?.variants ?? [], [product.data]);
   const source = packs.find((pack) => pack.id === level?.variant.id);
-  // Weights, volumes and lengths convert (200 g, 1 kg); pieces and sets compare with their own unit.
-  const knownMeasure = (pack: Pack): Measure | null =>
-    pack.pack ? measureOf(pack.pack.quantity, pack.pack.unit.symbol) : null;
-  const measureOfPack = (pack: Pack): Measure | null =>
-    knownMeasure(pack) ??
-    (pack.pack && pack.pack.quantity > 0
-      ? { kind: `UNIT:${pack.pack.unit.id}`, amount: pack.pack.quantity }
-      : null);
-
-  // The sizes on sale, small to large: the only ones packets are made of.
-  const others = useMemo(
-    () =>
-      packs
-        .filter((pack) => pack.id !== level?.variant.id && pack.isActive)
-        .sort(
-          (a, b) => (measureOfPack(a)?.amount ?? Infinity) - (measureOfPack(b)?.amount ?? Infinity),
-        ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [packs, level?.variant.id],
-  );
+  const others = useMemo(() => sizesToMake(packs, level?.variant.id), [packs, level?.variant.id]);
   // The units a bought "Sack" may be said to hold: every unit of what the item is measured in.
   const allUnits = useQuery({
     queryKey: ['units', 'all'],
-    queryFn: () =>
-      request<{
-        items: Array<{ id: string; symbol: string; nameNe: string; dimension: string }>;
-      }>('GET', '/admin/units', { query: { limit: 100 } }),
+    queryFn: () => request<{ items: UnitRow[] }>('GET', '/admin/units', { query: { limit: 100 } }),
     enabled: Boolean(level),
     staleTime: 600_000,
   });
-  const units = useMemo(() => {
-    const seen = new Map<string, { id: string; symbol: string; label: string }>();
-    const dimensions = new Set(
-      packs.flatMap((pack) => {
-        const kind = knownMeasure(pack)?.kind;
-        return kind ? [kind] : [];
-      }),
-    );
-    for (const unit of allUnits.data?.items ?? []) {
-      if (dimensions.has(unit.dimension)) {
-        seen.set(unit.id, {
-          id: unit.id,
-          symbol: unit.symbol,
-          label: `${unit.nameNe} (${unit.symbol})`,
-        });
-      }
-    }
-    // Pieces, sets and the like: the unit the small packs are counted in (a box holds 12 pcs).
-    for (const pack of packs) {
-      if (pack.pack && !knownMeasure(pack) && !seen.has(pack.pack.unit.id)) {
-        seen.set(pack.pack.unit.id, {
-          id: pack.pack.unit.id,
-          symbol: pack.pack.unit.symbol,
-          label: `${pack.pack.unit.nameNe} (${pack.pack.unit.symbol})`,
-        });
-      }
-    }
-    return [...seen.values()];
-  }, [packs, allUnits.data]);
+  const units = useMemo(
+    () => unitChoices(packs, allUnits.data?.items ?? []),
+    [packs, allUnits.data],
+  );
   const symbolOf = (id: string) => units.find((u) => u.id === id)?.symbol;
 
   const sourceMeasure = source ? measureOfPack(source) : null;
   // A bought "Sack" that does not say what it weighs, while the sizes made are weighed: ask once.
   // Loose pieces ("1 pcs") are one piece each: nothing to ask.
-  const looseCount =
-    source && !source.pack
-      ? Number(/^(\d+(?:\.\d+)?)\s*(?:pcs?|pieces?|nos?|गोटा|थान)\b/i.exec(source.label)?.[1])
-      : NaN;
+  const looseCount = source && !source.pack ? looseCountOf(source.label) : NaN;
   const loose = looseCount > 0;
   const needsSize =
     Boolean(source) && !(source && knownMeasure(source)) && units.length > 0 && !loose;
@@ -170,12 +132,13 @@ export function RepackForm({
   const lostBase = fractional
     ? (measureOf(Number(lost) || 0, source?.pack?.unit.symbol ?? symbolOf(unitChosen))?.amount ?? 0)
     : 0;
-  const worked =
-    canWork && bulk && madeAmount > 0
-      ? fractional
-        ? round((madeAmount + lostBase) / bulk.amount)
-        : Math.max(1, Math.ceil(madeAmount / bulk.amount - 1e-9))
-      : 0;
+  const worked = workedPacks({
+    canWork,
+    bulkAmount: bulk?.amount,
+    madeAmount,
+    lostBase,
+    fractional,
+  });
   const openedNumber = !fractional && manualOpened !== null ? Number(manualOpened) || 0 : worked;
   const openedAmount = bulk ? bulk.amount * openedNumber : 0;
   const left = openedAmount - madeAmount;
@@ -191,11 +154,7 @@ export function RepackForm({
 
   // What a packet costs: the bought price shared over the packets by size.
   const costOfOne = level ? Number(level.avgCost) : 0;
-  const costOf = (pack: Pack): number | null => {
-    const m = measureOfPack(pack);
-    if (!bulk || !m || m.kind !== bulk.kind || costOfOne <= 0) return null;
-    return (costOfOne / bulk.amount) * m.amount;
-  };
+  const costOf = (pack: Pack) => costOfPack(costOfOne, bulk, measureOfPack(pack));
 
   const outputs = others
     .filter((pack) => whole(counts[pack.id] ?? ''))
@@ -261,11 +220,18 @@ export function RepackForm({
     const m = measureOfPack(pack);
     if (!m || !bulk) return;
     const rest = madeAmount - contribution(pack);
-    // Weighed goods: as many as fill the sack being opened (as many sacks as the others already need).
-    const total = fractional
-      ? Math.max(1, Math.ceil((rest + m.amount) / bulk.amount - 1e-9)) * bulk.amount
-      : (openedNumber || 1) * bulk.amount;
-    setCount(pack.id, String(Math.max(Math.floor((total - rest) / m.amount + 1e-9), 0)));
+    setCount(
+      pack.id,
+      String(
+        fillCount({
+          packAmount: m.amount,
+          bulkAmount: bulk.amount,
+          rest,
+          fractional,
+          openedNumber,
+        }),
+      ),
+    );
   };
   const stockNow = round(canOpen);
   const stockAfter = round(canOpen - openedNumber);
@@ -361,104 +327,35 @@ export function RepackForm({
         ) : null}
 
         {others.length > 0 ? (
-          <div className="overflow-hidden rounded-md border border-border">
-            <table className="w-full border-collapse text-sm">
-              <thead className="bg-muted/60 text-xs text-muted-foreground uppercase">
-                <tr>
-                  <th className="px-3 py-2 text-left font-semibold">{t('colSize')}</th>
-                  <th className="px-3 py-2 text-right font-semibold">{t('colSells')}</th>
-                  <th className="px-3 py-2 text-right font-semibold">{t('colCost')}</th>
-                  <th className="w-32 px-3 py-2 text-right font-semibold">{t('colMade')}</th>
-                  <th className="w-10" />
-                </tr>
-              </thead>
-              <tbody>
-                {others.map((pack) => {
-                  const cost = costOf(pack);
-                  const sells = Number(pack.price);
-                  const losing = cost !== null && sells > 0 && sells < cost - 0.005;
-                  return (
-                    <tr key={pack.id} className="border-t border-border">
-                      <td className="px-3 py-1.5 font-medium">{pack.label}</td>
-                      <td className="px-3 py-1.5 text-right tabular-nums">
-                        {sells > 0 ? formatMoney(String(sells), 'en') : '—'}
-                      </td>
-                      <td
-                        className={`px-3 py-1.5 text-right tabular-nums ${losing ? 'text-destructive' : 'text-muted-foreground'}`}
-                        title={losing ? t('belowCost') : undefined}
-                      >
-                        {cost !== null ? `≈ ${formatMoney(String(round(cost)), 'en')}` : '—'}
-                      </td>
-                      <td className="px-2 py-1">
-                        <Input
-                          aria-label={`${pack.label}: ${t('howMany')}`}
-                          inputMode="decimal"
-                          placeholder="0"
-                          className="h-8 text-right"
-                          value={counts[pack.id] ?? ''}
-                          onChange={(e) => setCount(pack.id, e.target.value)}
-                        />
-                      </td>
-                      <td className="px-1 text-center">
-                        <IconButton
-                          icon="refresh"
-                          label={t('fill')}
-                          disabled={!bulk || !measureOfPack(pack)}
-                          onClick={() => fill(pack)}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <RepackSizesTable
+            sizes={others}
+            counts={counts}
+            costOf={costOf}
+            canFill={(pack) => Boolean(bulk && measureOfPack(pack))}
+            onCount={setCount}
+            onFill={fill}
+          />
         ) : null}
 
-        {/* A small sum that updates as the numbers are typed: what is made, what it takes, what is left. */}
         {openedNumber > 0 ? (
-          <div
-            role="status"
-            className={`grid gap-1 rounded-md border px-3 py-2 text-sm ${tooMuch || tooMany ? 'border-destructive' : 'border-border'}`}
-          >
-            <div className="flex justify-between gap-3">
-              <span className="text-muted-foreground">{t('sumMake')}</span>
-              <span className="font-medium tabular-nums">
-                {others
-                  .filter((pack) => whole(counts[pack.id] ?? ''))
-                  .map((pack) => `${counts[pack.id]} × ${pack.label}`)
-                  .join(' + ')}
-              </span>
-            </div>
-            <div className="flex justify-between gap-3">
-              <span className="text-muted-foreground">{t('sumUse')}</span>
-              <span className="font-medium tabular-nums">{opensText}</span>
-            </div>
-            <div
-              className={`flex justify-between gap-3 border-t border-border pt-1 ${tooMany ? 'font-semibold text-destructive' : ''}`}
-            >
-              <span className="text-muted-foreground">{t('sumAfter')}</span>
-              <span className="tabular-nums">
-                {stockNow} − {openedNumber} = {stockAfter} × {label}
-              </span>
-            </div>
-            {tooMany ? (
-              <span className="text-destructive">{t('sumShort', { count: stockNow, label })}</span>
-            ) : null}
-            {tooMuch ? (
-              <span className="text-destructive">
-                {t('tooMuch', {
-                  made: inShown(madeAmount),
-                  opened: inShown(openedAmount),
-                  unit: unitSymbol,
-                })}
-              </span>
-            ) : bulk && left > 0.0005 ? (
-              <span className="text-muted-foreground">
-                {t('sumLeft', { left: inShown(left), unit: unitSymbol })}
-              </span>
-            ) : null}
-          </div>
+          <RepackSum
+            made={others
+              .filter((pack) => whole(counts[pack.id] ?? ''))
+              .map((pack) => `${counts[pack.id]} × ${pack.label}`)
+              .join(' + ')}
+            opens={opensText}
+            label={label}
+            stockNow={stockNow}
+            opened={openedNumber}
+            stockAfter={stockAfter}
+            tooMany={tooMany}
+            tooMuch={tooMuch}
+            showLeft={Boolean(bulk) && left > 0.0005}
+            madeShown={inShown(madeAmount)}
+            openedShown={inShown(openedAmount)}
+            leftShown={inShown(left)}
+            unit={unitSymbol}
+          />
         ) : null}
 
         {fractional ? (

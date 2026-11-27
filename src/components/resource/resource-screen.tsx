@@ -3,38 +3,25 @@
 import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
-import {
-  useCallback,
-  useDeferredValue,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
+import { useDeferredValue, useEffect, useState, type ReactNode } from 'react';
 
-import { useToast } from '@/components/overlays';
 import { Button, IconButton } from '@/components/ui/button';
-import { DataTable, type Column } from '@/components/ui/data-table';
+import { DataTable } from '@/components/ui/data-table';
 import { InfoTip } from '@/components/ui/info-tip';
 import { Input } from '@/components/ui/input';
-import { Modal } from '@/components/ui/modal';
 import { Pagination } from '@/components/ui/pagination';
 import { isApiError, request } from '@/lib/api';
 import { searchKey } from '@/lib/nepali-fold';
 
 import { BulkGrid } from './bulk-grid';
 import { ExportButton } from './export-button';
-import { InlineNumber } from './inline-number';
-import { InlineToggle } from './inline-toggle';
 import { ConfirmDelete, type Usage } from './confirm-delete';
 import { ReorderModal } from './reorder-modal';
-import { ResourceForm } from './resource-form';
+import { resourceColumns } from './resource-columns';
+import { ResourceFormModal } from './resource-form-modal';
+import { useUndoableDelete } from './use-undoable-delete';
 import { useResourceText, type Translate } from './translate';
 import type { Resource } from './types';
-
-// How long a deleted record can still be brought back.
-const UNDO_MS = 10_000;
 
 type Page<T> = { items: T[]; meta: { page: number; totalPages: number; total: number } };
 
@@ -75,9 +62,7 @@ export function ResourceScreen<T>({
   const guide = useTranslations('fieldGuide') as unknown as Translate;
   const tf = useTranslations('forms');
   const tt = useTranslations('table');
-  const toast = useToast();
   const queryClient = useQueryClient();
-  const formId = useId();
 
   const params = useSearchParams();
   const [search, setSearch] = useState(deepLink ? (params.get('q') ?? '') : '');
@@ -98,15 +83,7 @@ export function ResourceScreen<T>({
     deepLink && !pages && params.get('new') ? 'new' : null,
   );
   const [removing, setRemoving] = useState<T | null>(null);
-  // Deleted rows wait here for ten seconds, out of the list, so Undo can still bring them back.
-  const [hidden, setHidden] = useState<ReadonlySet<string>>(new Set());
-  const waiting = useRef(
-    new Map<string, { run: () => void; timer: ReturnType<typeof setTimeout> }>(),
-  );
-  const [saving, setSaving] = useState(false);
-  // "Save and add another" keeps the modal and starts a blank form.
-  const again = useRef(false);
-  const [round, setRound] = useState(0);
+  const deleter = useUndoableDelete(resource);
   const [bulk, setBulk] = useState(false);
   const [arranging, setArranging] = useState(false);
 
@@ -136,7 +113,9 @@ export function ResourceScreen<T>({
     placeholderData: keepPreviousData,
   });
 
-  const shownRows = (list.data?.items ?? []).filter((row) => !hidden.has(resource.rowId(row)));
+  const shownRows = (list.data?.items ?? []).filter(
+    (row) => !deleter.hidden.has(resource.rowId(row)),
+  );
   const rows =
     resource.list === 'all' && query && resource.matches
       ? shownRows.filter((row) => resource.matches!(row, searchKey(query)))
@@ -165,59 +144,10 @@ export function ResourceScreen<T>({
     staleTime: 0,
     gcTime: 0,
   });
-  const scope = resource.scope ?? resource.key;
-  const unhide = useCallback(
-    (id: string) =>
-      setHidden((current) => {
-        const next = new Set(current);
-        next.delete(id);
-        return next;
-      }),
-    [],
-  );
-  // The delete is sent after ten seconds unless Undo was pressed. If the page is left first it is sent
-  // at once, so a confirmed delete is never lost; a closed tab leaves the record where it was.
   const scheduleDelete = (row: T) => {
-    const id = resource.rowId(row);
-    const name = resource.rowLabel(row);
-    const send = async () => {
-      waiting.current.delete(id);
-      try {
-        await request('DELETE', `${resource.path}/${id}`);
-        await queryClient.invalidateQueries({ queryKey: [scope] });
-      } catch (error) {
-        toast.error(isApiError(error) ? error.message : tf('failed'));
-      } finally {
-        unhide(id);
-      }
-    };
-    const timer = setTimeout(() => void send(), UNDO_MS);
-    waiting.current.set(id, { run: () => void send(), timer });
-    setHidden((current) => new Set(current).add(id));
     setRemoving(null);
-    toast.info(tf('deletedUndo', { name }), {
-      durationMs: UNDO_MS,
-      action: {
-        label: tf('undo'),
-        onClick: () => {
-          const held = waiting.current.get(id);
-          if (!held) return;
-          clearTimeout(held.timer);
-          waiting.current.delete(id);
-          unhide(id);
-        },
-      },
-    });
+    deleter.schedule(row);
   };
-  useEffect(() => {
-    const held = waiting.current;
-    return () => {
-      for (const { run, timer } of held.values()) {
-        clearTimeout(timer);
-        run();
-      }
-    };
-  }, []);
 
   const closeEditing = () => {
     setEditing(null);
@@ -230,68 +160,7 @@ export function ResourceScreen<T>({
   // No buttons on any row: no actions column.
   const hasActions = !!rowActions || canEdit || resource.canDelete !== false;
 
-  // A column showing an on/off field of the form becomes a switch staff flip in the list.
-  const switches = new Set(
-    resource.fields
-      .filter((field) => field.kind === 'switch' && !field.createOnly)
-      .map((f) => f.name),
-  );
-  const columns: Column<T>[] = resource.columns.map((column) => {
-    const header = t(`fields.${column.key}`);
-    // resources.<key>.columnHelp.<column>, when written, explains the heading in plain words.
-    const help = t.has(`columnHelp.${column.key}`) ? t(`columnHelp.${column.key}`) : undefined;
-    const inline = canEdit ? resource.inline?.[column.key] : undefined;
-    if (inline) {
-      return {
-        ...column,
-        header,
-        help,
-        cell: (row: T) => {
-          const start = inline.value(row);
-          return (
-            <InlineNumber
-              display={column.cell(row)}
-              initial={start === null || start === undefined ? '' : String(start)}
-              type={inline.type}
-              allowZero={inline.allowZero}
-              label={`${header}: ${resource.rowLabel(row)}`}
-              onSave={async (value) => {
-                await (inline.save
-                  ? inline.save(row, value)
-                  : request('PATCH', `${resource.path}/${resource.rowId(row)}`, {
-                      body: { [column.key]: value },
-                    }));
-                await queryClient.invalidateQueries({ queryKey: [scope] });
-              }}
-            />
-          );
-        },
-      };
-    }
-    if (!canEdit || resource.singleton || !switches.has(column.key) || !column.sortValue) {
-      return { ...column, header, help };
-    }
-    const on = column.sortValue;
-    return {
-      ...column,
-      header,
-      help,
-      cell: (row: T) => (
-        <InlineToggle
-          path={`${resource.path}/${resource.rowId(row)}`}
-          field={column.key}
-          on={on(row) === true}
-          label={`${header}: ${resource.rowLabel(row)}`}
-          scope={resource.scope ?? resource.key}
-        />
-      ),
-    };
-  });
-
-  // The order is dragged, so the form has no number to type.
-  const formResource = resource.reorder
-    ? { ...resource, fields: resource.fields.filter((field) => field.name !== 'sortOrder') }
-    : resource;
+  const columns = resourceColumns(resource, t, canEdit, queryClient);
 
   return (
     <div className="grid grid-cols-1 gap-4">
@@ -357,6 +226,7 @@ export function ResourceScreen<T>({
         columns={columns}
         rowKey={resource.rowId}
         loading={list.isPending}
+        expandAll={query !== ''}
         initialSort={resource.initialSort}
         empty={t('empty')}
         groupBy={
@@ -421,84 +291,13 @@ export function ResourceScreen<T>({
         />
       ) : null}
 
-      <Modal
-        open={editing !== null}
-        onOpenChange={(open) => (open ? undefined : closeEditing())}
-        size={resource.modalSize ?? 'md'}
-        resetKey={round}
-        title={
-          editing === 'new' || editing === null
-            ? t('add')
-            : tf('editing', { name: resource.rowLabel(editing) })
-        }
-        description={
-          t.has('aboutForm')
-            ? t('aboutForm')
-            : editing === 'new'
-              ? tf('aboutCreate')
-              : tf('aboutEdit')
-        }
-        footer={
-          <>
-            <Button variant="secondary" onClick={closeEditing}>
-              {tf('cancel')}
-            </Button>
-            {editing === 'new' && !onCreated ? (
-              <Button
-                type="submit"
-                form={formId}
-                variant="secondary"
-                disabled={saving}
-                onClick={() => {
-                  again.current = true;
-                }}
-              >
-                {tf('saveAndAdd')}
-              </Button>
-            ) : null}
-            <Button
-              type="submit"
-              form={formId}
-              disabled={saving}
-              onClick={() => {
-                again.current = false;
-              }}
-            >
-              {saving ? tf('saving') : editing === 'new' ? tf('create') : tf('save')}
-            </Button>
-          </>
-        }
-      >
-        {editing !== null ? (
-          <ResourceForm
-            key={editing === 'new' ? `new-${round}` : resource.rowId(editing)}
-            resource={formResource}
-            row={editing === 'new' ? undefined : editing}
-            formId={formId}
-            onPendingChange={setSaving}
-            onDone={(saved) => {
-              if (editing === 'new' && again.current) {
-                // Saved; the same modal starts a blank form, with the cursor in the first box.
-                again.current = false;
-                setRound((n) => n + 1);
-                setTimeout(
-                  () =>
-                    document
-                      .querySelector<HTMLElement>(
-                        '[role=dialog] input:not([type=hidden]):not([disabled]), [role=dialog] textarea',
-                      )
-                      ?.focus(),
-                  80,
-                );
-                return;
-              }
-              if (editing === 'new' && saved) onCreated?.(saved as T);
-              closeEditing();
-            }}
-          />
-        ) : null}
-        {editing !== null && editing !== 'new' ? editFooter?.(editing) : null}
-      </Modal>
+      <ResourceFormModal
+        resource={resource}
+        editing={editing}
+        onClose={closeEditing}
+        onCreated={onCreated}
+        editFooter={editFooter}
+      />
 
       {resource.reorder ? (
         <ReorderModal resource={resource} open={arranging} onOpenChange={setArranging} />
