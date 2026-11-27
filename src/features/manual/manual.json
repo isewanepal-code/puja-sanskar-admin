@@ -8,7 +8,7 @@
       "title": "0 · Before you start",
       "nepali": "सुरु गर्नु अघि यो पढ्नुहोस्।",
       "where": "Every page",
-      "intro": "The sidebar on the left goes in the order the work is done: 1 Setup, 2 Items, 3 Buy, 4 Stock, 5 Kits and pujas, 6 Sell, 7 Returns, 8 Money, 9 Reports, then Offers, Website and Settings. Do them in that order the first time. Every page is a sidebar entry; there are no tabs to look for. Click a group's name to open or close it (the one you are in stays open; \"Expand all\" opens everything). Switch language with EN | नेपाली at the top.",
+      "intro": "The sidebar on the left goes in the order the work is done: 1 Setup, 2 Items, 3 Buy, 4 Stock, 5 Pujas, 6 Kits, 7 Sell, 8 Returns, 9 Money, then Offers, Website and Settings. Do them in that order the first time. Every page is a sidebar entry; there are no tabs to look for. Click a group's name to open or close it (the one you are in stays open; \"Expand all\" opens everything). Switch language with EN | नेपाली at the top.",
       "steps": [
         "Look at the top bar: Staging (yellow strip) is for practice; anything can be deleted. Production is real work: things already bought or sold cannot be deleted.",
         "Main branch (top right) is the shop whose stock you see and change.",
@@ -602,7 +602,7 @@
       "id": "kits",
       "title": "5.1 · Kits",
       "nepali": "एउटा पूजाका लागि धेरै सामान एकसाथ।",
-      "where": "Sidebar → 5 Kits and pujas → Kits",
+      "where": "Sidebar → 6 Kits → Puja kits",
       "fields": [
         ["Puja", "लक्ष्मी पूजा", "Which puja the kit is for."],
         ["Name in Nepali / English *", "लक्ष्मी पूजा किट", "Shown on the website."],
@@ -626,7 +626,7 @@
       "id": "pujas",
       "title": "5.2 · Pujas and puja groups",
       "nepali": "पूजाहरू तह-तहमा (वर्ग → उपवर्ग → समूह)।",
-      "where": "Sidebar → 5 Kits and pujas → Pujas",
+      "where": "Sidebar → 5 Pujas → Pujas",
       "steps": [
         "Puja groups form a tree, as deep as needed: चाडपर्व → दशैं → नवरात्र. Levels are called वर्ग, उपवर्ग, समूह.",
         "Each puja sits in a group, has a type (पूजा, चाडपर्व, संस्कार, व्रत, शान्ति, श्राद्ध, पाठ, हवन) and a samagri list.",

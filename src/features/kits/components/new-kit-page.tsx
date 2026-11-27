@@ -1,18 +1,17 @@
 'use client';
 
-import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueries, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { ChipInput, SearchSelect } from '@/components/controls';
 import { Field } from '@/components/forms';
-import { Icon } from '@/components/icons';
 import { ConfirmDialog, useToast } from '@/components/overlays';
 import { ImagesInput } from '@/components/resource/image-inputs';
 import { readImages } from '@/components/resource/form-values';
-import { Button, IconButton } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { formatMoney } from '@/lib/format';
@@ -21,38 +20,19 @@ import { routes } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 
-const TIERS = ['BASIC', 'STANDARD', 'PREMIUM'] as const;
-type Tier = (typeof TIERS)[number];
-type Row = { variantId: string; quantity: string; optional: boolean };
-type Pkg = {
-  on: boolean;
-  images: string;
-  discountKind: 'PERCENT' | 'FLAT';
-  discount: string;
-  packed: boolean;
-  rows: Row[];
-};
-
-const emptyRow = (): Row => ({ variantId: '', quantity: '1', optional: false });
-const emptyPkg = (on: boolean): Pkg => ({
-  on,
-  images: '[]',
-  discountKind: 'PERCENT',
-  discount: '',
-  packed: false,
-  rows: [emptyRow()],
-});
-
-// "Chhath Puja Kit" → CHHATH_PUJA_KIT, short enough for each package to add its tier.
-const codeOf = (nameEn: string) => {
-  const code = nameEn
-    .toUpperCase()
-    .replace(/[^A-Z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '')
-    .slice(0, 22)
-    .replace(/_+$/, '');
-  return /^[A-Z]/.test(code) ? code : `K_${code}`.slice(0, 22);
-};
+import {
+  blankRows,
+  codeOf,
+  emptyPkg,
+  OPEN_ROWS,
+  SECTIONS,
+  TIERS,
+  type Pkg,
+  type Row,
+  type Tier,
+} from './kit-package';
+import { KitRowsTable } from './kit-rows-table';
+import { PriceLine } from './kit-price-line';
 
 // A puja's kit in one page: its name once, then the Basic, Standard and Premium packages, each with
 // its own photos, discount and items. One Save makes them all.
@@ -62,7 +42,9 @@ export function NewKitPage() {
   const router = useRouter();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const [pujaId, setPujaId] = useState(useSearchParams().get('puja') ?? '');
+  // The puja this kit is for is optional: it only ties the kit to the puja (and fills the items).
+  const [pujaId, setPujaId] = useState('');
+  const [filling, setFilling] = useState(false);
   const [nameNe, setNameNe] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [nameRomanized, setNameRomanized] = useState('');
@@ -81,19 +63,45 @@ export function NewKitPage() {
   // A row waiting for the "really delete?" answer.
   const [removing, setRemoving] = useState<number | null>(null);
   const dropRow = (index: number) => {
-    const rest = pkg.rows.filter((_, i) => i !== index);
-    change({ rows: rest.length > 0 ? rest : [emptyRow()] });
+    change({ rows: pkg.rows.filter((_, i) => i !== index) });
   };
   const changeRow = (index: number, patch: Partial<Row>) =>
     change({ rows: pkg.rows.map((row, i) => (i === index ? { ...row, ...patch } : row)) });
 
-  const pujaName =
-    useQuery({
-      queryKey: ['puja-name', pujaId],
-      enabled: Boolean(pujaId),
-      staleTime: 600_000,
-      queryFn: () => request<{ nameNe: string }>('GET', `/admin/pujas/${pujaId}`),
-    }).data?.nameNe ?? '';
+  // The puja's samagri as the kit's items, each ticked Optional as the puja lists it.
+  const fillFromPuja = async (id: string, force: boolean) => {
+    if (!id || (pkg.rows.some((row) => row.variantId) && !force)) return;
+    setFilling(true);
+    try {
+      const plan = await request<{
+        items: { variantId: string; quantity: number; optional: boolean }[];
+        skipped: unknown[];
+      }>('GET', '/admin/kits/puja-plan', { query: { pujaId: id } });
+      const main = [
+        ...plan.items.filter((l) => !l.optional),
+        ...plan.items.filter((l) => l.optional),
+      ].map((line) => ({
+        variantId: line.variantId,
+        quantity: String(line.quantity),
+        optional: line.optional,
+        hawan: false,
+      }));
+      change({
+        rows: [
+          ...main,
+          ...blankRows('main', Math.max(OPEN_ROWS.main - main.length, 3)),
+          ...pkg.rows.filter((row) => row.hawan && row.variantId),
+          ...blankRows('hawan', OPEN_ROWS.hawan),
+        ],
+      });
+      toast.success(t('filled', { count: plan.items.length, skipped: plan.skipped.length }));
+    } catch (error) {
+      toast.error(isApiError(error) ? error.message : tf('failed'));
+    } finally {
+      setFilling(false);
+    }
+  };
+
   // What each chosen pack sells at today, to show the line prices, the total and what a discount leaves.
   const wanted = [
     ...new Set(
@@ -111,7 +119,13 @@ export function NewKitPage() {
           { query: { variantId, limit: 1 } },
         );
         const found = items.flatMap((item) => item.variants).find((v) => v.id === variantId);
-        return { variantId, price: Number(found?.price ?? 0), cost: Number(found?.cost ?? 0) };
+        const owner = items.find((item) => item.variants.some((v) => v.id === variantId));
+        return {
+          variantId,
+          productId: owner?.id ?? '',
+          price: Number(found?.price ?? 0),
+          cost: Number(found?.cost ?? 0),
+        };
       },
     })),
   });
@@ -119,20 +133,32 @@ export function NewKitPage() {
     priced.find((q) => q.data?.variantId === variantId)?.data?.price ?? 0;
   const costOf = (variantId: string) =>
     priced.find((q) => q.data?.variantId === variantId)?.data?.cost ?? 0;
+  const productOf = (variantId: string) =>
+    priced.find((q) => q.data?.variantId === variantId)?.data?.productId ?? '';
   const lineTotal = (row: Row) => priceOf(row.variantId) * (Number(row.quantity) || 0);
-  // The kit costs what its included items cost; optional ones are priced on the side.
-  const oldPrice = pkg.rows.filter((r) => !r.optional).reduce((sum, r) => sum + lineTotal(r), 0);
-  const optionalPrice = pkg.rows
-    .filter((r) => r.optional)
-    .reduce((sum, r) => sum + lineTotal(r), 0);
+  // The kit costs what its compulsory items (and compulsory hawan samagri) cost; optional ones are
+  // priced on the side and take no discount.
+  const sumOf = (pick: (r: Row) => boolean) =>
+    pkg.rows.filter(pick).reduce((sum, r) => sum + lineTotal(r), 0);
+  const optionalRow = (r: Row) => (r.hawan ? pkg.hawanOptional : r.optional);
+  const itemsSum = sumOf((r) => !optionalRow(r) && !r.hawan);
+  const hawanSum = sumOf((r) => !optionalRow(r) && r.hawan);
+  const oldPrice = itemsSum + hawanSum;
+  const optionalItemsSum = sumOf((r) => optionalRow(r) && !r.hawan);
+  const optionalHawanSum = sumOf((r) => optionalRow(r) && r.hawan);
   const off = Number(pkg.discount) || 0;
-  const taken = pkg.discountKind === 'PERCENT' ? (oldPrice * Math.min(off, 100)) / 100 : off;
+  const taken = Math.min(
+    pkg.discountKind === 'PERCENT' ? (oldPrice * Math.min(off, 100)) / 100 : off,
+    oldPrice,
+  );
   const salePrice = Math.max(oldPrice - taken, 0);
+  // Each compulsory line carries its share of the discount, so every line can be checked by hand.
+  const keep = oldPrice > 0 ? salePrice / oldPrice : 1;
+  const afterOf = (row: Row) => (optionalRow(row) ? null : lineTotal(row) * keep);
 
   const chosen = TIERS.filter((name) => packages[name].on);
   // What still keeps Save off, named, so nobody has to guess.
   const missing = [
-    !pujaId && t('puja'),
     !nameNe.trim() && t('nameNe'),
     !nameEn.trim() && t('nameEn'),
     chosen.length === 0 && t('packages'),
@@ -146,7 +172,7 @@ export function NewKitPage() {
     mutationFn: () =>
       request('POST', '/admin/kits/packages', {
         body: {
-          pujaId,
+          ...(pujaId && { pujaId }),
           code: codeOf(nameEn),
           nameEn: nameEn.trim(),
           nameNe: nameNe.trim(),
@@ -173,7 +199,8 @@ export function NewKitPage() {
                 .map((row) => ({
                   variantId: row.variantId,
                   quantity: Number(row.quantity) || 1,
-                  isOptional: row.optional,
+                  isOptional: row.hawan ? p.hawanOptional : row.optional,
+                  isHawan: row.hawan,
                 })),
             };
           }),
@@ -226,12 +253,25 @@ export function NewKitPage() {
             <SearchSelect
               id="kit-puja"
               source={choices.pujas}
-              required
               value={pujaId}
-              onChange={(value) => setPujaId(String(value))}
+              onChange={(value) => {
+                setPujaId(String(value));
+                void fillFromPuja(String(value), false);
+              }}
             />
           </Field>
-          <span />
+          <div className="flex items-end">
+            {pujaId ? (
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={filling}
+                onClick={() => void fillFromPuja(pujaId, true)}
+              >
+                {t('fillFromPuja')}
+              </Button>
+            ) : null}
+          </div>
           <Field label={t('nameNe')} htmlFor="kit-ne">
             <Input
               id="kit-ne"
@@ -325,159 +365,33 @@ export function NewKitPage() {
                   <Button
                     variant="secondary"
                     size="sm"
-                    onClick={() => change({ rows: packages.BASIC.rows.map((row) => ({ ...row })) })}
+                    onClick={() =>
+                      change({
+                        rows: packages.BASIC.rows.map((row) => ({ ...row })),
+                        hawanOptional: packages.BASIC.hawanOptional,
+                      })
+                    }
                   >
                     {t('copyBasic')}
                   </Button>
                 </div>
               ) : null}
-              {([false, true] as const).map((optional) => {
-                const list = pkg.rows
-                  .map((row, index) => ({ row, index }))
-                  .filter(({ row }) => row.optional === optional);
-                const sellSum = list.reduce((sum, { row }) => sum + lineTotal(row), 0);
-                const costSum = list.reduce(
-                  (sum, { row }) => sum + costOf(row.variantId) * (Number(row.quantity) || 0),
-                  0,
-                );
-                return (
-                  <div key={String(optional)} className="grid gap-2">
-                    <h3 className="text-sm font-semibold">
-                      {optional
-                        ? t('optionalTitle')
-                        : t('itemsTitle', { puja: pujaName || t('thisPuja') })}
-                    </h3>
-                    <p className="text-xs text-muted-foreground">
-                      {optional ? t('optionalNote') : t('itemsNote')}
-                    </p>
-                    <div className="overflow-x-auto rounded-md border border-border">
-                      <table className="w-full border-collapse text-sm">
-                        <thead className="bg-muted/60 text-xs text-muted-foreground uppercase">
-                          <tr>
-                            <th className="w-8 px-2 py-2 text-left font-semibold">#</th>
-                            <th className="px-2 py-2 text-left font-semibold">{t('pack')}</th>
-                            <th className="w-20 px-2 py-2 text-right font-semibold">
-                              {t('quantity')}
-                            </th>
-                            <th className="w-24 px-2 py-2 text-right font-semibold">
-                              {t('buyPrice')}
-                            </th>
-                            <th className="w-24 px-2 py-2 text-right font-semibold">
-                              {t('sellPrice')}
-                            </th>
-                            <th className="w-28 px-2 py-2 text-right font-semibold">
-                              {t('lineTotal')}
-                            </th>
-                            <th className="w-10" />
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {list.length === 0 ? (
-                            <tr>
-                              <td
-                                colSpan={7}
-                                className="px-3 py-4 text-center text-muted-foreground"
-                              >
-                                {t('noneYet')}
-                              </td>
-                            </tr>
-                          ) : null}
-                          {list.map(({ row, index }, at) => (
-                            <tr key={index} className="border-t border-border">
-                              <td className="px-2 text-muted-foreground tabular-nums">{at + 1}</td>
-                              <td className="p-1.5">
-                                <SearchSelect
-                                  aria-label={t('pack')}
-                                  source={choices.packs}
-                                  required
-                                  value={row.variantId}
-                                  onChange={(value) =>
-                                    changeRow(index, { variantId: String(value) })
-                                  }
-                                />
-                              </td>
-                              <td className="p-1.5">
-                                <Input
-                                  aria-label={t('quantity')}
-                                  inputMode="decimal"
-                                  className="text-right"
-                                  value={row.quantity}
-                                  onChange={(e) => changeRow(index, { quantity: e.target.value })}
-                                />
-                              </td>
-                              <td className="px-2 text-right text-muted-foreground tabular-nums">
-                                {row.variantId && costOf(row.variantId) > 0
-                                  ? formatMoney(String(costOf(row.variantId)), 'en')
-                                  : '—'}
-                              </td>
-                              <td className="px-2 text-right tabular-nums">
-                                {row.variantId
-                                  ? formatMoney(String(priceOf(row.variantId)), 'en')
-                                  : '—'}
-                              </td>
-                              <td className="px-2 text-right font-medium tabular-nums">
-                                {row.variantId ? formatMoney(String(lineTotal(row)), 'en') : '—'}
-                              </td>
-                              <td className="px-1 text-center">
-                                <IconButton
-                                  icon="trash"
-                                  variant="danger"
-                                  label={t('remove')}
-                                  onClick={() =>
-                                    row.variantId ? setRemoving(index) : dropRow(index)
-                                  }
-                                />
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                        {list.length > 0 ? (
-                          <tfoot className="border-t border-border bg-muted/30 text-sm font-semibold">
-                            <tr>
-                              <td colSpan={3} className="px-2 py-2 text-right">
-                                {t('sectionTotal')}
-                              </td>
-                              <td className="px-2 text-right text-muted-foreground tabular-nums">
-                                {costSum > 0 ? formatMoney(String(costSum), 'en') : '—'}
-                              </td>
-                              <td />
-                              <td className="px-2 text-right tabular-nums">
-                                {formatMoney(String(sellSum), 'en')}
-                              </td>
-                              <td />
-                            </tr>
-                          </tfoot>
-                        ) : null}
-                      </table>
-                    </div>
-                    <div>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => change({ rows: [...pkg.rows, { ...emptyRow(), optional }] })}
-                      >
-                        <Icon name="plus" size={14} />
-                        {optional ? t('addOptional') : t('addItem')}
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
-
-              <div className="grid gap-1 rounded-md border border-border bg-muted/30 p-3 text-sm">
-                <div className="flex justify-between">
-                  <span>{t('itemsTotal')}</span>
-                  <span className="font-semibold tabular-nums">
-                    {formatMoney(String(oldPrice), 'en')}
-                  </span>
-                </div>
-                {optionalPrice > 0 ? (
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>{t('optionalTotal')}</span>
-                    <span className="tabular-nums">{formatMoney(String(optionalPrice), 'en')}</span>
-                  </div>
-                ) : null}
-              </div>
+              {SECTIONS.map((section) => (
+                <KitRowsTable
+                  key={section}
+                  section={section}
+                  pkg={pkg}
+                  change={change}
+                  changeRow={changeRow}
+                  dropRow={dropRow}
+                  setRemoving={setRemoving}
+                  priceOf={priceOf}
+                  costOf={costOf}
+                  productOf={productOf}
+                  lineTotal={lineTotal}
+                  afterOf={afterOf}
+                />
+              ))}
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label={t('discount')} htmlFor="pkg-discount" help={t('discountHelp')}>
@@ -502,17 +416,40 @@ export function NewKitPage() {
                     />
                   </div>
                 </Field>
-                <div className="grid gap-1 rounded-md border border-border p-3 text-sm sm:col-span-2">
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>{t('oldPrice')}</span>
-                    <span className={cn('tabular-nums', taken > 0 && 'line-through')}>
-                      {formatMoney(String(oldPrice), 'en')}
-                    </span>
-                  </div>
-                  <div className="flex justify-between font-semibold">
-                    <span>{t('salePrice')}</span>
-                    <span className="tabular-nums">{formatMoney(String(salePrice), 'en')}</span>
-                  </div>
+                <div className="grid gap-1.5 rounded-md border border-border p-3 text-sm sm:col-span-2">
+                  <h4 className="font-semibold">{t('calcTitle')}</h4>
+                  <PriceLine label={t('itemsCompulsory')} value={itemsSum} />
+                  <PriceLine label={t('hawanCompulsory')} value={hawanSum} />
+                  <PriceLine label={t('beforeDiscount')} value={oldPrice} strong top />
+                  <PriceLine
+                    label={
+                      pkg.discountKind === 'PERCENT'
+                        ? t('discountPercentOf', {
+                            percent: Math.min(off, 100),
+                            amount: formatMoney(String(oldPrice), 'en'),
+                          })
+                        : t('discountFlat')
+                    }
+                    value={-taken}
+                    note={t('discountScope')}
+                  />
+                  <PriceLine label={t('afterDiscount')} value={salePrice} strong top />
+                  {optionalItemsSum + optionalHawanSum > 0 ? (
+                    <>
+                      <PriceLine
+                        label={t('optionalItemsApart')}
+                        value={optionalItemsSum}
+                        muted
+                        top
+                      />
+                      <PriceLine label={t('optionalHawanApart')} value={optionalHawanSum} muted />
+                      <PriceLine
+                        label={t('withAllOptional')}
+                        value={salePrice + optionalItemsSum + optionalHawanSum}
+                        muted
+                      />
+                    </>
+                  ) : null}
                 </div>
                 <label className="inline-flex items-center gap-2 text-sm">
                   <input

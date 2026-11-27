@@ -8,10 +8,10 @@ import { useId, useState } from 'react';
 
 import { ResourceForm, useResourceText } from '@/components/resource';
 import { Badge } from '@/components/ui/badge';
+import { StepTabs } from '@/components/navigation/step-tabs';
 import { Button } from '@/components/ui/button';
 import { request } from '@/lib/api';
 import { routes } from '@/lib/routes';
-import { cn } from '@/lib/utils';
 
 import { kitPackResource, kitsResource, type Kit } from '../resources';
 import { KitItemsEditor } from './kit-items-editor';
@@ -72,28 +72,13 @@ export function KitPage({ id }: { id: string }) {
         </h1>
       </div>
 
-      <ol className="flex flex-wrap items-center gap-1.5" aria-label={t('sections')}>
-        {STEPS.map((name, index) => (
-          <li key={name}>
-            <button
-              type="button"
-              aria-current={step === name ? 'step' : undefined}
-              onClick={() => go(name)}
-              className={cn(
-                'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium',
-                step === name
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border text-muted-foreground hover:text-foreground',
-              )}
-            >
-              <span className="grid size-5 place-items-center rounded-full bg-muted text-[0.7rem]">
-                {index + 1}
-              </span>
-              {t(`step.${name}`)}
-            </button>
-          </li>
-        ))}
-      </ol>
+      <StepTabs
+        steps={STEPS}
+        current={step}
+        onSelect={go}
+        label={(name) => t(`step.${name}`)}
+        ariaLabel={t('sections')}
+      />
 
       <section className="rounded-xl border border-border bg-card p-5">
         {step === 'basics' ? (

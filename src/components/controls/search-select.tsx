@@ -47,6 +47,10 @@ type Props = {
   bare?: boolean;
   // A long chosen name wraps onto a second line instead of being cut with "…".
   wrapValue?: boolean;
+  // Choices left out of the list (already used elsewhere); the chosen value itself stays.
+  exclude?: string[];
+  // Packs of these items are left out too (another size of an item already chosen).
+  excludeProducts?: string[];
   className?: string;
   'aria-label'?: string;
 };
@@ -67,6 +71,8 @@ export function SearchSelect({
   required,
   bare,
   wrapValue = false,
+  exclude,
+  excludeProducts,
   className,
   'aria-label': ariaLabel,
 }: Props) {
@@ -102,10 +108,14 @@ export function SearchSelect({
 
   const needle = searchKey(text.trim());
   const choices = useMemo(() => {
-    if (remote) return results.data?.pages.flatMap((page) => page.choices) ?? [];
+    const left = (choice: Choice) =>
+      values.includes(choice.value) ||
+      (!exclude?.includes(choice.value) &&
+        !(choice.productId && excludeProducts?.includes(choice.productId)));
+    if (remote) return (results.data?.pages.flatMap((page) => page.choices) ?? []).filter(left);
     const words = needle.split(/\s+/).filter(Boolean);
-    return (options ?? whole.data ?? []).filter((choice) => matches(choice, words));
-  }, [remote, results.data, whole.data, options, needle]);
+    return (options ?? whole.data ?? []).filter((choice) => left(choice) && matches(choice, words));
+  }, [remote, results.data, whole.data, options, needle, exclude, excludeProducts, values]);
   const searchable = !!remote || (options ?? whole.data ?? []).length >= SEARCH_FROM;
 
   const shown = useMemo(

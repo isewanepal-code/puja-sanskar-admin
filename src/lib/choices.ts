@@ -8,6 +8,8 @@ export type Choice = {
   // A second, smaller line under the label (the English name and brand of an item).
   sub?: string;
   group?: string;
+  // The item a pack belongs to, so another pack of the same item can be left out.
+  productId?: string;
 };
 
 // Where a dropdown's choices come from: a short list loaded whole and searched in the browser,
@@ -95,6 +97,7 @@ const packsOf = (product: Product): Choice[] =>
     value: variant.id,
     label: `${product.nameNe} · ${variant.label}`,
     detail: variant.sku,
+    productId: product.id,
   }));
 
 // The dropdowns many screens share, each written once.

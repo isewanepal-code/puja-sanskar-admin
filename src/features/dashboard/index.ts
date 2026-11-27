@@ -17,3 +17,4 @@ export { ShopCounts } from './components/shop-counts';
 export { TodayStrip } from './components/today-strip';
 export { TrendChart } from './components/trend-chart';
 export { addDays, changeOf, parseRange, periodsFor, shopToday, type Range } from './lib/periods';
+export { DashboardScreen } from './components/dashboard-screen';

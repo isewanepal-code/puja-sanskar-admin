@@ -2797,6 +2797,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/stock-losses': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Stock written off at the branch, newest first
+     * @description Damaged, expired, lost or spilled stock, with the cost it was held at.
+     */
+    get: operations['AdminStockLossController_losses'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/stock-transfers': {
     parameters: {
       query?: never;
@@ -2824,13 +2844,34 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** Packet-making that touched a pack, newest first */
+    get: operations['AdminStockRepackController_repacks'];
     put?: never;
     /**
      * Open a bulk pack and make smaller packs of it
      * @description The opened packs leave as REPACK_OUT and the new packs arrive as REPACK_IN carrying the same cost, split by pack size, in one transaction.
      */
     post: operations['AdminStockRepackController_repack'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/stock-repacks/{reference}/undo': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Put packet-making back
+     * @description The made packs leave and the opened pack returns at its cost. With variantId only that size is put back, with its share of what was opened. Refused when a made pack was already sold or moved.
+     */
+    post: operations['AdminStockRepackController_undo'];
     delete?: never;
     options?: never;
     head?: never;
@@ -3319,6 +3360,26 @@ export interface paths {
      * @description Add items afterwards.
      */
     post: operations['AdminKitController_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/kits/puja-plan': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * What a kit of a puja starts with
+     * @description The puja's samagri as packs on sale, with the amounts, so the new-kit form can fill itself in.
+     */
+    get: operations['AdminKitController_pujaPlan'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -10484,6 +10545,11 @@ export interface components {
       place?: string | null;
       /** @example https://www.snpl.com.np/ */
       website?: string | null;
+      /** @example +9779801234567 */
+      phone?: string | null;
+      email?: string | null;
+      /** @example Ram Shrestha */
+      contactPerson?: string | null;
       /** @example Makes Mangaldeep */
       notes?: string | null;
       /** @default true */
@@ -10502,6 +10568,11 @@ export interface components {
       place?: string | null;
       /** @example https://www.snpl.com.np/ */
       website?: string | null;
+      /** @example +9779801234567 */
+      phone?: string | null;
+      email?: string | null;
+      /** @example Ram Shrestha */
+      contactPerson?: string | null;
       /** @example Makes Mangaldeep */
       notes?: string | null;
       /** @default true */
@@ -10559,13 +10630,13 @@ export interface components {
        * @example 3217.50
        */
       value: string;
-      /** @description onHand is at or below reorderLevel */
-      isLowStock: boolean;
       /**
        * @description What one of this pack sells for
        * @example 95.00
        */
       sellPrice: string;
+      /** @description onHand is at or below reorderLevel */
+      isLowStock: boolean;
       /** @description Some of it was bought in; a pack that only came from opening a bigger one is not opened again */
       boughtIn: boolean;
       /** Format: date-time */
@@ -10662,6 +10733,31 @@ export interface components {
       /** @example Monthly stock count */
       note?: string | null;
     };
+    StockLossResponse: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      variantId: string;
+      /** Format: uuid */
+      productId: string;
+      productNameNe: string;
+      productNameEn: string;
+      /** @example 25 kg बोरा */
+      packLabel: string;
+      sku: string;
+      /** @example 2 */
+      quantity: number;
+      unitCost: string | null;
+      /**
+       * @description Quantity at the cost it was held at
+       * @example 170.00
+       */
+      value: string;
+      /** @example Damaged: leaked */
+      note: string | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
     TransferLineDto: {
       /** Format: uuid */
       variantId: string;
@@ -10720,6 +10816,35 @@ export interface components {
       outputs: components['schemas']['RepackLineDto'][];
       /** @example Opened a 1 kg bag into 50 g packs */
       note?: string | null;
+    };
+    RepackPackResponse: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example 25 kg बोरा */
+      label: string;
+      /** @example 0.6 */
+      quantity: number;
+    };
+    RepackMadeResponse: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example 25 kg बोरा */
+      label: string;
+      /** @example 0.6 */
+      quantity: number;
+      /** @description This size was put back */
+      undone: boolean;
+    };
+    RepackHistoryResponse: {
+      /** @example REPACK-2026-11-25-A1B2C3 */
+      reference: string;
+      /** Format: date-time */
+      createdAt: string;
+      note: string | null;
+      /** @description Every size of it was put back */
+      undone: boolean;
+      source: components['schemas']['RepackPackResponse'] | null;
+      outputs: components['schemas']['RepackMadeResponse'][];
     };
     StockBatchResponse: {
       /** Format: uuid */
@@ -11147,6 +11272,8 @@ export interface components {
       quantity: number;
       /** @description Offered, not in the kit price */
       isOptional: boolean;
+      /** @description Hawan samagri, shown apart */
+      isHawan: boolean;
       note: string | null;
       /** @example 240.00 */
       lineTotal: string;
@@ -11359,6 +11486,8 @@ export interface components {
       quantity: number;
       /** @description Offered, not in the kit price */
       isOptional: boolean;
+      /** @description Hawan samagri, shown apart */
+      isHawan: boolean;
       note: string | null;
       /** @example 240.00 */
       lineTotal: string;
@@ -11463,6 +11592,18 @@ export interface components {
       createdAt: string;
       /** Format: date-time */
       updatedAt: string;
+    };
+    PujaPlanLineResponse: {
+      /** Format: uuid */
+      variantId: string;
+      /** @example 2 */
+      quantity: number;
+      /** @description The puja lists it as optional */
+      optional: boolean;
+    };
+    PujaPlanResponse: {
+      items: components['schemas']['PujaPlanLineResponse'][];
+      skipped: components['schemas']['SkippedMaterialResponse'][];
     };
     KitStockResponse: {
       /**
@@ -11619,6 +11760,11 @@ export interface components {
        * @default false
        */
       isOptional: boolean;
+      /**
+       * @description Hawan samagri, shown apart
+       * @default false
+       */
+      isHawan: boolean;
     };
     KitPackageDto: {
       /** @enum {string} */
@@ -11639,8 +11785,11 @@ export interface components {
       items: components['schemas']['PackageItemDto'][];
     };
     KitPackagesDto: {
-      /** Format: uuid */
-      pujaId: string;
+      /**
+       * Format: uuid
+       * @description The puja it is for; kits can be added to a puja later
+       */
+      pujaId?: string;
       /** @example CHHATH */
       code: string;
       /** @example Chhath Puja Kit */
@@ -11794,6 +11943,11 @@ export interface components {
        * @default false
        */
       isOptional: boolean;
+      /**
+       * @description Hawan samagri, shown apart
+       * @default false
+       */
+      isHawan: boolean;
       /** @example For the aarti */
       note?: string | null;
     };
@@ -11808,6 +11962,11 @@ export interface components {
        * @default false
        */
       isOptional: boolean;
+      /**
+       * @description Hawan samagri, shown apart
+       * @default false
+       */
+      isHawan: boolean;
       /** @example For the aarti */
       note?: string | null;
       /** @description New position (0 = first); the others shift */
@@ -29932,6 +30091,80 @@ export interface operations {
       };
     };
   };
+  AdminStockLossController_losses: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        type?:
+          | 'PURCHASE'
+          | 'RETURN'
+          | 'SALE'
+          | 'DAMAGE'
+          | 'ADJUSTMENT'
+          | 'TRANSFER_OUT'
+          | 'TRANSFER_IN'
+          | 'PURCHASE_RETURN'
+          | 'REPACK_OUT'
+          | 'REPACK_IN'
+          | 'KIT_PACK'
+          | 'KIT_UNPACK';
+      };
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: {
+              items: components['schemas']['StockLossResponse'][];
+              meta: components['schemas']['PageMetaDto'];
+            };
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminStockTransferController_transfer: {
     parameters: {
       query?: never;
@@ -30009,6 +30242,63 @@ export interface operations {
       };
     };
   };
+  AdminStockRepackController_repacks: {
+    parameters: {
+      query: {
+        variantId: string;
+      };
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['RepackHistoryResponse'][];
+          };
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminStockRepackController_repack: {
     parameters: {
       query?: never;
@@ -30046,6 +30336,74 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNPROCESSABLE_ENTITY */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminStockRepackController_undo: {
+    parameters: {
+      query: {
+        variantId: string;
+      };
+      header?: {
+        /** @description Branch code; may be left out when the user works at one branch only */
+        'X-Branch'?: string;
+      };
+      path: {
+        reference: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['StockMovementResponse'][];
+          };
         };
       };
       /** @description UNAUTHORIZED */
@@ -32134,6 +32492,69 @@ export interface operations {
       };
       /** @description UNPROCESSABLE_ENTITY */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminKitController_pujaPlan: {
+    parameters: {
+      query: {
+        pujaId: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['PujaPlanResponse'];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
         headers: {
           [name: string]: unknown;
         };

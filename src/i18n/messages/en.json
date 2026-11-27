@@ -185,7 +185,7 @@
       "companies": "Companies",
       "losses": "Damaged and lost",
       "newPuja": "+ New puja",
-      "newKit": "+ New puja kit"
+      "newKit": "+ New kit"
     },
     "changePassword": "Change password",
     "groups": {
@@ -471,7 +471,7 @@
       "note": "Kept whole and out of use until needed, like a Tihar kit."
     },
     "manualTitle": "New here? Read the manual.",
-    "manualNote": "Setup → Items → Buy → Stock → Kits and pujas → Sell, every box and column explained",
+    "manualNote": "Setup → Items → Buy → Stock → Pujas → Kits → Sell, every box and column explained",
     "manualOpen": "Open the manual →"
   },
   "orders": {
@@ -3071,7 +3071,7 @@
     "unpackKitsOf": "Take {name} apart",
     "unpackKitsNote": "The kits are opened and their items go back on the shelf.",
     "kitsUnpacked": "Done: the items are back on the shelf",
-    "newKitPage": "New puja kit",
+    "newKitPage": "New kit",
     "openKit": "Open",
     "uploadItemList": "Add items from the Excel list",
     "uploadItemListNote": "Download the list first (Download the layout). Each sheet is a category (5 in all); the Group columns put the item in an Item group (the website filter), not in a category. Grey rows are already in the shop: their names, group and variants are locked, but the pale-yellow cells (other names, alternative, purpose, short and full description, selling price, usual supplier) can be changed. Prices go in the order of the variants, VAT included: variants \"50 gm, 100 gm, 1 kg\" → prices \"35, 65, 580\". Write new items in the empty rows: Nepali name, English name, search group, variants, and the rest if you know it. Rule A: weights and counts of one thing are its variants. Rule B: a different size (सानो/मझौला/ठूलो) or quality (साधारण/स्पेसल) is its own row. A new sheet makes a new category.",
@@ -4508,11 +4508,11 @@
   },
   "kitPage": {
     "back": "All kits",
-    "title": "New puja kit",
-    "note": "The kit of one puja in one place: the name once, then each package (Basic, Standard, Premium) has its own items, photo and discount. Saving makes them all together.",
+    "title": "New kit",
+    "note": "Make the kit first: its name once, then each package (Basic, Standard, Premium) with its own items, photo and discount. Add the kit to a puja later, from the puja's own page.",
     "kit": "The kit",
     "puja": "Puja",
-    "pujaHelp": "Which puja this kit is for (for example Chhath). Basic, Standard and Premium are the packages of this puja.",
+    "pujaHelp": "Optional. Pick the puja this kit is for: its samagri fills the items, and the kit shows under that puja. You can also add it to a puja later.",
     "nameNe": "Name in Nepali",
     "nameEn": "Name in English",
     "description": "Description (optional)",
@@ -4550,7 +4550,7 @@
     "needItem": "an item in {tier}",
     "nameRomanized": "Name in Roman letters",
     "nameRomanizedHelp": "How people type it in English letters: chhath kit. Helps search.",
-    "itemsTitle": "Items needed for {puja}",
+    "itemsTitle": "Items in the kit",
     "thisPuja": "this puja",
     "sellPrice": "Sells at",
     "itemsTotal": "Total of the items above",
@@ -4568,7 +4568,28 @@
     "removeNote": "It is taken out of this package. Nothing else changes.",
     "compulsoryTitle": "Compulsory items",
     "compulsoryNote": "In the kit price. Every kit has these.",
-    "inStock": "In stock"
+    "inStock": "In stock",
+    "hawanTitle": "Hawan samagri",
+    "hawanNote": "The samagri for the hawan. It is one set: either all of it comes with the kit, or all of it is offered apart as optional.",
+    "kindCol": "Kind",
+    "compulsory": "Compulsory",
+    "optionalKind": "Optional",
+    "addRows": "{count, plural, one {+ # item} other {+ # items}}",
+    "fillFromPuja": "Fill again from the puja",
+    "filled": "{count} items filled from the puja. {skipped, plural, =0 {} other {# have no pack on sale yet.}}",
+    "afterCol": "After discount",
+    "calcTitle": "How the price is made",
+    "itemsCompulsory": "Items in the kit (compulsory)",
+    "hawanCompulsory": "Hawan samagri (compulsory)",
+    "beforeDiscount": "Kit price before discount",
+    "discountPercentOf": "Discount {percent}% of {amount}",
+    "discountFlat": "Discount (flat rupees off the kit)",
+    "discountScope": "Taken off the compulsory items and compulsory hawan samagri together. Optional ones get no discount.",
+    "afterDiscount": "Kit price after discount",
+    "optionalItemsApart": "Optional items (priced apart, no discount)",
+    "optionalHawanApart": "Optional hawan samagri (priced apart, no discount)",
+    "withAllOptional": "If the shopper takes every optional one too",
+    "hawanOptional": "The whole hawan set is optional (shoppers may take it or leave it)"
   },
   "kitEdit": {
     "back": "All kits",
@@ -5210,8 +5231,31 @@
     "sections": "Sections of this puja",
     "step": {
       "details": "Details",
-      "samagri": "Samagri list"
+      "samagri": "Samagri list",
+      "kits": "Kits and extra items"
     },
     "samagriNote": "What this puja needs. Add each samagri once; the kit of this puja is made from this list."
+  },
+  "pujaKits": {
+    "kitsTitle": "Kits of this puja",
+    "kitsNote": "Pick the kits (made apart, in 6 · Kits) that are for this puja. The shopper can choose one of them.",
+    "newKit": "Make a new kit",
+    "extraTitle": "Extra items",
+    "extraNote": "Samagri of this puja that no kit above holds. Shoppers who do not want a kit can buy just these.",
+    "item": "Item",
+    "quantity": "Qty",
+    "kind": "Kind",
+    "noExtra": "Nothing extra: every samagri of this puja is in a kit (or none is listed yet).",
+    "optional": "Optional",
+    "needed": "Needed",
+    "saved": "Kits of this puja saved.",
+    "addTitle": "Add extra items",
+    "addNote": "Choose items this puja also needs, apart from its kits. Tick Optional for ones that are only suggested. An item already in a kit or in the list above is left out of the choices.",
+    "addRows": "{count, plural, one {+ # item} other {+ # items}}",
+    "saveExtras": "{count, plural, =0 {Save} one {Save # item} other {Save # items}}",
+    "extrasAdded": "Added to the puja.",
+    "removeTitle": "Remove this item from the puja?",
+    "removeNote": "It leaves the puja's samagri list. The item itself is not deleted.",
+    "remove": "Remove"
   }
 }

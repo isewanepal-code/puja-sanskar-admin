@@ -7,19 +7,20 @@ import { useTranslations } from 'next-intl';
 import { useId, useMemo, useState } from 'react';
 
 import { ActionModal, ResourceForm, ResourceScreen, useResourceText } from '@/components/resource';
+import { StepTabs } from '@/components/navigation/step-tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants, IconButton } from '@/components/ui/button';
 import { groupChoices } from '@/features/puja-groups';
 import { request, type Schema } from '@/lib/api';
 import { routes } from '@/lib/routes';
-import { cn } from '@/lib/utils';
 
+import { PujaKits } from './puja-kits';
 import { requirementsResource, verifyResource } from '../requirements';
 import { pujasResource } from '../resource';
 import type { Puja } from '../types';
 
 type Requirement = Schema<'AdminRequirementResponse'>;
-const STEPS = ['details', 'samagri'] as const;
+const STEPS = ['details', 'samagri', 'kits'] as const;
 type Step = (typeof STEPS)[number];
 
 function usePujaResource() {
@@ -122,31 +123,13 @@ export function PujaPage({ id }: { id: string }) {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <ol className="flex flex-wrap items-center gap-1.5" aria-label={t('sections')}>
-          {STEPS.map((name, index) => (
-            <li key={name}>
-              <button
-                type="button"
-                aria-current={step === name ? 'step' : undefined}
-                onClick={() => go(name)}
-                className={cn(
-                  'inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium',
-                  step === name
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-border text-muted-foreground hover:text-foreground',
-                )}
-              >
-                <span className="grid size-5 place-items-center rounded-full bg-muted text-[0.7rem]">
-                  {index + 1}
-                </span>
-                {t(`step.${name}`)}
-              </button>
-            </li>
-          ))}
-        </ol>
-        <Link href={routes.newKit(data.id)} className={buttonVariants({ variant: 'secondary' })}>
-          {ta('makeKitOfPuja')}
-        </Link>
+        <StepTabs
+          steps={STEPS}
+          current={step}
+          onSelect={go}
+          label={(name) => t(`step.${name}`)}
+          ariaLabel={t('sections')}
+        />
       </div>
 
       <section className="rounded-xl border border-border bg-card p-5">
@@ -166,6 +149,8 @@ export function PujaPage({ id }: { id: string }) {
               </Button>
             </div>
           </>
+        ) : step === 'kits' ? (
+          <PujaKits pujaId={data.id} />
         ) : (
           <div className="grid gap-4">
             <p className="text-sm text-muted-foreground">{t('samagriNote')}</p>

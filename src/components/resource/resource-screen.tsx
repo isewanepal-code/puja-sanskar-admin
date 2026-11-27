@@ -95,7 +95,7 @@ export function ResourceScreen<T>({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<number>(20);
   const [chosen, setEditing] = useState<T | 'new' | null>(
-    deepLink && params.get('new') ? 'new' : null,
+    deepLink && !pages && params.get('new') ? 'new' : null,
   );
   const [removing, setRemoving] = useState<T | null>(null);
   // Deleted rows wait here for ten seconds, out of the list, so Undo can still bring them back.
@@ -150,6 +150,11 @@ export function ResourceScreen<T>({
   useEffect(() => {
     if (pages && linked) router.replace(pages.edit(linked));
   }, [pages, linked, router]);
+  // Likewise an old "?new=1" link goes to the page that adds one.
+  const wantsNew = Boolean(deepLink && params.get('new'));
+  useEffect(() => {
+    if (pages && wantsNew) router.replace(pages.create);
+  }, [pages, wantsNew, router]);
   const editing = pages ? (chosen ?? null) : (chosen ?? linked ?? null);
 
   // Where the row about to be deleted is used: a row in use cannot be deleted.

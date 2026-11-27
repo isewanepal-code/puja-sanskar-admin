@@ -15,7 +15,6 @@ import { pujasResource } from '../resource';
 // The pujas as a list; adding one and opening one are pages of their own, as for items.
 export function PujasScreen() {
   const t = useResourceText('pujas');
-  const ta = useTranslations('actions');
   const tt = useTranslations('pujas.tabs');
   const groups = useQuery({
     queryKey: ['options', groupChoices.key],
@@ -41,14 +40,6 @@ export function PujasScreen() {
           {tt('groups')}
         </Link>
       }
-      rowActions={(row) => (
-        <Link
-          href={routes.newKit(row.id)}
-          className={buttonVariants({ variant: 'secondary', size: 'sm' })}
-        >
-          {ta('makeKitOfPuja')}
-        </Link>
-      )}
     />
   );
 }
