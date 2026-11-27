@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { SearchSelect } from '@/components/controls';
 import { Icon } from '@/components/icons';
 import { Button, IconButton } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { QuantityStepper } from '@/components/ui/quantity-stepper';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 
@@ -22,7 +22,8 @@ export function KitRowsTable({
   setRemoving,
   priceOf,
   costOf,
-  productOf,
+  itemOf,
+  repeated,
   lineTotal,
   afterOf,
 }: {
@@ -34,11 +35,15 @@ export function KitRowsTable({
   setRemoving: (index: number) => void;
   priceOf: (variantId: string) => number;
   costOf: (variantId: string) => number;
-  productOf: (variantId: string) => string;
+  // The item a row's pack belongs to (known at once when chosen here, fetched when filled from a puja).
+  itemOf: (row: Row) => string;
+  repeated: Set<number>;
   lineTotal: (row: Row) => number;
   afterOf: (row: Row) => number | null;
 }) {
   const t = useTranslations('kitPage');
+  // Every other row of the package: what this row's choices must leave out.
+  const others = (index: number) => pkg.rows.filter((r, i) => i !== index && r.variantId);
   const list = pkg.rows
     .map((row, index) => ({ row, index }))
     .filter(({ row }) => inSection(row, section));
@@ -102,13 +107,17 @@ export function KitRowsTable({
                   <SearchSelect
                     aria-label={t('pack')}
                     source={choices.packs}
-                    excludeProducts={pkg.rows
-                      .filter((_, i) => i !== index)
-                      .map((r) => productOf(r.variantId))
-                      .filter(Boolean)}
+                    exclude={others(index).map((r) => r.variantId)}
+                    excludeProducts={others(index).map((r) => itemOf(r))}
                     required
+                    invalid={repeated.has(index)}
                     value={row.variantId}
-                    onChange={(value) => changeRow(index, { variantId: String(value) })}
+                    onChange={(value, chosen) =>
+                      changeRow(index, {
+                        variantId: String(value),
+                        productId: chosen[0]?.productId,
+                      })
+                    }
                   />
                 </td>
                 {section === 'hawan' ? null : (
@@ -123,12 +132,10 @@ export function KitRowsTable({
                   </td>
                 )}
                 <td className="p-1.5">
-                  <Input
-                    aria-label={t('quantity')}
-                    inputMode="decimal"
-                    className="text-right"
+                  <QuantityStepper
+                    label={t('quantity')}
                     value={row.quantity}
-                    onChange={(e) => changeRow(index, { quantity: e.target.value })}
+                    onChange={(quantity) => changeRow(index, { quantity })}
                   />
                 </td>
                 <td className="px-2 text-right text-muted-foreground tabular-nums">

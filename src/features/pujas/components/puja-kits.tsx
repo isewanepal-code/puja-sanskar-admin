@@ -10,7 +10,7 @@ import { Icon } from '@/components/icons';
 import { ConfirmDialog, useToast } from '@/components/overlays';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants, IconButton } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { QuantityStepper } from '@/components/ui/quantity-stepper';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { routes } from '@/lib/routes';
@@ -251,12 +251,10 @@ export function PujaKits({ pujaId }: { pujaId: string }) {
                     />
                   </td>
                   <td className="p-1.5">
-                    <Input
-                      aria-label={t('quantity')}
-                      inputMode="decimal"
-                      className="text-right"
+                    <QuantityStepper
+                      label={t('quantity')}
                       value={draft.quantity}
-                      onChange={(e) => change(index, { quantity: e.target.value })}
+                      onChange={(quantity) => change(index, { quantity })}
                     />
                   </td>
                   <td className="px-1 text-center">

@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { useUnsavedGuard } from '@/lib/use-unsaved-guard';
 
 import {
+  repeatedRows,
   blankRows,
   codeOf,
   emptyPkg,
@@ -44,7 +45,6 @@ export function NewKitPage() {
   const queryClient = useQueryClient();
   // The puja this kit is for is optional: it only ties the kit to the puja (and fills the items).
   const [pujaId, setPujaId] = useState('');
-  const [filling, setFilling] = useState(false);
   const [nameNe, setNameNe] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [nameRomanized, setNameRomanized] = useState('');
@@ -58,6 +58,26 @@ export function NewKitPage() {
     PREMIUM: emptyPkg(false),
   });
   const pkg = packages[tier];
+  const hasChosen = pkg.rows.some((row) => row.variantId);
+  const hasHawan = pkg.rows.some((row) => row.hawan && row.variantId);
+  // A package can take the items of one made before it: Standard from Basic, Premium from either.
+  const copySources = TIERS.filter(
+    (name) =>
+      TIERS.indexOf(name) < TIERS.indexOf(tier) && packages[name].rows.some((r) => r.variantId),
+  );
+  // The package waiting for the "replace what is chosen?" answer.
+  const [copying, setCopying] = useState<Tier | null>(null);
+  const copyFrom = (from: Tier) => {
+    setPackages((all) => ({
+      ...all,
+      [tier]: {
+        ...all[tier],
+        rows: all[from].rows.map((row) => ({ ...row })),
+        hawanOptional: all[from].hawanOptional,
+      },
+    }));
+    setCopying(null);
+  };
   const change = (patch: Partial<Pkg>) =>
     setPackages((all) => ({ ...all, [tier]: { ...all[tier], ...patch } }));
   // A row waiting for the "really delete?" answer.
@@ -68,10 +88,9 @@ export function NewKitPage() {
   const changeRow = (index: number, patch: Partial<Row>) =>
     change({ rows: pkg.rows.map((row, i) => (i === index ? { ...row, ...patch } : row)) });
 
-  // The puja's samagri as the kit's items, each ticked Optional as the puja lists it.
-  const fillFromPuja = async (id: string, force: boolean) => {
-    if (!id || (pkg.rows.some((row) => row.variantId) && !force)) return;
-    setFilling(true);
+  // The puja's samagri as the kit's items, each ticked Optional as the puja lists it; only into an empty package.
+  const fillFromPuja = async (id: string) => {
+    if (!id || pkg.rows.some((row) => row.variantId)) return;
     try {
       const plan = await request<{
         items: { variantId: string; quantity: number; optional: boolean }[];
@@ -97,8 +116,6 @@ export function NewKitPage() {
       toast.success(t('filled', { count: plan.items.length, skipped: plan.skipped.length }));
     } catch (error) {
       toast.error(isApiError(error) ? error.message : tf('failed'));
-    } finally {
-      setFilling(false);
     }
   };
 
@@ -133,8 +150,10 @@ export function NewKitPage() {
     priced.find((q) => q.data?.variantId === variantId)?.data?.price ?? 0;
   const costOf = (variantId: string) =>
     priced.find((q) => q.data?.variantId === variantId)?.data?.cost ?? 0;
-  const productOf = (variantId: string) =>
-    priced.find((q) => q.data?.variantId === variantId)?.data?.productId ?? '';
+  const itemOf = (row: Row) =>
+    row.productId ||
+    (priced.find((q) => q.data?.variantId === row.variantId)?.data?.productId ?? '');
+  const repeated = new Set(repeatedRows(pkg.rows, itemOf));
   const lineTotal = (row: Row) => priceOf(row.variantId) * (Number(row.quantity) || 0);
   // The kit costs what its compulsory items (and compulsory hawan samagri) cost; optional ones are
   // priced on the side and take no discount.
@@ -162,6 +181,8 @@ export function NewKitPage() {
     !nameNe.trim() && t('nameNe'),
     !nameEn.trim() && t('nameEn'),
     chosen.length === 0 && t('packages'),
+    chosen.some((name) => repeatedRows(packages[name].rows, itemOf).length > 0) &&
+      t('sameItemTwice'),
     ...chosen
       .filter((name) => !packages[name].rows.some((row) => row.variantId))
       .map((name) => t('needItem', { tier: t(`tier.${name}`) })),
@@ -238,6 +259,14 @@ export function NewKitPage() {
           setRemoving(null);
         }}
       />
+      <ConfirmDialog
+        open={copying !== null}
+        onOpenChange={(next) => (next ? undefined : setCopying(null))}
+        title={t('copyWarnTitle', { tier: copying ? t(`tier.${copying}`) : '' })}
+        description={t('copyWarnNote', { tier: t(`tier.${tier}`) })}
+        confirmLabel={t('copyReplace')}
+        onConfirm={() => copying && copyFrom(copying)}
+      />
       <div>
         <Link href={routes.kits()} className="text-sm text-muted-foreground hover:text-foreground">
           ← {t('back')}
@@ -256,22 +285,10 @@ export function NewKitPage() {
               value={pujaId}
               onChange={(value) => {
                 setPujaId(String(value));
-                void fillFromPuja(String(value), false);
+                void fillFromPuja(String(value));
               }}
             />
           </Field>
-          <div className="flex items-end">
-            {pujaId ? (
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={filling}
-                onClick={() => void fillFromPuja(pujaId, true)}
-              >
-                {t('fillFromPuja')}
-              </Button>
-            ) : null}
-          </div>
           <Field label={t('nameNe')} htmlFor="kit-ne">
             <Input
               id="kit-ne"
@@ -360,20 +377,18 @@ export function NewKitPage() {
 
           {pkg.on ? (
             <>
-              {tier !== 'BASIC' && packages.BASIC.rows.some((r) => r.variantId) ? (
-                <div>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() =>
-                      change({
-                        rows: packages.BASIC.rows.map((row) => ({ ...row })),
-                        hawanOptional: packages.BASIC.hawanOptional,
-                      })
-                    }
-                  >
-                    {t('copyBasic')}
-                  </Button>
+              {copySources.length > 0 ? (
+                <div className="flex flex-wrap items-center gap-2">
+                  {copySources.map((from) => (
+                    <Button
+                      key={from}
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => (hasChosen ? setCopying(from) : copyFrom(from))}
+                    >
+                      {t('copyFrom', { tier: t(`tier.${from}`) })}
+                    </Button>
+                  ))}
                 </div>
               ) : null}
               {SECTIONS.map((section) => (
@@ -387,7 +402,8 @@ export function NewKitPage() {
                   setRemoving={setRemoving}
                   priceOf={priceOf}
                   costOf={costOf}
-                  productOf={productOf}
+                  itemOf={itemOf}
+                  repeated={repeated}
                   lineTotal={lineTotal}
                   afterOf={afterOf}
                 />
@@ -419,7 +435,9 @@ export function NewKitPage() {
                 <div className="grid gap-1.5 rounded-md border border-border p-3 text-sm sm:col-span-2">
                   <h4 className="font-semibold">{t('calcTitle')}</h4>
                   <PriceLine label={t('itemsCompulsory')} value={itemsSum} />
-                  <PriceLine label={t('hawanCompulsory')} value={hawanSum} />
+                  {hasHawan && !pkg.hawanOptional ? (
+                    <PriceLine label={t('hawanCompulsory')} value={hawanSum} />
+                  ) : null}
                   <PriceLine label={t('beforeDiscount')} value={oldPrice} strong top />
                   <PriceLine
                     label={

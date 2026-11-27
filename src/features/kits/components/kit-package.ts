@@ -1,6 +1,13 @@
 export const TIERS = ['BASIC', 'STANDARD', 'PREMIUM'] as const;
 export type Tier = (typeof TIERS)[number];
-export type Row = { variantId: string; quantity: string; optional: boolean; hawan: boolean };
+export type Row = {
+  variantId: string;
+  // The item the pack belongs to, known as soon as it is chosen; a row filled from a puja learns it later.
+  productId?: string;
+  quantity: string;
+  optional: boolean;
+  hawan: boolean;
+};
 // The two tables of a package: its items (each ticked Optional or not) and the hawan samagri.
 export const SECTIONS = ['main', 'hawan'] as const;
 export type Section = (typeof SECTIONS)[number];
@@ -47,3 +54,15 @@ export const codeOf = (nameEn: string) => {
     .replace(/_+$/, '');
   return /^[A-Z]/.test(code) ? code : `K_${code}`.slice(0, 22);
 };
+
+// The rows that name the same item as an earlier row (any size of it), so one item is never listed twice.
+export function repeatedRows(rows: Row[], productOf: (row: Row) => string): number[] {
+  const seen = new Set<string>();
+  return rows.flatMap((row, index) => {
+    if (!row.variantId) return [];
+    const item = productOf(row) || row.variantId;
+    if (seen.has(item)) return [index];
+    seen.add(item);
+    return [];
+  });
+}

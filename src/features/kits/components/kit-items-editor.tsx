@@ -54,6 +54,8 @@ export function KitItemsEditor({ kitId }: { kitId: string }) {
   const [adding, setAdding] = useState<Record<string, { variantId: string; quantity: string }>>({});
   const items = kit.data?.items ?? [];
   const costOf = useCosts(items.map((line) => line.sku.variantId));
+  // An item already in the kit is not offered again, in any size.
+  const inKit = items.map((line) => line.product.id);
 
   const refresh = async () => {
     await Promise.all([kit.refetch(), queryClient.invalidateQueries({ queryKey: ['kits'] })]);
@@ -216,6 +218,7 @@ export function KitItemsEditor({ kitId }: { kitId: string }) {
               <SearchSelect
                 aria-label={t('pack')}
                 source={choices.packs}
+                excludeProducts={inKit}
                 value={draft.variantId}
                 onChange={(value) =>
                   setAdding((all) => ({ ...all, [key]: { ...draft, variantId: String(value) } }))

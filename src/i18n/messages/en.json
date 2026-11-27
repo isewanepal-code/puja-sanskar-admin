@@ -636,7 +636,9 @@
     "inlineHint": "Click to change",
     "inlineSaved": "Saved · {name}",
     "badPrice": "The price is in rupees and above 0 (for example 150 or 150.50).",
-    "badNumber": "Type a number (for example 12 or 0.5)."
+    "badNumber": "Type a number (for example 12 or 0.5).",
+    "less": "Less",
+    "more": "More"
   },
   "password": {
     "title": "Change password",
@@ -4589,7 +4591,12 @@
     "optionalItemsApart": "Optional items (priced apart, no discount)",
     "optionalHawanApart": "Optional hawan samagri (priced apart, no discount)",
     "withAllOptional": "If the shopper takes every optional one too",
-    "hawanOptional": "The whole hawan set is optional (shoppers may take it or leave it)"
+    "hawanOptional": "The whole hawan set is optional (shoppers may take it or leave it)",
+    "sameItemTwice": "The same item is listed twice",
+    "copyFrom": "Copy items from {tier}",
+    "copyWarnTitle": "Replace what you chose with {tier}?",
+    "copyWarnNote": "The items already chosen in this {tier} package are removed, and the items of the other package take their place.",
+    "copyReplace": "Replace"
   },
   "kitEdit": {
     "back": "All kits",
