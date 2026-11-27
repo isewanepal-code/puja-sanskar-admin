@@ -48,3 +48,12 @@ export function unitsFor(sellBy: string) {
   }
   return sources.get(key)!;
 }
+
+// Every unit the shop has, for what a purchase may be bought in (a sack, a box, a roll, a kilo).
+export const allUnits = wholeSource('units-all', async () =>
+  (await request<Page>('GET', '/admin/units', { query: { limit: 100 } })).items.map((unit) => ({
+    value: unit.id,
+    label: unit.nameNe,
+    detail: unit.symbol,
+  })),
+);

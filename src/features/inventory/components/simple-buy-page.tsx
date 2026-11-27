@@ -16,7 +16,7 @@ import { Button, IconButton } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { brandsResource } from '@/features/catalogue';
 import { suppliersResource } from '@/features/purchases';
-import { optionValueResource, unitsFor, type OptionType } from '@/features/products';
+import { allUnits, optionValueResource, unitsFor, type OptionType } from '@/features/products';
 import { isApiError, request, type Schema } from '@/lib/api';
 import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
@@ -39,8 +39,6 @@ type Line = {
   brand: string;
   // The brand the item had when it loaded, to see whether it was changed here.
   itemBrand: string;
-  // A word about this line, kept on the bill.
-  remarks: string;
   // 'AUTO' takes the item's own VAT; the default is no VAT.
   vat: string;
   expiresOn: string;
@@ -51,6 +49,8 @@ type Line = {
   // The unit bought in is a sack, box or roll of something weighed or measured: how much one holds
   // (25 of kg), asked here once so the stock can show the total and open it.
   container: boolean;
+  // The unit bought in does not fit how the item is sold (a sack of rice): the count is a must.
+  needsHolds: boolean;
   holds: string;
   holdsUnitId: string;
   // The names the pack is called by: the unit bought in (बोरा) and the unit it holds (kg).
@@ -66,12 +66,12 @@ const emptyLine = (productId = ''): Line => ({
   rate: '',
   brand: '',
   itemBrand: '',
-  remarks: '',
   vat: '0',
   expiresOn: '',
   itemVat: '0',
   sellBy: '',
   container: false,
+  needsHolds: false,
   holds: '',
   holdsUnitId: '',
   unitLabel: '',
@@ -121,27 +121,37 @@ function LineRow({
     queryFn: () => request<Product>('GET', `/admin/products/${line.productId}`),
     enabled: Boolean(line.productId),
   });
-  // Units are looked up only once the item is known, so a kg item never gets a piece unit first.
+  // Any unit of the shop can be bought in (a sack, a box, a roll); the ones the item is sold in come first.
   const sellBy = item.data?.sellBy;
-  const units = useQuery({
+  const sold = useQuery({
     queryKey: ['units-for', sellBy],
     queryFn: () => unitsFor(sellBy!).load(),
     enabled: Boolean(line.productId && sellBy),
     staleTime: 5 * 60 * 1000,
   });
+  const every = useQuery({
+    queryKey: ['units-all'],
+    queryFn: () => allUnits.load(),
+    enabled: Boolean(line.productId),
+    staleTime: 5 * 60 * 1000,
+  });
+  const soldList = useMemo(
+    () => (line.productId && sellBy ? (sold.data ?? []) : []),
+    [line.productId, sellBy, sold.data],
+  );
   const unitList = useMemo(
-    () => (line.productId && sellBy ? (units.data ?? []) : []),
-    [line.productId, sellBy, units.data],
+    () => (line.productId && sellBy ? (every.data ?? []) : []),
+    [line.productId, sellBy, every.data],
   );
   const unitKnown = unitList.some((u) => u.value === line.unitId);
-  // The usual unit is chosen for staff as soon as the item is known, and a unit that does not fit
-  // the item (left from another item) is replaced.
+  // The usual unit is chosen for staff as soon as the item is known, and a unit that no longer
+  // exists (left from another item) is replaced.
   useEffect(() => {
-    if (unitList.length === 0 || unitKnown) return;
+    if (unitList.length === 0 || soldList.length === 0 || unitKnown) return;
     const usual =
-      unitList.find((u) => USUAL.includes((u.detail ?? '').toLowerCase())) ?? unitList[0]!;
+      soldList.find((u) => USUAL.includes((u.detail ?? '').toLowerCase())) ?? soldList[0]!;
     onChange({ unitId: usual.value });
-  }, [unitList, unitKnown, onChange]);
+  }, [unitList, soldList, unitKnown, onChange]);
   // The item's VAT, for the totals.
   const itemVat = item.data?.effectiveTax.ratePercent ?? '0';
   useEffect(() => {
@@ -161,37 +171,43 @@ function LineRow({
     }
   }, [line.productId, item.data, line.itemBrand, itemBrand, onChange]);
 
-  const unitSymbol = unitList.find((u) => u.value === line.unitId)?.detail ?? '';
   const boughtIn = unitList.find((u) => u.value === line.unitId);
-  // Kilos, grams, litres, metres...: what a sack may be said to hold.
-  const measures = unitList.filter((u) => measureOf(1, u.detail ?? '') !== null);
-  const container =
-    ['WEIGHT', 'VOLUME', 'LENGTH'].includes(sellBy ?? '') &&
-    Boolean(boughtIn) &&
-    measureOf(1, unitSymbol) === null &&
-    measures.length > 0;
+  const unitSymbol = boughtIn?.detail ?? '';
+  // The units a pack's contents are counted in: kg, litre, metre for a weighed item; its own for the rest.
+  const measures = ['WEIGHT', 'VOLUME', 'LENGTH'].includes(sellBy ?? '')
+    ? soldList.filter((u) => measureOf(1, u.detail ?? '') !== null)
+    : soldList;
+  // A sack of rice cannot be told apart from rice without the count; a box of pieces can be left plain.
+  const needsHolds = Boolean(boughtIn) && !soldList.some((u) => u.value === line.unitId);
   const bigMeasure =
-    measures.find((u) => ['kg', 'l', 'm'].includes((u.detail ?? '').toLowerCase())) ?? measures[0];
+    measures.find((u) => ['kg', 'l', 'm', 'pc', 'pcs'].includes((u.detail ?? '').toLowerCase())) ??
+    measures[0];
   const holdsUnitKnown = measures.some((u) => u.value === line.holdsUnitId);
   const holdsSymbol = measures.find((u) => u.value === line.holdsUnitId)?.detail ?? '';
   const unitLabel = boughtIn?.label ?? '';
+  // The line is a pack (3 sacks of 25 kg) when a count is given in a unit other than the one bought.
+  const container = num(line.holds) > 0 && holdsUnitKnown && line.holdsUnitId !== line.unitId;
   useEffect(() => {
     if (
       line.container !== container ||
+      line.needsHolds !== needsHolds ||
       line.unitLabel !== unitLabel ||
       line.holdsSymbol !== holdsSymbol
     ) {
-      onChange({ container, unitLabel, holdsSymbol });
-    } else if (container && !holdsUnitKnown && bigMeasure) {
+      onChange({ container, needsHolds, unitLabel, holdsSymbol });
+    } else if (!holdsUnitKnown && bigMeasure && line.productId) {
       onChange({ holdsUnitId: bigMeasure.value });
     }
   }, [
     container,
+    needsHolds,
     unitLabel,
     holdsSymbol,
     line.container,
+    line.needsHolds,
     line.unitLabel,
     line.holdsSymbol,
+    line.productId,
     holdsUnitKnown,
     bigMeasure,
     onChange,
@@ -306,12 +322,26 @@ function LineRow({
           />
         </td>
         <td className={cell}>
+          <SearchSelect
+            bare
+            required
+            aria-label={label(t('sellUnit'))}
+            disabled={measures.length === 0}
+            placeholder="—"
+            options={measures}
+            value={holdsUnitKnown ? line.holdsUnitId : ''}
+            onChange={(value) => onChange({ holdsUnitId: String(value) })}
+          />
+        </td>
+        <td className={cn(cell, bad(needsHolds && !(num(line.holds) > 0)))}>
           <input
-            aria-label={label(t('remarks'))}
-            value={line.remarks}
-            maxLength={200}
-            onChange={(e) => onChange({ remarks: e.target.value })}
-            className={box}
+            aria-label={label(t('holdsCol'))}
+            inputMode="decimal"
+            value={line.holds}
+            disabled={!boughtIn || line.holdsUnitId === line.unitId}
+            placeholder={needsHolds ? '25' : '—'}
+            onChange={(e) => onChange({ holds: e.target.value })}
+            className={`${box} text-right`}
           />
         </td>
         <td className={cn(cell, bad(!(num(line.rate) > 0)))}>
@@ -371,41 +401,15 @@ function LineRow({
       {container ? (
         <tr className="bg-primary/5">
           <td className="border-b border-border" />
-          <td colSpan={11} className="border-b border-border px-3 py-2">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span className="text-sm font-medium">
-                {t('holdsTitle', { unit: boughtIn?.label ?? '' })}
-              </span>
-              <input
-                aria-label={label(t('holdsTitle', { unit: boughtIn?.label ?? '' }))}
-                inputMode="decimal"
-                value={line.holds}
-                placeholder="25"
-                onChange={(e) => onChange({ holds: e.target.value })}
-                className={cn(
-                  'h-8 w-24 rounded-md border border-border bg-card px-2 text-right text-sm outline-none focus:border-primary',
-                  showErrors && !(num(line.holds) > 0) && 'border-destructive',
-                )}
-              />
-              <div className="w-40">
-                <SearchSelect
-                  aria-label={label(t('unit'))}
-                  options={measures}
-                  required
-                  value={holdsUnitKnown ? line.holdsUnitId : ''}
-                  onChange={(value) => onChange({ holdsUnitId: String(value) })}
-                />
-              </div>
-              {num(line.holds) > 0 && num(line.quantity) > 0 ? (
-                <span className="text-sm text-muted-foreground">
-                  {t('holdsTotal', {
-                    count: num(line.quantity),
-                    amount: `${num(line.holds)} ${holdsSymbol}`,
-                    total: `${Math.round(num(line.quantity) * num(line.holds) * 1000) / 1000} ${holdsSymbol}`,
-                  })}
-                </span>
-              ) : null}
-            </div>
+          <td
+            colSpan={12}
+            className="border-b border-border px-3 py-1.5 text-sm text-muted-foreground"
+          >
+            {t('holdsTotal', {
+              count: num(line.quantity) || 0,
+              amount: `${num(line.holds)} ${holdsSymbol} / ${boughtIn?.label ?? ''}`,
+              total: `${Math.round((num(line.quantity) || 0) * num(line.holds) * 1000) / 1000} ${holdsSymbol}`,
+            })}
           </td>
         </tr>
       ) : null}
@@ -481,11 +485,11 @@ export function SimpleBuyPage({ itemId, back }: { itemId?: string; back?: string
     if (num(l.quantity) > MAX_QUANTITY) return t('quantityTooBig', { n });
     if (l.sellBy === 'PIECE' && !Number.isInteger(num(l.quantity)))
       return t('quantityWhole', { n });
-    if (l.container && !(num(l.holds) > 0)) return t('needHolds', { n });
+    if (l.needsHolds && !(num(l.holds) > 0)) return t('needHolds', { n });
     if (!(num(l.rate) > 0)) return t('needRate', { n });
     if (!/^\d+(\.\d{1,2})?$/.test(l.rate.trim().replace(/,/g, ''))) return t('rateDecimals', { n });
     if (num(l.rate) > MAX_MONEY) return t('rateTooBig', { n });
-    if (l.container && !/^\d+(\.\d{1,3})?$/.test(l.holds.trim()))
+    if (l.holds.trim() !== '' && !/^\d+(\.\d{1,3})?$/.test(l.holds.trim()))
       return t('quantityDecimals', { n });
     if (l.expiresOn && l.expiresOn < day) return t('expiryBeforeBill', { n });
     return null;
@@ -558,7 +562,6 @@ export function SimpleBuyPage({ itemId, back }: { itemId?: string; back?: string
           unitCost: String(num(l.rate)),
           ...(l.vat !== 'AUTO' && { vatRate: l.vat }),
           ...(l.expiresOn && { expiresOn: l.expiresOn }),
-          ...(l.remarks.trim() && { remarks: l.remarks.trim() }),
         })),
       };
       const bill = made.current ?? (await request<Bill>('POST', '/admin/purchase-bills', { body }));
@@ -600,9 +603,8 @@ export function SimpleBuyPage({ itemId, back }: { itemId?: string; back?: string
     (i === 0 && l.productId !== start.productId) ||
     l.optionValueIds.length > 0 ||
     l.vat !== '0' ||
-    l.remarks.trim() !== '' ||
     l.brand !== l.itemBrand ||
-    [l.quantity, l.rate, l.expiresOn].some((v) => v.trim() !== '');
+    [l.quantity, l.rate, l.holds, l.expiresOn].some((v) => v.trim() !== '');
   const guard = useUnsavedGuard(
     !save.isSuccess &&
       (supplierId !== '' ||
@@ -680,7 +682,7 @@ export function SimpleBuyPage({ itemId, back }: { itemId?: string; back?: string
         <h2 className="font-heading text-base font-semibold">{t('what')}</h2>
         <p className="text-xs text-muted-foreground">{t('sheetNote')}</p>
         <div className="overflow-x-auto rounded-lg border border-border bg-card">
-          <table className="w-full min-w-[1180px] table-fixed border-separate border-spacing-0 text-sm">
+          <table className="w-full min-w-[1280px] table-fixed border-separate border-spacing-0 text-sm">
             <colgroup>
               <col style={{ width: 32 }} />
               <col style={{ width: '24%' }} />
@@ -688,7 +690,8 @@ export function SimpleBuyPage({ itemId, back }: { itemId?: string; back?: string
               <col style={{ width: 130 }} />
               <col style={{ width: 66 }} />
               <col style={{ width: 84 }} />
-              <col style={{ width: '10%' }} />
+              <col style={{ width: 110 }} />
+              <col style={{ width: 90 }} />
               <col style={{ width: 80 }} />
               <col style={{ width: 92 }} />
               <col style={{ width: 120 }} />
@@ -702,8 +705,9 @@ export function SimpleBuyPage({ itemId, back }: { itemId?: string; back?: string
                 <th className={`${th} text-left`}>{t('brand')}</th>
                 <th className={`${th} text-left`}>{t('colour')}</th>
                 <th className={`${th} text-right`}>{t('quantity')} *</th>
-                <th className={`${th} text-left`}>{t('unit')} *</th>
-                <th className={`${th} text-left`}>{t('remarks')}</th>
+                <th className={`${th} text-left`}>{t('boughtUnit')} *</th>
+                <th className={`${th} text-left`}>{t('sellUnit')}</th>
+                <th className={`${th} text-right`}>{t('holdsCol')}</th>
                 <th className={`${th} text-right`}>{t('rateCol')} *</th>
                 <th className={`${th} text-left`}>{t('vat')}</th>
                 <th className={`${th} text-left`}>{t('expires')}</th>

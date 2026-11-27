@@ -21,5 +21,5 @@ export {
 } from './resources';
 export { OptionTypesScreen } from './components/option-types-screen';
 export { optionValueResource, type OptionType } from './options';
-export { unitsFor } from './units';
+export { allUnits, unitsFor } from './units';
 export { PhotosPanel } from './components/photos-panel';

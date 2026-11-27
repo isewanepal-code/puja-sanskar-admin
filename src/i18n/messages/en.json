@@ -4930,9 +4930,11 @@
       "newColour": "New colour",
       "colourAdded": "{name} added and chosen.",
       "needBillNo": "Enter the supplier's bill number.",
-      "holdsTitle": "How much is in one {unit}?",
       "holdsTotal": "{count} × {amount} = {total}",
-      "needHolds": "Line {n}: write how much one sack, box or roll holds (for example 25 kg)"
+      "needHolds": "Line {n}: write how much one sack, box or roll holds, and the unit (for example 25 kg)",
+      "sellUnit": "Sell unit",
+      "holdsCol": "In one",
+      "boughtUnit": "Bought in"
     },
     "itemPage": {
       "back": "All items",

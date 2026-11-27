@@ -868,9 +868,11 @@
       "newColour": "नयाँ रङ",
       "colourAdded": "{name} थपियो र छानियो।",
       "needBillNo": "सप्लायरको बिल नम्बर लेख्नुहोस्।",
-      "holdsTitle": "एउटा {unit} मा कति छ?",
       "holdsTotal": "{count} × {amount} = {total}",
-      "needHolds": "लाइन {n}: एउटा बोरा, बक्स वा रोलमा कति छ लेख्नुहोस् (जस्तै २५ kg)"
+      "needHolds": "लाइन {n}: एउटा बोरा, बाकस वा रोलमा कति छ र कुन एकाइमा लेख्नुहोस् (जस्तै २५ kg)",
+      "sellUnit": "बेच्ने एकाइ",
+      "holdsCol": "एउटामा कति",
+      "boughtUnit": "खरिद एकाइ"
     },
     "itemPage": {
       "back": "सबै सामान",
