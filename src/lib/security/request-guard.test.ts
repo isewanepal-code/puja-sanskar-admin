@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isSafeProxyPath, isSameOriginWrite } from './request-guard';
+import { isSafeProxyPath, isSameOriginWrite, safeNextPath } from './request-guard';
 
 const headers = (values: Record<string, string>) => new Headers(values);
 
@@ -48,6 +48,19 @@ describe('isSafeProxyPath', () => {
     'should refuse %s',
     (segment) => {
       expect(isSafeProxyPath(['api', 'v1', segment])).toBe(false);
+    },
+  );
+});
+
+describe('safeNextPath', () => {
+  it('keeps a path on this site', () => {
+    expect(safeNextPath('/kits?step=items')).toBe('/kits?step=items');
+  });
+
+  it.each(['//evil.com', '/\\evil.com', '/\t/evil.com', 'https://evil.com', 'evil.com', '', null])(
+    'turns %j into the fallback',
+    (next) => {
+      expect(safeNextPath(next, '/home')).toBe('/home');
     },
   );
 });

@@ -11,6 +11,7 @@ import { Field } from '@/components/forms';
 import { Icon } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { safeNextPath } from '@/lib/security/request-guard';
 import { routes } from '@/lib/routes';
 
 // API codes a sign-in can fail with, and the message each one shows.
@@ -57,8 +58,7 @@ export function LoginForm() {
         setError(t(isKnown(code) ? MESSAGE_KEY[code] : 'failed'));
         return;
       }
-      const safeNext = next?.startsWith('/') && !next.startsWith('//') ? next : routes.dashboard();
-      router.replace(safeNext);
+      router.replace(safeNextPath(next, routes.dashboard()));
       router.refresh();
     } catch {
       setError(t('network'));

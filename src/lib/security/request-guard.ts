@@ -40,3 +40,11 @@ export function isSafeProxyPath(segments: string[]): boolean {
     );
   });
 }
+
+// Where to go after sign-in or a refresh: a path on this site, never another address.
+// `//host`, `/\host` and a tab or newline inside the path are all read by browsers as another site.
+export function safeNextPath(next: string | null | undefined, fallback = '/'): string {
+  if (!next?.startsWith('/') || next.startsWith('//')) return fallback;
+
+  return next.includes('\\') || /[\u0000-\u001f]/.test(next) ? fallback : next;
+}

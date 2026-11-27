@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { serverEnv } from '@/lib/env/server';
-import { isSameOriginWrite } from '@/lib/security/request-guard';
+import { isSameOriginWrite, safeNextPath } from '@/lib/security/request-guard';
 import {
   clearTokens,
   refreshOnce,
@@ -50,8 +50,7 @@ export async function POST(request: NextRequest, { params }: RouteContext<'/api/
 // Server-rendered pages send an expired session here; it refreshes once and goes back.
 export async function GET(request: NextRequest, { params }: RouteContext<'/api/auth/[action]'>) {
   const { action } = await params;
-  const next = request.nextUrl.searchParams.get('next') ?? '/';
-  const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/';
+  const safeNext = safeNextPath(request.nextUrl.searchParams.get('next'));
   if (action !== 'refresh') return NextResponse.json({ success: false }, { status: 404 });
 
   const refreshToken = request.cookies.get(SESSION_COOKIES.refresh)?.value;
