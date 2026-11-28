@@ -4828,6 +4828,8 @@
     "import": "Import",
     "checkFirst": "पहिले फाइल जाँच्नुहोस्: हरेक लाइन ठिक नभएसम्म केही लेखिँदैन, र सफा जाँचपछि Import प्रयोग गरिन्छ।",
     "checked": "जाँच भयो; केही लेखिएन",
+    "done": "Import सफल भयो: {created} नयाँ, {updated} बदलिए, {same} पहिले नै उस्तै। सूची अपडेट भयो।",
+    "chooseAnother": "अर्को फाइल छान्नुहोस्",
     "imported": "Import भयो",
     "wouldChange": "import ले के बदल्छ",
     "changed": "के बदलियो",

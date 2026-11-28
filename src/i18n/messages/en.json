@@ -3407,6 +3407,8 @@
     "import": "Import",
     "checkFirst": "Check the file first: nothing is written until every row is right, and Import is used after a clean check.",
     "checked": "Checked; nothing was written",
+    "done": "Import finished: {created} new, {updated} changed, {same} already the same. The list is updated.",
+    "chooseAnother": "Choose another file",
     "imported": "Imported",
     "wouldChange": "What importing would change",
     "changed": "What changed",

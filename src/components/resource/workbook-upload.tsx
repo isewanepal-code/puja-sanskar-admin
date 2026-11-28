@@ -46,6 +46,8 @@ export function WorkbookUpload({ path, templatePath, onImported }: WorkbookUploa
         toast.info(t('checked'));
       } else {
         toast.success(t('imported'));
+        setFile(null);
+        if (input.current) input.current.value = '';
         onImported?.();
       }
     },
@@ -57,6 +59,9 @@ export function WorkbookUpload({ path, templatePath, onImported }: WorkbookUploa
     },
   });
   const checkedThisFile = report?.dryRun === true;
+  const done = report !== null && !report.dryRun;
+  const total = (key: 'created' | 'updated' | 'unchanged') =>
+    report?.sheets.reduce((sum, sheet) => sum + sheet[key], 0) ?? 0;
 
   return (
     <div className="grid gap-4">
@@ -74,7 +79,7 @@ export function WorkbookUpload({ path, templatePath, onImported }: WorkbookUploa
           }}
         />
         <Button variant="secondary" icon="upload" onClick={() => input.current?.click()}>
-          {file ? file.name : t('chooseFile')}
+          {file ? file.name : done ? t('chooseAnother') : t('chooseFile')}
         </Button>
         <Button
           variant="secondary"
@@ -93,6 +98,20 @@ export function WorkbookUpload({ path, templatePath, onImported }: WorkbookUploa
         ) : null}
       </div>
       <p className="text-sm text-muted-foreground">{t('checkFirst')}</p>
+
+      {done ? (
+        <div
+          role="status"
+          className="rounded-md border border-success/40 bg-success/10 p-3 text-sm font-medium text-success"
+        >
+          ✓{' '}
+          {t('done', {
+            created: total('created'),
+            updated: total('updated'),
+            same: total('unchanged'),
+          })}
+        </div>
+      ) : null}
 
       {report ? (
         <table className="w-full text-sm">
