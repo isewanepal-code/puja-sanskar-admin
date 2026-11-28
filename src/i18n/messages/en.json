@@ -545,7 +545,8 @@
     "deletedUndo": "{name} deleted",
     "undo": "Undo",
     "fixFields": "Fill in or fix: {fields}",
-    "stillNeeded": "To save, fill in: {fields}"
+    "stillNeeded": "To save, fill in: {fields}",
+    "deleteKitNote": "All {count, plural, one {# package} other {# packages}} of this kit are deleted. This can't be undone."
   },
   "pujas": {
     "title": "Pujas",
@@ -3588,7 +3589,7 @@
     },
     "kits": {
       "title": "Kits",
-      "intro": "A puja kit is a list of items sold together. A kit made when sold takes each item out of stock as it sells; a packed kit is made ahead with Pack kits and sold from its own count."
+      "intro": "A puja kit is a list of items sold together, in packages (Basic, Standard, Premium). Each row is one kit; its packages are listed beside it with their prices. Press the pencil to change a kit."
     },
     "suppliers": {
       "title": "Suppliers",
@@ -4582,7 +4583,7 @@
     "afterCol": "After discount",
     "calcTitle": "How the price is made",
     "itemsCompulsory": "Items in the kit (compulsory)",
-    "hawanCompulsory": "Hawan samagri (compulsory)",
+    "hawanCompulsory": "Hawan samagri",
     "beforeDiscount": "Kit price before discount",
     "discountPercentOf": "Discount {percent}% of {amount}",
     "discountFlat": "Discount (flat rupees off the kit)",
@@ -4596,7 +4597,10 @@
     "copyFrom": "Copy items from {tier}",
     "copyWarnTitle": "Replace what you chose with {tier}?",
     "copyWarnNote": "The items already chosen in this {tier} package are removed, and the items of the other package take their place.",
-    "copyReplace": "Replace"
+    "copyReplace": "Replace",
+    "editTitle": "Edit {name}",
+    "editNote": "Change the name, photos, items or discount of each package. Add a package by ticking it; untick one to remove it when you save.",
+    "removesOnSave": "Saving removes the {tier} package. Tick it again to keep it."
   },
   "kitEdit": {
     "back": "All kits",

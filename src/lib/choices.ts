@@ -100,6 +100,19 @@ const packsOf = (product: Product): Choice[] =>
     productId: product.id,
   }));
 
+// The packs of the items in one category (hawan samagri, say), searched like all packs.
+const packsInCategory = new Map<string, ChoiceSource>();
+export function packsIn(categoryId: string): ChoiceSource {
+  if (!packsInCategory.has(categoryId)) {
+    packsInCategory.set(categoryId, {
+      key: `packs-in-${categoryId}`,
+      search: (q, page) =>
+        pageOf({ path: '/admin/products', query: { categoryId }, toChoices: packsOf }, q, page),
+    });
+  }
+  return packsInCategory.get(categoryId)!;
+}
+
 // The dropdowns many screens share, each written once.
 export const choices = {
   materials: pagedSource<Material>('materials', {

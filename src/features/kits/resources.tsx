@@ -1,4 +1,12 @@
-import { activeColumn, discountFields, recordColumn, type Resource } from '@/components/resource';
+import {
+  activeColumn,
+  ActiveBadge,
+  discountFields,
+  recordColumn,
+  type Resource,
+} from '@/components/resource';
+import type { ReactNode } from 'react';
+
 import { Badge } from '@/components/ui/badge';
 import { request, type Schema } from '@/lib/api';
 import { branchChoices } from '@/features/branches';
@@ -6,7 +14,9 @@ import { choices } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 import { searchKey } from '@/lib/nepali-fold';
 
-export type Kit = Schema<'AdminKitResponse'>;
+import { kitSetKey, kitSetRows, type Kit, type KitSetRow } from './lib/kit-set';
+
+export type { Kit };
 type Line = Schema<'AdminKitLineResponse'>;
 type Name = (key: string) => string;
 
@@ -23,80 +33,103 @@ const discount = discountFields({
   value: 'discountValue',
 });
 
-export function kitsResource(name: Name): Resource<Kit> {
+// Every kit, a set of packages (Basic, Standard, Premium) standing as one row with a value for each.
+async function loadKits(groupId: string): Promise<Kit[]> {
+  const all: Kit[] = [];
+  for (let page = 1; ; page += 1) {
+    const { items, meta } = await request<{
+      items: Kit[];
+      meta: { page: number; totalPages: number };
+    }>('GET', '/admin/kits', { query: { page, limit: 100, ...(groupId && { groupId }) } });
+    all.push(...items);
+    if (meta.page >= meta.totalPages) return all;
+  }
+}
+
+// One line for each package of the row, so the columns line up (names, items, prices).
+const perPackage = (row: KitSetRow, show: (kit: Kit) => ReactNode) => (
+  <div className="grid gap-0.5">
+    {row.set.map((kit) => (
+      <div key={kit.id} className="whitespace-nowrap">
+        {show(kit)}
+      </div>
+    ))}
+  </div>
+);
+
+export function kitsResource(name: Name, groupId = ''): Resource<KitSetRow> {
+  const tierName = (kit: Kit) => (kit.tier ? name(`tiers.${kit.tier}`) : '—');
   return {
     key: 'kits',
     path: '/admin/kits',
-    list: 'paged',
+    list: 'all',
+    loadAll: async () => kitSetRows(await loadKits(groupId)),
+    matches: (row, query) =>
+      searchKey(
+        [
+          row.nameNe,
+          row.nameEn,
+          row.nameRomanized,
+          ...row.aliases,
+          row.puja?.nameNe,
+          ...row.set.map((k) => k.code),
+        ]
+          .filter(Boolean)
+          .join(' '),
+      ).includes(query),
     rowId: (row) => row.id,
-    rowLabel: (row) => `${row.code} · ${row.nameNe}`,
-    usagePath: (row) => `/admin/usage/kit/${row.id}`,
-    initialSort: { key: 'sortOrder', direction: 'asc' },
-    reorder: true,
-    modalSize: 'lg',
-    formRow: (row) => discount.formRow({ ...row, pujaId: row.puja?.id }),
-    shapeBody: discount.shapeBody,
+    rowLabel: (row) => row.nameNe,
+    canCreate: false,
+    canDelete: false,
     columns: [
-      recordColumn<Kit>('item', {
+      recordColumn<KitSetRow>('item', {
         image: (row) => row.images[0]?.url,
-        code: (row) => row.code,
+        code: (row) => kitSetKey(row),
         also: (row) => row.puja?.nameNe ?? row.nameEn,
       }),
       {
         key: 'tier',
-        cell: (row) => (row.tier ? name(`tiers.${row.tier}`) : '—'),
-        sortValue: (row) => row.tier,
+        cell: (row) => perPackage(row, tierName),
+        sortValue: (row) => row.set.length,
       },
       {
         key: 'items',
-        cell: (row) => <Badge>{row.items.length}</Badge>,
+        cell: (row) => perPackage(row, (kit) => <Badge>{kit.items.length}</Badge>),
         sortValue: (row) => row.items.length,
         align: 'right',
       },
       {
         key: 'salePrice',
-        cell: (row) => (
-          <>
-            {money(row.salePrice)}
-            {row.salePrice !== row.price ? (
-              <div className="text-xs text-muted-foreground line-through">{money(row.price)}</div>
-            ) : null}
-          </>
-        ),
+        cell: (row) =>
+          perPackage(row, (kit) => (
+            <>
+              {money(kit.salePrice)}
+              {kit.salePrice !== kit.price ? (
+                <span className="ml-1 text-xs text-muted-foreground line-through">
+                  {money(kit.price)}
+                </span>
+              ) : null}
+            </>
+          )),
         sortValue: (row) => Number(row.salePrice ?? -1),
         align: 'right',
       },
       {
         key: 'isAvailable',
         cell: (row) => (
-          <Badge tone={row.isAvailable ? 'success' : 'warning'}>
-            {row.packed
-              ? name('packedReady').replace('{count}', String(row.availableCount))
-              : name(row.isAvailable ? 'available' : 'unavailable')}
+          <Badge tone={row.set.every((kit) => kit.isAvailable) ? 'success' : 'warning'}>
+            {name(row.set.every((kit) => kit.isAvailable) ? 'available' : 'unavailable')}
           </Badge>
         ),
-        sortValue: (row) => row.isAvailable,
+        sortValue: (row) => row.set.every((kit) => kit.isAvailable),
       },
-      activeColumn(),
+      {
+        ...activeColumn<KitSetRow>(),
+        cell: (row) => <ActiveBadge on={row.set.some((kit) => kit.isActive)} />,
+        sortValue: (row) => row.set.some((kit) => kit.isActive),
+      },
     ],
-    fields: [
-      { name: 'code', kind: 'code', required: true, createOnly: true, max: 32 },
-      { name: 'pujaId', kind: 'select', optionsFrom: choices.pujas },
-      { name: 'nameNe', kind: 'text', required: true, max: 160 },
-      { name: 'nameEn', kind: 'text', required: true, max: 160 },
-      { name: 'nameRomanized', kind: 'text', max: 160 },
-      { name: 'aliases', kind: 'tags', wide: true },
-      { name: 'tier', kind: 'select', options: tierChoices(name) },
-      { name: 'packed', kind: 'switch', wide: true },
-      ...discount.fields,
-      { name: 'sortOrder', kind: 'number' },
-      { name: 'images', kind: 'images', section: 'website' },
-      { name: 'description', kind: 'html', max: 4000 },
-      { name: 'slug', kind: 'slug', max: 160, section: 'seo', wide: true },
-      { name: 'metaTitle', kind: 'text', max: 70, wide: true },
-      { name: 'metaDescription', kind: 'textarea', max: 160 },
-      { name: 'isActive', kind: 'switch' },
-    ],
+    fields: [],
   };
 }
 

@@ -6,7 +6,7 @@ import { SearchSelect } from '@/components/controls';
 import { Icon } from '@/components/icons';
 import { Button, IconButton } from '@/components/ui/button';
 import { QuantityStepper } from '@/components/ui/quantity-stepper';
-import { choices } from '@/lib/choices';
+import type { ChoiceSource } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 
 import { blankRows, inSection, type Pkg, type Row, type Section } from './kit-package';
@@ -15,6 +15,7 @@ import { blankRows, inSection, type Pkg, type Row, type Section } from './kit-pa
 // what each costs, sells at, and comes to after the discount.
 export function KitRowsTable({
   section,
+  source,
   pkg,
   change,
   changeRow,
@@ -28,6 +29,8 @@ export function KitRowsTable({
   afterOf,
 }: {
   section: Section;
+  // Where this table's packs are searched: every pack, or only those of one category (hawan).
+  source: ChoiceSource;
   pkg: Pkg;
   change: (patch: Partial<Pkg>) => void;
   changeRow: (index: number, patch: Partial<Row>) => void;
@@ -106,7 +109,7 @@ export function KitRowsTable({
                 <td className="p-1.5">
                   <SearchSelect
                     aria-label={t('pack')}
-                    source={choices.packs}
+                    source={source}
                     exclude={others(index).map((r) => r.variantId)}
                     excludeProducts={others(index).map((r) => itemOf(r))}
                     required
