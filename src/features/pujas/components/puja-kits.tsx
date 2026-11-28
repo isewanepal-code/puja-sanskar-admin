@@ -12,7 +12,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants, IconButton } from '@/components/ui/button';
 import { QuantityStepper } from '@/components/ui/quantity-stepper';
 import { isApiError, request, type Schema } from '@/lib/api';
-import { choices } from '@/lib/choices';
+import { formatMoney } from '@/lib/format';
+import { groupKitSets, kitSetKey } from '@/features/kits';
+import { choices, wholeSource } from '@/lib/choices';
 import { routes } from '@/lib/routes';
 
 type Kit = Schema<'AdminKitResponse'>;
@@ -26,6 +28,32 @@ type Plan = {
   }[];
 };
 type Draft = { productId: string; quantity: string; optional: boolean };
+const money = (amount: string | number) => formatMoney(String(amount), 'en');
+// One choice for a whole kit (its packages together), read as "name (code)".
+const setChoice = (set: { key: string; lead: Kit; kits: Kit[] }) => ({
+  value: set.key,
+  label: `${set.lead.nameNe} (${set.key})`,
+  detail: set.kits
+    .map((kit) => tierName(kit.tier ?? ''))
+    .filter(Boolean)
+    .join(' · '),
+});
+// Every kit, a page of 100 at a time (the most one call gives).
+async function allKits(): Promise<Kit[]> {
+  const kits: Kit[] = [];
+  for (let page = 1; page <= 50; page += 1) {
+    const { items } = await request<{ items: Kit[] }>('GET', '/admin/kits', {
+      query: { limit: 100, page },
+    });
+    kits.push(...items);
+    if (items.length < 100) break;
+  }
+  return kits;
+}
+const kitSets = wholeSource('puja-kit-sets', async () =>
+  groupKitSets(await allKits()).map(setChoice),
+);
+const tierName = (tier: string) => tier.charAt(0) + tier.slice(1).toLowerCase();
 const blank = (count: number): Draft[] =>
   Array.from({ length: count }, () => ({ productId: '', quantity: '1', optional: false }));
 
@@ -49,9 +77,41 @@ export function PujaKits({ pujaId }: { pujaId: string }) {
     queryFn: () => request<Plan>('GET', '/admin/kits/puja-plan', { query: { pujaId } }),
   });
   const linked = kits.data?.items ?? [];
+  // The kits picked but not saved yet; null while the picker shows what is saved.
+  const [picked, setPicked] = useState<string[] | null>(null);
+  const everyKit = useQuery({
+    queryKey: ['kits', 'every'],
+    queryFn: allKits,
+    enabled: picked !== null,
+  });
+  // The table below follows the picker, so a pick shows what it holds before it is saved.
+  const shownKits =
+    picked === null
+      ? linked
+      : (everyKit.data ?? []).filter((kit) => picked.includes(kitSetKey(kit)));
   const inKits = new Set(linked.flatMap((kit) => kit.items.map((line) => line.sku.variantId)));
   const kitProducts = linked.flatMap((kit) => kit.items.map((line) => line.product.id));
   const extra = (plan.data?.items ?? []).filter((line) => !inKits.has(line.variantId));
+  // Every item any of the kits holds, once, with what each kit takes of it.
+  const union = [
+    ...shownKits
+      .flatMap((kit) => kit.items.map((line) => ({ kit, line })))
+      .reduce((all, { kit, line }) => {
+        const row = all.get(line.product.id) ?? {
+          productId: line.product.id,
+          name: line.product.nameNe,
+          hawan: line.isHawan,
+          byKit: new Map<string, { quantity: number; optional: boolean; total: string }>(),
+        };
+        row.byKit.set(kit.id, {
+          quantity: line.quantity,
+          optional: line.isOptional,
+          total: line.lineTotal,
+        });
+        return all.set(line.product.id, row);
+      }, new Map<string, { productId: string; name: string; hawan: boolean; byKit: Map<string, { quantity: number; optional: boolean; total: string }> }>())
+      .values(),
+  ];
   const names = useQueries({
     queries: extra.map((line) => ({
       queryKey: ['options', 'packs', 'find', line.variantId],
@@ -71,19 +131,27 @@ export function PujaKits({ pujaId }: { pujaId: string }) {
   ];
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['kits'] });
+  const linkedKeys = groupKitSets(linked).map((set) => set.key);
+  const shown = picked ?? linkedKeys;
+  const kitsChanged =
+    picked !== null &&
+    (picked.length !== linkedKeys.length || picked.some((key) => !linkedKeys.includes(key)));
+  // Choosing a kit takes all its packages (Basic, Standard, Premium) with it.
   const link = useMutation({
-    mutationFn: async (ids: string[]) => {
-      const was = new Set(linked.map((kit) => kit.id));
-      const now = new Set(ids);
-      for (const id of ids) {
-        if (!was.has(id)) await request('PATCH', `/admin/kits/${id}`, { body: { pujaId } });
-      }
-      for (const id of was) {
-        if (!now.has(id)) await request('PATCH', `/admin/kits/${id}`, { body: { pujaId: null } });
+    mutationFn: async (keys: string[]) => {
+      const all = await allKits();
+      const wanted = new Set(keys);
+      for (const kit of all) {
+        const inSet = wanted.has(kitSetKey(kit));
+        const was = kit.puja?.id === pujaId;
+        if (inSet && !was) await request('PATCH', `/admin/kits/${kit.id}`, { body: { pujaId } });
+        if (!inSet && was)
+          await request('PATCH', `/admin/kits/${kit.id}`, { body: { pujaId: null } });
       }
     },
     onSuccess: async () => {
       toast.success(t('saved'));
+      setPicked(null);
       await refresh();
     },
     onError: (error) => toast.error(isApiError(error) ? error.message : tf('failed')),
@@ -148,15 +216,11 @@ export function PujaKits({ pujaId }: { pujaId: string }) {
         <SearchSelect
           multiple
           aria-label={t('kitsTitle')}
-          source={choices.kits}
-          value={linked.map((kit) => kit.id)}
-          known={linked.map((kit) => ({
-            value: kit.id,
-            label: `${kit.nameNe}${kit.tier ? ` · ${kit.tier.toLowerCase()}` : ''}`,
-            detail: kit.code,
-          }))}
+          source={kitSets}
+          value={shown}
+          known={groupKitSets(linked).map(setChoice)}
           disabled={link.isPending}
-          onChange={(value) => link.mutate(value as string[])}
+          onChange={(value) => setPicked(value as string[])}
         />
         <div>
           <Link
@@ -167,6 +231,67 @@ export function PujaKits({ pujaId }: { pujaId: string }) {
           </Link>
         </div>
       </section>
+
+      {shownKits.length > 0 ? (
+        <section className="grid gap-2">
+          <h3 className="text-sm font-semibold">{t('unionTitle')}</h3>
+          <p className="text-xs text-muted-foreground">{t('unionNote')}</p>
+          <div className="overflow-x-auto rounded-md border border-border">
+            <table className="w-full border-collapse text-sm">
+              <thead className="bg-muted/60 text-xs text-muted-foreground uppercase">
+                <tr>
+                  <th className="px-2 py-2 text-left font-semibold">{t('item')}</th>
+                  {shownKits.map((kit) => (
+                    <th key={kit.id} className="px-2 py-2 text-right font-semibold">
+                      {kit.tier ?? kit.nameNe}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {union.map((row) => (
+                  <tr key={row.productId} className="border-t border-border">
+                    <td className="px-2 py-1.5">
+                      {row.name}
+                      {row.hawan ? <Badge className="ml-2">{t('hawan')}</Badge> : null}
+                    </td>
+                    {shownKits.map((kit) => {
+                      const line = row.byKit.get(kit.id);
+                      return (
+                        <td key={kit.id} className="px-2 text-right tabular-nums">
+                          {line ? (
+                            <>
+                              {line.quantity} ×
+                              <b className="ml-1 text-foreground">{money(line.total)}</b>
+                              {line.optional ? (
+                                <span className="ml-1 text-xs text-muted-foreground">
+                                  ({t('optional')})
+                                </span>
+                              ) : null}
+                            </>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-border bg-muted/40 font-semibold">
+                  <td className="px-2 py-2">{t('kitPrice')}</td>
+                  {shownKits.map((kit) => (
+                    <td key={kit.id} className="px-2 text-right tabular-nums">
+                      {money(kit.salePrice)}
+                    </td>
+                  ))}
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </section>
+      ) : null}
 
       <section className="grid gap-2">
         <h3 className="text-sm font-semibold">{t('extraTitle')}</h3>
@@ -284,8 +409,23 @@ export function PujaKits({ pujaId }: { pujaId: string }) {
               </Button>
             ))}
           </div>
-          <Button disabled={filled === 0 || addExtras.isPending} onClick={() => addExtras.mutate()}>
-            {addExtras.isPending ? tf('saving') : t('saveExtras', { count: filled })}
+          {filled === 0 && !kitsChanged ? (
+            <span className="text-xs text-muted-foreground">{t('saveHint')}</span>
+          ) : null}
+          <Button
+            disabled={(filled === 0 && !kitsChanged) || addExtras.isPending || link.isPending}
+            onClick={async () => {
+              try {
+                if (kitsChanged) await link.mutateAsync(picked!);
+                if (filled > 0) await addExtras.mutateAsync();
+              } catch {
+                // each step already reports its own error
+              }
+            }}
+          >
+            {addExtras.isPending || link.isPending
+              ? tf('saving')
+              : t('saveExtras', { count: filled })}
           </Button>
         </div>
       </section>

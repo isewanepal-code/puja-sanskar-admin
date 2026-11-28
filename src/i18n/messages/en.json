@@ -5313,6 +5313,15 @@
     "samagriNote": "What this puja needs. Add each samagri once; the kit of this puja is made from this list."
   },
   "pujaKits": {
+    "unionTitle": "What the kits hold",
+    "unionNote": "Every item in the kits above, once, and how many each kit takes. Read only: change a kit on its own page.",
+    "hawan": "Hawan",
+    "unlink": "Take out of this puja",
+    "itemCount": "{count} items",
+    "openKit": "Open the kit",
+    "addKit": "Add a kit to this puja…",
+    "kitPrice": "Kit price",
+    "saveHint": "Pick a kit above or items below, then Save.",
     "kitsTitle": "Kits of this puja",
     "kitsNote": "Pick the kits (made apart, in 6 · Kits) that are for this puja. The shopper can choose one of them.",
     "newKit": "Make a new kit",

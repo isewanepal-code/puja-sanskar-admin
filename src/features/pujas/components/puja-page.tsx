@@ -63,7 +63,7 @@ export function NewPujaPage() {
           onPendingChange={setSaving}
           onDone={(saved) => {
             const id = (saved as { id?: string } | undefined)?.id;
-            router.push(id ? `${routes.puja(id)}?step=samagri` : routes.pujas());
+            router.push(id ? `${routes.puja(id)}?step=kits` : routes.pujas());
           }}
         />
         <div className="mt-4 flex justify-end gap-2">

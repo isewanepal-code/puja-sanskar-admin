@@ -12,3 +12,4 @@ export {
   type Kit,
 } from './resources';
 export { ShortStockDialog } from './components/short-stock-dialog';
+export { groupKitSets, kitSetKey } from './lib/kit-set';
