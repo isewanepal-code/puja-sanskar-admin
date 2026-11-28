@@ -239,6 +239,15 @@ export function KitSetEditor({ existing }: { existing?: Kit[] }) {
   const keep = oldPrice > 0 ? salePrice / oldPrice : 1;
   const afterOf = (row: Row) => (optionalRow(row) ? null : lineTotal(row) * keep);
 
+  // The packs the saved kit holds, named from the kit itself: an item archived or taken off sale since
+  // is not in the item list any more, and would show as its id.
+  const savedPacks = (existing ?? []).flatMap((kit) =>
+    kit.items.map((line) => ({
+      value: line.sku.variantId,
+      label: `${line.product.nameNe} · ${line.sku.label}`,
+      productId: line.product.id,
+    })),
+  );
   const chosen = TIERS.filter((name) => packages[name].on);
   // What still keeps Save off, named, so nobody has to guess.
   const missing = [
@@ -452,6 +461,7 @@ export function KitSetEditor({ existing }: { existing?: Kit[] }) {
                   key={section}
                   section={section}
                   source={sourceFor(section)}
+                  known={savedPacks}
                   pkg={pkg}
                   change={change}
                   changeRow={changeRow}

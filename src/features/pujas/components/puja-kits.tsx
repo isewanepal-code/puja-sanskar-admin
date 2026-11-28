@@ -12,8 +12,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants, IconButton } from '@/components/ui/button';
 import { QuantityStepper } from '@/components/ui/quantity-stepper';
 import { isApiError, request, type Schema } from '@/lib/api';
-import { formatMoney } from '@/lib/format';
 import { groupKitSets, kitSetKey } from '@/features/kits';
+import { PujaKitTable } from './puja-kit-table';
 import { choices, wholeSource } from '@/lib/choices';
 import { routes } from '@/lib/routes';
 
@@ -28,7 +28,6 @@ type Plan = {
   }[];
 };
 type Draft = { productId: string; quantity: string; optional: boolean };
-const money = (amount: string | number) => formatMoney(String(amount), 'en');
 // One choice for a whole kit (its packages together), read as "name (code)".
 const setChoice = (set: { key: string; lead: Kit; kits: Kit[] }) => ({
   value: set.key,
@@ -92,26 +91,6 @@ export function PujaKits({ pujaId }: { pujaId: string }) {
   const inKits = new Set(linked.flatMap((kit) => kit.items.map((line) => line.sku.variantId)));
   const kitProducts = linked.flatMap((kit) => kit.items.map((line) => line.product.id));
   const extra = (plan.data?.items ?? []).filter((line) => !inKits.has(line.variantId));
-  // Every item any of the kits holds, once, with what each kit takes of it.
-  const union = [
-    ...shownKits
-      .flatMap((kit) => kit.items.map((line) => ({ kit, line })))
-      .reduce((all, { kit, line }) => {
-        const row = all.get(line.product.id) ?? {
-          productId: line.product.id,
-          name: line.product.nameNe,
-          hawan: line.isHawan,
-          byKit: new Map<string, { quantity: number; optional: boolean; total: string }>(),
-        };
-        row.byKit.set(kit.id, {
-          quantity: line.quantity,
-          optional: line.isOptional,
-          total: line.lineTotal,
-        });
-        return all.set(line.product.id, row);
-      }, new Map<string, { productId: string; name: string; hawan: boolean; byKit: Map<string, { quantity: number; optional: boolean; total: string }> }>())
-      .values(),
-  ];
   const names = useQueries({
     queries: extra.map((line) => ({
       queryKey: ['options', 'packs', 'find', line.variantId],
@@ -236,60 +215,7 @@ export function PujaKits({ pujaId }: { pujaId: string }) {
         <section className="grid gap-2">
           <h3 className="text-sm font-semibold">{t('unionTitle')}</h3>
           <p className="text-xs text-muted-foreground">{t('unionNote')}</p>
-          <div className="overflow-x-auto rounded-md border border-border">
-            <table className="w-full border-collapse text-sm">
-              <thead className="bg-muted/60 text-xs text-muted-foreground uppercase">
-                <tr>
-                  <th className="px-2 py-2 text-left font-semibold">{t('item')}</th>
-                  {shownKits.map((kit) => (
-                    <th key={kit.id} className="px-2 py-2 text-right font-semibold">
-                      {kit.tier ?? kit.nameNe}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {union.map((row) => (
-                  <tr key={row.productId} className="border-t border-border">
-                    <td className="px-2 py-1.5">
-                      {row.name}
-                      {row.hawan ? <Badge className="ml-2">{t('hawan')}</Badge> : null}
-                    </td>
-                    {shownKits.map((kit) => {
-                      const line = row.byKit.get(kit.id);
-                      return (
-                        <td key={kit.id} className="px-2 text-right tabular-nums">
-                          {line ? (
-                            <>
-                              {line.quantity} ×
-                              <b className="ml-1 text-foreground">{money(line.total)}</b>
-                              {line.optional ? (
-                                <span className="ml-1 text-xs text-muted-foreground">
-                                  ({t('optional')})
-                                </span>
-                              ) : null}
-                            </>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr className="border-t-2 border-border bg-muted/40 font-semibold">
-                  <td className="px-2 py-2">{t('kitPrice')}</td>
-                  {shownKits.map((kit) => (
-                    <td key={kit.id} className="px-2 text-right tabular-nums">
-                      {money(kit.salePrice)}
-                    </td>
-                  ))}
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+          <PujaKitTable kits={shownKits} />
         </section>
       ) : null}
 

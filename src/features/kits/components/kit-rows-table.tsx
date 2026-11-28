@@ -6,7 +6,7 @@ import { SearchSelect } from '@/components/controls';
 import { Icon } from '@/components/icons';
 import { Button, IconButton } from '@/components/ui/button';
 import { QuantityStepper } from '@/components/ui/quantity-stepper';
-import type { ChoiceSource } from '@/lib/choices';
+import type { Choice, ChoiceSource } from '@/lib/choices';
 import { formatMoney } from '@/lib/format';
 
 import { blankRows, inSection, type Pkg, type Row, type Section } from './kit-package';
@@ -27,10 +27,13 @@ export function KitRowsTable({
   repeated,
   lineTotal,
   afterOf,
+  known,
 }: {
   section: Section;
   // Where this table's packs are searched: every pack, or only those of one category (hawan).
   source: ChoiceSource;
+  // Names of the packs the kit already holds, so one that is archived or off sale still reads as its name.
+  known?: Choice[];
   pkg: Pkg;
   change: (patch: Partial<Pkg>) => void;
   changeRow: (index: number, patch: Partial<Row>) => void;
@@ -110,6 +113,7 @@ export function KitRowsTable({
                   <SearchSelect
                     aria-label={t('pack')}
                     source={source}
+                    known={known}
                     exclude={others(index).map((r) => r.variantId)}
                     excludeProducts={others(index).map((r) => itemOf(r))}
                     required
