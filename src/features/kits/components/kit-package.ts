@@ -66,3 +66,17 @@ export function repeatedRows(rows: Row[], productOf: (row: Row) => string): numb
     return [];
   });
 }
+
+// A name that is already a kit's code (a copy of it, say) tries CODE_2, CODE_3 … until one is free.
+export async function createWithFreeCode<T>(base: string, make: (code: string) => Promise<T>) {
+  for (let n = 1; ; n += 1) {
+    const suffix = n === 1 ? '' : `_${n}`;
+    const code = `${base.slice(0, 22 - suffix.length)}${suffix}`;
+    try {
+      return await make(code);
+    } catch (error) {
+      const taken = error instanceof Error && /code already exists/i.test(error.message);
+      if (!taken || n >= 20) throw error;
+    }
+  }
+}

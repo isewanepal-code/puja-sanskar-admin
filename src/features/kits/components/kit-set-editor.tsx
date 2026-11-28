@@ -23,6 +23,7 @@ import {
   repeatedRows,
   blankRows,
   codeOf,
+  createWithFreeCode,
   emptyPkg,
   inSection,
   OPEN_ROWS,
@@ -257,7 +258,7 @@ export function KitSetEditor({ existing }: { existing?: Kit[] }) {
       const shared = { pujaId, nameNe, nameEn, nameRomanized, aliases, description, images };
       return saved
         ? updateSet(kitSetKey(saved), existing!, shared, packages)
-        : createSet(codeOf(nameEn), shared, packages);
+        : createWithFreeCode(codeOf(nameEn), (code) => createSet(code, shared, packages));
     },
     onSuccess: async () => {
       toast.success(t('saved'));

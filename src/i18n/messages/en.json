@@ -134,7 +134,7 @@
       "offers": "Offers",
       "priceGroups": "Item groups",
       "discounts": "Coupons",
-      "pandits": "Pandits",
+      "pandits": "Pandits and Jyotish",
       "dataReset": "Clear data",
       "flowWork": "Expiring stock",
       "addItem": "Add item",
@@ -231,7 +231,7 @@
       "offers": "Lower prices: always, by season, by day of the week or for a festival. On items, groups, categories and kits.",
       "priceGroups": "A set of items and kits, so one offer or filter can cover them all.",
       "discounts": "Coupon codes and order discounts.",
-      "pandits": "Pandits and referral codes.",
+      "pandits": "Pandits, Jyotish and referral codes.",
       "pujas": "Puja groups and the list of pujas, with their samagri lists. Switch with the tabs at the top.",
       "content": "Questions customers ask, with the answers.",
       "catalogue": "The big shelves of the shop and the website (one per sheet of the item Excel).",
@@ -986,7 +986,7 @@
         "KITS": "Kits",
         "DELIVERY": "Delivery",
         "PAYMENT": "Payment",
-        "PANDITS": "Pandits"
+        "PANDITS": "Pandits and Jyotish"
       },
       "about": "Questions customers ask, with the answers. Shown on the website help page."
     },
@@ -1018,9 +1018,9 @@
       "about": "Stories and articles shown on the website."
     },
     "pandits": {
-      "title": "Pandits",
-      "add": "Add a pandit",
-      "empty": "No pandits match.",
+      "title": "Pandits and Jyotish",
+      "add": "Add a pandit or jyotish",
+      "empty": "No pandits or jyotish match.",
       "none": "—",
       "fields": {
         "code": "Code",
@@ -1057,7 +1057,7 @@
         "profile": "Profile",
         "seo": "Search engines"
       },
-      "about": "Pandits and their referral codes. When a customer enters a code, the pandit earns a commission."
+      "about": "Pandits, Jyotish and their referral codes. When a customer enters a code, they earn a commission."
     },
     "taxClasses": {
       "title": "Tax",
@@ -2928,7 +2928,7 @@
   "marketing": {
     "title": "Marketing",
     "tabs": {
-      "pandits": "Pandits",
+      "pandits": "Pandits and Jyotish",
       "discounts": "Discounts",
       "offers": "Offers",
       "groups": "Groups"
@@ -3720,7 +3720,7 @@
       "banners": "Banners",
       "homeSections": "Home sections",
       "reviews": "Reviews",
-      "pandits": "Pandits",
+      "pandits": "Pandits and Jyotish",
       "discounts": "Discounts",
       "categories": "Categories",
       "materials": "Materials",
@@ -4059,7 +4059,7 @@
       "cashOnDeliveryMax": "Cash on delivery only for orders up to this amount. Leave empty if there is none.",
       "vatAmount": "The VAT amount.",
       "ratePercent": "The rate in percent.",
-      "commissionPercent": "The commission percent the pandit earns.",
+      "commissionPercent": "The commission percent the pandit or jyotish earns.",
       "counterDiscountMaxPercent": "The most discount (%) staff can give at the counter.",
       "quantity": "How many.",
       "packQuantity": "How much is in the pack (500 for 500 g). Choose the unit below.",
@@ -4821,6 +4821,8 @@
     "none": "In no group",
     "saved": "Groups saved",
     "note": "If you put it in a group, it also gets offers, filters and the website \"only this group\" view. Remove a chip (×) to take it out of the group.",
+    "everyCategory": "Every category",
+    "filterCategory": "Only this category",
     "everyGroup": "Every group",
     "filter": "Only this group"
   },

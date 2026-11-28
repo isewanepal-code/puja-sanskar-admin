@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 
 import { SearchSelect } from '@/components/controls';
+import { categoryChoices } from '@/features/catalogue';
 import { priceGroups } from '@/features/marketing';
 import { ResourceScreen, WorkbookUploadButton } from '@/components/resource';
 import { Icon } from '@/components/icons';
@@ -25,6 +26,8 @@ export function ProductsScreen() {
   const [editing, setEditing] = useState<string | null>(null);
   // Only the items in this group, and in the groups inside it.
   const [groupId, setGroupId] = useState('');
+  // Only the items in this category (one of the main five), and in the ones inside it.
+  const [categoryId, setCategoryId] = useState('');
   const tg = useTranslations('itemGroups');
 
   // A link from the global search (?open=<id>) opens that item's edit form.
@@ -36,7 +39,11 @@ export function ProductsScreen() {
       ...productsResource,
       // Download Excel gives the item list as the shop keeps it: a sheet per category.
       exportPath: '/admin/items/sheet',
-      listQuery: { ...productsResource.listQuery, ...(groupId && { groupId }) },
+      listQuery: {
+        ...productsResource.listQuery,
+        ...(groupId && { groupId }),
+        ...(categoryId && { categoryId }),
+      },
       // The pen opens the same form as adding an item, filled.
       canEdit: false,
       // The quantities and their prices, side by side; pressing either opens all of them.
@@ -48,7 +55,7 @@ export function ProductsScreen() {
             : column,
       ),
     }),
-    [groupId],
+    [groupId, categoryId],
   );
 
   return (
@@ -59,6 +66,14 @@ export function ProductsScreen() {
         deepLink
         toolbar={
           <>
+            <SearchSelect
+              source={categoryChoices}
+              value={categoryId}
+              onChange={(value) => setCategoryId(String(value))}
+              placeholder={tg('everyCategory')}
+              aria-label={tg('filterCategory')}
+              className="w-52"
+            />
             <SearchSelect
               source={priceGroups}
               value={groupId}
