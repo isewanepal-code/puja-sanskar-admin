@@ -63,6 +63,18 @@ export function mergedSource(key: string, lists: List<never>[]): ChoiceSource {
         more: pages.some((p) => p.more),
       };
     },
+    find: async (value) => {
+      for (const list of lists) {
+        try {
+          const row = await request<never>('GET', `${list.path}/${value}`);
+          const [choice] = list.toChoices(row);
+          if (choice) return choice;
+        } catch {
+          // Not in this list; the next one may have it.
+        }
+      }
+      return null;
+    },
   };
 }
 
@@ -102,12 +114,21 @@ const packsOf = (product: Product): Choice[] =>
 
 // The packs of the items in one category (hawan samagri, say), searched like all packs.
 const packsInCategory = new Map<string, ChoiceSource>();
+
+// A saved pack, found by its own id, whatever category it sits in.
+const findPack = async (variantId: string): Promise<Choice | null> => {
+  const { items } = await request<Page<Product>>('GET', '/admin/products', {
+    query: { variantId, limit: 1 },
+  });
+  return items.flatMap(packsOf).find((pack) => pack.value === variantId) ?? null;
+};
 export function packsIn(categoryId: string): ChoiceSource {
   if (!packsInCategory.has(categoryId)) {
     packsInCategory.set(categoryId, {
       key: `packs-in-${categoryId}`,
       search: (q, page) =>
         pageOf({ path: '/admin/products', query: { categoryId }, toChoices: packsOf }, q, page),
+      find: findPack,
     });
   }
   return packsInCategory.get(categoryId)!;
@@ -147,12 +168,7 @@ export const choices = {
   packs: {
     key: 'packs',
     search: (q, page) => pageOf({ path: '/admin/products', toChoices: packsOf }, q, page),
-    find: async (variantId) => {
-      const { items } = await request<Page<Product>>('GET', '/admin/products', {
-        query: { variantId, limit: 1 },
-      });
-      return items.flatMap(packsOf).find((pack) => pack.value === variantId) ?? null;
-    },
+    find: findPack,
   } satisfies ChoiceSource,
   pujas: pagedSource<Puja>('pujas', {
     path: '/admin/pujas',
@@ -172,6 +188,18 @@ export const choices = {
   kits: pagedSource<Kit>('kits', {
     path: '/admin/kits',
     toChoices: coded,
+    find: (id) => `/admin/kits/${id}`,
+  }),
+  // Each package of every kit, named with its package, to pick one to take items from.
+  kitPackages: pagedSource<Kit>('kit-packages', {
+    path: '/admin/kits',
+    toChoices: (k) => [
+      {
+        value: k.id,
+        label: k.tier ? `${k.nameNe} · ${k.tier}` : k.nameNe,
+        detail: k.code,
+      },
+    ],
     find: (id) => `/admin/kits/${id}`,
   }),
   categories: pagedSource<CategoryRow>('categories', {

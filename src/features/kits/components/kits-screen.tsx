@@ -14,6 +14,7 @@ import { isApiError, request } from '@/lib/api';
 import { routes } from '@/lib/routes';
 
 import { kitsResource } from '../resources';
+import { KitView } from './kit-view';
 import type { KitSetRow } from '../lib/kit-set';
 
 // The kits, one row for each kit with a value for each of its packages. Adding and changing a kit
@@ -27,6 +28,8 @@ export function KitsScreen() {
   const queryClient = useQueryClient();
   // Only the kits in this group, and in the groups inside it.
   const [groupId, setGroupId] = useState('');
+  const tv = useTranslations('kitView');
+  const [viewing, setViewing] = useState<KitSetRow | null>(null);
   const [removing, setRemoving] = useState<KitSetRow | null>(null);
   const resource = useMemo(() => kitsResource(tk, groupId), [tk, groupId]);
 
@@ -66,14 +69,18 @@ export function KitsScreen() {
           </>
         }
         rowActions={(row) => (
-          <IconButton
-            icon="trash"
-            variant="danger"
-            label={tf('delete')}
-            onClick={() => setRemoving(row)}
-          />
+          <>
+            <IconButton icon="eye" label={tv('view')} onClick={() => setViewing(row)} />
+            <IconButton
+              icon="trash"
+              variant="danger"
+              label={tf('delete')}
+              onClick={() => setRemoving(row)}
+            />
+          </>
         )}
       />
+      <KitView row={viewing} onClose={() => setViewing(null)} />
       <ConfirmDialog
         open={removing !== null}
         onOpenChange={(next) => (next ? undefined : setRemoving(null))}

@@ -6,9 +6,10 @@ import { useMemo, useState } from 'react';
 import { ResourceScreen, useResourceText } from '@/components/resource';
 import { IconButton } from '@/components/ui/button';
 
-import { offersResource } from '../offers';
+import { offersResource, type Offer } from '../offers';
 import { priceGroupsResource, type PriceGroup } from '../price-groups';
 import { GroupMembers } from './group-members';
+import { OfferView } from './offer-view';
 
 import { discountsResource } from '../discounts';
 import { panditsResource } from '../resources';
@@ -23,8 +24,20 @@ export function DiscountsScreen() {
 
 export function OffersScreen() {
   const t = useResourceText('offers');
+  const tv = useTranslations('offerView');
   const resource = useMemo(() => offersResource(t), [t]);
-  return <ResourceScreen resource={resource} />;
+  const [viewing, setViewing] = useState<Offer | null>(null);
+  return (
+    <>
+      <ResourceScreen
+        resource={resource}
+        rowActions={(row) => (
+          <IconButton icon="eye" label={tv('view')} onClick={() => setViewing(row)} />
+        )}
+      />
+      <OfferView offer={viewing} onClose={() => setViewing(null)} />
+    </>
+  );
 }
 
 export function PriceGroupsScreen() {

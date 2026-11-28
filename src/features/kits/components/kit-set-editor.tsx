@@ -24,6 +24,7 @@ import {
   blankRows,
   codeOf,
   emptyPkg,
+  inSection,
   OPEN_ROWS,
   SECTIONS,
   TIERS,
@@ -33,8 +34,9 @@ import {
   type Tier,
 } from './kit-package';
 import { createSet, updateSet } from '../lib/kit-set-save';
-import { kitSetKey, packagesFromSet, type Kit } from '../lib/kit-set';
+import { kitSetKey, packagesFromSet, pkgFromKit, type Kit } from '../lib/kit-set';
 import { KitRowsTable } from './kit-rows-table';
+import { KitOffersPanel } from './kit-offers-panel';
 import { PriceLine } from './kit-price-line';
 
 // A kit in one page: its name once, then the Basic, Standard and Premium packages, each with its own
@@ -84,7 +86,6 @@ export function KitSetEditor({ existing }: { existing?: Kit[] }) {
   const sourceFor = (section: Section) =>
     section === 'hawan' && hawanCategory ? packsIn(hawanCategory.id) : choices.packs;
   const hasChosen = pkg.rows.some((row) => row.variantId);
-  const hasHawan = pkg.rows.some((row) => row.hawan && row.variantId);
   // A package can take the items of one made before it: Standard from Basic, Premium from either.
   const copySources = TIERS.filter(
     (name) =>
@@ -102,6 +103,43 @@ export function KitSetEditor({ existing }: { existing?: Kit[] }) {
       },
     }));
     setCopying(null);
+  };
+  // The items of another kit, added to what is chosen; an item already here is not added twice.
+  const [pulling, setPulling] = useState(false);
+  // Where each package's pulled items came from, so it stays readable after the pick resets.
+  const [pulledFrom, setPulledFrom] = useState<Record<string, string[]>>({});
+  const pullFrom = async (kitId: string) => {
+    if (!kitId) return;
+    setPulling(true);
+    try {
+      const source = await request<Kit>('GET', `/admin/kits/${kitId}`);
+      const other = pkgFromKit(source);
+      const here = pkg.rows.filter((row) => row.variantId);
+      const known = new Set(here.map(itemOf));
+      const added = other.rows.filter((row) => row.variantId && !known.has(itemOf(row)));
+      const keep = (section: Section) => here.filter((row) => inSection(row, section));
+      const take = (section: Section) => added.filter((row) => inSection(row, section));
+      change({
+        rows: SECTIONS.flatMap((section) => [
+          ...keep(section),
+          ...take(section),
+          ...blankRows(
+            section,
+            Math.max(3, OPEN_ROWS[section] - keep(section).length - take(section).length),
+          ),
+        ]),
+      });
+      const from = source.tier ? `${source.nameNe} · ${source.tier}` : source.nameNe;
+      setPulledFrom((all) => ({
+        ...all,
+        [tier]: [...(all[tier] ?? []), t('pulledFrom', { kit: from, count: added.length })],
+      }));
+      toast.success(t('pulled', { count: added.length }));
+    } catch (error) {
+      toast.error(isApiError(error) ? error.message : tf('failed'));
+    } finally {
+      setPulling(false);
+    }
   };
   const change = (patch: Partial<Pkg>) =>
     setPackages((all) => ({ ...all, [tier]: { ...all[tier], ...patch } }));
@@ -393,6 +431,21 @@ export function KitSetEditor({ existing }: { existing?: Kit[] }) {
                   ))}
                 </div>
               ) : null}
+              <Field label={t('pullFrom')} htmlFor="pull-kit" help={t('pullFromHelp')}>
+                <SearchSelect
+                  id="pull-kit"
+                  source={choices.kitPackages}
+                  exclude={existing?.filter((k) => k.tier === tier).map((k) => k.id)}
+                  value=""
+                  disabled={pulling}
+                  onChange={(value) => void pullFrom(String(value))}
+                />
+                {(pulledFrom[tier] ?? []).map((line) => (
+                  <p key={line} className="mt-1 text-xs text-muted-foreground">
+                    ✓ {line}
+                  </p>
+                ))}
+              </Field>
               {SECTIONS.map((section) => (
                 <KitRowsTable
                   key={section}
@@ -438,9 +491,9 @@ export function KitSetEditor({ existing }: { existing?: Kit[] }) {
                 <div className="grid gap-1.5 rounded-md border border-border p-3 text-sm sm:col-span-2">
                   <h4 className="font-semibold">{t('calcTitle')}</h4>
                   <PriceLine label={t('itemsCompulsory')} value={itemsSum} />
-                  {hasHawan && !pkg.hawanOptional ? (
+                  {pkg.hawanOptional ? null : (
                     <PriceLine label={t('hawanCompulsory')} value={hawanSum} />
-                  ) : null}
+                  )}
                   <PriceLine label={t('beforeDiscount')} value={oldPrice} strong top />
                   <PriceLine
                     label={
@@ -492,6 +545,10 @@ export function KitSetEditor({ existing }: { existing?: Kit[] }) {
           )}
         </div>
       </section>
+
+      {existing ? (
+        <KitOffersPanel kits={existing} kit={existing.find((k) => k.tier === tier) ?? saved!} />
+      ) : null}
 
       <div className="flex items-center justify-between gap-3">
         {ready ? (

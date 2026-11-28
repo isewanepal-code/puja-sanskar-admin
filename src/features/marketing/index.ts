@@ -8,4 +8,4 @@ export { discountsResource } from './discounts';
 export { panditsResource } from './resources';
 export { ProductOffersPanel } from './components/product-offers';
 export { ItemGroups } from './components/item-groups';
-export { priceGroups } from './offers';
+export { offerPreview, priceGroups } from './offers';

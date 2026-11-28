@@ -65,7 +65,7 @@ export const tiersCodec = {
       ),
 };
 
-const ruleText = (rule: Offer['alone'], name: Name) =>
+export const ruleText = (rule: Offer['alone'], name: Name) =>
   rule
     ? rule.kind === 'PERCENT'
       ? `${Number(rule.value)}%`
@@ -74,7 +74,7 @@ const ruleText = (rule: Offer['alone'], name: Name) =>
         : `${name('rule.price')} ${formatMoney(rule.value, 'en')}`
     : '—';
 
-function whenText(offer: Offer, name: Name) {
+export function whenText(offer: Offer, name: Name) {
   if (offer.schedule === 'ALWAYS') return name('schedules.ALWAYS');
   if (offer.schedule === 'RANGE') {
     return `${offer.startsAt ? formatDate(offer.startsAt, 'en') : ''} → ${offer.endsAt ? formatDate(offer.endsAt, 'en') : ''}`;
@@ -156,7 +156,6 @@ export function offersResource(name: Name): Resource<Offer> {
       dayTo: clock(row.dayToMinute),
       more:
         row.targets.some((t) => t.excluded) ||
-        !!row.festivalId ||
         !row.allowCoupons ||
         row.priority !== 0 ||
         !!row.titleEn ||
@@ -284,6 +283,7 @@ export function offersResource(name: Name): Resource<Offer> {
       },
       { name: 'dayFrom', kind: 'time', showWhen: (v) => v.schedule === 'WEEKLY' },
       { name: 'dayTo', kind: 'time', showWhen: (v) => v.schedule === 'WEEKLY' },
+      { name: 'festivalId', kind: 'select', optionsFrom: choices.festivals },
       ...rule('alone'),
       ...rule('withKit'),
       { name: 'kitTiers', kind: 'textarea', wide: true, codec: tiersCodec },
@@ -297,12 +297,6 @@ export function offersResource(name: Name): Resource<Offer> {
       { name: 'more', kind: 'switch', section: 'extra', defaultValue: false },
       { name: 'titleNe', kind: 'text', max: 80, showWhen: (v) => v.more === true },
       { name: 'titleEn', kind: 'text', max: 80, showWhen: (v) => v.more === true },
-      {
-        name: 'festivalId',
-        kind: 'select',
-        optionsFrom: choices.festivals,
-        showWhen: (v) => v.more === true,
-      },
       {
         name: 'allowCoupons',
         kind: 'switch',

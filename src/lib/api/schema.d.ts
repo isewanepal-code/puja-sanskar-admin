@@ -2337,6 +2337,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/price-offers/for-kit/{kitId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Every offer and how it reaches a kit
+     * @description For a kit's page: ticked directly, reached through a group or everything, and whether it is on now.
+     */
+    get: operations['AdminPriceOfferController_forKit'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/price-offers/preview/{variantId}': {
     parameters: {
       query?: never;
@@ -2392,6 +2412,24 @@ export interface paths {
     post?: never;
     /** Switch an offer off for one product */
     delete: operations['AdminPriceOfferController_removeProduct'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/price-offers/{id}/kits/{kitId}': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Switch an offer on for one kit */
+    put: operations['AdminPriceOfferController_addKit'];
+    post?: never;
+    /** Switch an offer off for one kit */
+    delete: operations['AdminPriceOfferController_removeKit'];
     options?: never;
     head?: never;
     patch?: never;
@@ -11594,6 +11632,13 @@ export interface components {
       updatedAt: string;
     };
     PujaPlanLineResponse: {
+      /**
+       * Format: uuid
+       * @description The puja's samagri line behind it
+       */
+      requirementId: string;
+      /** Format: uuid */
+      materialId: string;
       /** Format: uuid */
       variantId: string;
       /** @example 2 */
@@ -27513,6 +27558,69 @@ export interface operations {
       };
     };
   };
+  AdminPriceOfferController_forKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        kitId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            /** @example true */
+            success: boolean;
+            /** @example Request successful */
+            message: string;
+            data: components['schemas']['OfferForProductResponse'][];
+          };
+        };
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
   AdminPriceOfferController_preview: {
     parameters: {
       query?: never;
@@ -27833,6 +27941,118 @@ export interface operations {
       path: {
         id: string;
         productId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_addKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        kitId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description BAD_REQUEST */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description UNAUTHORIZED */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description FORBIDDEN */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+      /** @description NOT_FOUND */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ErrorResponseDto'];
+        };
+      };
+    };
+  };
+  AdminPriceOfferController_removeKit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        kitId: string;
       };
       cookie?: never;
     };

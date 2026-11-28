@@ -115,6 +115,21 @@ export function kitsResource(name: Name, groupId = ''): Resource<KitSetRow> {
         align: 'right',
       },
       {
+        key: 'offers',
+        cell: (row) =>
+          perPackage(row, (kit) =>
+            kit.offerTiers.length > 0
+              ? kit.offerTiers
+                  .map(
+                    (tier) =>
+                      `${tier.minKits}+: ${tier.kind === 'PERCENT' ? `${Number(tier.value)}%` : money(tier.value)}`,
+                  )
+                  .join(' · ')
+              : '—',
+          ),
+        sortValue: (row) => row.set.reduce((n, kit) => n + kit.offerTiers.length, 0),
+      },
+      {
         key: 'isAvailable',
         cell: (row) => (
           <Badge tone={row.set.every((kit) => kit.isAvailable) ? 'success' : 'warning'}>
